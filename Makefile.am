@@ -14,6 +14,7 @@ AM_LDFLAGS=$(BOOST_LDFLAGS)
 
 #===========================================================================#
 include $(srcdir)/src/splash/Makemodule.am
+include $(srcdir)/src/structure/Makemodule.am
 
 
 #===========================================================================#
