@@ -1,5 +1,0 @@
-bin_PROGRAMS+=casm-utilities-splash
-
-casm_utilities_splash_SOURCES=./src/splash/splash.cpp
-
-casm_utilities_splash_LDADD=$(BOOST_SYSTEM_LIB)

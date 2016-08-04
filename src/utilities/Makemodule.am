@@ -1,0 +1,7 @@
+bin_PROGRAMS+=casm-utilities
+
+casm_utilities_SOURCES=./src/utilities/casm_utilities.cpp
+
+casm_utilities_LDADD=libcusplash.a\
+					 $(BOOST_SYSTEM_LIB)
+                    
