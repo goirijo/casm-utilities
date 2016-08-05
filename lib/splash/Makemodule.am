@@ -1,3 +1,0 @@
-noinst_LIBRARIES+=libcusplash.a
-
-libcusplash_a_SOURCES=./lib/splash/splash.cxx

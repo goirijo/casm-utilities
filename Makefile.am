@@ -14,11 +14,6 @@ AM_LDFLAGS=$(BOOST_LDFLAGS)
 
 
 #===========================================================================#
-#First do all the library stuff
-include $(srcdir)/lib/splash/Makemodule.am
-
-
-#===========================================================================#
 #Now do the programs
 include $(srcdir)/src/utilities/Makemodule.am
 

@@ -1,9 +1,10 @@
 #ifndef SPLASH
 #define SPLASH
 
-namespace Utilities
+namespace casmUtilities
 {
-    void splash_utility_launch();
+    void splash_utility_launch(int argc, char *argv[]);
 }
+
 
 #endif

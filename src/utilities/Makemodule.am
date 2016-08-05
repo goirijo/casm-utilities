@@ -1,7 +1,11 @@
 bin_PROGRAMS+=casm-utilities
 
-casm_utilities_SOURCES=./src/utilities/casm_utilities.cpp
+casm_utilities_SOURCES=./src/utilities/casm_utilities.cpp\
+					   ./lib/completer/handlers.cxx\
+					   ./lib/splash/splash.cxx\
+					   ./lib/structure/structure.cxx
 
-casm_utilities_LDADD=libcusplash.a\
-					 $(BOOST_SYSTEM_LIB)
+
+casm_utilities_LDADD=$(BOOST_SYSTEM_LIB)\
+					 $(BOOST_PROGRAM_OPTIONS_LIB)
                     

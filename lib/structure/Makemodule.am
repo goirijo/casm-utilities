@@ -1,5 +1,0 @@
-bin_PROGRAMS+=casm-utilities-structure
-
-casm_utilities_structure_SOURCES=./src/structure/structure.cpp
-
-casm_utilities_structure_LDADD=$(BOOST_SYSTEM_LIB)
