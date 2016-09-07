@@ -16,6 +16,7 @@ AM_LDFLAGS=$(BOOST_LDFLAGS)
 #===========================================================================#
 #Now do the programs
 include $(srcdir)/src/utilities/Makemodule.am
+include $(srcdir)/src/utilities_complete/Makemodule.am
 
 
 #===========================================================================#

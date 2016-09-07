@@ -2,6 +2,7 @@
 #define CASM_UTILS_LAUNCH
 
 #include <casm/CASM_global_definitions.hh>
+#include "lib/launch/rules.hpp"
 
 namespace casmUtilities
 {
@@ -29,7 +30,11 @@ namespace casmUtilities
             ///Derived from CASM::OptionHandlerBase
             T m_option;
 
+            ///Deals with the given command line options
             CASM::po::variables_map m_vm;
+
+            ///Specify how the command line options should interact with each other
+            LaunchRuleList m_argument_rules;
     };
 
     //************************************************************************************//

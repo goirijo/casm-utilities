@@ -2,6 +2,8 @@ bin_PROGRAMS+=casm-utilities
 
 casm_utilities_SOURCES=./src/utilities/casm_utilities.cpp\
 					   ./lib/completer/handlers.cxx\
+					   ./lib/launch/launchers.cxx\
+					   ./lib/launch/rules.cxx\
 					   ./lib/splash/splash.cxx\
 					   ./lib/structure/structure.cxx
 

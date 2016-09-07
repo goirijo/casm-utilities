@@ -4,13 +4,13 @@
 
 #include "lib/completer/handlers.hpp"
 
-namespace casmUtilitiesCompletion
+namespace casmUtilities
 {
     CASM::Completer::Engine build_casm_utilities_engine()
     {
         CASM::Completer::Engine casm_utilities_engine;
 
-        splashOption dumbsplash;
+        SplashOption dumbsplash;
         casm_utilities_engine.push_back(CASM::Completer::Option(dumbsplash.tag(), dumbsplash.desc()));
 
         return casm_utilities_engine;
@@ -18,7 +18,7 @@ namespace casmUtilitiesCompletion
 }
 
 
-using namespace casmUtilitiesCompletion;
+using namespace casmUtilities;
 
 int main(int argc, char *argv[])
 {

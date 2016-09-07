@@ -10,7 +10,10 @@ namespace casmUtilities
 {
     void splash_utility_launch(int argc, char *argv[])
     {
-        Launcher<casmUtilitiesCompletion::SplashOption> splash_launch(argc, argv);
+        Launcher<casmUtilities::SplashOption> splash_launch(argc, argv);
+
+        //m_argument_rules.add_exclusion("squelch","dumb-print");
+        //m_argument_rules.add_exclusion("squelch","print");
 
         if(splash_launch.count("help"))
         {
@@ -21,6 +24,12 @@ namespace casmUtilities
         {
             CASM::print_splash(std::cout);
         }
+
+        if(splash_launch.count("test"))
+        {
+            std::cout<<"You tested the value "<<splash_launch.vm()["test"].as<int>()<<std::endl;
+        }
+
 
         return;
     }

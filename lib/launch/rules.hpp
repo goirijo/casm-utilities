@@ -91,12 +91,15 @@ namespace casmUtilities
             /// \brief specify single --suboption that must go with another
             void add_inclusion(const std::string &target, const std::string &include);
 
+            /// \brief specify single --suboption that must go with *only* one of the given other --suboptions
+            void add_any_inclusion(const std::string &target, const std::vector<std::string> &includes);
+
 
 
             /// \brief given a collection of --suboptions, require that if one of them is given, all of them must be given
             void add_requirement(const std::vector<std::string> &codependent_group);
 
-            /// \brief given a --suboption, require non of the other --suboptions in the other group are given
+            /// \brief given a --suboption, require none of the other --suboptions in the other group are given
             void add_constraint(const std::string &independent, const std::vector<std::string> &exclusion_group);
 
             /// \brief Using the loaded rules, determine whether the given variables map is good to go
@@ -104,11 +107,17 @@ namespace casmUtilities
 
         private:
 
-            /// \brief List of every rule
-            std::vector<LaunchRule> m_rule_table;
+            /// \brief List of every rule that must be obeyed
+            std::vector<LaunchRule> m_strict_rule_table;
+
+            /// \brief List of groups of rules of which only one rule must be obeyed
+            std::vector<std::vector<LaunchRule> > m_any_rule_table;
             
-            /// \brief List of every rule broken since the last ::parse
-            mutable std::vector<int> m_broken_rules;
+            /// \brief List of every rule broken since the last ::parse related to the strict set
+            mutable std::vector<int> m_strict_broken_rules;
+
+            /// \brief List of every rule broken since the last ::parse related to the any set
+            mutable std::vector<std::vector<int> > m_any_broken_rules;
     };
 }
 
