@@ -1,7 +1,8 @@
 #ifndef CASM_UTILS_LAUNCH
 #define CASM_UTILS_LAUNCH
 
-#include <casm/CASM_global_definitions.hh>
+#include "lib/definitions.hpp"
+#include "lib/completer/handlers.hpp"
 #include "lib/launch/rules.hpp"
 
 namespace casmUtilities
@@ -12,56 +13,41 @@ namespace casmUtilities
      * variables needed
      */
 
-    template <typename T>
     class Launcher
     {
         public:
 
-            Launcher(int argc, char *argv[]);
+            Launcher(int argc, 
+                    char *argv[],
+                    const std::string &init_utility_tag,
+                    const std::function<LaunchRuleList(po::options_description&)> &init_initializer);
 
+            ///Check to see if the given string was parsed into the variables map
             bool count(const std::string &countable) const;
 
-            T &option();
+            UtilityHandler &utility();
 
-            const CASM::po::variables_map &vm() const;
+            const po::variables_map &vm() const;
+
+            template<typename T>
+                T fetch(const std::string &prog_option) const;
 
         private:
 
             ///Derived from CASM::OptionHandlerBase
-            T m_option;
+            UtilityHandler m_utility;
 
             ///Deals with the given command line options
             CASM::po::variables_map m_vm;
 
-            ///Specify how the command line options should interact with each other
-            LaunchRuleList m_argument_rules;
     };
 
     //************************************************************************************//
-
+    
     template<typename T>
-    Launcher<T>::Launcher(int argc, char *argv[])
+    T Launcher::fetch(const std::string &prog_option) const
     {
-        CASM::po::store(CASM::po::parse_command_line(argc, argv, m_option.desc()),m_vm);
-        CASM::po::notify(m_vm);
-    }
-
-    template<typename T>
-    bool Launcher<T>::count(const std::string &countable) const
-    {
-        return m_vm.count(countable);
-    }
-
-    template<typename T>
-    T &Launcher<T>::option()
-    {
-        return m_option;
-    }
-
-    template<typename T>
-    const CASM::po::variables_map &Launcher<T>::vm() const
-    {
-        return m_vm;
+        return vm()[prog_option].as<T>();
     }
 
 

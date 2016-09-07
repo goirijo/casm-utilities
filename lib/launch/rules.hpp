@@ -4,7 +4,8 @@
 #include <vector>
 #include <string>
 #include <utility>
-#include <casm/CASM_global_definitions.hh>
+
+#include "lib/definitions.hpp"
 
 namespace casmUtilities
 {
@@ -48,7 +49,7 @@ namespace casmUtilities
             RuleType type() const;
 
             /// \brief check to see if the given variables map breaks the rule (false->invalid, true->valid)
-            bool parse(const CASM::po::variables_map &ref_vm) const;
+            bool parse(const po::variables_map &ref_vm) const;
 
         private:
 
@@ -62,16 +63,16 @@ namespace casmUtilities
             RuleType m_type;
 
             /// \brief parse variables map when *this is INCLUSIVE
-            bool _inclusive_parse(const CASM::po::variables_map &ref_vm) const;
+            bool _inclusive_parse(const po::variables_map &ref_vm) const;
 
             /// \brief parse variables map when *this is EXCLUSIVE
-            bool _exclusive_parse(const CASM::po::variables_map &ref_vm) const;
+            bool _exclusive_parse(const po::variables_map &ref_vm) const;
 
             /// \brief parse variables map when *this is SILENT
-            bool _silent_parse(const CASM::po::variables_map &ref_vm) const;
+            bool _silent_parse(const po::variables_map &ref_vm) const;
 
             /// \brief parse variables map when *this is REQUIRED
-            bool _required_parse(const CASM::po::variables_map &ref_vm) const;
+            bool _required_parse(const po::variables_map &ref_vm) const;
 
     };
 
@@ -103,7 +104,7 @@ namespace casmUtilities
             void add_constraint(const std::string &independent, const std::vector<std::string> &exclusion_group);
 
             /// \brief Using the loaded rules, determine whether the given variables map is good to go
-            bool parse(const CASM::po::variables_map &ref_vm) const;
+            bool parse(const po::variables_map &ref_vm) const;
 
         private:
 

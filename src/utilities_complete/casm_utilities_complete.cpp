@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "lib/completer/handlers.hpp"
+#include "lib/splash/splash.hpp"
 
 namespace casmUtilities
 {
@@ -10,7 +11,7 @@ namespace casmUtilities
     {
         CASM::Completer::Engine casm_utilities_engine;
 
-        SplashOption dumbsplash;
+        UtilityHandler dumbsplash(splash_name(), casmUtilities::splash_initializer);
         casm_utilities_engine.push_back(CASM::Completer::Option(dumbsplash.tag(), dumbsplash.desc()));
 
         return casm_utilities_engine;
