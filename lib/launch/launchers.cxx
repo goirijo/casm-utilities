@@ -1,3 +1,4 @@
+#include <iostream>
 #include <iterator>
 
 #include "lib/launch/launchers.hpp"
@@ -12,6 +13,11 @@ namespace casmUtilities
     {
         po::store(po::parse_command_line(argc, argv, m_utility.desc()), m_vm);
         po::notify(m_vm);
+
+        if(!m_utility.argument_rules().parse(m_vm))
+        {
+            throw UserInputMangle("A forbidden combination of command line arguments was parsed.");
+        }
     }
 
     bool Launcher::count(const std::string &countable) const

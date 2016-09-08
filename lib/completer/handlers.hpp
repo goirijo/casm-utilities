@@ -1,19 +1,12 @@
 #ifndef CASM_UTILS_HANDLERS
 #define CASM_UTILS_HANDLERS
 
-#include <casm/CASM_global_definitions.hh>
-#include <casm/completer/Handlers.hh>
 #include <utility>
 #include <functional>
 
 #include "lib/definitions.hpp"
 #include "lib/launch/rules.hpp"
 
-/**
- * An extension of CASM::OptionHandlerBase, repurposed
- * for bash completion functionality of casm-utilities
- * instead of casm.
- */
 
 namespace casmUtilities
 {
@@ -42,6 +35,9 @@ namespace casmUtilities
             ///The desired name for the utility
             const std::string &tag() const;
 
+            ///The specified rules for command line arguments
+            const LaunchRuleList &argument_rules() const;
+
         private:
 
             ///The desired name for the casm-utilities option
@@ -54,6 +50,16 @@ namespace casmUtilities
             LaunchRuleList m_argument_rules;
 
     };
+
+    /**
+     * A bunch of commonly used program options to reuse
+     * across different UtilityHandler objects
+     */
+
+    namespace utilityProgramOptions
+    {
+        void add_help_suboption(po::options_description &handler_desc);
+    }
 
 }
 

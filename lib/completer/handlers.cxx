@@ -1,10 +1,9 @@
-#include <casm/CASM_global_definitions.hh>
-
 #include "lib/completer/handlers.hpp"
 
 namespace casmUtilities
 {
-    UtilityHandler::UtilityHandler(const std::string &init_utility_tag, const std::function<LaunchRuleList(po::options_description&)> &init_initializer)
+    UtilityHandler::UtilityHandler(const std::string &init_utility_tag, const std::function<LaunchRuleList(po::options_description&)> &init_initializer):
+        m_tag(init_utility_tag)
     {
         m_argument_rules=init_initializer(m_desc);
     }
@@ -17,6 +16,22 @@ namespace casmUtilities
     const std::string &UtilityHandler::tag() const
     {
         return m_tag;
+    }
+
+    const LaunchRuleList &UtilityHandler::argument_rules() const
+    {
+        return m_argument_rules;
+    }
+
+    namespace utilityProgramOptions
+    {
+        void add_help_suboption(po::options_description &handler_desc)
+        {
+            handler_desc.add_options()
+                ("help,h", "Print list of available options for this utility");
+
+            return;
+        }
     }
 
 }

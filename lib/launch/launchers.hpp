@@ -38,7 +38,7 @@ namespace casmUtilities
             UtilityHandler m_utility;
 
             ///Deals with the given command line options
-            CASM::po::variables_map m_vm;
+            po::variables_map m_vm;
 
     };
 

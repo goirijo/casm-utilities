@@ -1,3 +1,4 @@
+#include <casm/CASM_global_definitions.hh>
 #include <iostream>
 #include <functional>
 
@@ -15,14 +16,17 @@ namespace casmUtilities
 
     LaunchRuleList splash_initializer(po::options_description &splash_desc)
     {
-        LaunchRuleList splash_rules;
+        utilityProgramOptions::add_help_suboption(splash_desc);
 
         splash_desc.add_options()
             ("print,p", "Print the CASM logo to the screen")
             ("dumb-print,d", "Print the CASM logo as a word")
             ("squelch,s", "Don't print anything")
-            ("test,t", CASM::po::value<int>(), "Test without storage")
-            ("number,n", CASM::po::value<int>()->default_value(1), "How many times to print the logo");
+            ("number,n", po::value<int>()->default_value(1), "How many times to print the logo");
+
+        LaunchRuleList splash_rules;
+        splash_rules.add_any_inclusion("number",std::vector<std::string>{"dumb-print","print"});
+        //splash_rules.add_any_exclusion("squelch", std::vector<std::string>{"dumb-print","print"});
 
         return splash_rules;
     }
@@ -39,6 +43,11 @@ namespace casmUtilities
         if(splash_launch.count("print"))
         {
             CASM::print_splash(std::cout);
+        }
+
+        if(splash_launch.count("dumb-print"))
+        {
+            std::cout<<"CASM"<<std::endl;
         }
 
         if(splash_launch.count("test"))
