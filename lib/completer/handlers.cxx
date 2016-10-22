@@ -1,4 +1,5 @@
 #include "lib/completer/handlers.hpp"
+#include <casm/completer/Handlers.hh>
 
 namespace casmUtilities
 {
@@ -29,6 +30,14 @@ namespace casmUtilities
         {
             handler_desc.add_options()
                 ("help,h", "Print list of available options for this utility");
+
+            return;
+        }
+
+        void add_output_suboption(po::options_description &handler_desc)
+        {
+            handler_desc.add_options()
+                ("output,o", po::value<fs::path>()->value_name(CASM::Completer::ArgHandler::path()), "Target output file");
 
             return;
         }

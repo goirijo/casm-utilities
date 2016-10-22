@@ -9,7 +9,7 @@
 
 namespace casmUtilities
 {
-    std::string splash_name()
+    std::string splash_launcher_name()
     {
         return "splash";
     }
@@ -33,7 +33,7 @@ namespace casmUtilities
 
     void splash_utility_launch(int argc, char *argv[])
     {
-        Launcher splash_launch(argc, argv, splash_name(), casmUtilities::splash_initializer);
+        Launcher splash_launch(argc, argv, splash_launcher_name(), casmUtilities::splash_initializer);
 
         if(splash_launch.count("help"))
         {

@@ -22,7 +22,8 @@ std::string option_desc()
 void basic_help()
 {
     std::cout<<"The available options for casm-utilities are:"<<std::endl;
-    std::cout<<"    "<<casmUtilities::splash_name()<<std::endl;
+    std::cout<<"    "<<casmUtilities::splash_launcher_name()<<std::endl;
+    std::cout<<"    "<<casmUtilities::structure_launcher_name()<<std::endl;
     std::cout<<std::endl;
 
     return;
@@ -36,9 +37,14 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    if(argv[1]==casmUtilities::splash_name())
+    if(argv[1]==casmUtilities::splash_launcher_name())
     {
         splash_utility_launch(argc, argv);
+    }
+
+    if(argv[1]==casmUtilities::structure_launcher_name())
+    {
+        structure_utility_launch(argc, argv);
     }
 
     else

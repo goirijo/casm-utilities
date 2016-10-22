@@ -1,0 +1,12 @@
+bin_PROGRAMS+=casm-utilities-complete
+
+casm_utilities_complete_SOURCES=./src/utilities_complete/casm_utilities_complete.cpp\
+								./lib/completer/handlers.cxx\
+								./lib/launch/launchers.cxx\
+								./lib/launch/rules.cxx\
+								./lib/splash/splash.cxx\
+								./lib/structure/structure.cxx
+
+casm_utilities_complete_LDADD=$(BOOST_SYSTEM_LIB)\
+					 $(BOOST_PROGRAM_OPTIONS_LIB)
+                    

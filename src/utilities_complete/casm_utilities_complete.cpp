@@ -4,6 +4,7 @@
 
 #include "lib/completer/handlers.hpp"
 #include "lib/splash/splash.hpp"
+#include "lib/structure/structure.hpp"
 
 namespace casmUtilities
 {
@@ -11,8 +12,11 @@ namespace casmUtilities
     {
         CASM::Completer::Engine casm_utilities_engine;
 
-        UtilityHandler dumbsplash(splash_name(), casmUtilities::splash_initializer);
+        UtilityHandler dumbsplash(splash_launcher_name(), casmUtilities::splash_initializer);
         casm_utilities_engine.push_back(CASM::Completer::Option(dumbsplash.tag(), dumbsplash.desc()));
+
+        UtilityHandler dumbstructure(structure_launcher_name(), casmUtilities::structure_initializer);
+        casm_utilities_engine.push_back(CASM::Completer::Option(dumbstructure.tag(), dumbstructure.desc()));
 
         return casm_utilities_engine;
     }
