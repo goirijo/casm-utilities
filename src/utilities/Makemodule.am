@@ -5,7 +5,8 @@ casm_utilities_SOURCES=./src/utilities/casm_utilities.cpp\
 					   ./lib/launch/launchers.cxx\
 					   ./lib/launch/rules.cxx\
 					   ./lib/splash/splash.cxx\
-					   ./lib/structure/structure.cxx
+					   ./lib/structure/structure.cxx\
+					   ./lib/tester/tester.cxx
 
 
 casm_utilities_LDADD=$(BOOST_SYSTEM_LIB)\

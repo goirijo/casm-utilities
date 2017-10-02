@@ -3,6 +3,7 @@
 #include "lib/completer/handlers.hpp"
 #include "lib/splash/splash.hpp"
 #include "lib/structure/structure.hpp"
+#include "lib/tester/tester.hpp"
 
 using namespace casmUtilities;
 
@@ -24,6 +25,7 @@ void basic_help()
     std::cout<<"The available options for casm-utilities are:"<<std::endl;
     std::cout<<"    "<<casmUtilities::splash_launcher_name()<<std::endl;
     std::cout<<"    "<<casmUtilities::structure_launcher_name()<<std::endl;
+    std::cout<<"    "<<casmUtilities::tester_launcher_name()<<std::endl;
     std::cout<<std::endl;
 
     return;
@@ -42,9 +44,14 @@ int main(int argc, char *argv[])
         splash_utility_launch(argc, argv);
     }
 
-    if(argv[1]==casmUtilities::structure_launcher_name())
+    else if(argv[1]==casmUtilities::structure_launcher_name())
     {
         structure_utility_launch(argc, argv);
+    }
+
+    else if(argv[1]==casmUtilities::tester_launcher_name())
+    {
+        tester_utility_launch(argc, argv);
     }
 
     else

@@ -5,6 +5,7 @@
 #include "lib/completer/handlers.hpp"
 #include "lib/splash/splash.hpp"
 #include "lib/structure/structure.hpp"
+#include "lib/tester/tester.hpp"
 
 namespace casmUtilities
 {
@@ -17,6 +18,9 @@ namespace casmUtilities
 
         UtilityHandler dumbstructure(structure_launcher_name(), casmUtilities::structure_initializer);
         casm_utilities_engine.push_back(CASM::Completer::Option(dumbstructure.tag(), dumbstructure.desc()));
+
+        UtilityHandler dumbtester(tester_launcher_name(), casmUtilities::tester_initializer);
+        casm_utilities_engine.push_back(CASM::Completer::Option(dumbtester.tag(), dumbtester.desc()));
 
         return casm_utilities_engine;
     }
