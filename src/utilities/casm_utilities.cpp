@@ -4,6 +4,7 @@
 #include "lib/splash/splash.hpp"
 #include "lib/structure/structure.hpp"
 #include "lib/tester/tester.hpp"
+#include "lib/bedazzle/bedazzle.hpp"
 
 using namespace casmUtilities;
 
@@ -23,10 +24,11 @@ std::string option_desc()
 void basic_help()
 {
     std::cout<<"The available options for casm-utilities are:"<<std::endl;
+    std::cout<<std::endl;
     std::cout<<"    "<<casmUtilities::splash_launcher_name()<<std::endl;
     std::cout<<"    "<<casmUtilities::structure_launcher_name()<<std::endl;
     std::cout<<"    "<<casmUtilities::tester_launcher_name()<<std::endl;
-    std::cout<<std::endl;
+    std::cout<<"    "<<casmUtilities::bedazzle_launcher_name()<<std::endl;
 
     return;
 }
@@ -52,6 +54,11 @@ int main(int argc, char *argv[])
     else if(argv[1]==casmUtilities::tester_launcher_name())
     {
         tester_utility_launch(argc, argv);
+    }
+
+    else if(argv[1]==casmUtilities::bedazzle_launcher_name())
+    {
+        bedazzle_utility_launch(argc, argv);
     }
 
     else

@@ -6,6 +6,7 @@
 #include "lib/splash/splash.hpp"
 #include "lib/structure/structure.hpp"
 #include "lib/tester/tester.hpp"
+#include "lib/bedazzle/bedazzle.hpp"
 
 namespace casmUtilities
 {
@@ -21,6 +22,9 @@ namespace casmUtilities
 
         UtilityHandler dumbtester(tester_launcher_name(), casmUtilities::tester_initializer);
         casm_utilities_engine.push_back(CASM::Completer::Option(dumbtester.tag(), dumbtester.desc()));
+
+        UtilityHandler dumbbedazzle(bedazzle_launcher_name(), casmUtilities::bedazzle_initializer);
+        casm_utilities_engine.push_back(CASM::Completer::Option(dumbbedazzle.tag(), dumbbedazzle.desc()));
 
         return casm_utilities_engine;
     }

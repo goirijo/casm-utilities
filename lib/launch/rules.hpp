@@ -128,11 +128,6 @@ namespace casmUtilities
         mutable std::vector<int> m_any_broken_rules;
     };
 
-    class UserInputMangle: public std::runtime_error
-    {
-        public:
-            UserInputMangle(const std::string &init_message):std::runtime_error(init_message) {}
-    };
 }
 
 

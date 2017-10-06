@@ -27,6 +27,8 @@ namespace casmUtilities
 
             UtilityHandler &utility();
 
+            void notify();
+
             const po::variables_map &vm() const;
 
             template<typename T>
