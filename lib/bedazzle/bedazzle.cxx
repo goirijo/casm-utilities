@@ -3,6 +3,7 @@
 #include "lib/definitions.hpp"
 #include "lib/exceptions.hpp"
 #include "lib/launch/launchers.hpp"
+#include "lib/alone/simplicity.hpp"
 
 #include <casm/CASM_global_definitions.hh>
 #include <casm/app/AppIO.hh>
@@ -26,14 +27,6 @@ namespace bedazzleImpl
 
 typedef std::pair<CASM::Structure, std::string> StrucStampinfoPair;
 typedef std::map<std::string, StrucStampinfoPair> NameStrucMap;
-
-void simple_structure_print(std::ostream &stream, const CASM::Structure &struc)
-{
-    CASM::VaspIO::PrintPOSCAR struc_printer(struc);
-    struc_printer.sort();
-    struc_printer.print(stream);
-    return;
-}
 
 CASM::Structure stamped_structure(const CASM::SiteCluster &stamp, const CASM::Structure &background_struc)
 {
@@ -206,7 +199,7 @@ void write_dec_dirs(const NameStrucMap &dec_to_struc,
 
         std::ofstream pos_stream, stamp_stream;
         pos_stream.open(target_poscar.string());
-        simple_structure_print(pos_stream, dec.second.first);
+        simple::structure_print(pos_stream, dec.second.first);
         pos_stream.close();
 
         stamp_stream.open(target_stamp.string());

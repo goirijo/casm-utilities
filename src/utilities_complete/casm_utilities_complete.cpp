@@ -7,6 +7,7 @@
 #include "lib/structure/structure.hpp"
 #include "lib/tester/tester.hpp"
 #include "lib/bedazzle/bedazzle.hpp"
+#include "lib/boxify/boxify.hpp"
 
 namespace casmUtilities
 {
@@ -25,6 +26,9 @@ namespace casmUtilities
 
         UtilityHandler dumbbedazzle(bedazzle_launcher_name(), casmUtilities::bedazzle_initializer);
         casm_utilities_engine.push_back(CASM::Completer::Option(dumbbedazzle.tag(), dumbbedazzle.desc()));
+
+        UtilityHandler dumbboxify(boxify_launcher_name(), casmUtilities::boxify_initializer);
+        casm_utilities_engine.push_back(CASM::Completer::Option(dumbboxify.tag(), dumbboxify.desc()));
 
         return casm_utilities_engine;
     }

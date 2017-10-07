@@ -4,11 +4,12 @@ casm_utilities_SOURCES=./src/utilities/casm_utilities.cpp\
 					   ./lib/completer/handlers.cxx\
 					   ./lib/launch/launchers.cxx\
 					   ./lib/launch/rules.cxx\
+					   ./lib/alone/simplicity.cxx\
 					   ./lib/splash/splash.cxx\
 					   ./lib/structure/structure.cxx\
 					   ./lib/tester/tester.cxx\
-					   ./lib/bedazzle/bedazzle.cxx
-
+                       ./lib/bedazzle/bedazzle.cxx\
+                       ./lib/boxify/boxify.cxx
 
 casm_utilities_LDADD=$(BOOST_SYSTEM_LIB)\
 					 $(BOOST_FILESYSTEM_LIB)\

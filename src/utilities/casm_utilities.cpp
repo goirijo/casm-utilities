@@ -5,6 +5,7 @@
 #include "lib/structure/structure.hpp"
 #include "lib/tester/tester.hpp"
 #include "lib/bedazzle/bedazzle.hpp"
+#include "lib/boxify/boxify.hpp"
 
 using namespace casmUtilities;
 
@@ -29,6 +30,8 @@ void basic_help()
     std::cout<<"    "<<casmUtilities::structure_launcher_name()<<std::endl;
     std::cout<<"    "<<casmUtilities::tester_launcher_name()<<std::endl;
     std::cout<<"    "<<casmUtilities::bedazzle_launcher_name()<<std::endl;
+    std::cout<<"    "<<casmUtilities::boxify_launcher_name()<<std::endl;
+    std::cout<<std::endl;
 
     return;
 }
@@ -59,6 +62,11 @@ int main(int argc, char *argv[])
     else if(argv[1]==casmUtilities::bedazzle_launcher_name())
     {
         bedazzle_utility_launch(argc, argv);
+    }
+
+    else if(argv[1]==casmUtilities::boxify_launcher_name())
+    {
+        boxify_utility_launch(argc, argv);
     }
 
     else
