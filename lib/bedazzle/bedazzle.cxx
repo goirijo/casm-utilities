@@ -30,6 +30,7 @@ typedef std::map<std::string, StrucStampinfoPair> NameStrucMap;
 void simple_structure_print(std::ostream &stream, const CASM::Structure &struc)
 {
     CASM::VaspIO::PrintPOSCAR struc_printer(struc);
+    struc_printer.sort();
     struc_printer.print(stream);
     return;
 }
@@ -69,7 +70,7 @@ std::string name_from_stamp(CASM::Index branch,
                             const CASM::Array<CASM::Array<int>> &decor_map,
                             const CASM::SiteCluster &stamp)
 {
-    std::string name = "dec.";
+    std::string name = "dec";
     name += std::to_string(branch) + ".";
     name += std::to_string(orbit) + ".";
     name += std::to_string(decor);
@@ -235,6 +236,7 @@ LaunchRuleList bedazzle_initializer(po::options_description &bedazzle_desc)
                                          "Filename for what will contain the information of the applied defects.")
         ("poscar-filename,f", po::value<std::string>()->default_value("POSCAR"),
         "Filename for the bedazzled structure files.")
+        ("lattice-struc,l", po::value<fs::path>()->value_name(CASM::Completer::ArgHandler::path()),"POS.vasp like file that defines what the final lattice of the structures should be. If not given the lattice of --prim is kept.")
         ("target-dir,t", po::value<fs::path>()->default_value("./"),"Target directory to where the output should go");
 
     LaunchRuleList bedazzle_rules;
@@ -312,6 +314,18 @@ void bedazzle_utility_launch(int argc, char *argv[])
     auto target_dir = bedazzle_launch.fetch<fs::path>("target-dir");
     auto stamp_filename = bedazzle_launch.fetch<std::string>("stamp-filename");
     auto poscar_filename = bedazzle_launch.fetch<std::string>("poscar-filename");
+
+    //reset the lattice for all structures to the original
+    if(bedazzle_launch.count("lattice-struc"))
+    {
+        auto lat_file = bedazzle_launch.fetch<fs::path>("lattice-struc");
+        CASM::Structure lat_set_struc(lat_file);
+        for (auto &dec : dec_to_struc)
+        {
+            dec.second.first.set_lattice(lat_set_struc.lattice(), CASM::FRAC);
+        }
+
+    }
 
     bedazzleImpl::write_dec_dirs(dec_to_struc, target_dir.string(),poscar_filename,stamp_filename);
     return;
