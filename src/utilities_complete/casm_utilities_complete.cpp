@@ -4,7 +4,7 @@
 
 #include "lib/completer/handlers.hpp"
 #include "lib/splash/splash.hpp"
-#include "lib/structure/structure.hpp"
+#include "lib/primitivize/primitivize.hpp"
 #include "lib/tester/tester.hpp"
 #include "lib/bedazzle/bedazzle.hpp"
 #include "lib/boxify/boxify.hpp"
@@ -18,8 +18,8 @@ namespace casmUtilities
         UtilityHandler dumbsplash(splash_launcher_name(), casmUtilities::splash_initializer);
         casm_utilities_engine.push_back(CASM::Completer::Option(dumbsplash.tag(), dumbsplash.desc()));
 
-        UtilityHandler dumbstructure(structure_launcher_name(), casmUtilities::structure_initializer);
-        casm_utilities_engine.push_back(CASM::Completer::Option(dumbstructure.tag(), dumbstructure.desc()));
+        UtilityHandler dumbprimitivize(primitivize_launcher_name(), casmUtilities::primitivize_initializer);
+        casm_utilities_engine.push_back(CASM::Completer::Option(dumbprimitivize.tag(), dumbprimitivize.desc()));
 
         UtilityHandler dumbtester(tester_launcher_name(), casmUtilities::tester_initializer);
         casm_utilities_engine.push_back(CASM::Completer::Option(dumbtester.tag(), dumbtester.desc()));

@@ -4,7 +4,7 @@
 #include <casm/completer/Handlers.hh>
 #include <casm/crystallography/BasicStructure.hh>
 #include <casm/crystallography/Site.hh>
-#include "lib/structure/structure.hpp"
+#include "lib/primitivize/primitivize.hpp"
 #include "lib/completer/handlers.hpp"
 #include "lib/launch/launchers.hpp"
 #include "lib/alone/simplicity.hpp"
@@ -12,39 +12,39 @@
 
 namespace casmUtilities
 {
-    std::string structure_launcher_name()
+    std::string primitivize_launcher_name()
     {
-        return "structure";
+        return "primitivize";
     }
 
 
-    LaunchRuleList structure_initializer(po::options_description &structure_desc)
+    LaunchRuleList primitivize_initializer(po::options_description &primitivize_desc)
     {
-        utilityProgramOptions::add_help_suboption(structure_desc);
-        utilityProgramOptions::add_output_suboption(structure_desc);
-        utilityProgramOptions::add_structure_suboption(structure_desc);
+        utilityProgramOptions::add_help_suboption(primitivize_desc);
+        utilityProgramOptions::add_output_suboption(primitivize_desc);
+        utilityProgramOptions::add_structure_suboption(primitivize_desc);
 
-        /* structure_desc.add_options() */
+        /* primitivize_desc.add_options() */
         /*     ("check,c", */
 
-        LaunchRuleList structure_rules;
+        LaunchRuleList primitivize_rules;
 
-        return structure_rules;
+        return primitivize_rules;
     }
 
-    void structure_utility_launch(int argc, char *argv[])
+    void primitivize_utility_launch(int argc, char *argv[])
     {
-        Launcher structure_launch(argc, argv, structure_launcher_name(), structure_initializer);
+        Launcher primitivize_launch(argc, argv, primitivize_launcher_name(), primitivize_initializer);
 
-        if (structure_launch.count("help"))
+        if (primitivize_launch.count("help") || primitivize_launch.argc()==2)
         {
-            std::cout << structure_launch.utility().desc() << std::endl;
+            std::cout << primitivize_launch.utility().desc() << std::endl;
             return;
         }
 
         try
         {
-            structure_launch.notify();
+            primitivize_launch.notify();
         }
 
         catch (boost::program_options::required_option &e)
@@ -56,15 +56,15 @@ namespace casmUtilities
         /* //Determine where to print output (if necessary) */
         /* std::ostream *out_stream=&std::cout; */
         /* std::ofstream outfile_stream; */ 
-        /* if(structure_launch.count("output")) */
+        /* if(primitivize_launch.count("output")) */
         /* { */
-        /*     fs::path out_path=structure_launch.fetch<fs::path>("output"); */
+        /*     fs::path out_path=primitivize_launch.fetch<fs::path>("output"); */
         /*     outfile_stream.open(out_path.string()); */
         /*     out_stream=&outfile_stream; */
         /* } */
-        auto target=structure_launch.fetch<CASM::fs::path>("output");
+        auto target=primitivize_launch.fetch<CASM::fs::path>("output");
         std::ofstream target_stream(target.string());
-        CASM::fs::path struc_path=structure_launch.fetch<fs::path>("structure");
+        CASM::fs::path struc_path=primitivize_launch.fetch<fs::path>("structure");
         auto input_struc=simple::basic_structure_from_path(struc_path);
 
         CASM::BasicStructure<CASM::Site> prim_struc;

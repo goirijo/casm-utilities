@@ -81,7 +81,7 @@ void boxify_utility_launch(int argc, char *argv[])
 {
     Launcher boxify_launch(argc, argv, boxify_launcher_name(), boxify_initializer);
 
-    if (boxify_launch.count("help"))
+    if (boxify_launch.count("help") || boxify_launch.argc()==2)
     {
         std::cout << boxify_launch.utility().desc() << std::endl;
         return;

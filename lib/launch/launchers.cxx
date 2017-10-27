@@ -10,7 +10,7 @@ Launcher::Launcher(int argc,
                    char *argv[],
                    const std::string &init_utility_tag,
                    const std::function<LaunchRuleList(po::options_description &)> &init_initializer)
-    : m_utility(init_utility_tag, init_initializer)
+    : m_utility(init_utility_tag, init_initializer), m_argc(argc)
 {
     po::store(po::parse_command_line(argc, argv, m_utility.desc()), m_vm);
 
@@ -22,12 +22,11 @@ Launcher::Launcher(int argc,
 
 bool Launcher::count(const std::string &countable) const { return m_vm.count(countable); }
 
-void Launcher::notify()
-{
-    po::notify(m_vm);
-}
+void Launcher::notify() { po::notify(m_vm); }
 
 UtilityHandler &Launcher::utility() { return m_utility; }
 
 const po::variables_map &Launcher::vm() const { return m_vm; }
+
+int Launcher::argc() const { return m_argc; }
 }
