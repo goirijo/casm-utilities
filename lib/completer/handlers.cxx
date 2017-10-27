@@ -41,6 +41,14 @@ namespace casmUtilities
 
             return;
         }
+
+        void add_structure_suboption(po::options_description &handler_desc)
+        {
+            handler_desc.add_options()
+                ("structure,s", po::value<fs::path>()->value_name(CASM::Completer::ArgHandler::path()), "Input structure to operate on");
+
+            return;
+        }
     }
 
 }

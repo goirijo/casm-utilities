@@ -20,6 +20,9 @@ namespace simple
 /// Go through the motions of creating the VaspIO object and print a normal POSCAR format
 void structure_print(std::ostream &stream, const CASM::Structure &struc);
 
+/// Go through the motions of creating the VaspIO object and print a normal POSCAR format
+void structure_print(std::ostream &stream, const CASM::BasicStructure<CASM::Site> &struc);
+
 /// Given a path to prim.json like file, create an empty PrimClex
 CASM::PrimClex primclex_from_path(CASM::fs::path prim_path);
 

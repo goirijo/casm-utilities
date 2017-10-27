@@ -63,6 +63,9 @@ namespace casmUtilities
 
         /// \brief Store a fs::path to which whatever you're going to output should be saved
         void add_output_suboption(po::options_description &handler_desc);
+
+        /// \brief Store a fs::path to which whatever structure you want to do things to
+        void add_structure_suboption(po::options_description &handler_desc);
     }
 
 }

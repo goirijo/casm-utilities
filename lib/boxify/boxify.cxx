@@ -65,12 +65,12 @@ std::string boxify_launcher_name() { return "boxify"; }
 LaunchRuleList boxify_initializer(po::options_description &boxify_desc)
 {
     utilityProgramOptions::add_help_suboption(boxify_desc);
+    utilityProgramOptions::add_output_suboption(boxify_desc);
 
     boxify_desc.add_options()("structure,s",
                               po::value<fs::path>()->value_name(CASM::Completer::ArgHandler::path())->required(),
                               "POS.vasp like file that you want to create a boxy supercell for.")(
-        "volume,v", po::value<int>()->required(), "Specifies the size of the resulting supercell.")(
-        "output,o", po::value<std::string>()->required(), "Output file for structure");
+        "volume,v", po::value<int>()->required(), "Specifies the size of the resulting supercell.");
 
     LaunchRuleList boxify_rules;
 

@@ -298,6 +298,7 @@ void bedazzle_utility_launch(int argc, char *argv[])
     auto background_config = pclex.configuration(background_name);
     CASM::Structure background_struc_recast(background_config.get_supercell().superstructure(background_config));
     CASM::Structure prim_struc_recast(prim_struc);
+    /* CASM::SiteOrbitree background_tree = make_orbitree(background_struc_recast, bspecs, CASM::TOL); */
     CASM::SiteOrbitree background_tree = make_orbitree(background_struc_recast, bspecs);
 
     background_tree.print(std::cout);

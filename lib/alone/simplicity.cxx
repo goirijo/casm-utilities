@@ -17,6 +17,12 @@ void structure_print(std::ostream &stream, const CASM::Structure &struc)
     return;
 }
 
+void structure_print(std::ostream &stream, const CASM::BasicStructure<CASM::Site> &struc)
+{
+    CASM::Structure struc_recast(struc);
+    return structure_print(stream, struc_recast);
+}
+
 CASM::PrimClex primclex_from_path(CASM::fs::path prim_path)
 {
     CASM::BasicStructure<CASM::Site> prim_struc(CASM::read_prim(prim_path));
