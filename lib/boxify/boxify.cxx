@@ -69,7 +69,8 @@ LaunchRuleList boxify_initializer(po::options_description &boxify_desc)
     boxify_desc.add_options()("structure,s",
                               po::value<fs::path>()->value_name(CASM::Completer::ArgHandler::path())->required(),
                               "POS.vasp like file that you want to create a boxy supercell for.")(
-        "volume,v", po::value<int>()->required(), "Specifies the size of the resulting supercell.");
+        "volume,v", po::value<int>()->required(), "Specifies the size of the resulting supercell.")(
+        "output,o", po::value<std::string>()->required(), "Output file for structure");
 
     LaunchRuleList boxify_rules;
 
@@ -112,7 +113,10 @@ void boxify_utility_launch(int argc, char *argv[])
     auto boxy_struc=pclex.get_supercell(boxifyImpl::boxiest_supercell_index(pclex)).superstructure();
 
     //Print the result out!
-    simple::structure_print(std::cout, boxy_struc);
+    std::string target=boxify_launch.fetch<std::string>("output");
+    std::ofstream target_stream(target);
+    /* simple::structure_print(std::cout, boxy_struc); */
+    simple::structure_print(target_stream, boxy_struc);
 
     return;
 }
