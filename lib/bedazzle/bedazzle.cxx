@@ -291,7 +291,7 @@ void bedazzle_utility_launch(int argc, char *argv[])
     mapped = cmapper.import_structure_occupation(background_struc, background_name, tmp_json, tmp_Ix_vector, tmp_3d);
 
     // Create an Oribtree
-    CASM::fs::path bspecs_path("./perturbspecs.json");
+    CASM::fs::path bspecs_path=bedazzle_launch.fetch<CASM::fs::path>("cspecs");
     CASM::jsonParser bspecs(bspecs_path);
     // This is why I hate CASM. Use the structure to make a config to get the
     // supercell to make the structure from the config
