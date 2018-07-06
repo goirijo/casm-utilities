@@ -1,0 +1,7 @@
+lib_LTLIBRARIES += libcasmutils.la
+
+libcasmutils_la_SOURCES=
+libcasmutils_la_SOURCES+=\
+						 src/structure.cxx
+
+# libcasmutils_la_LIBADD=libcasm.la

@@ -1,0 +1,8 @@
+pyexec_LTLIBRARIES += hello_ext.la
+
+hello_ext_la_SOURCES=
+hello_ext_la_SOURCES+=\
+						 py/tutorial/hello.cpp
+
+# hello_ext_la_LIBADD=$(BOOST_PYTHON_LIB)
+hello_ext_la_LDFLAGS=$(BOOST_LDFLAGS) -lboost_python -module
