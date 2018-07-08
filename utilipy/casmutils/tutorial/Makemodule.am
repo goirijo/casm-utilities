@@ -1,0 +1,18 @@
+tutorialpydir=$(pythondir)/casmutils/tutorial
+
+tutorialpy_PYTHON=\
+				  utilipy/casmutils/tutorial/__init__.py\
+				  utilipy/casmutils/tutorial/hello.py
+
+tutorialpy_LTLIBRARIES=hello_ext.la
+
+hello_ext_la_SOURCES=\
+					 utilipy/casmutils/tutorial/hello.cpp
+
+hello_ext_la_LIBADD=\
+					libcasmutils.la
+
+hello_ext_la_LDFLAGS=\
+					 $(BOOST_LDFLAGS)\
+					 -l$(BOOST_PYTHON_LIB)\
+					 -module

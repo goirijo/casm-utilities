@@ -1,0 +1,7 @@
+casmutilspydir=$(pythondir)/casmutils
+
+casmutilspy_PYTHON=\
+				   utilipy/casmutils/__init__.py
+
+include utilipy/casmutils/tutorial/Makemodule.am
+include utilipy/casmutils/structure/Makemodule.am

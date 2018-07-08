@@ -1,0 +1,18 @@
+structurepydir=$(pythondir)/casmutils/structure
+
+structurepy_PYTHON=\
+				  utilipy/casmutils/structure/__init__.py\
+				  utilipy/casmutils/structure/structure.py
+
+structurepy_LTLIBRARIES=_structure.la
+
+_structure_la_SOURCES=\
+					 utilipy/casmutils/structure/structure.cxx
+
+_structure_la_LIBADD=\
+					libcasmutils.la
+
+_structure_la_LDFLAGS=\
+					 $(BOOST_LDFLAGS)\
+					 -l$(BOOST_PYTHON_LIB)\
+					 -module

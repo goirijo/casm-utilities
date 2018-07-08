@@ -23,6 +23,9 @@
 *.a
 *.lib
 
+#annoying python crap
+*.pyc
+
 # Executables
 *.exe
 *.out

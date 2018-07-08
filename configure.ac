@@ -17,10 +17,10 @@ AC_PROG_CXX
 AX_CXX_COMPILE_STDCXX_11
 
 #Is this how you get it to find the python related things for compiling the wrapper?
-AM_PATH_PYTHON
-AX_PYTHON
 # AX_PYTHON_DEVEL(=='3.5')
 AX_PYTHON_DEVEL
+# AX_PYTHON
+AM_PATH_PYTHON
 
 # Checks for libraries.
 BOOSTV=1.52

@@ -35,7 +35,7 @@ void print_poscar(const CASM::Structure& printable, std::ostream& outstream)
     return;
 }
 
-void print_poscar(const CASM::Structure& printable, const CASM::fs::path& filename)
+void write_poscar(const CASM::Structure& printable, const CASM::fs::path& filename)
 {
     std::ofstream file_out(filename.string());
     print_poscar(printable, file_out);
