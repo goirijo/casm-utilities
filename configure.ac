@@ -28,7 +28,7 @@ AX_BOOST_BASE([$BOOSTV],[],[AC_MSG_ERROR(You need Boost $BOOSTV libraries or hig
 AX_BOOST_SYSTEM
 AX_BOOST_FILESYSTEM
 AX_BOOST_PROGRAM_OPTIONS
-AX_BOOST_PYTHON
+# AX_BOOST_PYTHON
 
 
 AC_CHECK_LIB([casm],[main], [], [AC_MSG_ERROR(The CASM libraries are required!)])

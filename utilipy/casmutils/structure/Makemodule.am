@@ -13,6 +13,8 @@ _structure_la_LIBADD=\
 					libcasmutils.la
 
 _structure_la_LDFLAGS=\
-					 $(BOOST_LDFLAGS)\
-					 -l$(BOOST_PYTHON_LIB)\
 					 -module
+# _structure_la_LDFLAGS=\
+# 					 $(BOOST_LDFLAGS)\
+# 					 -l$(BOOST_PYTHON_LIB)\
+# 					 -module
