@@ -12,8 +12,9 @@
 /* #include <boost/python/operators.hpp> */
 #include <pybind11/pybind11.h>
 
-#include <pybind11/stl.h>
 #include <pybind11/eigen.h>
+#include <pybind11/numpy.h>
+#include <pybind11/stl.h>
 
 #include "casmutils/structure.hpp"
 #include <casm/CASM_global_definitions.hh>
@@ -25,83 +26,79 @@
 //******************************************************************************************************//
 //******************************************************************************************************//
 
-namespace Rewrap
+namespace PyWrap
 {
 
-class Structure : public CASM::Structure
-{
-public:
-    Structure() = delete;
+/* class Structure : public CASM::Structure */
+/* { */
+/* public: */
+/*     Structure() = delete; */
 
-    Structure(CASM::Structure init_struc);
+/*     Structure(CASM::Structure init_struc); */
 
-    bool is_primitive() const;
+/*     bool is_primitive() const; */
 
-    Structure primitive() const;
+/*     Structure primitive() const; */
 
-    std::string to_string() const;
+/*     std::string __str__() const; */
 
-private:
-};
+/* private: */
+/* }; */
 
-Structure from_poscar(const std::string& filename);
-void to_poscar(const Structure& writeable, const std::string& filename);
+    Rewrap::Structure from_poscar(const std::string& filename);
+void to_poscar(const Rewrap::Structure& writeable, const std::string& filename);
 
 //******************************************************************************************************//
 
-Structure::Structure(CASM::Structure init_struc) : CASM::Structure(init_struc) {}
+/* Structure::Structure(CASM::Structure init_struc) : CASM::Structure(init_struc) {} */
 
-bool Structure::is_primitive() const { return CASM::Structure::is_primitive(); }
+/* bool Structure::is_primitive() const { return CASM::Structure::is_primitive(); } */
 
-Structure Structure::primitive() const { return Simplicity::make_primitive(*this); }
+/* Structure Structure::primitive() const { return Simplicity::make_primitive(*this); } */
 
-std::string Structure::to_string() const
+std::string Structure__str__(const Rewrap::Structure& printable)
 {
     std::ostringstream sstream;
-    Simplicity::print_poscar(*this, sstream);
+    Simplicity::print_poscar(printable, sstream);
     return sstream.str();
 }
 
-Structure make_niggli(const Structure& non_niggli)
-{
-    return Simplicity::make_niggli(non_niggli);
-}
+/* Structure make_niggli(const Structure& non_niggli) { return Simplicity::make_niggli(non_niggli); } */
 
-Structure from_poscar(const std::string& filename) { return Structure(CASM::Structure(filename)); }
+Rewrap::Structure from_poscar(const std::string& filename) { return Rewrap::Structure(CASM::Structure(filename)); }
 
-void to_poscar(const Structure& writeable, const std::string& filename)
+void to_poscar(const Rewrap::Structure& writeable, const std::string& filename)
 {
     Simplicity::write_poscar(writeable, filename);
     return;
 }
 
-void test_vec_int(const std::vector<int>& vec)
-{
-    for(const auto& v : vec)
-    {
-        std::cout<<v<<std::endl;
-    }
-}
+/* void test_vec_int(const std::vector<int>& vec) */
+/* { */
+/*     for (const auto& v : vec) */
+/*     { */
+/*         std::cout << v << std::endl; */
+/*     } */
+/* } */
 
-void test_eigen_mat(const Eigen::Matrix3d& mat)
-{
-    for(int i=0; i<3; ++i)
-    {
-        for(int j=0; j<3; ++j)
-        {
-            std::cout<<mat(i,j)<<" ";
-        }
-        std::cout<<std::endl;
-    }
-    return;
-}
+/* void test_eigen_mat(const Eigen::Matrix3d& mat) */
+/* { */
+/*     for (int i = 0; i < 3; ++i) */
+/*     { */
+/*         for (int j = 0; j < 3; ++j) */
+/*         { */
+/*             std::cout << mat(i, j) << " "; */
+/*         } */
+/*         std::cout << std::endl; */
+/*     } */
+/*     return; */
+/* } */
 
 /* std::ostream& operator<<(std::ostream& output, const Structure& outputtable) */
 /* { */
 /*     Simplicity::print_poscar(outputtable, output); */
 /*     return output; */
 /* } */
-
 }
 
 //******************************************************************************************************//
@@ -127,19 +124,19 @@ void test_eigen_mat(const Eigen::Matrix3d& mat)
 PYBIND11_MODULE(_structure, m)
 {
     using namespace pybind11;
-    using namespace Rewrap;
+    using namespace PyWrap;
 
     m.doc() = "Raw python bindings for a re-wrapped CASM::Structure class.";
 
-    class_<Structure>(m,"Structure")
-        .def("is_primitive", &Structure::is_primitive)
-        .def("primitive", &Structure::primitive)
-        .def("__repr__", &Structure::to_string)
-        ;
+    class_<Rewrap::Structure>(m, "Structure")
+        .def("is_primitive", &Rewrap::Structure::is_primitive)
+        .def("primitive", &Rewrap::Structure::primitive)
+        /* .def("__repr__", &Structure::to_string) */
+        .def("__str__", &Structure__str__);
 
     m.def("from_poscar", from_poscar);
     m.def("to_poscar", to_poscar);
-    m.def("make_niggli", make_niggli);
+    /* m.def("make_niggli", Simplicity::make_niggli); */
     /* m.def("test_vec_int", test_vec_int); */
     /* m.def("test_eigen_mat", test_eigen_mat); */
 }

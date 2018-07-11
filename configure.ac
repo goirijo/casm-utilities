@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.69])
 AC_INIT([CASM Utilities], [0.0.0], [jgg@umail.ucsb.edu])
-AC_CONFIG_SRCDIR([src/structure.cxx])
+AC_CONFIG_SRCDIR([src/casmutils/structure.cxx])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([build-aux/m4])
@@ -32,6 +32,10 @@ AX_BOOST_PROGRAM_OPTIONS
 
 
 AC_CHECK_LIB([casm],[main], [], [AC_MSG_ERROR(The CASM libraries are required!)])
+
+#You will need pybind11 for this operation
+AC_CHECK_HEADERS([pybind11.h])
+
 
 # Checks for header files.
 

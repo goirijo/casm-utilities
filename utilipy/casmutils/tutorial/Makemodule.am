@@ -13,6 +13,4 @@ hello_ext_la_LIBADD=\
 					libcasmutils.la
 
 hello_ext_la_LDFLAGS=\
-					 $(BOOST_LDFLAGS)\
-					 -l$(BOOST_PYTHON_LIB)\
 					 -module

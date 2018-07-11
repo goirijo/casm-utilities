@@ -25,6 +25,7 @@ AM_LDFLAGS=$(BOOST_LDFLAGS)
 #Now do the programs
 include $(srcdir)/src/Makemodule.am
 include $(srcdir)/utilipy/Makemodule.am
+include $(srcdir)/utilities/Makemodule.am
 
 
 #===========================================================================#
