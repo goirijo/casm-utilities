@@ -7,7 +7,7 @@ structurepy_PYTHON=\
 structurepy_LTLIBRARIES=_structure.la
 
 _structure_la_SOURCES=\
-					 utilipy/casmutils/structure/structure.cxx
+					 utilipy/casmutils/structure/structure.cxpy
 
 _structure_la_LIBADD=\
 					libcasmutils.la

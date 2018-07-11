@@ -50,3 +50,6 @@ config.h*
 
 #linked external libraries
 include/Eigen
+
+#personal things
+.vimrc.local

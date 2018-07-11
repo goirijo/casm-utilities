@@ -8,11 +8,6 @@
 
 namespace CASM
 {
-    /* namespace fs */
-    /* { */
-    /*     class path; */
-    /* } */
-
     class Structure;
 }
 
@@ -39,6 +34,7 @@ namespace Simplicity
 void write_poscar(const Rewrap::Structure& printable, const Rewrap::fs::path& filename);
 void print_poscar(const Rewrap::Structure& printable, std::ostream& outstream);
 Rewrap::Structure make_niggli(const Rewrap::Structure& non_niggli);
+Rewrap::Structure make_niggli(Rewrap::Structure non_niggli);
 void make_niggli(Rewrap::Structure* non_niggli);
 Rewrap::Structure make_primitive(const Rewrap::Structure& input);
 }

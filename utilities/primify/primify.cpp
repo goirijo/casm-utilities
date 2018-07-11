@@ -1,5 +1,5 @@
 #include "casmutils/definitions.hpp"
-#include "casmutils/launchers.hpp"
+#include "casmutils/handlers.hpp"
 #include "casmutils/structure.hpp"
 #include <boost/program_options.hpp>
 #include <casm/crystallography/Structure.hh>
@@ -25,7 +25,7 @@ using namespace Utilities;
 
 int main(int argc, char* argv[])
 {
-    Launcher primify_launch(argc, argv, primify_initializer);
+    Handler primify_launch(argc, argv, primify_initializer);
 
     /* if(primify_launch.count("help") || primify_launch.argc()<2) */
     if (primify_launch.count("help"))
