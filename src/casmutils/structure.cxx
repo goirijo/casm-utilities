@@ -9,6 +9,7 @@
 namespace Rewrap
 {
 Structure::Structure(CASM::Structure init_struc) : CASM::Structure(init_struc) {}
+Structure::Structure(Rewrap::fs::path& filename) : CASM::Structure(filename) {}
 
 bool Structure::is_primitive() const { return CASM::Structure::is_primitive(); }
 

@@ -70,6 +70,9 @@ namespace Utilities
         /// \brief Lame help message with each available option
         void add_help_suboption(po::options_description &handler_desc);
 
+        /// \brief Lame help message with each available option
+        void add_desc_suboption(po::options_description &handler_desc);
+
         /// \brief Store a fs::path to which whatever you're going to output should be saved
         void add_output_suboption(po::options_description &handler_desc);
     }
