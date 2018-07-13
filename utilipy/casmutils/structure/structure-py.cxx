@@ -9,7 +9,7 @@
 //******************************************************************************************************//
 //******************************************************************************************************//
 
-namespace Wrappy
+namespace WrapPy
 {
     Rewrap::Structure from_poscar(const std::string& filename);
 void to_poscar(const Rewrap::Structure& writeable, const std::string& filename);
@@ -34,7 +34,7 @@ void to_poscar(const Rewrap::Structure& writeable, const std::string& filename)
 PYBIND11_MODULE(_structure, m)
 {
     using namespace pybind11;
-    using namespace Wrappy;
+    using namespace WrapPy;
 
     m.doc() = "Raw python bindings for a re-wrapped CASM::Structure class.";
 
@@ -46,6 +46,6 @@ PYBIND11_MODULE(_structure, m)
 
     m.def("from_poscar", from_poscar);
     m.def("to_poscar", to_poscar);
-    m.def("make_niggli", (Rewrap::Structure(*)(const Rewrap::Structure&)) Simplicity::make_niggli);
+    /* m.def("make_niggli", (Rewrap::Structure(*)(const Rewrap::Structure&)) Simplicity::make_niggli); */
 }
 }

@@ -27,6 +27,22 @@ include $(srcdir)/src/Makemodule.am
 include $(srcdir)/utilipy/Makemodule.am
 include $(srcdir)/utilities/Makemodule.am
 
+#===========================================================================#
+#Accept .cxpy as a c++ extension
+# $(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+# $(CXXCOMPILE) -MT $@ -MD -MP -MF -c -o $@ $< 
+# SUFFIXES: .cxpy
+# .cxpy.o:
+# 	$(CXXCOMPILE) -c -o $@ $<
+
+# .cxpy.obj:
+# 	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+# 	$(CXXCOMPILE) -MT $@ -MD -MP -MF -c -o $@ `$(CYGPATH_W) '$<'` 
+
+# .cxpy.lo:
+# 	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+# 	$(LTCXXCOMPILE) -MT $@ -MD -MP -MF -c -o $@ $< 
+
 
 #===========================================================================#
 EXTRA_DIST=
@@ -41,4 +57,7 @@ var-check:
 	echo $(BOOST_CPPFLAGS)
 	echo $(PYTHON)
 	echo $(PYTHON_CPPFLAGS)
+	echo $(AM_V_CXX)
+	echo $(CXXCOMPILE)
+	echo $(DEPDIR)
 	echo "lol"
