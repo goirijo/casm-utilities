@@ -13,13 +13,22 @@ show_help()
     echo "anywhere in your PATH variable."
 }
 
+_utility_basename()
+{
+    basename="_casmutils-"
+    echo $basename
+}
+
 show_utilities()
 {
-    for util in $(compgen -c | grep casmutils-); do
-        echo ${util/casmutils-}
+    basename=$(_utility_basename)
+    for util in $(compgen -c | grep $basename); do
+        echo ${util/$basename}
     done
 }
 
+main()
+{
 # A POSIX variable
 OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
@@ -49,10 +58,15 @@ if [ "$#" -eq 0 ]; then
     echo "-h for more information on how to call them."
 # elif [ "$#" -ne 1 ]; then
 #     echo "Only one utility at a time please"
-else
-    casmutils-$1 $@
-fi
 
+else
+    $(_utility_basename)$@
+fi
+}
+
+if [ "${1}" != "--source-only" ]; then
+    main "${@}"
+fi
 
 # [ "${1:-}" = "--" ] && shift
 

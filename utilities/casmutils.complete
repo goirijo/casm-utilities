@@ -1,0 +1,27 @@
+source casmutils --source-only
+
+_casmutils()
+{
+    local cur prev opts rootopts numargs
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    numargs="${#COMP_WORDS[@]}"
+	
+    opts="$(show_utilities)"
+
+	if [[ ${prev} == "casmutils" ]] && [[ ${COMP_CWORD} == 1 ]]; then
+		COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+		return 0
+    elif [[ ${numargs} == 3 ]]; then
+        probe=$($(_utility_basename)${COMP_WORDS[1]} --_completion 2> /dev/null)
+
+        if [[ $probe == "BASH_COMP_PATH" ]]; then
+            _filedir
+        elif [[ $probe == "BASH_COMP_BIN" ]]; then
+            COMPREPLY=( $(compgen -W "$(compgen -c)" -- ${cur}) )
+        fi
+	fi
+}
+
+complete -F _casmutils casmutils

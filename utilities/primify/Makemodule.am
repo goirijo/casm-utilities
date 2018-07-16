@@ -1,10 +1,10 @@
-bin_PROGRAMS += casmutils-primify
+bin_PROGRAMS += _casmutils-primify
 
-casmutils_primify_SOURCES=\
+_casmutils_primify_SOURCES=\
 						  utilities/primify/primify.cpp
 
 
-casmutils_primify_LDADD=\
+_casmutils_primify_LDADD=\
 						libcasmutils.la\
 						$(BOOST_SYSTEM_LIB)\
 						$(BOOST_FILESYSTEM_LIB)\
