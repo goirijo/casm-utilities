@@ -13,6 +13,8 @@ namespace Frankenstein {
 /// slice_loc is in fractional length of the c vector
 std::pair<Rewrap::Structure, Rewrap::Structure> structure_slicer(
     const Rewrap::Structure &big_struc, double slice_loc, double tol) {
+	Rewrap::Structure cpy_big = big_struc;
+	Simplicity::mod_coordinates(&cpy_big);
 	std::vector<Rewrap::Structure> struc_array;
 	Eigen::Matrix3d lat_mat = big_struc.lattice().lat_column_mat();
 	lat_mat.col(2) = lat_mat.col(2) * (slice_loc);
@@ -24,7 +26,7 @@ std::pair<Rewrap::Structure, Rewrap::Structure> structure_slicer(
 	CASM::Lattice top_lat(lat_mat);
 	CASM::Structure top_struc(top_lat);
 	auto t_struc=Rewrap::Structure(top_struc);
-	for (const auto &item : big_struc.basis) {
+	for (const auto &item : cpy_big.basis) {
 		/// only move basis sites below slice pivot
 		if (item.const_frac()(2) >= 0 &&
 		    item.const_frac()(2) < slice_loc + tol) {
@@ -114,7 +116,9 @@ Rewrap::Structure structure_stacker(
 		c_shift =
 		    c_shift + sub_strucs[i].lattice().lat_column_mat().col(2);
 		}
-		for (const auto &item : sub_strucs[i].basis) {
+		Rewrap::Structure cpy_i=sub_strucs[i];
+		Simplicity::mod_coordinates(&cpy_i);
+		for (const auto &item : cpy_i.basis) {
 			CASM::Site new_site = item;
 			/// adjust site by a, b, and c shifts
 			Eigen::Vector3d altered = new_site.const_cart();
