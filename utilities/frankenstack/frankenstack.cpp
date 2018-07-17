@@ -69,6 +69,41 @@ int main(int argc, char* argv[]) {
 		}
 		big_struc = Frankenstein::structure_stacker(units);
 	}
+std::cout <<    "                         .eeeeeeeee\n" 
+		"	    		.$$$$$$$$P\n"
+		"		       .$$$$$$$$P\n"
+		"		      z$$$$$$$$P\n"
+		"		     z$$$$$$$$\n"
+		"		    z$$$$$$$$\n"
+		"		   d$$$$$$$$\n"
+		"		  d$$$$$$$$\n"
+		"		.d$$$$$$$P\n"
+		"	       .$$$$$$$$P\n"
+		"	      .$$$$$$$$$.........\n"
+		"	     .$$$$$$$$$$$$$$$$$$\n"
+		"	    z$$$$$$$$$$$$$$$$$P\n"
+		"	   -**********$$$$$$$P\n"
+		"		     d$$$$$$\n"
+		"		   .d$$$$$$\n"
+		"		  .$$$$$$P\n"
+		"		 z$$$$$$P\n"
+		"		d$$$$$$\n"
+		"	      .d$$$$$$\n"
+		"	     .$$$$$$$\n"
+		"	    z$$$$$$$beeeeee\n"
+		"	   d$$$$$$$$$$$$$*\n"
+		"	  ^^^^^^^^^$$$$$\n"
+		"		  d$$$*\n"
+		"		 d$$$\n"
+		"		d$$*\n"
+		"	       d$P\n"
+		"	     .$$\n"
+		"	    .$P\n"
+		"	   .$\n"
+		"	  .P\n"
+		"	 .\n"   
+		"	/\n"<< std::endl; 
+std::cout << "IT'S ALIVE " << std::endl;
 	if (frankenstack_launch.vm().count("output")) {
 		Simplicity::write_poscar(
 		    big_struc, frankenstack_launch.fetch<fs::path>("output"));
