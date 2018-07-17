@@ -20,6 +20,7 @@ public:
     Structure() = delete;
 
     Structure(CASM::Structure init_struc);
+    Structure(Rewrap::fs::path& filename);
 
     bool is_primitive() const;
 

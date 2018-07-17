@@ -37,6 +37,12 @@ void add_help_suboption(po::options_description& handler_desc)
     return;
 }
 
+void add_desc_suboption(po::options_description& handler_desc)
+{
+    handler_desc.add_options()("desc", "Extended usage description");
+
+    return;
+}
 void add_output_suboption(po::options_description& handler_desc)
 {
     handler_desc.add_options()("output,o", po::value<fs::path>()->value_name(CASM::Completer::ArgHandler::path()),
