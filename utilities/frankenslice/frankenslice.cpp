@@ -4,8 +4,8 @@
 #include <iostream>
 #include "casmutils/definitions.hpp"
 #include "casmutils/handlers.hpp"
-#include "casmutils/structure.hpp"
 #include "casmutils/stage.hpp"
+#include "casmutils/structure.hpp"
 
 namespace Utilities {
 
@@ -32,6 +32,7 @@ void frankenslice_initializer(po::options_description& frankenslice_desc) {
 using namespace Utilities;
 
 int main(int argc, char* argv[]) {
+	double tol = 1e-5;
 	Handler frankenslice_launch(argc, argv, frankenslice_initializer);
 
 	if (frankenslice_launch.count("help")) {
@@ -53,12 +54,15 @@ int main(int argc, char* argv[]) {
 	auto super_struc = Rewrap::Structure(super_path);
 	std::vector<Rewrap::Structure> snippets;
 	if (frankenslice_launch.vm().count("vector")) {
-		auto slice_locs =
+		auto vec =
 		    frankenslice_launch.fetch<std::vector<double>>("vector");
-		snippets = structure_slicer(super_struc, slice_locs);
+		auto slice_locs =
+		    Eigen::Map<Eigen::VectorXd>(&vec[0], vec.size());
+		snippets =
+		    Frankenstein::multi_slice(super_struc, slice_locs, tol);
 	} else if (frankenslice_launch.vm().count("number")) {
 		auto num_slices = frankenslice_launch.fetch<int>("number");
-		snippets = structure_slicer(super_struc, num_slices);
+		snippets = Frankenstein::equal_slice(super_struc, num_slices);
 	} else {
 		std::cerr << "Neither vector or number option was given to "
 			     "frankenslice"
@@ -73,7 +77,8 @@ int main(int argc, char* argv[]) {
 			ostr << std::setfill('0') << std::setw(2) << count;
 			Simplicity::write_poscar(
 			    item,
-			    out_path / Rewrap::fs::path("slice" + ostr.str() + "POSCAR"));
+			    out_path / Rewrap::fs::path("slice" + ostr.str() +
+							"POSCAR"));
 			count++;
 		}
 	}
@@ -82,9 +87,7 @@ int main(int argc, char* argv[]) {
 		int count = 0;
 		for (auto& item : snippets) {
 			std::cout << "slice " << count << std::endl;
-			Simplicity::print_poscar(
-			    item,
-			    std::cout);
+			Simplicity::print_poscar(item, std::cout);
 			count++;
 		}
 	}

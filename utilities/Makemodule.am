@@ -1,3 +1,4 @@
 include utilities/primify/Makemodule.am
 include utilities/frankenslice/Makemodule.am
 include utilities/frankenstack/Makemodule.am
+include utilities/originshift/Makemodule.am
