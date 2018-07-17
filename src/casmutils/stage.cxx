@@ -19,34 +19,25 @@ std::pair<Rewrap::Structure, Rewrap::Structure> structure_slicer(
 	CASM::Lattice bottom_lat(lat_mat);
 	CASM::Structure bottom_struc(bottom_lat);
 	auto b_struc = Rewrap::Structure(bottom_struc);
+	lat_mat = big_struc.lattice().lat_column_mat();
+	lat_mat.col(2) = lat_mat.col(2) * (1 - slice_loc);
+	CASM::Lattice top_lat(lat_mat);
+	CASM::Structure top_struc(top_lat);
+	auto t_struc=Rewrap::Structure(top_struc);
 	for (const auto &item : big_struc.basis) {
 		/// only move basis sites below slice pivot
 		if (item.const_frac()(2) >= 0 &&
 		    item.const_frac()(2) < slice_loc + tol) {
-			CASM::Site new_site = item;
-			/// adjust c coord by lower bound
-			Eigen::Vector3d altered = new_site.const_frac();
-			altered(2) = new_site.const_frac()(2) - slice_loc;
-			new_site.frac() = altered;
-			auto coord = CASM::Coordinate(new_site.const_cart(),
+			auto coord = CASM::Coordinate(item.const_cart(),
 						      bottom_lat, CASM::CART);
 			auto site = CASM::Site(coord, item.occ_name());
 			bottom_struc.basis.push_back(site);
 			b_struc=Rewrap::Structure(bottom_struc);
 			Simplicity::mod_coordinates(&b_struc);
 		}
-	}
-	lat_mat = big_struc.lattice().lat_column_mat();
-	lat_mat.col(2) = lat_mat.col(2) * (1 - slice_loc);
-	CASM::Lattice top_lat(lat_mat);
-	CASM::Structure top_struc(top_lat);
-	auto t_struc=Rewrap::Structure(top_struc);
-	for (auto &item : big_struc.basis) {
-		/// only move basis sites below slice pivot
-		if (item.const_frac()(2) >= slice_loc + tol &&
-		    item.const_frac()(2) < 1) {
+		else {
 			CASM::Site new_site = item;
-			/// adjust c coord by lower bound
+			/// adjust c coord by slice location
 			Eigen::Vector3d altered = new_site.const_frac();
 			altered(2) = new_site.const_frac()(2) - slice_loc;
 			new_site.frac() = altered;
@@ -56,6 +47,7 @@ std::pair<Rewrap::Structure, Rewrap::Structure> structure_slicer(
 			top_struc.basis.push_back(site);
 			t_struc=Rewrap::Structure(top_struc);
 			Simplicity::mod_coordinates(&t_struc);
+
 		}
 	}
 	return std::make_pair(b_struc, t_struc);
@@ -116,7 +108,6 @@ Rewrap::Structure structure_stacker(
 	CASM::Lattice stacked_lat(stacked_lat_mat);
 	CASM::Structure stacked_struc(stacked_lat);
 	Eigen::Vector3d c_shift = Eigen::Vector3d::Zero();
-	
 	for (int i = 0; i < sub_strucs.size(); i++) {
 		// determine appropriate c-axis shift for position in stacking
 		if (i > 0 ){
