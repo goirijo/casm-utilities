@@ -4,7 +4,7 @@ _casmutils_superstructure_SOURCES=\
 						  utilities/superstructure/superstructure.cpp
 
 
-_casmutils_primify_LDADD=\
+_casmutils_superstructure_LDADD=\
 						libcasmutils.la\
 						$(BOOST_SYSTEM_LIB)\
 						$(BOOST_FILESYSTEM_LIB)\
