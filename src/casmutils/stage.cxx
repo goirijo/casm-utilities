@@ -134,6 +134,48 @@ Rewrap::Structure structure_stacker(
 	Simplicity::mod_coordinates(&rw_struc);
 	return rw_struc;
 }
+
+
+/// This function takes a structure and reduces the lattice boundaries to the
+/// closest atoms to each of the specified boundaries dictated by the vector
+/// dirs. dirs is a vector of bools that indicate whether or not to shrink 
+/// along the a, b, and c direction respectively.
+Rewrap::Structure vacuum_pack(const Rewrap::Structure &big_struc,
+			      std::vector<bool> &dirs,
+			      double tol){
+	Rewrap::Structure cpy_big=big_struc;
+	Simplicity::mod_coordinates(&cpy_big);
+	double max_a=0; double min_a=1;
+	double max_b=0; double min_b=1;
+	double max_c=0; double min_c=1;
+	for (auto &site : cpy_big.basis){
+		auto coord=site.const_frac();
+		if (coord(0)>max_a){
+			max_a=coord(0);
+		}
+		if (coord(0)<min_a){
+			min_a=coord(0);
+		}
+		if (coord(1)>max_b){
+			max_b=coord(1);
+		}
+		if (coord(1)<min_b){
+			min_b=coord(1);
+		}
+		if (coord(2)>max_c){
+			max_c=coord(2);
+		}
+		if (coord(2)<min_c){
+			min_c=coord(2);
+		}
+	
+	}
+	Eigen::Vector3d shift(-min_a,-min_b,-min_c);
+	origin_shift(&cpy_big,shift);
+
+}
+
+
 }
 /// This function takes a structures and shifts the origin by shift val
 /// shift val is in fractional coordinates of the lattice
