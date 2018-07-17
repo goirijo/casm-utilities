@@ -1,3 +1,5 @@
+dist_bin_SCRIPTS+=utilities/casmutils
+
 include utilities/primify/Makemodule.am
 include utilities/frankenslice/Makemodule.am
 include utilities/frankenstack/Makemodule.am

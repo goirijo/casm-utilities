@@ -1,0 +1,75 @@
+#!/bin/bash
+
+show_help()
+{
+    echo "casmutils is a collection of utilities based off of the CASM library."
+    echo "a list of available utilities can be seen with the '-l' flag."
+    echo "To invoke a utility, use the command"
+    echo -e
+    echo "'casmutils utility --options'."
+    echo -e
+    echo "You may add additional utilities in a modular style by installing"
+    echo "executables that follow the naming convention 'casmutils-utility'"
+    echo "anywhere in your PATH variable."
+}
+
+_utility_basename()
+{
+    basename="_casmutils-"
+    echo $basename
+}
+
+show_utilities()
+{
+    basename=$(_utility_basename)
+    for util in $(compgen -c | grep $basename); do
+        echo ${util/$basename}
+    done
+}
+
+main()
+{
+# A POSIX variable
+OPTIND=1         # Reset in case getopts has been used previously in the shell.
+
+# Initialize our own variables:
+output_file=""
+verbose=0
+
+while getopts "h?l" opt; do
+    case "$opt" in
+    h|\?)
+        show_help
+        exit 0
+        ;;
+    l)  echo "The following utilities are currently installed:"
+        echo -e
+        show_utilities
+        exit 0
+        ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+if [ "$#" -eq 0 ]; then
+    echo "Add a utility as an argument to use it."
+    echo "Use '-l' for a list of available utilities, and"
+    echo "-h for more information on how to call them."
+# elif [ "$#" -ne 1 ]; then
+#     echo "Only one utility at a time please"
+
+else
+    $(_utility_basename)$@
+fi
+}
+
+if [ "${1}" != "--source-only" ]; then
+    main "${@}"
+fi
+
+# [ "${1:-}" = "--" ] && shift
+
+# echo "verbose=$verbose, output_file='$output_file', Leftovers: $@"
+
+# End of file
