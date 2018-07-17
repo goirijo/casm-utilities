@@ -1,0 +1,11 @@
+bin_PROGRAMS += _casmutils-superstructure
+
+_casmutils_superstructure_SOURCES=\
+						  utilities/superstructure/superstructure.cpp
+
+
+_casmutils_primify_LDADD=\
+						libcasmutils.la\
+						$(BOOST_SYSTEM_LIB)\
+						$(BOOST_FILESYSTEM_LIB)\
+						$(BOOST_PROGRAM_OPTIONS_LIB)

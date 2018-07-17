@@ -1,3 +1,4 @@
 dist_bin_SCRIPTS+=utilities/casmutils
 
 include utilities/primify/Makemodule.am
+include utilities/superstructure/Makemodule.am
