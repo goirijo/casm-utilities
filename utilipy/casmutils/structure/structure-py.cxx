@@ -23,7 +23,7 @@ std::string __str__(const Rewrap::Structure& printable)
     return sstream.str();
 }
 
-Rewrap::Structure from_poscar(const std::string& filename) { return Rewrap::Structure(CASM::Structure(filename)); }
+Rewrap::Structure from_poscar(const std::string& filename) { return Rewrap::Structure::from_poscar(filename); }
 
 void to_poscar(const Rewrap::Structure& writeable, const std::string& filename)
 {

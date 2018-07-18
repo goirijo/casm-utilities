@@ -1,4 +1,4 @@
-source casmutils --source-only
+source $(which casmutils) --source-only 2> /dev/null
 
 _casmutils()
 {
