@@ -25,7 +25,7 @@ std::pair<Rewrap::Structure, Rewrap::Structure> structure_slicer(
 	lat_mat.col(2) = lat_mat.col(2) * (1 - slice_loc);
 	CASM::Lattice top_lat(lat_mat);
 	CASM::Structure top_struc(top_lat);
-	auto t_struc=Rewrap::Structure(top_struc);
+	auto t_struc = Rewrap::Structure(top_struc);
 	for (const auto &item : cpy_big.basis) {
 		/// only move basis sites below slice pivot
 		if (item.const_frac()(2) >= 0 &&
@@ -34,10 +34,9 @@ std::pair<Rewrap::Structure, Rewrap::Structure> structure_slicer(
 						      bottom_lat, CASM::CART);
 			auto site = CASM::Site(coord, item.occ_name());
 			bottom_struc.basis.push_back(site);
-			b_struc=Rewrap::Structure(bottom_struc);
+			b_struc = Rewrap::Structure(bottom_struc);
 			Simplicity::mod_coordinates(&b_struc);
-		}
-		else {
+		} else {
 			CASM::Site new_site = item;
 			/// adjust c coord by slice location
 			Eigen::Vector3d altered = new_site.const_frac();
@@ -47,9 +46,8 @@ std::pair<Rewrap::Structure, Rewrap::Structure> structure_slicer(
 						      top_lat, CASM::CART);
 			auto site = CASM::Site(coord, item.occ_name());
 			top_struc.basis.push_back(site);
-			t_struc=Rewrap::Structure(top_struc);
+			t_struc = Rewrap::Structure(top_struc);
 			Simplicity::mod_coordinates(&t_struc);
-
 		}
 	}
 	return std::make_pair(b_struc, t_struc);
@@ -112,11 +110,12 @@ Rewrap::Structure structure_stacker(
 	Eigen::Vector3d c_shift = Eigen::Vector3d::Zero();
 	for (int i = 0; i < sub_strucs.size(); i++) {
 		// determine appropriate c-axis shift for position in stacking
-		if (i > 0 ){
-		c_shift =
-		    c_shift + sub_strucs[i].lattice().lat_column_mat().col(2);
+		if (i > 0) {
+			c_shift =
+			    c_shift +
+			    sub_strucs[i].lattice().lat_column_mat().col(2);
 		}
-		Rewrap::Structure cpy_i=sub_strucs[i];
+		Rewrap::Structure cpy_i = sub_strucs[i];
 		Simplicity::mod_coordinates(&cpy_i);
 		for (const auto &item : cpy_i.basis) {
 			CASM::Site new_site = item;
@@ -130,57 +129,69 @@ Rewrap::Structure structure_stacker(
 			    item.occ_name()));
 		}
 	}
-	auto rw_struc=Rewrap::Structure(stacked_struc);
+	auto rw_struc = Rewrap::Structure(stacked_struc);
 	Simplicity::mod_coordinates(&rw_struc);
 	return rw_struc;
 }
 
-
 /// This function takes a structure and reduces the lattice boundaries to the
 /// closest atoms to each of the specified boundaries dictated by the vector
-/// dirs. dirs is a vector of bools that indicate whether or not to shrink 
+/// dirs. dirs is a vector of bools that indicate whether or not to shrink
 /// along the a, b, and c direction respectively.
 Rewrap::Structure vacuum_pack(const Rewrap::Structure &big_struc,
-			      std::vector<bool> &dirs,
-			      double tol){
-	Rewrap::Structure cpy_big=big_struc;
+			      std::vector<bool> &dirs, double tol) {
+	Rewrap::Structure cpy_big = big_struc;
 	Simplicity::mod_coordinates(&cpy_big);
-	double max_a=0; double min_a=1;
-	double max_b=0; double min_b=1;
-	double max_c=0; double min_c=1;
-	for (auto &site : cpy_big.basis){
-		auto coord=site.const_frac();
-		if (coord(0)>max_a){
-			max_a=coord(0);
+	std::vector<std::pair<double, double>> limits(3,
+						      std::make_pair(0.0, 1.0));
+	for (auto &site : cpy_big.basis) {
+		auto coord = site.const_frac();
+		for (int i = 0; i < 3; i++) {
+			if (coord(i) > limits[i].first) {
+				limits[i].first = coord(i);
+			}
+			if (coord(i) < limits[i].second) {
+				limits[i].second = coord(i);
+			}
 		}
-		if (coord(0)<min_a){
-			min_a=coord(0);
-		}
-		if (coord(1)>max_b){
-			max_b=coord(1);
-		}
-		if (coord(1)<min_b){
-			min_b=coord(1);
-		}
-		if (coord(2)>max_c){
-			max_c=coord(2);
-		}
-		if (coord(2)<min_c){
-			min_c=coord(2);
-		}
-	
 	}
-	Eigen::Vector3d shift(-min_a,-min_b,-min_c);
-	origin_shift(&cpy_big,shift);
-
+	Eigen::Vector3d shift(-limits[0].second, -limits[1].second,
+			      -limits[2].second);
+	origin_shift(&cpy_big, shift);
+	Eigen::Matrix3d lat_mat = cpy_big.lattice().lat_column_mat();
+	for (int i = 0; i < 3; i++) {
+		if (dirs[i]) {
+			lat_mat.col(i) = lat_mat.col(i) * (limits[i].first -
+							   limits[i].second) +
+					 Eigen::Vector3d::Constant(tol);
+		}
+	}
+	CASM::Lattice lat(lat_mat);
+	cpy_big.set_lattice(lat, CASM::CART);
+	return cpy_big;
 }
 
-
+/// This function takes a structure and increases the lattice boundaries by
+/// shift value. Shift value is the extension in cartesian length along
+/// along the a, b, and c direction respectively.
+Rewrap::Structure inflate(const Rewrap::Structure &struc,
+			  const Eigen::Vector3d &shift_val) {
+	CASM::Structure cpy_struc = struc;
+	Eigen::Matrix3d lat_mat = cpy_struc.lattice().lat_column_mat();
+	for (int i = 0; i < 3; i++) {
+		lat_mat.col(i) = lat_mat.col(i) *
+				 (1.0 + shift_val(i) / lat_mat.col(i).norm());
+	}
+	cpy_struc.set_lattice(CASM::Lattice(lat_mat), CASM::CART);
+	Rewrap::Structure rw_struc(cpy_struc);
+	Simplicity::mod_coordinates(&rw_struc);
+	return rw_struc;
+}
 }
 /// This function takes a structures and shifts the origin by shift val
 /// shift val is in fractional coordinates of the lattice
 Rewrap::Structure *origin_shift(Rewrap::Structure *struc,
-			       const Eigen::Vector3d &shift_val) {
+				const Eigen::Vector3d &shift_val) {
 	for (auto &item : struc->basis) {
 		item +=
 		    CASM::Coordinate(shift_val, struc->lattice(), CASM::FRAC);

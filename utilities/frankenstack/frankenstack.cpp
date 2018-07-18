@@ -64,7 +64,6 @@ int main(int argc, char* argv[]) {
 	} else {
 		std::vector<Rewrap::Structure> units;
 		for (auto& item : sub_paths) {
-			std::cout << item << std::endl;
 			units.push_back(Rewrap::Structure(item));
 		}
 		big_struc = Frankenstein::structure_stacker(units);

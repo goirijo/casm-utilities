@@ -43,14 +43,17 @@ Rewrap::Structure structure_stacker(
 
 /// This function takes a structure and reduces the lattice boundaries to the
 /// closest atoms to each of the specified boundaries dictated by the vector
-/// dirs. dirs is a vector of bools that indicate whether or not to shrink 
+/// dirs. dirs is a vector of bools that indicate whether or not to shrink
 /// along the a, b, and c direction respectively.
 Rewrap::Structure vacuum_pack(const Rewrap::Structure &big_struc,
-			      std::vector<bool> &dirs,
-			      double tol);
+			      std::vector<bool> &dirs, double tol);
 
+/// This function takes a structure and increases the lattice boundaries by
+/// shift value. Shift value is the extension in cartesian length along
+/// along the a, b, and c direction respectively.
+Rewrap::Structure inflate(const Rewrap::Structure &struc,
+			  const Eigen::Vector3d &shift_val);
 }
-
 /// This function takes a structures and shifts the origin by shift val
 /// shift val is in fractional coordinates of the lattice
 Rewrap::Structure *origin_shift(Rewrap::Structure *struc,
