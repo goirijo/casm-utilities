@@ -3,6 +3,7 @@ lib_LTLIBRARIES += libcasmutils.la
 libcasmutils_la_SOURCES=
 libcasmutils_la_SOURCES+=\
 						 src/casmutils/structure.cxx\
-						 src/casmutils/handlers.cxx
+						 src/casmutils/handlers.cxx\
+						 src/casmutils/stage.cxx
 
 # libcasmutils_la_LIBADD=libcasm.la
