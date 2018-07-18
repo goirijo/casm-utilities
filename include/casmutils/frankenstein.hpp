@@ -55,7 +55,7 @@ Rewrap::Structure vacuum_pack(const Rewrap::Structure &big_struc,
 /// shift value. Shift value is the extension in cartesian length along
 /// along the a, b, and c direction respectively.
 Rewrap::Structure inflate(const Rewrap::Structure &struc,
-			  const Eigen::Vector3d &padding);
+			  const std::array<double,3> &padding);
 
 /// This function takes a structures and shifts the origin by shift val
 /// shift val is in fractional coordinates of the lattice

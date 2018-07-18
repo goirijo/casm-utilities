@@ -1,6 +1,6 @@
 #include "casmutils/definitions.hpp"
 #include "casmutils/handlers.hpp"
-#include "casmutils/stage.hpp"
+#include "casmutils/frankenstein.hpp"
 #include "casmutils/structure.hpp"
 #include <boost/program_options.hpp>
 #include <casm/crystallography/Structure.hh>

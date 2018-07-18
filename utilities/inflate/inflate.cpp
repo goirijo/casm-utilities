@@ -4,7 +4,7 @@
 #include <iostream>
 #include "casmutils/definitions.hpp"
 #include "casmutils/handlers.hpp"
-#include "casmutils/stage.hpp"
+#include "casmutils/frankenstein.hpp"
 #include "casmutils/structure.hpp"
 
 namespace Utilities {
@@ -44,11 +44,19 @@ int main(int argc, char* argv[]) {
 		return 2;
 	}
 
+	auto raw_lengths = inflate_launch.fetch<std::vector<double>>("length");
+
+    if(raw_lengths.size()!=3)
+    {
+        std::cerr<<"You must give exactly 3 --lengths for inflation, one value for each lattice direction."<<std::endl;
+        return 3;
+    }
+
 	auto struc_path = inflate_launch.fetch<fs::path>("structure");
 	auto struc = Rewrap::Structure(struc_path);
 	auto out_struc = struc;
-	auto lengths = inflate_launch.fetch<std::vector<double>>("length");
-	out_struc=Frankenstein::inflate(struc,Eigen::Map<Eigen::Vector3d>(&lengths[0]));
+    std::array<double,3> lengths{raw_lengths[0],raw_lengths[1],raw_lengths[2]};
+	out_struc=Frankenstein::inflate(struc,lengths);
 	if (inflate_launch.vm().count("output")) {
 		Simplicity::write_poscar(
 		    out_struc, inflate_launch.fetch<fs::path>("output"));

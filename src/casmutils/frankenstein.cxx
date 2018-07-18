@@ -225,7 +225,7 @@ Rewrap::Structure vacuum_pack(const Rewrap::Structure& big_struc, std::array<boo
     {
         if (dirs[i])
         {
-            lat_mat.col(i) = lat_mat.col(i) * (limits[i].first - limits[i].second) + Eigen::Vector3d::Constant(padding);
+            lat_mat.col(i) = lat_mat.col(i) * (limits[i].first - limits[i].second) + padding*lat_mat.col(i)/lat_mat.col(i).norm() ;
         }
     }
 
@@ -235,7 +235,7 @@ Rewrap::Structure vacuum_pack(const Rewrap::Structure& big_struc, std::array<boo
     return cpy_big;
 }
 
-Rewrap::Structure inflate(const Rewrap::Structure& struc, const Eigen::Vector3d& padding)
+Rewrap::Structure inflate(const Rewrap::Structure& struc, const std::array<double,3>& padding)
 {
     CASM::Structure cpy_struc = struc;
     Eigen::Matrix3d lat_mat = cpy_struc.lattice().lat_column_mat();
@@ -243,7 +243,7 @@ Rewrap::Structure inflate(const Rewrap::Structure& struc, const Eigen::Vector3d&
     // Add padding to each lattice vector
     for (int i = 0; i < 3; i++)
     {
-        lat_mat.col(i) = lat_mat.col(i) * (1.0 + padding(i) / lat_mat.col(i).norm());
+        lat_mat.col(i) = lat_mat.col(i) * (1.0 + padding[i] / lat_mat.col(i).norm());
     }
 
     cpy_struc.set_lattice(CASM::Lattice(lat_mat), CASM::CART);
