@@ -1,10 +1,10 @@
-bin_PROGRAMS += casmutils-frankenstack
+bin_PROGRAMS += _casmutils-frankenstack
 
-casmutils_frankenstack_SOURCES=\
+_casmutils_frankenstack_SOURCES=\
 						  utilities/frankenstack/frankenstack.cpp
 
 
-casmutils_frankenstack_LDADD=\
+_casmutils_frankenstack_LDADD=\
 						libcasmutils.la\
 						$(BOOST_SYSTEM_LIB)\
 						$(BOOST_FILESYSTEM_LIB)\

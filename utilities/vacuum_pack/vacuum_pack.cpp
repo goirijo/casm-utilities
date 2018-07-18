@@ -21,6 +21,9 @@ void vacuumpack_initializer(po::options_description& vacuumpack_desc) {
 	    "dirs,d", po::value<std::string>()->required(),
 	    "directions that shrinkage is allowed to happen in. any "
 	    "combination of a, b, and c");
+	vacuumpack_desc.add_options()(
+	    "padding,p", po::value<double>()->required(),
+	    "Add an amount of extra space around the border of the atom enclosure");
 	return;
 }
 }
@@ -48,11 +51,12 @@ int main(int argc, char* argv[]) {
 	auto struc = Rewrap::Structure(struc_path);
 	auto out_struc = struc;
 	auto dirs = vacuumpack_launch.fetch<std::string>("dirs");
-	std::vector<bool> allowed_dirs;
-	allowed_dirs.push_back(dirs.find("a") != std::string::npos);
-	allowed_dirs.push_back(dirs.find("b") != std::string::npos);
-	allowed_dirs.push_back(dirs.find("c") != std::string::npos);
-	out_struc=Frankenstein::vacuum_pack(struc,allowed_dirs,1e-5);
+    auto padding = vacuumpack_launch.fetch<double>("padding");
+	std::array<bool,3> allowed_dirs;
+	allowed_dirs[0]=(dirs.find("a") != std::string::npos);
+	allowed_dirs[1]=(dirs.find("b") != std::string::npos);
+	allowed_dirs[2]=(dirs.find("c") != std::string::npos);
+	out_struc=Frankenstein::vacuum_pack(struc,allowed_dirs,padding);
 	if (vacuumpack_launch.vm().count("output")) {
 		Simplicity::write_poscar(
 		    out_struc, vacuumpack_launch.fetch<fs::path>("output"));

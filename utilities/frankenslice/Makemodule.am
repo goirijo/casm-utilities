@@ -1,10 +1,10 @@
-bin_PROGRAMS += casmutils-frankenslice
+bin_PROGRAMS += _casmutils-frankenslice
 
-casmutils_frankenslice_SOURCES=\
+_casmutils_frankenslice_SOURCES=\
 						  utilities/frankenslice/frankenslice.cpp
 
 
-casmutils_frankenslice_LDADD=\
+_casmutils_frankenslice_LDADD=\
 						libcasmutils.la\
 						$(BOOST_SYSTEM_LIB)\
 						$(BOOST_FILESYSTEM_LIB)\

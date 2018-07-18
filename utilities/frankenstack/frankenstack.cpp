@@ -59,14 +59,14 @@ int main(int argc, char* argv[]) {
 		}
 		std::vector<Rewrap::Structure> struc_vec;
 		struc_vec.insert(struc_vec.end(), num_stacks, unit);
-		big_struc = Frankenstein::structure_stacker(struc_vec);
+		big_struc = Frankenstein::stack(struc_vec);
 
 	} else {
 		std::vector<Rewrap::Structure> units;
 		for (auto& item : sub_paths) {
 			units.push_back(Rewrap::Structure(item));
 		}
-		big_struc = Frankenstein::structure_stacker(units);
+		big_struc = Frankenstein::stack(units);
 	}
 std::cout <<    "                         .eeeeeeeee\n" 
 		"	    		.$$$$$$$$P\n"
