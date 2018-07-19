@@ -9,6 +9,7 @@
 namespace Rewrap
 {
 Structure::Structure(CASM::Structure init_struc) : CASM::Structure(init_struc) {}
+Structure::Structure(Rewrap::fs::path& filename) : CASM::Structure(filename) {}
 
 Structure Structure::from_poscar(const fs::path &poscar_path) { return Rewrap::Structure(CASM::Structure(poscar_path)); }
 

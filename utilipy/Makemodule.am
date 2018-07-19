@@ -4,3 +4,4 @@ casmutilspy_PYTHON=\
 				   utilipy/casmutils/__init__.py
 
 include utilipy/casmutils/structure/Makemodule.am
+include utilipy/casmutils/structure/frankenstein/Makemodule.am

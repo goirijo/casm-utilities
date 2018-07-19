@@ -14,7 +14,4 @@ _structure_la_LIBADD=\
 
 _structure_la_LDFLAGS=\
 					 -module
-# _structure_la_LDFLAGS=\
-# 					 $(BOOST_LDFLAGS)\
-# 					 -l$(BOOST_PYTHON_LIB)\
-# 					 -module
+
