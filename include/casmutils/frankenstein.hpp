@@ -1,5 +1,5 @@
-#ifndef UTILS_STAGE_HH
-#define UTILS_STAGE_HH
+#ifndef FRANKENSTEIN_HH
+#define FRANKENSTEIN_HH
 
 #include <casm/CASM_global_definitions.hh>
 #include <casm/crystallography/Structure.hh>
