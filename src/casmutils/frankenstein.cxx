@@ -23,7 +23,6 @@ void bring_coords_within(Rewrap::Structure* struc)
 }
 } // namespace
 
-
 namespace Frankenstein
 {
 void shift_coords_by(Rewrap::Structure* struc, const Eigen::Vector3d& shift_val)
@@ -85,8 +84,8 @@ std::pair<Rewrap::Structure, Rewrap::Structure> slice(const Rewrap::Structure& b
     return bottom_top;
 }
 
-std::vector<Rewrap::Structure>
-_multi_slice(const Rewrap::Structure& big_struc, const Eigen::VectorXd& slice_locs, double tol)
+std::vector<Rewrap::Structure> _multi_slice(const Rewrap::Structure& big_struc, const Eigen::VectorXd& slice_locs,
+                                            double tol)
 {
     // Begin by performing the first slice
     auto struc_pair = slice(big_struc, slice_locs(0), tol);
@@ -113,8 +112,8 @@ _multi_slice(const Rewrap::Structure& big_struc, const Eigen::VectorXd& slice_lo
     return slices;
 }
 
-std::vector<Rewrap::Structure>
-multi_slice(const Rewrap::Structure& big_struc, const std::set<double>& slice_locs, double tol)
+std::vector<Rewrap::Structure> multi_slice(const Rewrap::Structure& big_struc, const std::set<double>& slice_locs,
+                                           double tol)
 {
     Eigen::VectorXd sanitized_slice_locs(slice_locs.size());
 
@@ -225,7 +224,8 @@ Rewrap::Structure vacuum_pack(const Rewrap::Structure& big_struc, std::array<boo
     {
         if (dirs[i])
         {
-            lat_mat.col(i) = lat_mat.col(i) * (limits[i].first - limits[i].second) + padding*lat_mat.col(i)/lat_mat.col(i).norm() ;
+            lat_mat.col(i) = lat_mat.col(i) * (limits[i].first - limits[i].second) +
+                             padding * lat_mat.col(i) / lat_mat.col(i).norm();
         }
     }
 
@@ -235,7 +235,7 @@ Rewrap::Structure vacuum_pack(const Rewrap::Structure& big_struc, std::array<boo
     return cpy_big;
 }
 
-Rewrap::Structure inflate(const Rewrap::Structure& struc, const std::array<double,3>& padding)
+Rewrap::Structure inflate(const Rewrap::Structure& struc, const std::array<double, 3>& padding)
 {
     CASM::Structure cpy_struc = struc;
     Eigen::Matrix3d lat_mat = cpy_struc.lattice().lat_column_mat();
@@ -253,4 +253,3 @@ Rewrap::Structure inflate(const Rewrap::Structure& struc, const std::array<doubl
 }
 
 } // namespace Frankenstein
-

@@ -1,9 +1,9 @@
+#include "casmutils/structure.hpp"
+#include <boost/filesystem.hpp>
 #include <casm/CASM_global_definitions.hh>
 #include <casm/casm_io/VaspIO.hh>
 #include <casm/crystallography/Niggli.hh>
 #include <casm/crystallography/Structure.hh>
-#include <boost/filesystem.hpp>
-#include "casmutils/structure.hpp"
 #include <fstream>
 
 namespace Rewrap
@@ -11,12 +11,15 @@ namespace Rewrap
 Structure::Structure(CASM::Structure init_struc) : CASM::Structure(init_struc) {}
 Structure::Structure(Rewrap::fs::path& filename) : CASM::Structure(filename) {}
 
-Structure Structure::from_poscar(const fs::path &poscar_path) { return Rewrap::Structure(CASM::Structure(poscar_path)); }
+Structure Structure::from_poscar(const fs::path& poscar_path)
+{
+    return Rewrap::Structure(CASM::Structure(poscar_path));
+}
 
 bool Structure::is_primitive() const { return CASM::Structure::is_primitive(); }
 
 Structure Structure::primitive() const { return Simplicity::make_primitive(*this); }
-}
+} // namespace Rewrap
 
 namespace Simplicity
 {
@@ -58,4 +61,4 @@ void write_poscar(const Rewrap::Structure& printable, const Rewrap::fs::path& fi
     file_out.close();
     return;
 }
-}
+} // namespace Simplicity
