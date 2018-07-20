@@ -8,7 +8,7 @@ casm-utilities uses the autotools to build and install everything, so if you're 
 
 * autoconf
 * automake
-* libtool (?)
+* libtool
 * autoconf-archive
 
 These should all be readily available via ```brew``` and ```apt-get```.
