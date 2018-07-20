@@ -1,7 +1,7 @@
 #include <boost/filesystem.hpp>
+#include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include <pybind11/eigen.h>
 
 #include "casmutils/frankenstein.hpp"
 #include <casm/crystallography/Structure.hh>
@@ -13,13 +13,12 @@
 namespace WrapPy
 {
 
-    Rewrap::Structure shift_coords_by(Rewrap::Structure *struc,
-				const Eigen::Vector3d &shift_val)
-    {
-        auto mutable_struc=*struc;
-        Frankenstein::shift_coords_by(&mutable_struc,shift_val);
-        return mutable_struc;
-    }
+Rewrap::Structure shift_coords_by(Rewrap::Structure* struc, const Eigen::Vector3d& shift_val)
+{
+    auto mutable_struc = *struc;
+    Frankenstein::shift_coords_by(&mutable_struc, shift_val);
+    return mutable_struc;
+}
 
 PYBIND11_MODULE(_frankenstein, m)
 {
@@ -36,4 +35,4 @@ PYBIND11_MODULE(_frankenstein, m)
     m.def("inflate", Frankenstein::inflate);
     m.def("shift_coords_by", shift_coords_by);
 }
-}
+} // namespace WrapPy

@@ -11,7 +11,7 @@
 
 namespace WrapPy
 {
-    Rewrap::Structure from_poscar(const std::string& filename);
+Rewrap::Structure from_poscar(const std::string& filename);
 void to_poscar(const Rewrap::Structure& writeable, const std::string& filename);
 
 //******************************************************************************************************//
@@ -48,4 +48,4 @@ PYBIND11_MODULE(_structure, m)
     m.def("to_poscar", to_poscar);
     /* m.def("make_niggli", (Rewrap::Structure(*)(const Rewrap::Structure&)) Simplicity::make_niggli); */
 }
-}
+} // namespace WrapPy

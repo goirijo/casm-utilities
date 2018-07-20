@@ -1,6 +1,6 @@
 #include "casmutils/definitions.hpp"
-#include "casmutils/handlers.hpp"
 #include "casmutils/frankenstein.hpp"
+#include "casmutils/handlers.hpp"
 #include "casmutils/structure.hpp"
 #include <boost/program_options.hpp>
 #include <casm/crystallography/Structure.hh>
@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
         int count = 0;
         for (auto& item : snippets)
         {
-            //TODO: what if directory doesn't exist?
+            // TODO: what if directory doesn't exist?
             std::ostringstream ostr;
             ostr << std::setfill('0') << std::setw(2) << count;
             Simplicity::write_poscar(item, out_path / Rewrap::fs::path("slice" + ostr.str() + "POSCAR"));

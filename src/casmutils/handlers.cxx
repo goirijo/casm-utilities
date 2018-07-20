@@ -50,5 +50,5 @@ void add_output_suboption(po::options_description& handler_desc)
 
     return;
 }
-}
-}
+} // namespace UtilityProgramOptions
+} // namespace Utilities
