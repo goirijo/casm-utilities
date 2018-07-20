@@ -3,6 +3,6 @@
 
 namespace Simplicity
 {
-    void apply_deformation_tensor(Rewrap::Structure* struc_ptr, const Eigen::Matrix3d& deformation_tensor);
-    void apply_strain(Rewrap::Structure* struc_ptr, const Eigen::Matrix3d& strain_tensor, const std::string& MODE);
+    void apply_deformation(Rewrap::Structure* struc_ptr, const Eigen::Matrix3d& deformation_tensor);
+    void apply_strain(Rewrap::Structure* struc_ptr, const Eigen::VectorXd& unrolled_strain, const std::string& MODE);
 }
