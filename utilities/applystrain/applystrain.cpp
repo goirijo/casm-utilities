@@ -17,8 +17,8 @@ void applystrain_initializer(po::options_description& applystrain_desc)
 
     applystrain_desc.add_options()("structure,s", po::value<fs::path>()->required(),
                                    "POS.vasp like file that you want to apply strain to.");
-    applystrain_desc.add_options()("mode,m", po::value<std::string>(),
-                                   "Accepts strain convention as argument ('GL' [Green-Lagrange, Default], 'EA' [Euler-Almansi], 'B' [Biot], or 'H' [Hencky])."
+    applystrain_desc.add_options()("mode,m", po::value<std::string>()->default_value("GL"),
+                                   "Accepts strain convention as argument ('GL' [Green-Lagrange], 'EA' [Euler-Almansi], 'B' [Biot], or 'H' [Hencky])."
                                    " Also accepts 'F' [Deformation] as an argument to apply a deformation tensor");
     applystrain_desc.add_options()("tensor,t", po::value<fs::path>()->required(),
                                    "Path to a file with strain tensor."
@@ -55,15 +55,14 @@ int main(int argc, char* argv[])
     auto struc_path = applystrain_launch.fetch<fs::path>("structure");
     auto strain_path = applystrain_launch.fetch<fs::path>("tensor");
     //read mode from input if provided else set mode as "GL"
-    std::string mode;
-    if (applystrain_launch.count("mode"))
-    {
-        mode = applystrain_launch.fetch<std::string>("mode");
-    }
-    else
-    {
-        mode = "GL";
-    }
+    auto mode = applystrain_launch.fetch<std::string>("mode");
+    // if (applystrain_launch.count("mode"))
+    // {
+    // }
+    // else
+    // {
+    //     mode = "GL";
+    // }
 
     // change this after Rewrap has a path constructor
     auto tmp_struc = CASM::Structure(struc_path);
@@ -78,7 +77,6 @@ int main(int argc, char* argv[])
         Rewrap::fs::ifstream mat_file(strain_path);
         mat_file >> unrolled_strain;
         Simplicity::apply_strain(&strained_struc, unrolled_strain, mode);
-    }
     else if (mode == "F")
     {
         Eigen::Matrix3d deformation_tensor;
@@ -88,10 +86,9 @@ int main(int argc, char* argv[])
     }
     else
     {
-        std::cerr << "CRITICAL ERROR: Unrecognized mode" << std::endl;
-        std::cerr << "                Your only options are GL(GREEN_LAGRANGE), B(BIOT), H(HENCKY), EA(EULER_ALMANSI), and F(Deformation)" << std::endl;
-        std::cerr << "                Exiting..." << std::endl;
-        exit(2);
+        std::cerr << "Unrecognized mode "<<mode<<std::endl;
+        std::cerr << "options are GL(GREEN_LAGRANGE), B(BIOT), H(HENCKY), EA(EULER_ALMANSI), and F(Deformation)" << std::endl;
+        return 3;
     }
 
     //checks the output type and writes the strained structure to a output stream

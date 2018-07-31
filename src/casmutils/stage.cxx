@@ -18,12 +18,12 @@ namespace Simplicity
         return;
     }
 
-    // Applies strain to a structure. Input is unrolled strain in conventional metrics as defined in the MODE
+    // Applies strain to a structure. Input is unrolled strain in conventional metrics as defined in the mode
     // Uses functions from CASM::StrainConverter class to roll up the strain and obtain a deformation tensor
     // applies deformation using apply_deformation function. 
-    void apply_strain(Rewrap::Structure* struc_ptr, const Eigen::VectorXd& unrolled_strain, const std::string& MODE) 
+    void apply_strain(Rewrap::Structure* struc_ptr, const Eigen::VectorXd& unrolled_strain, const std::string& mode) 
     {
-        CASM::StrainConverter converter(MODE);
+        CASM::StrainConverter converter(mode);
         auto strain_tensor = converter.rollup_E(unrolled_strain);
         auto deformation_tensor = converter.strain_metric_to_F(strain_tensor);
         apply_deformation(struc_ptr, deformation_tensor);
