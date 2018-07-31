@@ -16,8 +16,6 @@
 namespace SuperBoxy
 {
 
-std::vector<Rewrap::Lattice> make_superlattices_of_size(Rewrap::Structure& tile, int volume);
-
 std::vector<Rewrap::Structure> make_supercells(Rewrap::Structure& structure, int min_vol, int max_vol)
 {
     std::vector<Rewrap::Structure> all_supercells;
@@ -28,7 +26,8 @@ std::vector<Rewrap::Structure> make_supercells(Rewrap::Structure& structure, int
     for(const auto& lat : lat_enumerator)
     {
         //TODO: Make niggli before creating structure
-        auto super = Simplicity::make_niggli(structure.create_superstruc(lat));
+        Rewrap::Structure super = structure.create_superstruc(lat);
+        Simplicity::make_niggli(&super);
         all_supercells.push_back(super);
     }
 
