@@ -1,8 +1,8 @@
 #include "casmutils/stage.hpp"
 #include "casm/clex/PrimClex.hh"
+#include "casm/clex/ScelEnum.hh"
 #include <casm/CASM_global_definitions.hh>
 #include <casm/crystallography/Structure.hh>
-#include "casm/clex/ScelEnum.hh"
 #include <fstream>
 #include <iostream>
 
@@ -13,35 +13,30 @@
 #include <casm/crystallography/Niggli.hh>
 #include <set>
 
-
 namespace SuperBoxy
 {
-        std::vector<Rewrap::Structure> make_supercells(Rewrap::Structure &structure, int min_vol, int max_vol)
+
+std::vector<Rewrap::Lattice> make_superlattices_of_size(Rewrap::Structure& tile, int volume);
+
+std::vector<Rewrap::Structure> make_supercells(Rewrap::Structure& structure, int min_vol, int max_vol)
 {
     std::vector<Rewrap::Structure> all_supercells;
-    int max_vol_incl = max_vol+1;
+    int max_vol_incl = max_vol + 1;
     CASM::ScelEnumProps enum_props(min_vol, max_vol_incl);
-    CASM::SupercellEnumerator<CASM::Lattice> e(structure.lattice(), enum_props);
-    // This did not work. Get segmentation errors on third line.
-    //CASM::PrimClex primclex(structure, CASM::null_log());
-    //CASM::PrimClex * pclex = new CASM::PrimClex(structure, CASM::null_log());
-    //CASM::ScelEnumByProps e(*pclex, enum_props);
-    
-    auto it = e.begin();
-    auto end = e.end();
+    CASM::SupercellEnumerator<CASM::Lattice> lat_enumerator(structure.lattice(), enum_props);
 
-    CASM::Index count = 0;
-    for(; it != end; ++it, ++count) {
-            //std::cout << it->volume() << std::endl;
-            auto super = structure.create_superstruc(*it);
-            all_supercells.push_back(super);
+    for(const auto& lat : lat_enumerator)
+    {
+        //TODO: Make niggli before creating structure
+        auto super = Simplicity::make_niggli(structure.create_superstruc(lat));
+        all_supercells.push_back(super);
     }
 
     return all_supercells;
 }
 
-    // surface area from lattice borrowed from John Goiri
-    double lattice_surface_area(const CASM::Lattice &lat)
+// surface area from lattice borrowed from John Goiri
+double lattice_surface_area(const CASM::Lattice& lat)
 {
     Eigen::Vector3d a = lat[0];
     Eigen::Vector3d b = lat[1];
@@ -55,44 +50,43 @@ namespace SuperBoxy
 }
 
 // score for determining level of boxiness, borrowed from John Goiri
-double boxy_score(const CASM::Lattice &lat)
+double boxy_score(const CASM::Lattice& lat)
 {
-        // Less surface area per volume means more boxy
-        // i.e. more volume per surface area means more boxy
-        return std::abs(lat.vol()) / lattice_surface_area(lat);
+    // Less surface area per volume means more boxy
+    // i.e. more volume per surface area means more boxy
+    return std::abs(lat.vol()) / lattice_surface_area(lat);
 }
 
-
-    // Finds the supercell with the highest volume/surface_area
-    // Assuming that the input has structures of same volume
-    Rewrap::Structure most_boxy(std::vector<Rewrap::Structure> &supercells)
+// Finds the supercell with the highest volume/surface_area
+// Assuming that the input has structures of same volume
+Rewrap::Structure most_boxy(std::vector<Rewrap::Structure>& supercells)
 {
     double running_score = 0;
     Rewrap::Structure boxiest_scel = supercells[0];
-        for(const auto &scel: supercells)
-        { 
-            double candidate_score = boxy_score(scel.lattice());
-            if(candidate_score > running_score)
-            {
-                    running_score = candidate_score;
-                    boxiest_scel = scel;
-            }
+    for (const auto& scel : supercells)
+    {
+        double candidate_score = boxy_score(scel.lattice());
+        if (candidate_score > running_score)
+        {
+            running_score = candidate_score;
+            boxiest_scel = scel;
         }
+    }
 
     return boxiest_scel;
 }
 
-//Find the boxiest supercell per volume for range of volumes
-    std::vector<Rewrap::Structure> make_boxy_supercells(Rewrap::Structure &structure, int min_vol, int max_vol)
+// Find the boxiest supercell per volume for range of volumes
+std::vector<Rewrap::Structure> make_boxy_supercells(Rewrap::Structure& structure, int min_vol, int max_vol)
+{
+    std::vector<Rewrap::Structure> boxy_supercells;
+    int max_vol_incl = max_vol + 1;
+    for (int a = min_vol; a < max_vol_incl; ++a)
     {
-        std::vector<Rewrap::Structure> boxy_supercells;
-        int max_vol_incl = max_vol+1;
-        for( int a = min_vol; a < max_vol_incl; ++a )
-        {
-            std::vector<Rewrap::Structure> same_vol_scels = make_supercells(structure, a, a);
-            Rewrap::Structure same_vol_boxy = most_boxy(same_vol_scels);
-            boxy_supercells.push_back(same_vol_boxy);
-        }
-        return boxy_supercells;
+        std::vector<Rewrap::Structure> same_vol_scels = make_supercells(structure, a, a);
+        Rewrap::Structure same_vol_boxy = most_boxy(same_vol_scels);
+        boxy_supercells.push_back(same_vol_boxy);
     }
+    return boxy_supercells;
 }
+} // namespace SuperBoxy
