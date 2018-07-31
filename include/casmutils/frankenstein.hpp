@@ -14,8 +14,8 @@
 namespace Frankenstein
 {
 
-/// This function takes a structure (where lattice vector c is perpendicular to ab plane and
-/// is layering direction) and splits it into two structures.
+/// This function takes a structure (where the slice direction is perpendicular to ab plane)
+/// and splits it into two structures.
 /// slice_loc is in fractional length of the c vector
 /// the first item in the pair is below the slice location to the 0 boundary,
 /// the second is above the slice location to the 1 boundary
