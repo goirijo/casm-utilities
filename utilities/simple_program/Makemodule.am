@@ -1,0 +1,11 @@
+bin_PROGRAMS += _casmutils-simple_program
+
+_casmutils_simple_program_SOURCES=\
+						  utilities/simple_program/simple_program.cpp
+
+
+_casmutils_simple_program_LDADD=\
+						libcasmutils.la\
+						$(BOOST_SYSTEM_LIB)\
+						$(BOOST_FILESYSTEM_LIB)\
+						$(BOOST_PROGRAM_OPTIONS_LIB)
