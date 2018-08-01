@@ -6,11 +6,6 @@
 #include <casm/crystallography/Structure.hh>
 #include <iostream>
 
-namespace CASM
-{
-class Structure;
-}
-
 namespace Rewrap
 {
 
@@ -38,11 +33,19 @@ private:
 
 namespace Simplicity
 {
+/// Given a Structure, write out its information into a file in a vasp compatible format
 void write_poscar(const Rewrap::Structure& printable, const Rewrap::fs::path& filename);
+
+/// Given a Structure, print out its information to the given stream in a vasp compatible format
 void print_poscar(const Rewrap::Structure& printable, std::ostream& outstream);
+
+/// Return a copy of the given Structure that has been converted to its standard niggli form
 Rewrap::Structure make_niggli(const Rewrap::Structure& non_niggli);
-Rewrap::Structure make_niggli(Rewrap::Structure non_niggli);
+
+/// Modify the given Structure to standard niggli form
 void make_niggli(Rewrap::Structure* non_niggli);
+
+/// Return a Structure that is the primitive of the provided one
 Rewrap::Structure make_primitive(const Rewrap::Structure& input);
 } // namespace Simplicity
 

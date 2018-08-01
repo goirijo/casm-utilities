@@ -39,13 +39,12 @@ PYBIND11_MODULE(_structure, m)
     m.doc() = "Raw python bindings for a re-wrapped CASM::Structure class.";
 
     class_<Rewrap::Structure>(m, "Structure")
+        .def("__str__", &__str__)
         .def("is_primitive", &Rewrap::Structure::is_primitive)
         .def("primitive", &Rewrap::Structure::primitive)
-        /* .def("__repr__", &Structure::to_string) */
-        .def("__str__", &__str__);
+        .def("make_niggli", (Rewrap::Structure(*)(const Rewrap::Structure&)) Simplicity::make_niggli)
+        .def("from_poscar", from_poscar)
+        .def("to_poscar", to_poscar);
 
-    m.def("from_poscar", from_poscar);
-    m.def("to_poscar", to_poscar);
-    /* m.def("make_niggli", (Rewrap::Structure(*)(const Rewrap::Structure&)) Simplicity::make_niggli); */
 }
 } // namespace WrapPy
