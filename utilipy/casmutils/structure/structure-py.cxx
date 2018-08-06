@@ -11,7 +11,7 @@
 
 namespace WrapPy
 {
-    Rewrap::Structure from_poscar(const std::string& filename);
+Rewrap::Structure from_poscar(const std::string& filename);
 void to_poscar(const Rewrap::Structure& writeable, const std::string& filename);
 
 //******************************************************************************************************//
@@ -23,7 +23,7 @@ std::string __str__(const Rewrap::Structure& printable)
     return sstream.str();
 }
 
-Rewrap::Structure from_poscar(const std::string& filename) { return Rewrap::Structure(CASM::Structure(filename)); }
+Rewrap::Structure from_poscar(const std::string& filename) { return Rewrap::Structure::from_poscar(filename); }
 
 void to_poscar(const Rewrap::Structure& writeable, const std::string& filename)
 {
@@ -39,14 +39,14 @@ PYBIND11_MODULE(_structure, m)
     m.doc() = "Raw python bindings for a re-wrapped CASM::Structure class.";
 
     class_<Rewrap::Structure>(m, "Structure")
+        .def("__str__", &__str__)
         .def("is_primitive", &Rewrap::Structure::is_primitive)
         .def("primitive", &Rewrap::Structure::primitive)
-        /* .def("__repr__", &Structure::to_string) */
-        .def("__str__", &__str__);
+        .def("make_niggli", (Rewrap::Structure(*)(const Rewrap::Structure&)) Simplicity::make_niggli)
+        .def("from_poscar", from_poscar)
+        .def("to_poscar", to_poscar);
 
-    m.def("from_poscar", from_poscar);
-    m.def("to_poscar", to_poscar);
     m.def("make_super_structure",Simplicity::make_super_structure);
-    /* m.def("make_niggli", (Rewrap::Structure(*)(const Rewrap::Structure&)) Simplicity::make_niggli); */
+
 }
-}
+} // namespace WrapPy

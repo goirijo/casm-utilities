@@ -3,6 +3,8 @@
 
 #include <stdexcept>
 
+namespace UtilExcept
+{
 class OverwriteException : public std::runtime_error
 {
 public:
@@ -16,7 +18,7 @@ public:
 class UserInputMangle : public std::runtime_error
 {
 public:
-    UserInputMangle(const std::string &init_message) : std::runtime_error(init_message) {}
+    UserInputMangle(const std::string& init_message) : std::runtime_error(init_message) {}
 };
-
+} // namespace UtilExcept
 #endif

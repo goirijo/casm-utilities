@@ -1,4 +1,4 @@
-source casmutils --source-only
+source $(which casmutils) --source-only 2> /dev/null
 
 _casmutils()
 {
@@ -13,14 +13,20 @@ _casmutils()
 	if [[ ${prev} == "casmutils" ]] && [[ ${COMP_CWORD} == 1 ]]; then
 		COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
 		return 0
-    elif [[ ${numargs} == 3 ]]; then
-        probe=$($(_utility_basename)${COMP_WORDS[1]} --_completion 2> /dev/null)
 
+    elif [[ ${numargs} == 3 ]]; then
+        probe="$($(_utility_basename)${COMP_WORDS[1]} --_completion 2> /dev/null)"
         if [[ $probe == "BASH_COMP_PATH" ]]; then
             _filedir
         elif [[ $probe == "BASH_COMP_BIN" ]]; then
             COMPREPLY=( $(compgen -W "$(compgen -c)" -- ${cur}) )
+        elif [[ ! -z $probe ]]; then
+            COMPREPLY=( $(compgen -W "${probe}" -- ${cur}) )
+        else
+            _filedir
         fi
+    else
+        _filedir
 	fi
 }
 

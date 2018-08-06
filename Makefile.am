@@ -23,9 +23,10 @@ AM_LDFLAGS=$(BOOST_LDFLAGS)
 
 #===========================================================================#
 #Now do the programs
-include $(srcdir)/src/Makemodule.am
-include $(srcdir)/utilipy/Makemodule.am
-include $(srcdir)/utilities/Makemodule.am
+#You may comment out any of these lines to suppress parts of the installation process
+include $(srcdir)/src/Makemodule.am				#utilities library
+include $(srcdir)/utilipy/Makemodule.am			#command line utilities
+include $(srcdir)/utilities/Makemodule.am 		#python wrappers to utilities library
 
 #===========================================================================#
 #Accept .cxpy as a c++ extension
