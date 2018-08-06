@@ -1,9 +1,9 @@
 #include <boost/filesystem.hpp>
+#include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
 #include "casmutils/structure.hpp"
-#include "casmutils/stage.hpp"
 #include <casm/crystallography/Structure.hh>
 #include <string>
 
@@ -43,11 +43,10 @@ PYBIND11_MODULE(_structure, m)
         .def("__str__", &__str__)
         .def("is_primitive", &Rewrap::Structure::is_primitive)
         .def("primitive", &Rewrap::Structure::primitive)
-        .def("make_niggli", (Rewrap::Structure(*)(const Rewrap::Structure&)) Simplicity::make_niggli)
-        .def("from_poscar", from_poscar)
+        .def("make_niggli", (Rewrap::Structure(*)(const Rewrap::Structure&))Simplicity::make_niggli)
+        .def_static("from_poscar", from_poscar)
         .def("to_poscar", to_poscar);
 
     m.def("make_super_structure", Simplicity::make_super_structure);
-
 }
 } // namespace WrapPy

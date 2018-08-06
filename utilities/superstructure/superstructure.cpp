@@ -1,7 +1,6 @@
 #include "casmutils/definitions.hpp"
 #include "casmutils/handlers.hpp"
 #include "casmutils/structure.hpp"
-#include "casmutils/stage.hpp"
 #include <boost/program_options.hpp>
 #include <casm/crystallography/Structure.hh>
 #include <fstream>
@@ -16,13 +15,13 @@ void superstructure_initializer(po::options_description& superstructure_desc)
     UtilityProgramOptions::add_output_suboption(superstructure_desc);
 
     superstructure_desc.add_options()("structure,s", po::value<fs::path>()->required(),
-                               "POS.vasp like file that you want to get the super structure for.");
+                                      "POS.vasp like file that you want to get the super structure for.");
     superstructure_desc.add_options()("transf-matrix,t", po::value<fs::path>()->required(),
                                       "path to a file with transformation matrix.");
 
     return;
 }
-}
+} // namespace Utilities
 
 using namespace Utilities;
 
@@ -57,7 +56,7 @@ int main(int argc, char* argv[])
     auto struc = Rewrap::Structure(structure_path);
     auto super_struc = Simplicity::make_super_structure(struc, transf_mat);
 
-    //checks the output type and writes the super structure to a output stream
+    // checks the output type and writes the super structure to a output stream
     if (superstructure_launch.vm().count("output"))
     {
         auto out_path = superstructure_launch.fetch<fs::path>("output");

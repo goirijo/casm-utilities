@@ -61,4 +61,12 @@ void write_poscar(const Rewrap::Structure& printable, const Rewrap::fs::path& fi
     file_out.close();
     return;
 }
+
+Rewrap::Structure make_super_structure(const Rewrap::Structure& struc, const Eigen::Matrix3i& col_transf_mat)
+{
+    auto lattice_mat = struc.lattice().lat_column_mat();
+    // had to cast the transformation matrix to double as Eigen does not allow mixing matrix types
+    CASM::Lattice suplat(lattice_mat * col_transf_mat.cast<double>());
+    return struc.create_superstruc(suplat);
+}
 } // namespace Simplicity

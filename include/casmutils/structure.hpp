@@ -47,6 +47,11 @@ void make_niggli(Rewrap::Structure* non_niggli);
 
 /// Return a Structure that is the primitive of the provided one
 Rewrap::Structure make_primitive(const Rewrap::Structure& input);
+
+/// Returns a super structure after applying a transformation matrix to the structure.
+/// Applies transformation to the lattice and uses CASM::Structure::create_superstruc to fill the basis.
+/// transformed_lattice =  original_lattice * transformation_matrix
+Rewrap::Structure make_super_structure(const Rewrap::Structure& struc, const Eigen::Matrix3i& col_transf_mat);
 } // namespace Simplicity
 
 #endif
