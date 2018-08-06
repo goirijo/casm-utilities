@@ -7,20 +7,13 @@
 
 namespace Simplicity
 {
-    // Applies deformation to a structure
-    // deforms the lattice and keeps the basis constant in fractional space
-    // deformed_lattice = deformation_tensor * undeformed_lattice
-    // even if exists does not remove rotation!!!
     void apply_deformation(Rewrap::Structure* struc_ptr, const Eigen::Matrix3d& deformation_tensor) 
     {
-        CASM::Lattice strain_lat(deformation_tensor * struc_ptr->lattice().lat_column_mat());
-        struc_ptr->set_lattice(strain_lat, CASM::FRAC);
+        CASM::Lattice strained_lattice(deformation_tensor * struc_ptr->lattice().lat_column_mat());
+        struc_ptr->set_lattice(strained_lattice, CASM::FRAC);
         return;
     }
 
-    // Applies strain to a structure. Input is unrolled strain in conventional metrics as defined in the mode
-    // Uses functions from CASM::StrainConverter class to roll up the strain and obtain a deformation tensor
-    // applies deformation using apply_deformation function. 
     void apply_strain(Rewrap::Structure* struc_ptr, const Eigen::VectorXd& unrolled_strain, const std::string& mode) 
     {
         CASM::StrainConverter converter(mode);
