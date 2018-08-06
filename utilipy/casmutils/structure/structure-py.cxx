@@ -3,6 +3,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include "casmutils/stage.hpp"
 #include "casmutils/structure.hpp"
 #include <casm/crystallography/Structure.hh>
 #include <string>
@@ -48,5 +49,7 @@ PYBIND11_MODULE(_structure, m)
         .def("to_poscar", to_poscar);
 
     m.def("make_super_structure", Simplicity::make_super_structure);
+    m.def("apply_strain", (Rewrap::Structure(*)(const Rewrap::Structure&, const Eigen::VectorXd&, const std::string&))Simplicity::apply_strain);
+    m.def("apply_deformation", (Rewrap::Structure(*)(const Rewrap::Structure&, const Eigen::Matrix3d&))Simplicity::apply_deformation);
 }
 } // namespace WrapPy

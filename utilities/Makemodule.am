@@ -2,6 +2,7 @@ dist_bin_SCRIPTS+=utilities/casmutils
 
 include utilities/primify/Makemodule.am
 include utilities/superstructure/Makemodule.am
+include utilities/applystrain/Makemodule.am
 include utilities/frankenslice/Makemodule.am
 include utilities/frankenstack/Makemodule.am
 include utilities/coord_shift/Makemodule.am

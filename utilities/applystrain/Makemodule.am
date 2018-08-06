@@ -1,0 +1,11 @@
+bin_PROGRAMS += _casmutils-applystrain
+
+_casmutils_applystrain_SOURCES=\
+						  utilities/applystrain/applystrain.cpp
+
+
+_casmutils_applystrain_LDADD=\
+						libcasmutils.la\
+						$(BOOST_SYSTEM_LIB)\
+						$(BOOST_FILESYSTEM_LIB)\
+						$(BOOST_PROGRAM_OPTIONS_LIB)
