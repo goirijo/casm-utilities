@@ -30,7 +30,6 @@ int main(int argc, char* argv[])
 {
     Handler superstructure_launch(argc, argv, superstructure_initializer);
 
-    /* if(primify_launch.count("help") || primify_launch.argc()<2) */
     if (superstructure_launch.count("help"))
     {
         std::cout << superstructure_launch.desc() << std::endl;
@@ -50,13 +49,12 @@ int main(int argc, char* argv[])
 
     auto structure_path = superstructure_launch.fetch<fs::path>("structure");
     auto transf_file_path = superstructure_launch.fetch<fs::path>("transf-matrix");
-    // read the matrix from a into an eigen matrix
+    // read the matrix from the file into an eigen matrix
     Eigen::Matrix3i transf_mat;
     Rewrap::fs::ifstream mat_file(transf_file_path);
     mat_file >> transf_mat;
 
-    //change this to Rewrap structure after john pushes a branch with constructor that takes path
-    auto struc = CASM::Structure(structure_path);
+    auto struc = Rewrap::Structure(structure_path);
     auto super_struc = Simplicity::make_super_structure(struc, transf_mat);
 
     //checks the output type and writes the super structure to a output stream

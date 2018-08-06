@@ -3,6 +3,7 @@
 #include <pybind11/stl.h>
 
 #include "casmutils/structure.hpp"
+#include "casmutils/stage.hpp"
 #include <casm/crystallography/Structure.hh>
 #include <string>
 
@@ -46,7 +47,7 @@ PYBIND11_MODULE(_structure, m)
         .def("from_poscar", from_poscar)
         .def("to_poscar", to_poscar);
 
-    m.def("make_super_structure",Simplicity::make_super_structure);
+    m.def("make_super_structure", Simplicity::make_super_structure);
 
 }
 } // namespace WrapPy
