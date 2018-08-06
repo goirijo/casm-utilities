@@ -46,6 +46,7 @@ PYBIND11_MODULE(_structure, m)
 
     m.def("from_poscar", from_poscar);
     m.def("to_poscar", to_poscar);
+    m.def("make_super_structure",Simplicity::make_super_structure);
     /* m.def("make_niggli", (Rewrap::Structure(*)(const Rewrap::Structure&)) Simplicity::make_niggli); */
 }
 }

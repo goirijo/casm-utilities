@@ -17,7 +17,7 @@ void superstructure_initializer(po::options_description& superstructure_desc)
 
     superstructure_desc.add_options()("structure,s", po::value<fs::path>()->required(),
                                "POS.vasp like file that you want to get the super structure for.");
-    superstructure_desc.add_options()("transfmatrix,t", po::value<fs::path>()->required(),
+    superstructure_desc.add_options()("transf-matrix,t", po::value<fs::path>()->required(),
                                       "path to a file with transformation matrix.");
 
     return;
@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
     }
 
     auto structure_path = superstructure_launch.fetch<fs::path>("structure");
-    auto transf_file_path = superstructure_launch.fetch<fs::path>("transfmatrix");
+    auto transf_file_path = superstructure_launch.fetch<fs::path>("transf-matrix");
     // read the matrix from a into an eigen matrix
     Eigen::Matrix3i transf_mat;
     Rewrap::fs::ifstream mat_file(transf_file_path);
@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
 
     //change this to Rewrap structure after john pushes a branch with constructor that takes path
     auto struc = CASM::Structure(structure_path);
-    auto super_struc = Simplicity::make_super_struc(struc, transf_mat);
+    auto super_struc = Simplicity::make_super_structure(struc, transf_mat);
 
     //checks the output type and writes the super structure to a output stream
     if (superstructure_launch.vm().count("output"))

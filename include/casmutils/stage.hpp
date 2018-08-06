@@ -3,5 +3,5 @@
 
 namespace Simplicity
 {
-    Rewrap::Structure make_super_struc(const Rewrap::Structure& struc, const Eigen::Matrix3i& col_transf_mat);
+    Rewrap::Structure make_super_structure(const Rewrap::Structure& struc, const Eigen::Matrix3i& col_transf_mat);
 }
