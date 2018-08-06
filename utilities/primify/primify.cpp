@@ -19,7 +19,7 @@ void primify_initializer(po::options_description& primify_desc)
 
     return;
 }
-}
+} // namespace Utilities
 
 using namespace Utilities;
 
