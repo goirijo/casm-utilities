@@ -1,0 +1,11 @@
+bin_PROGRAMS += _casmutils-super-structure
+
+_casmutils_super_structure_SOURCES=\
+						  utilities/super_structure/super_structure.cpp
+
+
+_casmutils_super_structure_LDADD=\
+						libcasmutils.la\
+						$(BOOST_SYSTEM_LIB)\
+						$(BOOST_FILESYSTEM_LIB)\
+						$(BOOST_PROGRAM_OPTIONS_LIB)
