@@ -18,7 +18,7 @@ void applystrain_initializer(po::options_description& applystrain_desc)
     applystrain_desc.add_options()("structure,s", po::value<fs::path>()->required(),
                                    "POS.vasp like file that you want to apply strain to.");
     applystrain_desc.add_options()("mode,m", po::value<std::string>()->default_value("GL"),
-                                   "Accepts strain convention as mode ('GL' [Green-Lagrange], 'EA' [Euler-Almansi], 'B' [Biot], or 'H' [Hencky])."
+                                   "Accepts strain convention as mode ('GL' [Green-Lagrange, default], 'EA' [Euler-Almansi], 'B' [Biot], or 'H' [Hencky])."
                                    " Also accepts 'F' [Deformation] as an argument to apply a deformation tensor");
     applystrain_desc.add_options()("tensor,t", po::value<fs::path>()->required(),
                                    "Path to a file with strain tensor."
@@ -55,10 +55,7 @@ int main(int argc, char* argv[])
     auto struc_path = applystrain_launch.fetch<fs::path>("structure");
     auto strain_path = applystrain_launch.fetch<fs::path>("tensor");
     auto mode = applystrain_launch.fetch<std::string>("mode");
-
-    // change this after Rewrap has a path constructor
-    auto tmp_struc = CASM::Structure(struc_path);
-    Rewrap::Structure strained_struc(tmp_struc);
+    Rewrap::Structure strained_struc(struc_path);
 
     std::set<std::string> strain_metrics = {"GL", "B", "H", "EA"};
     //check if the mode is a strain convention type or deformation mode

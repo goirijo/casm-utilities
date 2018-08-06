@@ -2,6 +2,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include "casmutils/stage.hpp"
 #include "casmutils/structure.hpp"
 #include <casm/crystallography/Structure.hh>
 #include <string>
@@ -46,5 +47,7 @@ PYBIND11_MODULE(_structure, m)
         .def("from_poscar", from_poscar)
         .def("to_poscar", to_poscar);
 
+    m.def("apply_strain", Simplicity::apply_strain);
+    m.def("apply_deformation", Simplicity::apply_deformation);
 }
 } // namespace WrapPy

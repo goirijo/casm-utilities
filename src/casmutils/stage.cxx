@@ -4,6 +4,7 @@
 #include <casm/strain/StrainConverter.hh>
 #include "casmutils/structure.hpp"
 #include "casmutils/stage.hpp"
+#include "casmutils/exceptions.hpp"
 
 namespace Simplicity
 {
@@ -16,10 +17,19 @@ namespace Simplicity
 
     void apply_strain(Rewrap::Structure* struc_ptr, const Eigen::VectorXd& unrolled_strain, const std::string& mode) 
     {
-        CASM::StrainConverter converter(mode);
-        auto strain_tensor = converter.rollup_E(unrolled_strain);
-        auto deformation_tensor = converter.strain_metric_to_F(strain_tensor);
-        apply_deformation(struc_ptr, deformation_tensor);
+        std::set<std::string> allowed_strain_metrics = {"GL", "B", "H", "EA"};
+        if (allowed_strain_metrics.count(mode))
+        {
+            CASM::StrainConverter converter(mode);
+            auto strain_tensor = converter.rollup_E(unrolled_strain);
+            auto deformation_tensor = converter.strain_metric_to_F(strain_tensor);
+            apply_deformation(struc_ptr, deformation_tensor);
+        }
+        else
+        {
+            throw UtilExcept::UserInputMangle(
+                "Unrecognized mode. Allowed strain metrics modes are GL, B, H and EA");
+        }
         return;
     }
 }
