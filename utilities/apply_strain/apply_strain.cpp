@@ -54,8 +54,8 @@ int main(int argc, char* argv[])
     }
 
     auto struc_path = applystrain_launch.fetch<fs::path>("structure");
-    auto strain_path = applystrain_launch.fetch<fs::path>("tensor");
-    auto mode = applystrain_launch.fetch<std::string>("mode");
+    const auto strain_path = applystrain_launch.fetch<fs::path>("tensor");
+    const auto mode = applystrain_launch.fetch<std::string>("mode");
     Rewrap::Structure strained_struc(struc_path);
 
     // check if the mode is a strain convention type or deformation mode
@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
     if (mode == "F")
     {
         Eigen::Matrix3d deformation_tensor;
-        Rewrap::fs::ifstream mat_file(strain_path);
+        boost::filesystem::ifstream mat_file(strain_path);
         mat_file >> deformation_tensor;
         Simplicity::apply_deformation(&strained_struc, deformation_tensor);
     }
@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
         try
         {
             Eigen::VectorXd unrolled_strain(6);
-            Rewrap::fs::ifstream mat_file(strain_path);
+            boost::filesystem::ifstream mat_file(strain_path);
             mat_file >> unrolled_strain;
             Simplicity::apply_strain(&strained_struc, unrolled_strain, mode);
         }
