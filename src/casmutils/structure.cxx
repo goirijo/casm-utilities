@@ -1,13 +1,13 @@
 #include "casmutils/structure.hpp"
 #include <boost/filesystem.hpp>
-#include <casm/CASM_global_definitions.hh>
-#include <casm/casm_io/VaspIO.hh>
-#include <casm/crystallography/Niggli.hh>
-#include <casm/crystallography/Structure.hh>
-/* #include <casm/symmetry/SymGroupRepID.hh> */
-#include <casm/strain/StrainConverter.hh>
-#include "casmutils/exceptions.hpp"
 #include <fstream>
+#include "casm/CASM_global_definitions.hh"
+#include "casm/casm_io/VaspIO.hh"
+#include "casm/crystallography/Niggli.hh"
+#include "casm/crystallography/Structure.hh"
+/* #include "casm/symmetry/SymGroupRepID.hh" */
+#include "casm/strain/StrainConverter.hh"
+#include "casmutils/exceptions.hpp"
 
 namespace Rewrap
 {

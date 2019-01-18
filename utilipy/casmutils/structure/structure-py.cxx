@@ -5,7 +5,7 @@
 
 #include "casmutils/stage.hpp"
 #include "casmutils/structure.hpp"
-#include <casm/crystallography/Structure.hh>
+#include "casm/crystallography/Structure.hh"
 #include <string>
 
 //******************************************************************************************************//
