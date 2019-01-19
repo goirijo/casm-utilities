@@ -116,6 +116,9 @@ libcasmblob_la_SOURCES=\
 				   CASMcode/src/casm/external/qhull/libqhullcpp/QhullVertex.cpp\
 				   CASMcode/src/casm/external/qhull/libqhullcpp/QhullFacet.cpp
 
+#I'm being lazy. You're supposed to include the declarations as part of the _SOURCES
+# EXTRA_DIST+=CASMcode/include/casm
+
 
 # libcasmblob_la_LIBADD=\
 # 				 $(BOOST_SYSTEM_LIB)\

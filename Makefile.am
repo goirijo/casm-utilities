@@ -12,6 +12,7 @@ check_PROGRAMS=
 man1_MANS=
 dist_bin_SCRIPTS=
 TESTS=
+EXTRA_DIST=
 
 AM_CXXFLAGS=
 
