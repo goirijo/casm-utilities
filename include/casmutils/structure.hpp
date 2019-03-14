@@ -67,6 +67,17 @@ Rewrap::Structure apply_deformation(const Rewrap::Structure& struc_ptr, const Ei
 /// deformation tensor. Applies deformation using apply_deformation function.
 void apply_strain(Rewrap::Structure* struc_ptr, const Eigen::VectorXd& unrolled_strain, const std::string& mode);
 Rewrap::Structure apply_strain(const Rewrap::Structure& struc_ptr, const Eigen::VectorXd& unrolled_strain, const std::string& mode);
+
+/// Map a vector of structures onto a single reference structures, return a vector of score pairs
+/// for the lattice (first) and basis (second).
+std::vector<std::pair<double,double>> structure_score(const Rewrap::Structure& map_reference_struc,
+                       const std::vector<Rewrap::Structure>& mappable_struc_vec);
+
+/// Map a single structure onto a reference structure.
+/// Returns scores for lattice (first) and basis (second) as a pair.
+std::pair<double,double> structure_score(const Rewrap::Structure& map_reference_struc,
+                       const Rewrap::Structure& mappable_struc);
+
 } // namespace Simplicity
 
 #endif

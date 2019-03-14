@@ -7,6 +7,9 @@
 /* #include <casm/symmetry/SymGroupRepID.hh> */
 #include <casm/strain/StrainConverter.hh>
 #include "casmutils/exceptions.hpp"
+#include "casmutils/misc.hpp"
+#include "casm/clex/ConfigMapping.hh"
+#include "casm/clex/PrimClex.hh"
 #include <fstream>
 
 namespace Rewrap
@@ -109,5 +112,54 @@ Rewrap::Structure apply_strain(const Rewrap::Structure& struc_ptr, const Eigen::
     Rewrap::Structure copy_struc(struc_ptr);
     apply_strain(&copy_struc, unrolled_strain, mode);
     return copy_struc;
+}
+
+std::vector<std::pair<double, double>> structure_score(const Rewrap::Structure& map_reference_struc,
+                                                       const std::vector<Rewrap::Structure>& mappable_struc_vec)
+{
+    for (const auto& struc : mappable_struc_vec)
+    {
+        if (struc.basis.size() != map_reference_struc.basis.size())
+        {
+            throw UtilExcept::BasisMismatch();
+        }
+    }
+
+    // get prim and make PrimClex
+    auto ref_prim = make_primitive(map_reference_struc);
+    auto pclex = extend::quiet_primclex(ref_prim);
+
+    // mapping setup
+    int options = 2;      // robust mapping
+    double vol_tol = 0.5; // not used
+    double weight = 0.5;  // not used
+    CASM::ConfigMapper configmapper(pclex, weight, vol_tol, options, CASM::TOL);
+
+    CASM::jsonParser out;          // mapping output
+    std::string name;              // not used
+    std::vector<CASM::Index> best; // not used
+    Eigen::Matrix3d cart_op;       // not used
+    bool update = false;
+
+    std::vector<std::pair<double, double>> all_scores;
+    for (const auto& struc : mappable_struc_vec)
+    {
+        // map it
+        Rewrap::Structure mappable_copy(struc); // can't be const, make copy
+        configmapper.import_structure_occupation(mappable_copy, name, out, best, cart_op, update);
+        double basis = out["best_mapping"]["basis_deformation"].get<double>();
+        double lattice = out["best_mapping"]["lattice_deformation"].get<double>();
+        all_scores.emplace_back(lattice, basis);
+    }
+
+    return all_scores;
+}
+
+std::pair<double, double> structure_score(const Rewrap::Structure& map_reference_struc,
+                                          const Rewrap::Structure& mappable_struc)
+{
+    std::vector<Rewrap::Structure> one = {mappable_struc};
+    // just calls vector version of function
+    return structure_score(map_reference_struc, one).back();
 }
 } // namespace Simplicity

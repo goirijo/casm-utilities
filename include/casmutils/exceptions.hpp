@@ -5,6 +5,15 @@
 
 namespace UtilExcept
 {
+
+class BasisMismatch : public std::runtime_error
+{
+public:
+    BasisMismatch() : std::runtime_error("The basis between two structures is not compatible") {}
+
+private:
+};
+
 class OverwriteException : public std::runtime_error
 {
 public:

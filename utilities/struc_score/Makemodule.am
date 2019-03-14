@@ -1,0 +1,11 @@
+bin_PROGRAMS += casmutils-struc_score
+
+casmutils_struc_score_SOURCES=\
+						  utilities/struc_score/struc_score.cpp
+
+
+casmutils_struc_score_LDADD=\
+						libcasmutils.la\
+						$(BOOST_SYSTEM_LIB)\
+						$(BOOST_FILESYSTEM_LIB)\
+						$(BOOST_PROGRAM_OPTIONS_LIB)
