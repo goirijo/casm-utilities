@@ -1,5 +1,5 @@
 #include <boost/filesystem.hpp>
-#include <Eigen/Dense>
+#include <casm/external/Eigen/Dense>
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>

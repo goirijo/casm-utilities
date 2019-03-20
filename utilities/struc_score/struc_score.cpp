@@ -4,7 +4,9 @@
 #include "casmutils/stage.hpp"
 #include <boost/program_options.hpp>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
+#include <algorithm>
 
 namespace Utilities
 {
@@ -22,7 +24,6 @@ void struc_score_initializer(po::options_description& struc_score_desc)
                     "Batch file containing list of structures files to get structure score for.");    
     struc_score_desc.add_options()("weight,w", po::value<double>()->default_value(0.5),
                     "Weight w in structure score: w*lattice_score + (1-w)*basis_score."); 
-    struc_score_desc.add_options()("verbose,v","Print all three scores instead of only weighted."); 
     return;
 }
 }
@@ -53,7 +54,6 @@ int main(int argc, char* argv[])
     auto reference_path = struc_score_launch.fetch<fs::path>("reference"); 
     auto map_reference_struc = CASM::Structure(reference_path);
     auto weight = struc_score_launch.fetch<double>("weight"); 
-    auto verbose = struc_score_launch.count("verbose");
 
     std::vector<fs::path> mappable_paths;
     if (struc_score_launch.count("mappable"))
@@ -78,40 +78,50 @@ int main(int argc, char* argv[])
     } 
     
     std::vector<Rewrap::Structure> mappable_strucs;
+    fs::path::string_type::size_type max_path_length=0;
     for (auto& path : mappable_paths)
     {
         mappable_strucs.push_back(Rewrap::Structure(path));
+        max_path_length=std::max(max_path_length,path.size());
     }
 
     auto all_scores = Simplicity::structure_score(map_reference_struc, mappable_strucs);    
-   
-    std::string out_string = "";
-    if (verbose)
-    {
-        out_string += "Structure\tLattice\tBasis\tWeighted\n";
-    }
-    for (int i=0; i < all_scores.size(); i++)
-    {
-        auto& sub_scores = all_scores[i];
-        out_string += mappable_paths[i].string() + "\t";
-        if (verbose)
-        {
-            out_string += std::to_string(sub_scores[0]) + "\t";
-            out_string += std::to_string(sub_scores[1]) + "\t";
-        }
-        out_string += std::to_string(sub_scores[2]) + "\n";
-     }
     
+    std::ostream* out_stream_ptr=&std::cout;
+    std::ofstream specified_out_stream;
     if (struc_score_launch.count("output"))
     {
         auto out_path = struc_score_launch.fetch<fs::path>("output");
-        std::ofstream file_out(out_path.string());
-        file_out << out_string;
-        file_out.close();
+        specified_out_stream.open(out_path.c_str());
+        out_stream_ptr=&specified_out_stream;
     }
-    else
+    auto& out_stream=*out_stream_ptr;
+
+    out_stream<<std::setw(max_path_length+4)<<"Structure";
+    out_stream<<std::setw(12)<<"Lattice";
+    out_stream<<std::setw(12)<<"Basis";
+    out_stream<<std::setw(12)<<"Weighted"<<std::endl;
+
+    assert(all_scores.size()==mappable_paths.size());
+    int path_ix=0;
+    for (const auto& lat_basis_score : all_scores)
     {
-        std::cout << out_string;
+        auto lat_score=lat_basis_score.first;
+        auto basis_score=lat_basis_score.second;
+        auto weighted_score=weight*lat_score+(1-weight)*basis_score;
+
+        out_stream<<std::setw(max_path_length+4)<<mappable_paths[path_ix];
+        out_stream<<std::setw(12)<<std::setprecision(8)<<lat_score;
+        out_stream<<std::setw(12)<<std::setprecision(8)<<basis_score;
+        out_stream<<std::setw(12)<<std::setprecision(8)<<weighted_score<<std::endl;
+
+        ++path_ix;
+     }
+
+    //why though
+    if (struc_score_launch.count("output"))
+    {
+        specified_out_stream.close();
     }
 
     return 0;
