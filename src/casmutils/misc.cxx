@@ -1,6 +1,6 @@
 #include <casm/clex/PrimClex.hh>
 
-namespace extend
+namespace Extend
 {
 CASM::PrimClex quiet_primclex(CASM::Structure& prim)
 {

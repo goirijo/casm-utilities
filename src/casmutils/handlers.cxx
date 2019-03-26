@@ -2,7 +2,7 @@
 
 #include "casmutils/exceptions.hpp"
 #include "casmutils/handlers.hpp"
-#include <casm/completer/Handlers.hh>
+#include "casm/completer/Handlers.hh"
 
 namespace Utilities
 {

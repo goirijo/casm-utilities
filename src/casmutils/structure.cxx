@@ -1,4 +1,4 @@
-#include "casmutils/structure.hpp"
+#include <casmutils/structure.hpp>
 #include <boost/filesystem.hpp>
 #include <casm/CASM_global_definitions.hh>
 #include <casm/casm_io/VaspIO.hh>
@@ -6,10 +6,11 @@
 #include <casm/crystallography/Structure.hh>
 /* #include <casm/symmetry/SymGroupRepID.hh> */
 #include <casm/strain/StrainConverter.hh>
-#include "casmutils/exceptions.hpp"
-#include "casmutils/misc.hpp"
-#include "casm/clex/ConfigMapping.hh"
-#include "casm/clex/PrimClex.hh"
+#include <casmutils/exceptions.hpp>
+#include <casmutils/misc.hpp>
+#include <casm/clex/ConfigMapping.hh>
+#include <casm/clex/PrimClex.hh>
+#include <casmutils/exceptions.hpp>
 #include <fstream>
 
 namespace Rewrap
@@ -127,7 +128,7 @@ std::vector<std::pair<double, double>> structure_score(const Rewrap::Structure& 
 
     // get prim and make PrimClex
     auto ref_prim = make_primitive(map_reference_struc);
-    auto pclex = extend::quiet_primclex(ref_prim);
+    auto pclex = Extend::quiet_primclex(ref_prim);
 
     // mapping setup
     int options = 2;      // robust mapping

@@ -97,10 +97,10 @@ int main(int argc, char* argv[])
     }
     auto& out_stream=*out_stream_ptr;
 
-    out_stream<<std::setw(max_path_length+4)<<"Structure";
-    out_stream<<std::setw(12)<<"Lattice";
-    out_stream<<std::setw(12)<<"Basis";
-    out_stream<<std::setw(12)<<"Weighted"<<std::endl;
+    out_stream<<std::left<<std::setw(max_path_length+4)<<"Structure";
+    out_stream<<std::left<<std::setw(16)<<"Lattice";
+    out_stream<<std::left<<std::setw(16)<<"Basis";
+    out_stream<<std::left<<std::setw(16)<<"Weighted"<<std::endl;
 
     assert(all_scores.size()==mappable_paths.size());
     int path_ix=0;
@@ -110,10 +110,10 @@ int main(int argc, char* argv[])
         auto basis_score=lat_basis_score.second;
         auto weighted_score=weight*lat_score+(1-weight)*basis_score;
 
-        out_stream<<std::setw(max_path_length+4)<<mappable_paths[path_ix];
-        out_stream<<std::setw(12)<<std::setprecision(8)<<lat_score;
-        out_stream<<std::setw(12)<<std::setprecision(8)<<basis_score;
-        out_stream<<std::setw(12)<<std::setprecision(8)<<weighted_score<<std::endl;
+        out_stream<<std::left<<std::setw(max_path_length+4)<<mappable_paths[path_ix].string();
+        out_stream<<std::left<<std::setw(16)<<std::setprecision(8)<<lat_score;
+        out_stream<<std::left<<std::setw(16)<<std::setprecision(8)<<basis_score;
+        out_stream<<std::left<<std::setw(16)<<std::setprecision(8)<<weighted_score<<std::endl;
 
         ++path_ix;
      }

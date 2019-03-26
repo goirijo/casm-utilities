@@ -6,15 +6,22 @@ CLOCAL_AMFLAGS = -I build-aux/m4
 lib_LTLIBRARIES=
 pyexec_LTLIBRARIES=
 noinst_LIBRARIES=
+noinst_LTLIBRARIES=
 bin_PROGRAMS=
 check_PROGRAMS=
 man1_MANS=
 dist_bin_SCRIPTS=
 TESTS=
+EXTRA_DIST=
 
 AM_CXXFLAGS=
 
 AM_CPPFLAGS= -I$(srcdir)/include\
+			 -I$(srcdir)/pybind11/include\
+			 -I$(srcdir)/CASMcode/include\
+			 -I$(srcdir)/CASMcode/include/casm/external\
+			 -I$(srcdir)/CASMcode/include/casm/external/qhull/libqhullcpp\
+			 -I$(srcdir)/CASMcode/include/casm/external/qhull/libqhull_r\
 			 $(BOOST_CPPFLAGS)\
 			 $(PYTHON_CPPFLAGS)
 
@@ -62,3 +69,10 @@ var-check:
 	echo $(CXXCOMPILE)
 	echo $(DEPDIR)
 	echo "lol"
+
+soft-clean:
+	make clean-libtool
+	make clean-pyexecLTLIBRARIES
+	make clean-frankensteinpyLTLIBRARIES
+	make clean-structurepyLTLIBRARIES
+

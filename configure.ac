@@ -28,14 +28,17 @@ AX_BOOST_BASE([$BOOSTV],[],[AC_MSG_ERROR(You need Boost $BOOSTV libraries or hig
 AX_BOOST_SYSTEM
 AX_BOOST_FILESYSTEM
 AX_BOOST_PROGRAM_OPTIONS
+
+#If you're compiling casm for them, you need these also
+AX_BOOST_CHRONO
+AX_BOOST_REGEX
+
 # AX_BOOST_PYTHON
-
-
-AC_CHECK_LIB([casm],[main], [], [AC_MSG_ERROR(The CASM libraries are required!)])
 
 #You will need pybind11 for this operation
 #Why won't it find the libraries???
 # AC_CHECK_HEADER([pybind11/pybind11.h],[],[AC_MSG_ERROR(Pybind11 is required for this operation)])
+AC_CHECK_LIB([dl], [dlopen], [], AC_MSG_ERROR(dlopen from dl library not found!))
 
 
 # Checks for header files.
