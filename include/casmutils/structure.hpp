@@ -23,7 +23,7 @@ public:
     static Structure from_poscar(const fs::path& poscar_path);
 
     /// Construct from parent CASM class
-    Structure(CASM::Structure init_struc);
+    Structure(const CASM::Structure& init_struc);
     Structure(Rewrap::fs::path& filename);
 
     /// Returns true if the structure is already primitive
