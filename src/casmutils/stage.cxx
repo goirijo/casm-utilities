@@ -37,12 +37,12 @@ double boxy_score(const Rewrap::Lattice& lat)
 
 // Finds the superstructure with the highest volume/surface_area
 // Assuming that the input has structures of same volume
-const Rewrap::Structure& boxiest_structure(const std::vector<Rewrap::Structure>& candidate_structures)
+std::vector<Rewrap::Structure>::size_type boxiest_structure_index(const std::vector<Rewrap::Structure>& candidate_structures)
 {
     //TODO: throw exception on empty vector
     double running_score = 0;
-    int ix=0;
-    int best_ix=ix;
+    std::vector<Rewrap::Structure>::size_type ix=0;
+    std::vector<Rewrap::Structure>::size_type best_ix=ix;
     for (const auto& scel : candidate_structures)
     {
         double candidate_score = boxy_score(scel.lattice());
@@ -53,14 +53,14 @@ const Rewrap::Structure& boxiest_structure(const std::vector<Rewrap::Structure>&
         }
         ++ix;
     }
-    return candidate_structures[best_ix];
+    return best_ix;
 }
 
 // Find the boxiest superstructure per volume for range of volumes
 Rewrap::Structure make_boxiest_superstructure_of_volume(Rewrap::Structure& structure, int volume)
 {
         std::vector<Rewrap::Structure> same_vol_scels = make_superstructures_of_volume(structure, volume);
-        return most_boxy(same_vol_scels);
+        return same_vol_scels[boxiest_structure_index(same_vol_scels)];
 }
 
 std::vector<Rewrap::Structure> make_superstructures_of_volume(const Rewrap::Structure& structure, int volume)
