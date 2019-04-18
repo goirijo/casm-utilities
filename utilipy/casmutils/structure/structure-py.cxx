@@ -52,5 +52,7 @@ PYBIND11_MODULE(_structure, m)
     m.def("apply_strain", (Rewrap::Structure(*)(const Rewrap::Structure&, const Eigen::VectorXd&, const std::string&))Simplicity::apply_strain);
     m.def("apply_deformation", (Rewrap::Structure(*)(const Rewrap::Structure&, const Eigen::Matrix3d&))Simplicity::apply_deformation);
     m.def("structure_score", (std::vector<std::pair<double,double>>(*)(const Rewrap::Structure&, const std::vector<Rewrap::Structure>&))Simplicity::structure_score);
+    m.def("make_superstructures_of_volume", (std::vector<Rewrap::Structure>(*)(const Rewrap::Structure&, const int))Simplicity::make_superstructures_of_volume);
+    m.def("make_boxiest_superstructure_of_volume", (Rewrap::Structure(*)(const Rewrap::Structure&, const int))Simplicity::make_boxiest_superstructure_of_volume);
 }
 } // namespace WrapPy

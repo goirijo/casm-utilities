@@ -18,7 +18,7 @@ public:
     static Structure from_poscar(const fs::path& poscar_path);
 
     /// Construct from parent CASM class
-    Structure(CASM::Structure init_struc);
+    Structure(const CASM::Structure& init_struc);
     Structure(Rewrap::fs::path& filename);
 
     /// Returns true if the structure is already primitive
@@ -78,6 +78,15 @@ std::vector<std::pair<double,double>> structure_score(const Rewrap::Structure& m
 std::pair<double,double> structure_score(const Rewrap::Structure& map_reference_struc,
                        const Rewrap::Structure& mappable_struc);
 
+/// Given a structure, find all the superstructures between volumes min_vol and max_vol
+std::vector<Rewrap::Structure> make_superstructures_of_volume(const Rewrap::Structure& structure, const int volume);
+
+/// Find the index of the superstructure with the highest volume/surface_area ratio of the ones given
+std::vector<Rewrap::Structure>::size_type boxiest_structure_index(const std::vector<Rewrap::Structure>& candidate_structures);
+/* const Rewrap::Structure& boxiest_structure(const std::vector<Rewrap::Structure>& candidate_structures); */
+
+/// Find the most boxy superstructure at each volume
+Rewrap::Structure make_boxiest_superstructure_of_volume(const Rewrap::Structure& structure, const int volume);
 } // namespace Simplicity
 
 #endif
