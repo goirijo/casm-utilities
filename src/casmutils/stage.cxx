@@ -9,6 +9,10 @@
 
 namespace Simplicity
 {
-
+    void trivial_muna_function()
+    {
+        std::cout<<"Nice haircut"<<std::endl;
+        return;
+    }
 
 } // namespace SuperBoxy

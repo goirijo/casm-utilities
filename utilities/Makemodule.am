@@ -10,3 +10,4 @@ include utilities/vacuum_pack/Makemodule.am
 include utilities/inflate/Makemodule.am
 include utilities/struc_score/Makemodule.am
 include utilities/super_boxy/Makemodule.am
+include utilities/stage/Makemodule.am

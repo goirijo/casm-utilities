@@ -6,5 +6,6 @@
 
 namespace Simplicity
 {
-} // namespace SuperBoxy
+    void trivial_muna_function();
+}
 #endif
