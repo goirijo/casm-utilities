@@ -1,0 +1,30 @@
+graphical feedback (view clusters, selections, query/filter command generator)
+selection cache (save cache of selections you've made)
+
+Fnz bond distance: makes duplicates, filter by type
+
+Julija's dream:
+Something about orbitals (plz explain)
+
+Discuss making a strain order parameter deformer (skk)
+
+Next week:
+Jonas has some half baked idea for stacking layers
+
+
+Purpose:
+For a give structure and site, find the symmetrically equivalent sites (and add them)
+
+Outline:
+ - Read in structure
+    - check out Structure.hpp (casm-utils, not casm), for from_poscar function
+ - Find factor group of structure
+    - (Comes as a MasterSymGroup, i.e. array of SymOp)
+ - Introduce new site
+    - Create Coordinate/Site from xyz and structure lattice
+ - Apply factor group to new site
+    - For each SymOp, apply operation to site (Check out Coordinate.hh for how to apply SymOp, use CART not FRAC)
+    - Make sure that the ones you add aren't repeated
+ - Append or print new sites
+
+
