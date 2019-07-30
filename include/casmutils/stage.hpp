@@ -1,11 +1,93 @@
 #ifndef UTILS_STAGE_HH
 #define UTILS_STAGE_HH
 
+#include <utility>
+#include <string>
+
 #include "casmutils/definitions.hpp"
 #include "casmutils/structure.hpp"
+#include "casmutils/definitions.hpp"
 
-namespace Simplicity
+namespace Rewrap
 {
-    void trivial_muna_function();
+    class Coordinate;
+}
+
+namespace SpecializedEnumeration
+{
+    class RockSaltOctahedraToggler
+    {
+        public:
+            typedef Rewrap::Coordinate Coordinate;
+            typedef Rewrap::Structure Structure;
+            typedef int index;
+
+            ///Construct with a transformation matrix relative to the primitive structure.
+            ///The species names refers to the species of the cation and anions.
+            ///The central specie specifies wheter the cation or anion is at the origin, and will
+            ///be the central atom of the octahedra.
+            static RockSaltOctahedraToggler relative_to_primitive(const Eigen::Matrix3i trans_mat, std::pair<std::string,std::string> species_names, std::string central_specie);
+
+            ///Construct with a transformation matrix relative to the conventional structure
+            ///The species names refers to the species of the cation and anions.
+            ///The central specie specifies wheter the cation or anion is at the origin, and will
+            ///be the central atom of the octahedra.
+            static RockSaltOctahedraToggler relative_to_conventional(const Eigen::Matrix3i trans_mat, std::pair<std::string,std::string> species_names, std::string central_specie);
+
+            ///Sets the central coordinate (center of octahedron) ON 
+            ///along with its surrounding oxygen (or other specified anion)
+            void activate(const Coordinate& central_coord);
+
+            ///Sets the central coordinate (center of octahedron ) OFF 
+            ///along with its surrounding oxygen (or other specified anion),
+            ///if they are not part of another octahedron
+            void deactivate(const Coordinate& central_coord);
+
+            ///Calls activate/deactivate to reverse whether the octahedron is there or not
+            void toggle(const Coordinate& central_coord);
+
+            ///Sets all octahera ON
+            void activate_all();
+            
+            ///Sets all octahera OFF
+            void deactivate_all();
+            
+            ///Calls activate/deactivate to reverse whether the octahedron is there or not on every octahedron
+            void toggle_all();
+
+            ///Print the structure to a stream
+            void print(std::ostream& out_stream) const;
+
+            ///Return the structure for the primitive rocksalt
+            static Structure primitive_structure(std::pair<std::string,std::string> species_names, std::string central_specie);
+
+            ///Return the structure for the conventional cell of  rocksalt
+            static Structure conventional_structure(std::pair<std::string,std::string> species_names, std::string central_specie);
+
+        private:
+            
+            ///The rocksalt structure we're working with, specified at construction by transformation matrix
+            ///and species
+            Structure rocksalt_struc;
+
+            ///This is the species that makes the corners of the octahedra
+            const std::string anion_name;
+
+            ///This is the species at the center of the octahedra
+            const std::string cation_name;
+
+            ///Distances to each of the nearest neighbor atoms from the center of the octahedron
+            const std::array<Coordinate,6> nearest_neighbor_deltas;
+
+            ///Counts by how many cations an anion is being held by
+            ///Useful to know when the anion can be "released" and switched off (when count becomes zero)
+            std::unordered_map<index,int> cation_leashes;
+
+            ///Return indexes for the 6 nearest neghbors of the specified central coordinate
+            std::array<int,6> critical_sites(const Coordinate& central_coord) const;
+
+            RockSaltOctahedraToggler(Structure&& init_struc, std::string anion_name, std::string cation_name, std::array<Coordinate,6>&& init_nn_deltas, std::unordered_map<index,int>&& init_cation_leashes);
+
+    };
 }
 #endif
