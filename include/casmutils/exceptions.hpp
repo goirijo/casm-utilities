@@ -6,6 +6,12 @@
 namespace UtilExcept
 {
 
+class IncompatibleCoordinate : public std::runtime_error
+{
+public:
+    IncompatibleCoordinate() : std::runtime_error("The provided coordinate is incompatible or could not be mapped.") {}
+};
+
 class BasisMismatch : public std::runtime_error
 {
 public:

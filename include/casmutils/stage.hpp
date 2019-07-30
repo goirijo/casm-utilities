@@ -81,13 +81,29 @@ namespace SpecializedEnumeration
 
             ///Counts by how many cations an anion is being held by
             ///Useful to know when the anion can be "released" and switched off (when count becomes zero)
-            std::unordered_map<index,int> cation_leashes;
+            std::unordered_map<index,int> leashed_anions;
+
+            ///Keeps track of which cations are turned on
+            std::unordered_map<index, bool> cation_is_on;
 
             ///Return indexes for the 6 nearest neghbors of the specified central coordinate
             std::array<int,6> critical_sites(const Coordinate& central_coord) const;
 
-            RockSaltOctahedraToggler(Structure&& init_struc, std::string anion_name, std::string cation_name, std::array<Coordinate,6>&& init_nn_deltas, std::unordered_map<index,int>&& init_cation_leashes);
+            ///Converts the given coordinate to the corresponding index within the Structure
+            index coordinate_to_index(const Coordinate& coordinate) const;
 
+            ///Retruns true if the given index exists as a possible cation site in the rocksalt structure
+            bool is_cation_index(index ix) const;
+
+            ///
+            void turn_cation_on(index ix);
+            void turn_cation_off(index ix);
+
+            ///Returns coordinates of the nearest neighbors for the given site index
+            std::array<Coordinate,6> nearest_site_coordinates(const Coordinate& central_coord) const;
+
+            ///For each of the given anion coordinates, increment their leashed count by 1
+            void increment_leashes(const std::array<Coordinate,6>& neighboring_anion_coords);
     };
 }
 #endif
