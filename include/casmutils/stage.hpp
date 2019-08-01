@@ -8,9 +8,18 @@
 #include "casmutils/structure.hpp"
 #include "casmutils/definitions.hpp"
 
+#include <casm/crystallography/Coordinate.hh>
 namespace Rewrap
 {
-    class Coordinate;
+    class Coordinate : public CASM::Coordinate
+    {
+        public:
+
+            Coordinate()=delete;
+            Coordinate(const CASM::Coordinate& init_coord):CASM::Coordinate(init_coord){}
+
+        private:
+    };
 }
 
 namespace SpecializedEnumeration
@@ -37,14 +46,17 @@ namespace SpecializedEnumeration
             ///Sets the central coordinate (center of octahedron) ON 
             ///along with its surrounding oxygen (or other specified anion)
             void activate(const Coordinate& central_coord);
+            void activate(index central_ix);
 
             ///Sets the central coordinate (center of octahedron ) OFF 
             ///along with its surrounding oxygen (or other specified anion),
             ///if they are not part of another octahedron
             void deactivate(const Coordinate& central_coord);
+            void deactivate(index central_ix);
 
             ///Calls activate/deactivate to reverse whether the octahedron is there or not
             void toggle(const Coordinate& central_coord);
+            void toggle(index central_ix);
 
             ///Sets all octahera ON
             void activate_all();
@@ -58,6 +70,9 @@ namespace SpecializedEnumeration
             ///Print the structure to a stream
             void print(std::ostream& out_stream) const;
 
+            ///Get list of available coordinates for centers of possible octahedra (cation sites)
+            std::vector<std::pair<index,Coordinate>> all_octahedron_center_coordinates() const;
+            
             ///Return the structure for the primitive rocksalt
             static Structure primitive_structure(std::pair<std::string,std::string> species_names, std::string central_specie);
 
@@ -94,6 +109,9 @@ namespace SpecializedEnumeration
 
             ///Retruns true if the given index exists as a possible cation site in the rocksalt structure
             bool is_cation_index(index ix) const;
+
+            ///Retruns true if the given index exists as a possible anion site in the rocksalt structure
+            bool is_anion_index(index ix) const;
 
             ///
             void turn_cation_on(index ix);
