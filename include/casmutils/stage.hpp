@@ -122,6 +122,7 @@ namespace SpecializedEnumeration
 
             ///For each of the given anion coordinates, increment their leashed count by 1
             void increment_leashes(const std::array<Coordinate,6>& neighboring_anion_coords);
+            void reduce_leashes(const std::array<Coordinate,6>& neighboring_anion_coords);
     };
 }
-#endif
+//accidentally erased something. I don't know what was here

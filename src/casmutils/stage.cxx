@@ -26,6 +26,27 @@ void RockSaltOctahedraToggler::activate(const Coordinate& central_coord)
     return;
 }
 
+
+void RockSaltOctahedraToggler::deactivate(const Coordinate& central_coord)
+{
+	auto central_coord_index = this->coordinate_to_index(central_coord);
+        if (!this->is_cation_index(central_coord_index))
+        {
+             throw UtilExcept::IncompatibleCoordinate();
+        }
+
+        if (!cation_is_on.at(central_coord_index))
+        {
+             return;
+        }
+       
+        this->turn_cation_off(central_coord_index);
+        auto nearest_anions = this->nearest_site_coordinates(central_coord);
+        this->reduce_leashes(nearest_anions);
+
+       return;
+}
+
 bool RockSaltOctahedraToggler::is_cation_index(index ix) const { return cation_is_on.find(ix) != cation_is_on.end(); }
 bool RockSaltOctahedraToggler::is_anion_index(index ix) const { return leashed_anions.find(ix) != leashed_anions.end(); }
 
@@ -54,5 +75,16 @@ void RockSaltOctahedraToggler::increment_leashes(const std::array<Coordinate, 6>
     }
     return;
 }
+
+void RockSaltOctahedraToggler::reduce_leashes(const std::array<Coordinate, 6>& neighboring_anion_coords)
+{
+    for(const auto& anion_coord : neighboring_anion_coords)
+    {
+        auto anion_ix=this->coordinate_to_index(anion_coord);
+        --leashed_anions[anion_ix];
+    }
+    return;
+}
+
 
 } // namespace SpecializedEnumeration
