@@ -1,9 +1,10 @@
 #include "casmutils/stage.hpp"
 #include "casmutils/exceptions.hpp"
+#include "CASMcode/src/casm/crystallography/Structure.cc" //I'm assuming?
 
 namespace
 {
-// Please never use this outisde of the RockSalt context
+ Please never use this outisde of the RockSalt context
 void set_site_occupant(CASM::Site* mutating_site, std::string new_occ)
 {
     if (new_occ == "Va")
@@ -203,9 +204,32 @@ RockSaltOctahedraToggler::Coordinate RockSaltOctahedraToggler::index_to_coordina
 RockSaltOctahedraToggler::Structure primitive_structure(std::pair<std::string, std::string> species_names,
                                                         std::string central_specie)
 {
-    //TODO: Muna with skk help maybe
-    //
-    //
+    
+	Lattice lat=Lattice::fcc(); 
+	Lattice scaled_lat=lat.scaled_lattice(0.5); //function in lattice.  Sclaing it by 0.5 because its a rocksalt
+        //make array of sites
+	Array<Site> bases;
+	Coordinate pos_central(0,0,0, scaled_lat, FRAC) //central atom will be at 0,0,0
+	Coordinate pos_vertex(0.5, 0.5, 0.5, scaled_lat, FRAC) //vertex atom will be at 0.5, 0.5, 0.5
+        Site central(pos_central, central_specie); //site requires posiition and specie name
+	 
+	Array<Site> placeholder;
+
+	if species_names.first==central_specie //not sure if vertex or central atom is first so gotta do this
+	{
+        Site vertex(pos_vertex, species_names.second);	
+	}
+	if species_names.second==central_specie
+        {
+        Site vertex(pos_vertex, species_names.first);
+        }
+        
+	placeholder.emplace(central); //placeholder is the array of sites and has the best name. It absolutely does not need to be changed
+        placeholder.emplace(vertex); 
+
+	Structure my_struc(scaled_lat); //constructing structure 
+	my_struc.set_basis(placeholder); //putting array of sites into structure
+	return my_struc;
 }
 
 RockSaltOctahedraToggler::Structure conventional_structure(std::pair<std::string, std::string> species_names,
@@ -264,6 +288,27 @@ std::array<RockSaltOctahedraToggler::Coordinate, 6> RockSaltOctahedraToggler::in
 std::unordered_map<RockSaltOctahedraToggler::index, bool>
 RockSaltOctahedraToggler::initialized_central_ion_is_on(const Structure& init_struc, std::string central_name)
 {
+    //
+       std::unordered_map<RockSaltOctahedraToggler::index, bool> initialized_map; 
+       for (i=0; i<init_struc.basis.size(); i++)
+       {
+            if init_struc.basis[i].contains(central_name)
+	    {
+		  //
+		    initialized_map.emplace(i, false); //or something
+            }
+       }
+        
+       return initialized_map;
+       //for(i=0;  i<structure_species(i); i++){  //so... would this give the size of the entire basis set or just the number of different species there are?
+	//       if central_name==structure_species[i]{
+                //      map.emplace(i, "FALSE");
+	  
+       
+       //sooo..... does this return the mapping?    
+       
+       //somehow order the species correctly? Which is hard since get_num_each_species only returns the species without what they are...
+
     //TODO: Muna
     // this should return a map<index,bool> that
     // has an index for every available central coordinate
@@ -273,6 +318,18 @@ RockSaltOctahedraToggler::initialized_central_ion_is_on(const Structure& init_st
 std::unordered_map<RockSaltOctahedraToggler::index, int>
 RockSaltOctahedraToggler::initialized_leashed_vertex_ions(const Structure& init_struc, std::string vertex_name)
 {
+       //I don't like this 
+       std::unordered_map<RockSaltOctahedraToggler::index, bool> initialized_map; //initialized_map
+       for (i=0; i<init_struc.basis.size(); i++)      //through the space of the basis in init_struc which is apparently a function in BasiStructure and therefore Structure
+       {
+            if init_struc.basis[i].contains(vertex_name) // if basis is one of the vertex atoms
+            {
+                  //
+                    initialized_map.emplace(i, 0); //add these to the map
+            }
+       }
+       return initialized_map;
+
     //TODO: Muna
     // this should return a map<index,int> that
     // has an index for every available vertex coordinate
