@@ -190,6 +190,16 @@ RockSaltOctahedraToggler::index RockSaltOctahedraToggler::coordinate_to_index(co
     //Go through the basis of the structure
     //and find out which basis index the
     //given coordinate corresponds to
+    //
+    auto b = this->rocksalt_structure.basis; 
+    for (int xi = 0; xi < size(b); ++xi)
+	{ 
+		if (b[xi] == coordinate)
+		{
+			return xi;
+		}
+	}
+    //Throw Exception if it exits loop without finding coordinate
 }
 
 RockSaltOctahedraToggler::Coordinate RockSaltOctahedraToggler::index_to_coordinate(index coordinate_index) const
@@ -259,6 +269,22 @@ std::array<RockSaltOctahedraToggler::Coordinate, 6> RockSaltOctahedraToggler::in
     // set of coordinates that take you from the central coordinate (center of octahedron)
     // to the six nearest nearest neighbor sites
     // hint: these are the coordinates of the 6 sites surrounding the origin
+    //
+	double d = RockSaltOctahedraToggler::nearest_neighbor_distance();
+	//need a lattice for the coordinate type
+	auto lat = ::CASM::Lattice::fcc();	
+	//the fcc lattice may need to be scaled to match the lattice of the rocksalt sturcture
+        auto rslat = lat.scaled_lattice(0.5);
+	//need to CART type for coordinate, but this syntax is giving compiling errors...
+	auto mode = RockSaltOctahedraToggler::Coordinate::COORD_TYPE CART;
+	std::array<RockSaltOctahedraToggler::Coordinate, 6> deltas = {RockSaltOctahedraToggler::Coordinate (d, 0.0, 0.0, rslat, mode),
+		(0.0, d, 0.0, rslat, mode),
+		(0.0, 0.0, d, rslat, mode),
+		(-1*d, 0.0, 0.0, rslat, mode),
+		(0.0, -1*d, 0.0, rslat, mode),
+		(0.0, 0.0, -1*d, rslat, mode)};
+
+	return deltas;
 }
 
 std::unordered_map<RockSaltOctahedraToggler::index, bool>
