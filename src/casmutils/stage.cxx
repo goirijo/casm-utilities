@@ -186,39 +186,35 @@ void RockSaltOctahedraToggler::commit_vertex_ions() const
 
 RockSaltOctahedraToggler::index RockSaltOctahedraToggler::coordinate_to_index(const Coordinate& coordinate) const
 {
-    //TODO: Colleen
-    //Go through the basis of the structure
-    //and find out which basis index the
-    //given coordinate corresponds to
-    //
-    auto b = this->rocksalt_structure.basis; 
-    for (int xi = 0; xi < size(b); ++xi)
-	{ 
-		if (b[xi] == coordinate)
-		{
-			return xi;
-		}
-	}
-    //Throw Exception if it exits loop without finding coordinate
+    // Go through the basis of the structure
+    // and find out which basis index the
+    // given coordinate corresponds to
+    const auto& basis=this->rocksalt_struc.basis;
+    for(int ix=0; ix<basis.size(); ++ix)
+    {
+        if (static_cast<CASM::Coordinate>(basis[ix]) == coordinate)
+        {
+            return ix;
+        }
+    }
+
+    throw UtilExcept::IncompatibleCoordinate();
 }
 
 RockSaltOctahedraToggler::Coordinate RockSaltOctahedraToggler::index_to_coordinate(index coordinate_index) const
 {
-
-
-
-	CASM::Site coord=rocksalt_struc.basis[coordinate_index] ;
-		    return coord;
-    //TODO: Farnaz
-    //Go through the basis of the structure
-    //and find out which coordinate the
-    //given index corresponds to
+    // Go through the basis of the structure
+    // and find out which coordinate the
+    // given index corresponds to
+    CASM::Site coord = rocksalt_struc.basis[coordinate_index];
+    return coord;
+    //TODO: explicitly cast for clairty?
 }
 
 RockSaltOctahedraToggler::Structure primitive_structure(std::pair<std::string, std::string> species_names,
                                                         std::string central_specie)
 {
-    //TODO: Muna with skk help maybe
+    // TODO: Muna with skk help maybe
     //
     //
 }
@@ -226,8 +222,8 @@ RockSaltOctahedraToggler::Structure primitive_structure(std::pair<std::string, s
 RockSaltOctahedraToggler::Structure conventional_structure(std::pair<std::string, std::string> species_names,
                                                            std::string central_specie)
 {
-    //get the primitive,
-    //apply trasnformation matrix
+    // get the primitive,
+    // apply trasnformation matrix
 }
 
 RockSaltOctahedraToggler RockSaltOctahedraToggler::relative_to_primitive(
@@ -260,13 +256,12 @@ RockSaltOctahedraToggler::RockSaltOctahedraToggler(Structure&& init_struc, std::
                                                    std::array<Coordinate, 6>&& init_nn_deltas,
                                                    std::unordered_map<index, bool>&& init_central_is_on,
                                                    std::unordered_map<index, int>&& init_leashes)
-:
-rocksalt_struc(init_struc),
-central_ion_name(init_central_name),
-vertex_ion_name(init_vertex_name),
-nearest_neighbor_deltas(init_nn_deltas),
-central_ion_is_on(init_central_is_on),
-leashed_vertex_ions(init_leashes)	
+    : rocksalt_struc(init_struc),
+      central_ion_name(init_central_name),
+      vertex_ion_name(init_vertex_name),
+      nearest_neighbor_deltas(init_nn_deltas),
+      central_ion_is_on(init_central_is_on),
+      leashed_vertex_ions(init_leashes)
 {
     // TODO: Farnaz do this
     // hint: nothing goes inside here
@@ -277,32 +272,33 @@ double RockSaltOctahedraToggler::nearest_neighbor_distance() { return 0.5; }
 
 std::array<RockSaltOctahedraToggler::Coordinate, 6> RockSaltOctahedraToggler::initialized_nearest_neighbor_deltas()
 {
-    //TODO: Colleen
+    // TODO: Colleen
     // set of coordinates that take you from the central coordinate (center of octahedron)
     // to the six nearest nearest neighbor sites
     // hint: these are the coordinates of the 6 sites surrounding the origin
     //
-	double d = RockSaltOctahedraToggler::nearest_neighbor_distance();
-	//need a lattice for the coordinate type
-	auto lat = ::CASM::Lattice::fcc();	
-	//the fcc lattice may need to be scaled to match the lattice of the rocksalt sturcture
-        auto rslat = lat.scaled_lattice(0.5);
-	//need to CART type for coordinate, but this syntax is giving compiling errors...
-	auto mode = RockSaltOctahedraToggler::Coordinate::COORD_TYPE CART;
-	std::array<RockSaltOctahedraToggler::Coordinate, 6> deltas = {RockSaltOctahedraToggler::Coordinate (d, 0.0, 0.0, rslat, mode),
-		(0.0, d, 0.0, rslat, mode),
-		(0.0, 0.0, d, rslat, mode),
-		(-1*d, 0.0, 0.0, rslat, mode),
-		(0.0, -1*d, 0.0, rslat, mode),
-		(0.0, 0.0, -1*d, rslat, mode)};
+    double d = RockSaltOctahedraToggler::nearest_neighbor_distance();
+    // need a lattice for the coordinate type
+    auto lat = ::CASM::Lattice::fcc();
+    // the fcc lattice may need to be scaled to match the lattice of the rocksalt sturcture
+    auto rslat = lat.scaled_lattice(0.5);
+    // need to CART type for coordinate, but this syntax is giving compiling errors...
+    auto mode = RockSaltOctahedraToggler::Coordinate::COORD_TYPE CART;
+    std::array<RockSaltOctahedraToggler::Coordinate, 6> deltas = {
+        RockSaltOctahedraToggler::Coordinate(d, 0.0, 0.0, rslat, mode),
+        (0.0, d, 0.0, rslat, mode),
+        (0.0, 0.0, d, rslat, mode),
+        (-1 * d, 0.0, 0.0, rslat, mode),
+        (0.0, -1 * d, 0.0, rslat, mode),
+        (0.0, 0.0, -1 * d, rslat, mode)};
 
-	return deltas;
+    return deltas;
 }
 
 std::unordered_map<RockSaltOctahedraToggler::index, bool>
 RockSaltOctahedraToggler::initialized_central_ion_is_on(const Structure& init_struc, std::string central_name)
 {
-    //TODO: Muna
+    // TODO: Muna
     // this should return a map<index,bool> that
     // has an index for every available central coordinate
     // and all values set to false
@@ -311,7 +307,7 @@ RockSaltOctahedraToggler::initialized_central_ion_is_on(const Structure& init_st
 std::unordered_map<RockSaltOctahedraToggler::index, int>
 RockSaltOctahedraToggler::initialized_leashed_vertex_ions(const Structure& init_struc, std::string vertex_name)
 {
-    //TODO: Muna
+    // TODO: Muna
     // this should return a map<index,int> that
     // has an index for every available vertex coordinate
     // and all values set to 0
