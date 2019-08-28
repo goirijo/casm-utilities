@@ -139,4 +139,5 @@ namespace SpecializedEnumeration
             static std::unordered_map<index,int> initialized_leashed_vertex_ions(const Structure& init_struc, std::string vertex_name);
     };
 }
-//accidentally erased something. I don't know what was here
+
+#endif
