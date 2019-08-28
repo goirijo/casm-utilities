@@ -204,6 +204,11 @@ RockSaltOctahedraToggler::index RockSaltOctahedraToggler::coordinate_to_index(co
 
 RockSaltOctahedraToggler::Coordinate RockSaltOctahedraToggler::index_to_coordinate(index coordinate_index) const
 {
+
+
+
+	CASM::Site coord=rocksalt_struc.basis[coordinate_index] ;
+		    return coord;
     //TODO: Farnaz
     //Go through the basis of the structure
     //and find out which coordinate the
@@ -255,6 +260,13 @@ RockSaltOctahedraToggler::RockSaltOctahedraToggler(Structure&& init_struc, std::
                                                    std::array<Coordinate, 6>&& init_nn_deltas,
                                                    std::unordered_map<index, bool>&& init_central_is_on,
                                                    std::unordered_map<index, int>&& init_leashes)
+:
+rocksalt_struc(init_struc),
+central_ion_name(init_central_name),
+vertex_ion_name(init_vertex_name),
+nearest_neighbor_deltas(init_nn_deltas),
+central_ion_is_on(init_central_is_on),
+leashed_vertex_ions(init_leashes)	
 {
     // TODO: Farnaz do this
     // hint: nothing goes inside here
