@@ -1,11 +1,12 @@
 #include "casmutils/stage.hpp"
+#include "casmutils/lattice.hpp"
+#include "casm/crystallography/Structure.hh"
 #include "casmutils/exceptions.hpp"
-#include "CASMcode/src/casm/crystallography/Structure.cc" //I'm assuming?
 
 namespace
 {
- Please never use this outisde of the RockSalt context
-void set_site_occupant(CASM::Site* mutating_site, std::string new_occ)
+Please never use this outisde of the RockSalt context void set_site_occupant(CASM::Site* mutating_site,
+                                                                             std::string new_occ)
 {
     if (new_occ == "Va")
     {
@@ -19,6 +20,24 @@ void set_site_occupant(CASM::Site* mutating_site, std::string new_occ)
     }
 }
 } // namespace
+
+//TODO: CAPS??
+namespace Extend
+{
+    CASM::Site multi_atomic_site(const CASM::Coordinate& coord, const std::vector<std::string>& allowed_species)
+    {
+        CASM::Array<CASM::Molecule> allowed_molecules;
+        for(auto specie : allowed_species)
+        {
+            allowed_molecules.push_back(make_atom(specie, coord.home()));
+        }
+
+        CASM::Site site(coord, "");
+        site.set_site_occupant(allowed_molecules);
+
+        return site;
+    }
+}
 
 namespace SpecializedEnumeration
 {
@@ -190,8 +209,8 @@ RockSaltOctahedraToggler::index RockSaltOctahedraToggler::coordinate_to_index(co
     // Go through the basis of the structure
     // and find out which basis index the
     // given coordinate corresponds to
-    const auto& basis=this->rocksalt_struc.basis;
-    for(int ix=0; ix<basis.size(); ++ix)
+    const auto& basis = this->rocksalt_struc.basis;
+    for (int ix = 0; ix < basis.size(); ++ix)
     {
         if (static_cast<CASM::Coordinate>(basis[ix]) == coordinate)
         {
@@ -209,37 +228,34 @@ RockSaltOctahedraToggler::Coordinate RockSaltOctahedraToggler::index_to_coordina
     // given index corresponds to
     CASM::Site coord = rocksalt_struc.basis[coordinate_index];
     return coord;
-    //TODO: explicitly cast for clairty?
+    // TODO: explicitly cast for clairty?
 }
 
-RockSaltOctahedraToggler::Structure primitive_structure(std::pair<std::string, std::string> species_names,
-                                                        std::string central_specie)
+RockSaltOctahedraToggler::Structure
+RockSaltOctahedraToggler::primitive_structure(std::pair<std::string, std::string> species_names)
 {
-	Lattice lat=Lattice::fcc(); 
-	Lattice scaled_lat=lat.scaled_lattice(0.5); //function in lattice.  Sclaing it by 0.5 because its a rocksalt
-        //make array of sites
-	Array<Site> bases;
-	Coordinate pos_central(0,0,0, scaled_lat, FRAC) //central atom will be at 0,0,0
-	Coordinate pos_vertex(0.5, 0.5, 0.5, scaled_lat, FRAC) //vertex atom will be at 0.5, 0.5, 0.5
-        Site central(pos_central, central_specie); //site requires posiition and specie name
-	 
-	Array<Site> placeholder;
+    const auto& central_ion_name=species_names.first;
+    const auto& vertex_ion_name=species_names.second;
 
-	if species_names.first==central_specie //not sure if vertex or central atom is first so gotta do this
-	{
-        Site vertex(pos_vertex, species_names.second);	
-	}
-	if species_names.second==central_specie
-        {
-        Site vertex(pos_vertex, species_names.first);
-        }
-        
-	placeholder.emplace(central); //placeholder is the array of sites and has the best name. It absolutely does not need to be changed
-        placeholder.emplace(vertex); 
+    auto nn_distance=RockSaltOctahedraToggler::nearest_neighbor_distance();
+    auto lat = CASM::Lattice::fcc();
+    auto scaled_lat = lat.scaled_lattice(nn_distance);
 
-	Structure my_struc(scaled_lat); //constructing structure 
-	my_struc.set_basis(placeholder); //putting array of sites into structure
-	return my_struc;
+    CASM::Array<CASM::Site> basis;
+
+    CASM::Coordinate pos_central(0, 0, 0, scaled_lat, CASM::FRAC);
+    CASM::Coordinate pos_vertex(0.5, 0.5, 0.5, scaled_lat, CASM::FRAC);
+
+    auto central_site=Extend::multi_atomic_site(pos_central,std::vector<std::string>{central_ion_name,"Va"});
+    auto vertex_site=Extend::multi_atomic_site(pos_vertex,std::vector<std::string>{vertex_ion_name,"Va"});
+
+    basis.push_back(central_site);
+    basis.push_back(vertex_site);
+
+    CASM::Structure primitive_structure(scaled_lat);
+    primitive_structure.set_basis(basis);
+
+    return primitive_structure;
 }
 
 RockSaltOctahedraToggler::Structure conventional_structure(std::pair<std::string, std::string> species_names,
@@ -259,9 +275,10 @@ RockSaltOctahedraToggler RockSaltOctahedraToggler::relative_to_primitive(
 
     auto prim_struc = primitive_structure(species_names);
     auto super_struc = Simplicity::make_super_structure(prim_struc, trans_mat);
+    auto super_lattice = super_struc.lattice();
 
     return RockSaltOctahedraToggler(std::move(super_struc), species_names.first, species_names.second,
-                                    initialized_nearest_neighbor_deltas(),
+                                    initialized_nearest_neighbor_deltas(super_lattice),
                                     initialized_central_ion_is_on(super_struc, species_names.first),
                                     initialized_leashed_vertex_ions(super_struc, species_names.second));
 }
@@ -286,34 +303,23 @@ RockSaltOctahedraToggler::RockSaltOctahedraToggler(Structure&& init_struc, std::
       central_ion_is_on(init_central_is_on),
       leashed_vertex_ions(init_leashes)
 {
-    // TODO: Farnaz do this
-    // hint: nothing goes inside here
-    // hint 2: google initialization list
 }
 
 double RockSaltOctahedraToggler::nearest_neighbor_distance() { return 0.5; }
 
-std::array<RockSaltOctahedraToggler::Coordinate, 6> RockSaltOctahedraToggler::initialized_nearest_neighbor_deltas()
+std::array<RockSaltOctahedraToggler::Coordinate, 6>
+RockSaltOctahedraToggler::initialized_nearest_neighbor_deltas(const Lattice& rocksalt_lattice)
 {
-    // TODO: Colleen
     // set of coordinates that take you from the central coordinate (center of octahedron)
     // to the six nearest nearest neighbor sites
-    // hint: these are the coordinates of the 6 sites surrounding the origin
-    //
     double d = RockSaltOctahedraToggler::nearest_neighbor_distance();
     // need a lattice for the coordinate type
-    auto lat = ::CASM::Lattice::fcc();
-    // the fcc lattice may need to be scaled to match the lattice of the rocksalt sturcture
-    auto rslat = lat.scaled_lattice(0.5);
     // need to CART type for coordinate, but this syntax is giving compiling errors...
     auto mode = RockSaltOctahedraToggler::Coordinate::COORD_TYPE CART;
     std::array<RockSaltOctahedraToggler::Coordinate, 6> deltas = {
-        RockSaltOctahedraToggler::Coordinate(d, 0.0, 0.0, rslat, mode),
-        (0.0, d, 0.0, rslat, mode),
-        (0.0, 0.0, d, rslat, mode),
-        (-1 * d, 0.0, 0.0, rslat, mode),
-        (0.0, -1 * d, 0.0, rslat, mode),
-        (0.0, 0.0, -1 * d, rslat, mode)};
+        (d, 0.0, 0.0, rocksalt_lattice, mode),      (0.0, d, 0.0, rocksalt_lattice, mode),
+        (0.0, 0.0, d, rocksalt_lattice, mode),      (-1 * d, 0.0, 0.0, rocksalt_lattice, mode),
+        (0.0, -1 * d, 0.0, rocksalt_lattice, mode), (0.0, 0.0, -1 * d, rocksalt_lattice, mode)};
 
     return deltas;
 }
@@ -321,52 +327,32 @@ std::array<RockSaltOctahedraToggler::Coordinate, 6> RockSaltOctahedraToggler::in
 std::unordered_map<RockSaltOctahedraToggler::index, bool>
 RockSaltOctahedraToggler::initialized_central_ion_is_on(const Structure& init_struc, std::string central_name)
 {
-    //
-       std::unordered_map<RockSaltOctahedraToggler::index, bool> initialized_map; 
-       for (i=0; i<init_struc.basis.size(); i++)
-       {
-            if init_struc.basis[i].contains(central_name)
-	    {
-		  //
-		    initialized_map.emplace(i, false); //or something
-            }
-       }
-        
-       return initialized_map;
-       //for(i=0;  i<structure_species(i); i++){  //so... would this give the size of the entire basis set or just the number of different species there are?
-	//       if central_name==structure_species[i]{
-                //      map.emplace(i, "FALSE");
-	  
-       
-       //sooo..... does this return the mapping?    
-       
-       //somehow order the species correctly? Which is hard since get_num_each_species only returns the species without what they are...
+    std::unordered_map<RockSaltOctahedraToggler::index, bool> initialized_map;
+    // TODO: range based loop
+    for (i = 0; i < init_struc.basis.size(); i++)
+    {
+        if (init_struc.basis[i].contains(central_name))
+        {
+            initialized_map[i] = false;
+        }
+    }
 
-    //TODO: Muna
-    // this should return a map<index,bool> that
-    // has an index for every available central coordinate
-    // and all values set to false
+    return initialized_map;
 }
 
 std::unordered_map<RockSaltOctahedraToggler::index, int>
 RockSaltOctahedraToggler::initialized_leashed_vertex_ions(const Structure& init_struc, std::string vertex_name)
 {
-       //I don't like this 
-       std::unordered_map<RockSaltOctahedraToggler::index, bool> initialized_map; //initialized_map
-       for (i=0; i<init_struc.basis.size(); i++)      //through the space of the basis in init_struc which is apparently a function in BasiStructure and therefore Structure
-       {
-            if init_struc.basis[i].contains(vertex_name) // if basis is one of the vertex atoms
-            {
-                  //
-                    initialized_map.emplace(i, 0); //add these to the map
-            }
-       }
-       return initialized_map;
-
-    //TODO: Muna
-    // this should return a map<index,int> that
-    // has an index for every available vertex coordinate
-    // and all values set to 0
+    // I don't like this
+    std::unordered_map<RockSaltOctahedraToggler::index, bool> initialized_map;
+    for (i = 0; i < init_struc.basis.size(); i++)
+    {
+        if (init_struc.basis[i].contains(vertex_name)) // if basis is one of the vertex atoms
+        {
+            initialized_map[i] = 0;
+        }
+    }
+    return initialized_map;
 }
 
 } // namespace SpecializedEnumeration

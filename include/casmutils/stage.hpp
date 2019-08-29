@@ -134,7 +134,8 @@ namespace SpecializedEnumeration
 
             //helper functions for constructor
             static double nearest_neighbor_distance();
-            static std::array<Coordinate,6> initialized_nearest_neighbor_deltas();
+            static double primitive_lattice_scale_factor();
+            static std::array<Coordinate,6> initialized_nearest_neighbor_deltas(const Lattice& rocksalt_lattice);
             static std::unordered_map<index,bool> initialized_central_ion_is_on(const Structure& init_struc, std::string central_name);
             static std::unordered_map<index,int> initialized_leashed_vertex_ions(const Structure& init_struc, std::string vertex_name);
     };
