@@ -1,12 +1,11 @@
 #include "casmutils/stage.hpp"
-#include "casmutils/lattice.hpp"
 #include "casm/crystallography/Structure.hh"
 #include "casmutils/exceptions.hpp"
 
 namespace
 {
-Please never use this outisde of the RockSalt context void set_site_occupant(CASM::Site* mutating_site,
-                                                                             std::string new_occ)
+// Please never use this outisde of the RockSalt context
+void set_site_occupant(CASM::Site* mutating_site, std::string new_occ)
 {
     if (new_occ == "Va")
     {
@@ -21,23 +20,24 @@ Please never use this outisde of the RockSalt context void set_site_occupant(CAS
 }
 } // namespace
 
-//TODO: CAPS??
+// TODO: CAPS??
 namespace Extend
 {
-    CASM::Site multi_atomic_site(const CASM::Coordinate& coord, const std::vector<std::string>& allowed_species)
+CASM::Site multi_atomic_site(const CASM::Coordinate& coord, const std::vector<std::string>& allowed_species)
+{
+    CASM::Array<CASM::Molecule> allowed_molecules;
+    for (auto specie : allowed_species)
     {
-        CASM::Array<CASM::Molecule> allowed_molecules;
-        for(auto specie : allowed_species)
-        {
-            allowed_molecules.push_back(make_atom(specie, coord.home()));
-        }
-
-        CASM::Site site(coord, "");
-        site.set_site_occupant(allowed_molecules);
-
-        return site;
+        //make_atom returns a molecule lol
+        allowed_molecules.push_back(make_atom(specie, coord.home()));
     }
+
+    CASM::Site site(coord, "");
+    site.set_site_occupant(allowed_molecules);
+
+    return site;
 }
+} // namespace Extend
 
 namespace SpecializedEnumeration
 {
@@ -234,10 +234,10 @@ RockSaltOctahedraToggler::Coordinate RockSaltOctahedraToggler::index_to_coordina
 RockSaltOctahedraToggler::Structure
 RockSaltOctahedraToggler::primitive_structure(std::pair<std::string, std::string> species_names)
 {
-    const auto& central_ion_name=species_names.first;
-    const auto& vertex_ion_name=species_names.second;
+    const auto& central_ion_name = species_names.first;
+    const auto& vertex_ion_name = species_names.second;
 
-    auto nn_distance=RockSaltOctahedraToggler::nearest_neighbor_distance();
+    auto nn_distance = RockSaltOctahedraToggler::nearest_neighbor_distance();
     auto lat = CASM::Lattice::fcc();
     auto scaled_lat = lat.scaled_lattice(nn_distance);
 
@@ -246,8 +246,8 @@ RockSaltOctahedraToggler::primitive_structure(std::pair<std::string, std::string
     CASM::Coordinate pos_central(0, 0, 0, scaled_lat, CASM::FRAC);
     CASM::Coordinate pos_vertex(0.5, 0.5, 0.5, scaled_lat, CASM::FRAC);
 
-    auto central_site=Extend::multi_atomic_site(pos_central,std::vector<std::string>{central_ion_name,"Va"});
-    auto vertex_site=Extend::multi_atomic_site(pos_vertex,std::vector<std::string>{vertex_ion_name,"Va"});
+    auto central_site = Extend::multi_atomic_site(pos_central, std::vector<std::string>{central_ion_name, "Va"});
+    auto vertex_site = Extend::multi_atomic_site(pos_vertex, std::vector<std::string>{vertex_ion_name, "Va"});
 
     basis.push_back(central_site);
     basis.push_back(vertex_site);
@@ -315,11 +315,14 @@ RockSaltOctahedraToggler::initialized_nearest_neighbor_deltas(const Lattice& roc
     double d = RockSaltOctahedraToggler::nearest_neighbor_distance();
     // need a lattice for the coordinate type
     // need to CART type for coordinate, but this syntax is giving compiling errors...
-    auto mode = RockSaltOctahedraToggler::Coordinate::COORD_TYPE CART;
+    auto mode = CASM::CART;
     std::array<RockSaltOctahedraToggler::Coordinate, 6> deltas = {
-        (d, 0.0, 0.0, rocksalt_lattice, mode),      (0.0, d, 0.0, rocksalt_lattice, mode),
-        (0.0, 0.0, d, rocksalt_lattice, mode),      (-1 * d, 0.0, 0.0, rocksalt_lattice, mode),
-        (0.0, -1 * d, 0.0, rocksalt_lattice, mode), (0.0, 0.0, -1 * d, rocksalt_lattice, mode)};
+        CASM::Coordinate(d, 0.0, 0.0, rocksalt_lattice, mode),
+        CASM::Coordinate(0.0, d, 0.0, rocksalt_lattice, mode),
+        CASM::Coordinate(0.0, 0.0, d, rocksalt_lattice, mode),
+        CASM::Coordinate(-1 * d, 0.0, 0.0, rocksalt_lattice, mode),
+        CASM::Coordinate(0.0, -1 * d, 0.0, rocksalt_lattice, mode),
+        CASM::Coordinate(0.0, 0.0, -1 * d, rocksalt_lattice, mode)};
 
     return deltas;
 }
@@ -329,7 +332,7 @@ RockSaltOctahedraToggler::initialized_central_ion_is_on(const Structure& init_st
 {
     std::unordered_map<RockSaltOctahedraToggler::index, bool> initialized_map;
     // TODO: range based loop
-    for (i = 0; i < init_struc.basis.size(); i++)
+    for (int i = 0; i < init_struc.basis.size(); i++)
     {
         if (init_struc.basis[i].contains(central_name))
         {
@@ -344,8 +347,8 @@ std::unordered_map<RockSaltOctahedraToggler::index, int>
 RockSaltOctahedraToggler::initialized_leashed_vertex_ions(const Structure& init_struc, std::string vertex_name)
 {
     // I don't like this
-    std::unordered_map<RockSaltOctahedraToggler::index, bool> initialized_map;
-    for (i = 0; i < init_struc.basis.size(); i++)
+    std::unordered_map<RockSaltOctahedraToggler::index, int> initialized_map;
+    for (int i = 0; i < init_struc.basis.size(); i++)
     {
         if (init_struc.basis[i].contains(vertex_name)) // if basis is one of the vertex atoms
         {

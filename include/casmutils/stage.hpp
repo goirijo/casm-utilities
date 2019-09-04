@@ -3,9 +3,11 @@
 
 #include <utility>
 #include <string>
+#include <unordered_map>
 
 #include "casmutils/definitions.hpp"
 #include "casmutils/structure.hpp"
+#include "casmutils/lattice.hpp"
 #include "casmutils/definitions.hpp"
 
 #include <casm/crystallography/Coordinate.hh>
@@ -29,6 +31,7 @@ namespace SpecializedEnumeration
         public:
             typedef Rewrap::Coordinate Coordinate;
             typedef Rewrap::Structure Structure;
+            typedef Rewrap::Lattice Lattice;
             typedef int index;
 
             ///Construct with a transformation matrix relative to the primitive structure.
@@ -47,23 +50,20 @@ namespace SpecializedEnumeration
             ///along with its surrounding oxygen (or other specified anion)
             void activate(const Coordinate& central_coord);
             void activate(index central_ix);
+            ///Sets all octahera ON
+            void activate_all();
 
             ///Sets the central coordinate (center of octahedron ) OFF 
             ///along with its surrounding oxygen (or other specified anion),
             ///if they are not part of another octahedron
             void deactivate(const Coordinate& central_coord);
             void deactivate(index central_ix);
+            ///Sets all octahera OFF
+            void deactivate_all();
 
             ///Calls activate/deactivate to reverse whether the octahedron is there or not
             void toggle(const Coordinate& central_coord);
             void toggle(index central_ix);
-
-            ///Sets all octahera ON
-            void activate_all();
-            
-            ///Sets all octahera OFF
-            void deactivate_all();
-            
             ///Calls activate/deactivate to reverse whether the octahedron is there or not on every octahedron
             void toggle_all();
 
