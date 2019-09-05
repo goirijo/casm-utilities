@@ -28,7 +28,7 @@ CASM::Site multi_atomic_site(const CASM::Coordinate& coord, const std::vector<st
     CASM::Array<CASM::Molecule> allowed_molecules;
     for (auto specie : allowed_species)
     {
-        //make_atom returns a molecule lol
+        // make_atom returns a molecule lol
         allowed_molecules.push_back(make_atom(specie, coord.home()));
     }
 
@@ -38,6 +38,28 @@ CASM::Site multi_atomic_site(const CASM::Coordinate& coord, const std::vector<st
     return site;
 }
 } // namespace Extend
+
+namespace Rewrap
+{
+Coordinate Coordinate::from_fractional(const Eigen::Vector3d& frac_coord, const Rewrap::Lattice& lat)
+{
+    CASM::Coordinate coord(frac_coord, lat, CASM::FRAC);
+    return Coordinate(coord);
+}
+
+Coordinate Coordinate::from_fractional(double x, double y, double z, const Rewrap::Lattice& lat) {}
+
+//*******************//
+
+Eigen::Vector3d Coordinate::cart() const { return this->casm_coord.cart(); }
+
+Eigen::Vector3d Coordinate::frac(const Rewrap::Lattice& ref_lattice) const
+{
+    const_cast<CASM::Coordinate*>(&this->casm_coord)->set_lattice(ref_lattice, CASM::CART);
+    return this->casm_coord.frac();
+}
+
+} // namespace Rewrap
 
 namespace SpecializedEnumeration
 {
@@ -238,23 +260,21 @@ RockSaltOctahedraToggler::primitive_structure(std::pair<std::string, std::string
     const auto& vertex_ion_name = species_names.second;
 
     auto nn_distance = RockSaltOctahedraToggler::nearest_neighbor_distance();
-    auto lat = CASM::Lattice::fcc();
+    auto lat = Rewrap::Lattice::fcc();
     auto scaled_lat = lat.scaled_lattice(nn_distance);
 
-    CASM::Array<CASM::Site> basis;
+    std::vector<Rewrap::Site> basis;
 
-    CASM::Coordinate pos_central(0, 0, 0, scaled_lat, CASM::FRAC);
-    CASM::Coordinate pos_vertex(0.5, 0.5, 0.5, scaled_lat, CASM::FRAC);
+    Rewrap::Coordinate pos_central = Rewrap::Coordinate::frac(0, 0, 0, scaled_lat);
+    Rewrap::Coordinate pos_vertex = Rewrap::Coordinate::frac(0.5, 0.5, 0.5, scaled_lat);
 
-    auto central_site = Extend::multi_atomic_site(pos_central, std::vector<std::string>{central_ion_name, "Va"});
-    auto vertex_site = Extend::multi_atomic_site(pos_vertex, std::vector<std::string>{vertex_ion_name, "Va"});
+    Rewrap::Site central_site(pos_central, std::vector<std::string>{central_ion_name, "Va"});
+    Rewrap::Site vertex_site(pos_vertex, std::vector<std::string>{vertex_ion_name, "Va"});
 
     basis.push_back(central_site);
     basis.push_back(vertex_site);
 
-    CASM::Structure primitive_structure(scaled_lat);
-    primitive_structure.set_basis(basis);
-
+    Rewrap::Structure primitive_structure(scaled_lat, basis);
     return primitive_structure;
 }
 
@@ -275,10 +295,9 @@ RockSaltOctahedraToggler RockSaltOctahedraToggler::relative_to_primitive(
 
     auto prim_struc = primitive_structure(species_names);
     auto super_struc = Simplicity::make_super_structure(prim_struc, trans_mat);
-    auto super_lattice = super_struc.lattice();
 
     return RockSaltOctahedraToggler(std::move(super_struc), species_names.first, species_names.second,
-                                    initialized_nearest_neighbor_deltas(super_lattice),
+                                    initialized_nearest_neighbor_deltas(),
                                     initialized_central_ion_is_on(super_struc, species_names.first),
                                     initialized_leashed_vertex_ions(super_struc, species_names.second));
 }
@@ -307,22 +326,17 @@ RockSaltOctahedraToggler::RockSaltOctahedraToggler(Structure&& init_struc, std::
 
 double RockSaltOctahedraToggler::nearest_neighbor_distance() { return 0.5; }
 
-std::array<RockSaltOctahedraToggler::Coordinate, 6>
-RockSaltOctahedraToggler::initialized_nearest_neighbor_deltas(const Lattice& rocksalt_lattice)
+std::array<RockSaltOctahedraToggler::Coordinate, 6> RockSaltOctahedraToggler::initialized_nearest_neighbor_deltas()
 {
     // set of coordinates that take you from the central coordinate (center of octahedron)
     // to the six nearest nearest neighbor sites
     double d = RockSaltOctahedraToggler::nearest_neighbor_distance();
     // need a lattice for the coordinate type
     // need to CART type for coordinate, but this syntax is giving compiling errors...
-    auto mode = CASM::CART;
     std::array<RockSaltOctahedraToggler::Coordinate, 6> deltas = {
-        CASM::Coordinate(d, 0.0, 0.0, rocksalt_lattice, mode),
-        CASM::Coordinate(0.0, d, 0.0, rocksalt_lattice, mode),
-        CASM::Coordinate(0.0, 0.0, d, rocksalt_lattice, mode),
-        CASM::Coordinate(-1 * d, 0.0, 0.0, rocksalt_lattice, mode),
-        CASM::Coordinate(0.0, -1 * d, 0.0, rocksalt_lattice, mode),
-        CASM::Coordinate(0.0, 0.0, -1 * d, rocksalt_lattice, mode)};
+        Rewrap::Coordinate::cart(d, 0.0, 0.0),      Rewrap::Coordinate::cart(0.0, d, 0.0),
+        Rewrap::Coordinate::cart(0.0, 0.0, d),      Rewrap::Coordinate::cart(-1 * d, 0.0, 0.0),
+        Rewrap::Coordinate::cart(0.0, -1 * d, 0.0), Rewrap::Coordinate::cart(0.0, 0.0, -1 * d)};
 
     return deltas;
 }
