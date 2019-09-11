@@ -18,6 +18,9 @@ namespace Rewrap
             Lattice() = delete;
             Lattice(const CASM::Lattice& init_lat);
 
+            ///Return *this as a CASM::Lattice
+            const CASM::Lattice& __get() const {return *this;};
+
         private:
     };
 }

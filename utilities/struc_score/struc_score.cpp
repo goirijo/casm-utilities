@@ -1,6 +1,7 @@
 #include "casmutils/definitions.hpp"
 #include "casmutils/handlers.hpp"
 #include "casmutils/structure.hpp"
+#include "casmutils/structure_tools.hpp"
 #include "casmutils/stage.hpp"
 #include <boost/program_options.hpp>
 #include <fstream>

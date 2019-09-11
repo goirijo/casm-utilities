@@ -35,6 +35,12 @@ public:
     ///Retreive the fractional values of the coordinate relative to the provided lattice
     Eigen::Vector3d frac(const Rewrap::Lattice& ref_lattice) const;
 
+    ///Translate *this by the given coordinate
+    Coordinate &operator+=(const Coordinate &coord_to_add);
+
+    ///Returns true if the distance between the coordinates is within CASM::TOL
+    bool operator==(const Coordinate &coord_to_compare);
+
 private:
     /// Use the CASM implementation to forward any functionality you want
     CASM::Coordinate casm_coord;
@@ -45,7 +51,13 @@ class Site
 public:
     Site() = delete;
     Site(const CASM::Site& init_site): casm_site(init_site){}
-    Site(Rewrap::Coordinate& init_coord, const std::vector<std::string>& allowed_occupants);
+    Site(Coordinate& init_coord, const std::vector<std::string>& allowed_occupants);
+
+    ///Allow casting to Coordinate, by stripping everything away except the Cartesian position
+    operator Coordinate() const;
+
+    ///Access  the CASM implementation within.
+    const CASM::Site& __get() const {return casm_site;};
 
 private:
     CASM::Site casm_site;
@@ -71,6 +83,9 @@ public:
 
     /// Add a new site to the basis
     /* void push_basis(const Rewrap::Site& new_basis_site); */
+
+    ///Return a copy of all the basis sites
+    std::vector<Site> basis_sites() const;
 
 private:
 };

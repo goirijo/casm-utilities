@@ -4,6 +4,7 @@ libcasmutils_la_SOURCES=
 libcasmutils_la_SOURCES+=\
 						 src/casmutils/stage.cxx\
 						 src/casmutils/structure.cxx\
+						 src/casmutils/structure_tools.cxx\
 						 src/casmutils/lattice.cxx\
 						 src/casmutils/frankenstein.cxx\
 						 src/casmutils/misc.cxx\

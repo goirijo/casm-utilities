@@ -2,8 +2,9 @@
 #include "casmutils/exceptions.hpp"
 #include "casmutils/handlers.hpp"
 #include "casmutils/structure.hpp"
+#include "casmutils/structure_tools.hpp"
+
 #include <boost/program_options.hpp>
-#include <casm/crystallography/Structure.hh>
 #include <fstream>
 #include <iostream>
 

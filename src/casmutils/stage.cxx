@@ -1,6 +1,9 @@
-#include "casmutils/stage.hpp"
 #include "casm/crystallography/Structure.hh"
+
 #include "casmutils/exceptions.hpp"
+#include "casmutils/stage.hpp"
+#include "casmutils/structure.hpp"
+#include "casmutils/structure_tools.hpp"
 
 namespace
 {
@@ -59,11 +62,24 @@ Eigen::Vector3d Coordinate::frac(const Rewrap::Lattice& ref_lattice) const
     return this->casm_coord.frac();
 }
 
+Coordinate& Coordinate::operator+=(const Coordinate& coord_to_add)
+{
+    this->casm_coord += coord_to_add.casm_coord;
+    return *this;
+}
+
+bool Coordinate::operator==(const Coordinate& coord_to_compare)
+{
+    return this->casm_coord == coord_to_compare.casm_coord;
+}
+
 //*******************//
 
-Site::Site(Rewrap::Coordinate& init_coord, const std::vector<std::string>& allowed_occupants):
-    casm_coord(Extend::atomic_site(init_coord, allowed_occupants)){}
-
+Site::Site(Rewrap::Coordinate& init_coord, const std::vector<std::string>& allowed_occupants)
+    : casm_site(
+          Extend::atomic_site(CASM::Coordinate(init_coord.cart(), CASM::Lattice(), CASM::CART), allowed_occupants))
+{
+}
 
 } // namespace Rewrap
 
@@ -237,10 +253,10 @@ RockSaltOctahedraToggler::index RockSaltOctahedraToggler::coordinate_to_index(co
     // Go through the basis of the structure
     // and find out which basis index the
     // given coordinate corresponds to
-    const auto& basis = this->rocksalt_struc.basis;
+    auto basis = this->rocksalt_struc.basis_sites();
     for (int ix = 0; ix < basis.size(); ++ix)
     {
-        if (static_cast<CASM::Coordinate>(basis[ix]) == coordinate)
+        if (static_cast<Coordinate>(basis[ix]) == coordinate)
         {
             return ix;
         }
@@ -340,9 +356,8 @@ std::array<RockSaltOctahedraToggler::Coordinate, 6> RockSaltOctahedraToggler::in
     // need a lattice for the coordinate type
     // need to CART type for coordinate, but this syntax is giving compiling errors...
     std::array<RockSaltOctahedraToggler::Coordinate, 6> deltas = {
-        Coordinate(d, 0.0, 0.0),      Coordinate(0.0, d, 0.0),
-        Coordinate(0.0, 0.0, d),      Coordinate(-1 * d, 0.0, 0.0),
-        Coordinate(0.0, -1 * d, 0.0), Coordinate(0.0, 0.0, -1 * d)};
+        Coordinate(d, 0.0, 0.0),      Coordinate(0.0, d, 0.0),      Coordinate(0.0, 0.0, d),
+        Coordinate(-1 * d, 0.0, 0.0), Coordinate(0.0, -1 * d, 0.0), Coordinate(0.0, 0.0, -1 * d)};
 
     return deltas;
 }
