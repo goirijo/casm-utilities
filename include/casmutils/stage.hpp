@@ -58,7 +58,7 @@ namespace SpecializedEnumeration
             ///Calls activate/deactivate to reverse whether the octahedron is there or not on every octahedron
             void toggle_all();
 
-            ///Print the structure to a stream
+            ///Print the current state of the structure to a stream
             void print(std::ostream& out_stream) const;
 
             ///Get list of available coordinates for centers of possible octahedra (cation sites)

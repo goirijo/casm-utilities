@@ -23,7 +23,7 @@ void set_site_occupant(CASM::Site* mutating_site, std::string new_occ)
 // TODO: CAPS??
 namespace Extend
 {
-CASM::Site multi_atomic_site(const CASM::Coordinate& coord, const std::vector<std::string>& allowed_species)
+CASM::Site atomic_site(const CASM::Coordinate& coord, const std::vector<std::string>& allowed_species)
 {
     CASM::Array<CASM::Molecule> allowed_molecules;
     for (auto specie : allowed_species)
@@ -58,6 +58,12 @@ Eigen::Vector3d Coordinate::frac(const Rewrap::Lattice& ref_lattice) const
     const_cast<CASM::Coordinate*>(&this->casm_coord)->set_lattice(ref_lattice, CASM::CART);
     return this->casm_coord.frac();
 }
+
+//*******************//
+
+Site::Site(Rewrap::Coordinate& init_coord, const std::vector<std::string>& allowed_occupants):
+    casm_coord(Extend::atomic_site(init_coord, allowed_occupants)){}
+
 
 } // namespace Rewrap
 
@@ -248,7 +254,7 @@ RockSaltOctahedraToggler::Coordinate RockSaltOctahedraToggler::index_to_coordina
     // Go through the basis of the structure
     // and find out which coordinate the
     // given index corresponds to
-    CASM::Site coord = rocksalt_struc.basis[coordinate_index];
+    const auto& coord = rocksalt_struc.basis[coordinate_index];
     return coord;
     // TODO: explicitly cast for clairty?
 }
@@ -259,14 +265,14 @@ RockSaltOctahedraToggler::primitive_structure(std::pair<std::string, std::string
     const auto& central_ion_name = species_names.first;
     const auto& vertex_ion_name = species_names.second;
 
-    auto nn_distance = RockSaltOctahedraToggler::nearest_neighbor_distance();
     auto lat = Rewrap::Lattice::fcc();
+    auto nn_distance = RockSaltOctahedraToggler::nearest_neighbor_distance();
     auto scaled_lat = lat.scaled_lattice(nn_distance);
 
     std::vector<Rewrap::Site> basis;
 
-    Rewrap::Coordinate pos_central = Rewrap::Coordinate::frac(0, 0, 0, scaled_lat);
-    Rewrap::Coordinate pos_vertex = Rewrap::Coordinate::frac(0.5, 0.5, 0.5, scaled_lat);
+    Rewrap::Coordinate pos_central = Rewrap::Coordinate::from_fractional(0, 0, 0, scaled_lat);
+    Rewrap::Coordinate pos_vertex = Rewrap::Coordinate::from_fractional(0.5, 0.5, 0.5, scaled_lat);
 
     Rewrap::Site central_site(pos_central, std::vector<std::string>{central_ion_name, "Va"});
     Rewrap::Site vertex_site(pos_vertex, std::vector<std::string>{vertex_ion_name, "Va"});
@@ -334,9 +340,9 @@ std::array<RockSaltOctahedraToggler::Coordinate, 6> RockSaltOctahedraToggler::in
     // need a lattice for the coordinate type
     // need to CART type for coordinate, but this syntax is giving compiling errors...
     std::array<RockSaltOctahedraToggler::Coordinate, 6> deltas = {
-        Rewrap::Coordinate::cart(d, 0.0, 0.0),      Rewrap::Coordinate::cart(0.0, d, 0.0),
-        Rewrap::Coordinate::cart(0.0, 0.0, d),      Rewrap::Coordinate::cart(-1 * d, 0.0, 0.0),
-        Rewrap::Coordinate::cart(0.0, -1 * d, 0.0), Rewrap::Coordinate::cart(0.0, 0.0, -1 * d)};
+        Coordinate(d, 0.0, 0.0),      Coordinate(0.0, d, 0.0),
+        Coordinate(0.0, 0.0, d),      Coordinate(-1 * d, 0.0, 0.0),
+        Coordinate(0.0, -1 * d, 0.0), Coordinate(0.0, 0.0, -1 * d)};
 
     return deltas;
 }
