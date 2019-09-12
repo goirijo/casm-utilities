@@ -50,8 +50,16 @@ Coordinate Coordinate::from_fractional(const Eigen::Vector3d& frac_coord, const 
     return Coordinate(coord);
 }
 
-Coordinate Coordinate::from_fractional(double x, double y, double z, const Rewrap::Lattice& lat) {}
+Coordinate Coordinate::from_fractional(double x, double y, double z, const Rewrap::Lattice& lat) {
+return Coordinate::from_fractional(Eigen::Vector3d(x,y,z), lat);
+}
 
+    void Coordinate::bring_within(const Lattice& lat)
+{
+    this->casm_coord.set_lattice(lat,CASM::CART);
+    this->casm_coord.within();
+    return;
+}
 //*******************//
 
 Eigen::Vector3d Coordinate::cart() const { return this->casm_coord.cart(); }
@@ -103,6 +111,21 @@ void RockSaltOctahedraToggler::activate(index central_coord_index)
     auto nearest_vertex_ions = this->nearest_neighbor_site_coordinates(this->index_to_coordinate(central_coord_index));
     this->increment_leashes(nearest_vertex_ions);
 
+    return;
+}
+
+void RockSaltOctahedraToggler::activate_all()
+{
+    Simplicity::write_poscar(this->rocksalt_struc,"./dump.vasp");
+    for(const auto& centralix_ison_pair : this->central_ion_is_on)
+    {
+        auto ix=centralix_ison_pair.first;
+        auto is_on=centralix_ison_pair.second;
+        if(!is_on)
+        {
+            this->activate(ix);
+        }
+    }
     return;
 }
 
@@ -196,6 +219,7 @@ void RockSaltOctahedraToggler::reduce_leashes(const std::array<Coordinate, 6>& n
 void RockSaltOctahedraToggler::print(std::ostream& out_stream) const
 {
     this->commit();
+
     Simplicity::print_poscar(this->rocksalt_struc, out_stream);
     return;
 }
@@ -248,8 +272,10 @@ void RockSaltOctahedraToggler::commit_vertex_ions() const
     return;
 }
 
-RockSaltOctahedraToggler::index RockSaltOctahedraToggler::coordinate_to_index(const Coordinate& coordinate) const
+RockSaltOctahedraToggler::index RockSaltOctahedraToggler::coordinate_to_index(Coordinate coordinate) const
 {
+    //TODO: Bring the coordinate within relative to the rocksalt structure lattice before making any comparisons
+    coordinate.bring_within(this->rocksalt_struc.lattice());
     // Go through the basis of the structure
     // and find out which basis index the
     // given coordinate corresponds to
@@ -281,17 +307,20 @@ RockSaltOctahedraToggler::primitive_structure(std::pair<std::string, std::string
     const auto& central_ion_name = species_names.first;
     const auto& vertex_ion_name = species_names.second;
 
-    auto lat = Rewrap::Lattice::fcc();
     auto nn_distance = RockSaltOctahedraToggler::nearest_neighbor_distance();
-    auto scaled_lat = lat.scaled_lattice(nn_distance);
+    Eigen::Matrix3d lat_mat;
+    lat_mat<<0,1,1,1,0,1,1,1,0;
+    lat_mat*=nn_distance;
+    /* auto scaled_lat = lat.scaled_lattice(2*nn_distance); */
+    Lattice scaled_lat(lat_mat);
 
     std::vector<Rewrap::Site> basis;
 
     Rewrap::Coordinate pos_central = Rewrap::Coordinate::from_fractional(0, 0, 0, scaled_lat);
     Rewrap::Coordinate pos_vertex = Rewrap::Coordinate::from_fractional(0.5, 0.5, 0.5, scaled_lat);
 
-    Rewrap::Site central_site(pos_central, std::vector<std::string>{central_ion_name, "Va"});
-    Rewrap::Site vertex_site(pos_vertex, std::vector<std::string>{vertex_ion_name, "Va"});
+    Rewrap::Site central_site(pos_central, std::vector<std::string>{"Va", central_ion_name});
+    Rewrap::Site vertex_site(pos_vertex, std::vector<std::string>{"Va", vertex_ion_name});
 
     basis.push_back(central_site);
     basis.push_back(vertex_site);
@@ -346,7 +375,7 @@ RockSaltOctahedraToggler::RockSaltOctahedraToggler(Structure&& init_struc, std::
 {
 }
 
-double RockSaltOctahedraToggler::nearest_neighbor_distance() { return 0.5; }
+double RockSaltOctahedraToggler::nearest_neighbor_distance() { return 2.0; }
 
 std::array<RockSaltOctahedraToggler::Coordinate, 6> RockSaltOctahedraToggler::initialized_nearest_neighbor_deltas()
 {

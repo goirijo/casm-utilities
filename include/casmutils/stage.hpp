@@ -95,7 +95,7 @@ namespace SpecializedEnumeration
             RockSaltOctahedraToggler(Structure&& init_struc, std::string init_central_name, std::string init_vertex_name, std::array<Coordinate,6>&& init_nn_deltas, std::unordered_map<index,bool>&& init_central_is_on, std::unordered_map<index,int>&& init_leashes);
 
             ///Converts the given coordinate to the corresponding index within the Structure
-            index coordinate_to_index(const Coordinate& coordinate) const;
+            index coordinate_to_index(Coordinate coordinate) const;
             Coordinate index_to_coordinate(index coordinate_index) const;
 
             ///Retruns true if the given index exists as a possible central_ion site in the rocksalt structure

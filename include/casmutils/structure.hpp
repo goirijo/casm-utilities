@@ -38,6 +38,9 @@ public:
     ///Translate *this by the given coordinate
     Coordinate &operator+=(const Coordinate &coord_to_add);
 
+    ///Bring *this within the given lattice
+    void bring_within(const Lattice& lat);
+
     ///Returns true if the distance between the coordinates is within CASM::TOL
     bool operator==(const Coordinate &coord_to_compare);
 

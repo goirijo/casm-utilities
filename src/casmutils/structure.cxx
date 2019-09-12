@@ -12,6 +12,7 @@ Structure::Structure(const Rewrap::Lattice& init_lat, const std::vector<Rewrap::
     for(const auto& site : init_basis)
     {
         this->basis.push_back(site.__get());
+        basis.back().set_lattice(this->lattice(),CASM::CART);
     }
 }
 

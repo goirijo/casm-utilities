@@ -17,6 +17,7 @@ namespace Rewrap
 
             Lattice() = delete;
             Lattice(const CASM::Lattice& init_lat);
+            Lattice(const Eigen::Matrix3d& column_lat_mat);
 
             ///Return *this as a CASM::Lattice
             const CASM::Lattice& __get() const {return *this;};
