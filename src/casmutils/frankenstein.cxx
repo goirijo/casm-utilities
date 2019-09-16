@@ -237,7 +237,7 @@ Rewrap::Structure vacuum_pack(const Rewrap::Structure& big_struc, std::array<boo
 
 Rewrap::Structure inflate(const Rewrap::Structure& struc, const std::array<double, 3>& padding)
 {
-    CASM::Structure cpy_struc = struc;
+    Rewrap::CasmStructure cpy_struc = struc;
     Eigen::Matrix3d lat_mat = cpy_struc.lattice().lat_column_mat();
 
     // Add padding to each lattice vector

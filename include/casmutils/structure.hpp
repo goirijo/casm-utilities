@@ -54,10 +54,19 @@ class Site
 public:
     Site() = delete;
     Site(const CASM::Site& init_site): casm_site(init_site){}
-    Site(Coordinate& init_coord, const std::vector<std::string>& allowed_occupants);
+    Site(const Coordinate& init_coord, const std::vector<std::string>& allowed_occupants);
+    Site(const Eigen::Vector3d& init_coord, const std::vector<std::string>& allowed_occupants);
 
     ///Allow casting to Coordinate, by stripping everything away except the Cartesian position
     operator Coordinate() const;
+
+    ///Return the name of the current type of atom occupying the site
+    std::string current_occupant_name() const;
+    
+    ///Retreive the Cartesian values of the coordinate
+    Eigen::Vector3d cart() const;
+    ///Retreive the fractional values of the coordinate relative to the provided lattice
+    Eigen::Vector3d frac(const Rewrap::Lattice& ref_lattice) const;
 
     ///Access  the CASM implementation within.
     const CASM::Site& __get() const {return casm_site;};
@@ -66,7 +75,8 @@ private:
     CASM::Site casm_site;
 };
 
-class Structure : public CASM::Structure
+typedef CASM::BasicStructure<CASM::Site> CasmStructure;
+class Structure : public CasmStructure
 {
 public:
     Structure() = delete;
@@ -75,7 +85,7 @@ public:
     static Structure from_poscar(const fs::path& poscar_path);
 
     /// Construct from parent CASM class
-    Structure(const CASM::Structure& init_struc);
+    Structure(const CasmStructure& init_struc);
     Structure(Rewrap::fs::path& filename);
 
     /// Construct with a lattice and list of sites (basis)

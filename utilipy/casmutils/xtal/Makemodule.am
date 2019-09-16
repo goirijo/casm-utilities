@@ -1,0 +1,18 @@
+xtalpydir=$(pythondir)/casmutils/xtal
+
+xtalpy_PYTHON=\
+			  utilipy/casmutils/xtal/__init__.py\
+			  utilipy/casmutils/xtal/xtal.py
+
+xtalpy_LTLIBRARIES=\
+				   _xtal.la
+
+_xtal_la_SOURCES=\
+				 utilipy/casmutils/xtal/xtal-py.cxx
+
+_xtal_la_LIBADD=\
+				libcasmutils.la
+
+_xtal_la_LDFLAGS=\
+				 -module
+

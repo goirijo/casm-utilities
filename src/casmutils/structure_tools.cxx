@@ -44,16 +44,16 @@ namespace Simplicity
 {
 Rewrap::Structure make_primitive(const Rewrap::Structure& input)
 {
-    const CASM::Structure& casted_input(input);
-    CASM::Structure true_prim;
-    //CASM::Structure fills up true_prim when you call is_primitive
+    const Rewrap::CasmStructure& casted_input(input);
+    Rewrap::CasmStructure true_prim;
+    //CasmStructure fills up true_prim when you call is_primitive
     bool is_prim = casted_input.is_primitive(true_prim);
     return true_prim;
 }
 
 Rewrap::Structure make_niggli(const Rewrap::Structure& non_niggli)
 {
-    CASM::Structure niggli = non_niggli;
+    Rewrap::CasmStructure niggli = non_niggli;
     CASM::Lattice lat_niggli = CASM::niggli(non_niggli.lattice(), CASM::TOL);
     niggli.set_lattice(lat_niggli, CASM::CART);
     return niggli;
@@ -140,7 +140,7 @@ std::vector<std::pair<double, double>> structure_score(const Rewrap::Structure& 
     }
 
     // get prim and make PrimClex
-    auto ref_prim = make_primitive(map_reference_struc);
+    auto ref_prim = CASM::Structure(make_primitive(map_reference_struc));
     auto pclex = Extend::quiet_primclex(ref_prim);
 
     // mapping setup
