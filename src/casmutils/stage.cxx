@@ -68,24 +68,31 @@ void RockSaltOctahedraToggler::activate(const Coordinate& central_coord)
     return;
 }
 
-void RockSaltOctahedraToggler::deactivate(const Coordinate& central_coord)
+void RockSaltOctahedraToggler::deactivate(index central_coordinate_index) 
 {
-    auto central_coord_index = this->coordinate_to_index(central_coord);
-    if (!this->is_central_ion_index(central_coord_index))
+    if (!this->is_central_ion_index(central_coordinate_index))
     {
         throw UtilExcept::IncompatibleCoordinate();
     }
 
-    if (!central_ion_is_on.at(central_coord_index))
+    if (!central_ion_is_on.at(central_coordinate_index))
     {
         return;
     }
 
-    this->turn_central_ion_off(central_coord_index);
+    this->turn_central_ion_off(central_coordinate_index);
 
-    auto nearest_vertex_ions = this->nearest_neighbor_site_coordinates(central_coord);
+    auto nearest_vertex_ions = this->nearest_neighbor_site_coordinates(this->index_to_coordinate(central_coordinate_index));
     this->reduce_leashes(nearest_vertex_ions);
 
+    return;
+
+}
+
+void RockSaltOctahedraToggler::deactivate(const Coordinate& central_coord)
+{
+    auto central_coord_index = this->coordinate_to_index(central_coord);
+    this->deactivate(central_coord_index);
     return;
 }
 
@@ -353,5 +360,35 @@ RockSaltOctahedraToggler::initialized_leashed_vertex_ions(const Structure& init_
     }
     return initialized_map;
 }
+
+
+std::vector<std::pair<RockSaltOctahedraToggler::index, RockSaltOctahedraToggler::Coordinate>> 
+RockSaltOctahedraToggler::all_octahedron_center_coordinates() const              //Finish
+{
+
+     std::vector<index> list_of_octahedral_indicies;
+     for(const auto &octahedral_pairs: central_ion_is_on)
+     {
+	     index ix=octahedral_pairs.first;
+	     list_of_octahedral_indicies.push_back(ix);
+     }
+     std::vector<Coordinate> list_of_coordinates;
+     for (i=0; i<list_of_octahedral_indicies.size(); i++)  
+     {
+	     list_of_coordinates.push_back(index_to_coordinate(list_of_octahedral_indicies[i]));	     
+     }
+
+     std::vector<std::pair<index, Coordinate>> index_coord_pair_list;
+     for (i=0; i<list_of_octahedral_indicies.size(); i++)
+     {
+	     auto pair=std::make_pair(list_of_octahedral_indicies[i], list_of_coordinates[i]);
+             index_coord_pair_list.push_back(pair)l;
+     }
+
+     return index_coord_pair_list;
+      
+}
+
+
 
 } // namespace SpecializedEnumeration

@@ -40,7 +40,7 @@ namespace SpecializedEnumeration
             ///Sets the central coordinate (center of octahedron) ON 
             ///along with its surrounding oxygen (or other specified anion)
             void activate(const Coordinate& central_coord);
-            void activate(index central_ix);
+            void activate(index central_ix);                                                                 //Finish
             ///Sets all octahera ON
             void activate_all();
 
@@ -48,11 +48,11 @@ namespace SpecializedEnumeration
             ///along with its surrounding oxygen (or other specified anion),
             ///if they are not part of another octahedron
             void deactivate(const Coordinate& central_coord);
-            void deactivate(index central_ix);
-            ///Sets all octahera OFF
-            void deactivate_all();
+            void deactivate(index central_ix);                                                               //Finish
+            ///Sets all octahera OFF 
+            void deactivate_all();                                                                           //Finish
 
-            ///Calls activate/deactivate to reverse whether the octahedron is there or not
+            ///Calls activate/deactivate to reverse whether the octahedron is there or not                   //Finish all
             void toggle(const Coordinate& central_coord);
             void toggle(index central_ix);
             ///Calls activate/deactivate to reverse whether the octahedron is there or not on every octahedron
@@ -62,7 +62,7 @@ namespace SpecializedEnumeration
             void print(std::ostream& out_stream) const;
 
             ///Get list of available coordinates for centers of possible octahedra (cation sites)
-            std::vector<std::pair<index,Coordinate>> all_octahedron_center_coordinates() const;
+            std::vector<std::pair<index,Coordinate>> all_octahedron_center_coordinates() const;              //Finish
             
             ///Return the structure for the primitive rocksalt
             static Structure primitive_structure(std::pair<std::string,std::string> species_names);
