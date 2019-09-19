@@ -3,5 +3,6 @@ casmutilspydir=$(pythondir)/casmutils
 casmutilspy_PYTHON=\
 				   utilipy/casmutils/__init__.py
 
+include utilipy/casmutils/stage/Makemodule.am
 include utilipy/casmutils/xtal/Makemodule.am
 include utilipy/casmutils/xtal/frankenstein/Makemodule.am

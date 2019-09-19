@@ -1,0 +1,18 @@
+stagepydir=$(pythondir)/casmutils/stage
+
+stagepy_PYTHON=\
+			  utilipy/casmutils/stage/__init__.py\
+			  utilipy/casmutils/stage/stage.py
+
+stagepy_LTLIBRARIES=\
+				   _stage.la
+
+_stage_la_SOURCES=\
+				 utilipy/casmutils/stage/stage-py.cxx
+
+_stage_la_LIBADD=\
+				libcasmutils.la
+
+_stage_la_LDFLAGS=\
+				 -module
+
