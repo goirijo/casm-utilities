@@ -124,7 +124,8 @@ PYBIND11_MODULE(_xtal, m)
         class_<Rewrap::Coordinate>(m, "Coordinate")
             .def(init<const Eigen::Vector3d&&>())
             .def("__str__", __str__)
-            .def("cart", &Rewrap::Coordinate::cart);
+            .def("cart", &Rewrap::Coordinate::cart)
+            .def("frac", &Rewrap::Coordinate::frac);
     }
 
     {
