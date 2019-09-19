@@ -1,9 +1,9 @@
 #include <fstream>
 
-#include <casmutils/structure_tools.hpp>
-#include <casmutils/misc.hpp>
-#include <casmutils/exceptions.hpp>
-#include <casmutils/lattice.hpp>
+#include "casmutils/structure_tools.hpp"
+#include "casmutils/misc.hpp"
+#include "casmutils/exceptions.hpp"
+#include "casmutils/lattice.hpp"
 
 #include <casm/casm_io/VaspIO.hh>
 #include <casm/clex/ConfigMapping.hh>
@@ -11,9 +11,6 @@
 #include <casm/strain/StrainConverter.hh>
 #include <casm/crystallography/SupercellEnumerator.hh>
 #include <casm/crystallography/Niggli.hh>
-/* #include <casm/CASM_global_definitions.hh> */
-/* #include <casm/symmetry/SymGroupRepID.hh> */
-/* #include <casm/clex/ScelEnum.hh> */
 
 namespace
 {

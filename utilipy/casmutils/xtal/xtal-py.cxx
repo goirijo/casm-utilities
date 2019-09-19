@@ -1,14 +1,14 @@
 #include <boost/filesystem.hpp>
-#include "casmutils/stage.hpp"
+#include "casmutils/rocksalttoggler.hpp"
 #include "casmutils/structure.hpp"
 #include "casmutils/lattice.hpp"
 #include "casmutils/structure_tools.hpp"
+#include "casmutils/misc.hpp"
 #include <string>
 
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-
 
 //******************************************************************************************************//
 //******************************************************************************************************//
@@ -48,7 +48,7 @@ std::string __str__(const Rewrap::Lattice& printable)
 
 namespace Site
 {
-std::string __str__(const Rewrap::Site& printable)
+std::string __str__(const ::Rewrap::Site& printable)
 {
     std::ostringstream sstream;
     sstream << printable.cart().transpose()<<"    "<<printable.current_occupant_name();
@@ -76,6 +76,12 @@ void to_poscar(const SpecializedEnumeration::RockSaltOctahedraToggler& writeable
     rs_outstream.close();
 
     return;
+}
+
+std::string __str__(const SpecializedEnumeration::RockSaltOctahedraToggler& printable)
+{
+    auto structure=printable.structure();
+    return Structure::__str__(structure);
 }
 }
 
@@ -106,6 +112,7 @@ PYBIND11_MODULE(_xtal, m)
         using namespace WrapPy::Site;
         class_<Rewrap::Site>(m, "Site")
             .def(init<const Eigen::Vector3d&, const std::vector<std::string>&>())
+            .def(init<const Rewrap::Coordinate&, const std::vector<std::string>&>())
             .def("__str__", __str__)
             .def("cart", &Rewrap::Site::cart)
             .def("frac", &Rewrap::Site::frac)
@@ -122,15 +129,29 @@ PYBIND11_MODULE(_xtal, m)
 
     {
         using namespace WrapPy::RockSaltToggler;
-        class_<SpecializedEnumeration::RockSaltOctahedraToggler>(m, "RockSaltToggler")
-            .def_static("relative_to_primitive", &SpecializedEnumeration::RockSaltOctahedraToggler::relative_to_primitive)
-            .def("all_octahedron_center_coordinates",&SpecializedEnumeration::RockSaltOctahedraToggler::all_octahedron_center_coordinates)
-            .def("to_poscar", to_poscar);
+        typedef SpecializedEnumeration::RockSaltOctahedraToggler RSOT;
+        class_<RSOT>(m, "RockSaltToggler")
+            .def("__str__", __str__)
+            .def_static("relative_to_primitive", &RSOT::relative_to_primitive)
+            .def("all_octahedron_center_coordinates",&RSOT::all_octahedron_center_coordinates)
+            .def("to_poscar", to_poscar)
+            .def("structure", &RSOT::structure)
+            .def("activate", (void (RSOT::*)(const Rewrap::Coordinate&)) &RSOT::activate)
+            .def("activate", (void (RSOT::*)(RSOT::index)) &RSOT::activate)
+            .def("activate_all", &RSOT::activate_all)
+            .def("deactivate", (void (RSOT::*)(const Rewrap::Coordinate&)) &RSOT::deactivate)
+            .def("deactivate", (void (RSOT::*)(RSOT::index)) &RSOT::deactivate)
+            .def("deactivate_all", &RSOT::deactivate_all)
+            .def("toggle", (void (RSOT::*)(const Rewrap::Coordinate&)) &RSOT::toggle)
+            .def("toggle", (void (RSOT::*)(RSOT::index)) &RSOT::toggle)
+            .def("toggle_all", &RSOT::toggle_all)
+            .def_static("primitive_structure", &RSOT::primitive_structure);
     }
 
 
     m.def("make_super_structure", Simplicity::make_super_structure);
     m.def("make_primitive", Simplicity::make_primitive);
+    m.def("make_niggli", (Rewrap::Structure(*)(const Rewrap::Structure&))Simplicity::make_niggli);
     m.def("apply_strain", (Rewrap::Structure(*)(const Rewrap::Structure&, const Eigen::VectorXd&, const std::string&))Simplicity::apply_strain);
     m.def("apply_deformation", (Rewrap::Structure(*)(const Rewrap::Structure&, const Eigen::Matrix3d&))Simplicity::apply_deformation);
     m.def("structure_score", (std::vector<std::pair<double, double>>(*)(const Rewrap::Structure&, const std::vector<Rewrap::Structure>&))Simplicity::structure_score);

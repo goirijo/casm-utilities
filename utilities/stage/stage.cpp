@@ -1,5 +1,6 @@
 #include "casmutils/stage.hpp"
 #include "casmutils/structure_tools.hpp"
+#include "casmutils/rocksalttoggler.hpp"
 #include <iostream>
 
 int main()
@@ -8,7 +9,12 @@ int main()
     trans_mat<<-1,3,4,1,-3,3,1,4,-2;
     std::cout<<trans_mat<<std::endl;
 
+
     std::pair<std::string,std::string> species=std::make_pair("Na","Cl");
+
+    auto test=SpecializedEnumeration::RockSaltOctahedraToggler::primitive_structure(species);
+    std::cout<<test.basis_sites()[0].current_occupant_name()<<std::endl;
+    return 0;
 
     auto struc=SpecializedEnumeration::RockSaltOctahedraToggler::primitive_structure(species);
     Simplicity::print_poscar(struc,std::cout);

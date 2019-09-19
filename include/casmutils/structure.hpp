@@ -1,7 +1,7 @@
 #ifndef UTILS_STRUCTURE_HH
 #define UTILS_STRUCTURE_HH
 
-#include "casmutils/definitions.hpp"
+#include "definitions.hpp"
 #include <casm/CASM_global_definitions.hh>
 #include <casm/crystallography/Structure.hh>
 #include <iostream>

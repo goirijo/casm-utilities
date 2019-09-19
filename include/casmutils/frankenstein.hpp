@@ -1,11 +1,9 @@
 #ifndef FRANKENSTEIN_HH
 #define FRANKENSTEIN_HH
 
-#include "casmutils/definitions.hpp"
-#include "casmutils/structure.hpp"
-#include <casm/CASM_global_definitions.hh>
-#include <casm/crystallography/Structure.hh>
-#include <iostream>
+#include "definitions.hpp"
+#include "structure.hpp"
+#include <set>
 
 /// The evil doctor has come to town the namespace Frankenstein is
 /// for doing all the things the doctor did to that poor monster.

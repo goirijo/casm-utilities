@@ -1,4 +1,4 @@
 from __future__ import absolute_import
 
-from . import xtal
+from .xtal import *
 from . import frankenstein

@@ -1,23 +1,10 @@
 #include <boost/filesystem.hpp>
-#include <casmutils/lattice.hpp>
-#include <casmutils/structure.hpp>
+#include "casmutils/lattice.hpp"
+#include "casmutils/structure.hpp"
+#include "casmutils/misc.hpp"
 
 namespace Extend
 {
-CASM::Site atomic_site(const CASM::Coordinate& coord, const std::vector<std::string>& allowed_species)
-{
-    CASM::Array<CASM::Molecule> allowed_molecules;
-    for (auto specie : allowed_species)
-    {
-        // make_atom returns a molecule lol
-        allowed_molecules.push_back(make_atom(specie, coord.home()));
-    }
-
-    CASM::Site site(coord, "");
-    site.set_site_occupant(allowed_molecules);
-
-    return site;
-}
 } // namespace Extend
 
 namespace Rewrap

@@ -3,12 +3,21 @@ lib_LTLIBRARIES += libcasmutils.la
 libcasmutils_la_SOURCES=
 libcasmutils_la_SOURCES+=\
 						 src/casmutils/stage.cxx\
+						 include/casmutils/stage.hpp\
+						 src/casmutils/rocksalttoggler.cxx\
+						 include/casmutils/rocksalttoggler.hpp\
 						 src/casmutils/structure.cxx\
+						 include/casmutils/structure.hpp\
 						 src/casmutils/structure_tools.cxx\
+						 include/casmutils/structure_tools.hpp\
 						 src/casmutils/lattice.cxx\
+						 include/casmutils/lattice.hpp\
 						 src/casmutils/frankenstein.cxx\
+						 include/casmutils/frankenstein.hpp\
 						 src/casmutils/misc.cxx\
-						 src/casmutils/handlers.cxx
+						 include/casmutils/misc.hpp\
+						 src/casmutils/handlers.cxx\
+						 include/casmutils/handlers.hpp
 
 libcasmutils_la_LIBADD=\
 					   libcasmblob.la\

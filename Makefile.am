@@ -16,7 +16,8 @@ EXTRA_DIST=
 
 AM_CXXFLAGS=
 
-AM_CPPFLAGS= -I$(srcdir)/include\
+AM_CPPFLAGS=\
+			 -I$(srcdir)/include\
 			 -I$(srcdir)/pybind11/include\
 			 -I$(srcdir)/CASMcode/include\
 			 -I$(srcdir)/CASMcode/include/casm/external\

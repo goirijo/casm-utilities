@@ -1,10 +1,11 @@
 #include "casmutils/frankenstein.hpp"
 #include "casmutils/exceptions.hpp"
 #include "casmutils/structure.hpp"
-#include "casm/CASM_global_definitions.hh"
-#include "casm/casm_io/VaspIO.hh"
-#include "casm/crystallography/Niggli.hh"
-#include "casm/crystallography/Structure.hh"
+
+#include <casm/CASM_global_definitions.hh>
+#include <casm/casm_io/VaspIO.hh>
+#include <casm/crystallography/Niggli.hh>
+#include <casm/crystallography/Structure.hh>
 #include <boost/filesystem.hpp>
 #include <fstream>
 #include <set>

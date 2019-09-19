@@ -1,8 +1,14 @@
 #ifndef MISC_HH
 #define MISC_HH
 
+#include <casm/external/Eigen/Core>
+#include <string>
+#include <vector>
+
 namespace CASM
 {
+class Site;
+class Coordinate;
 class PrimClex;
 class Structure;
 } // namespace CASM
@@ -20,6 +26,14 @@ namespace Extend
 {
 /// Make a PrimClex but shut up about it
 CASM::PrimClex quiet_primclex(CASM::Structure& prim);
-} // namespace extend
+
+/// Alternate construction of a site with only occupant degrees of freedom, and atom as occuapnt (no molecule)
+CASM::Site atomic_site(const CASM::Coordinate& coord, const std::vector<std::string>& allowed_species);
+} // namespace Extend
+
+namespace IO
+{
+Eigen::IOFormat coord_format();
+}
 
 #endif
