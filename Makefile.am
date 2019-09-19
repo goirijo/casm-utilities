@@ -54,7 +54,6 @@ include $(srcdir)/utilities/Makemodule.am 		#python wrappers to utilities librar
 
 
 #===========================================================================#
-EXTRA_DIST=
 
 var-check:
 	echo $(LIBS)
