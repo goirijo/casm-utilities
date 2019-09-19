@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 
-from ._structure import *
-from ._lattice import *
+from ._xtal import *
 
 def extra_function(self):
     print(self)

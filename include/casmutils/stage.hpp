@@ -31,6 +31,7 @@ namespace SpecializedEnumeration
             ///be the central atom of the octahedra.
             static RockSaltOctahedraToggler relative_to_primitive(const Eigen::Matrix3i trans_mat, std::pair<std::string,std::string> species_names, bool second_is_central);
 
+            //TODO 
             ///Construct with a transformation matrix relative to the conventional structure
             ///The species names refers to the species of the cation and anions.
             ///The central specie specifies wheter the cation or anion is at the origin, and will
@@ -40,7 +41,7 @@ namespace SpecializedEnumeration
             ///Sets the central coordinate (center of octahedron) ON 
             ///along with its surrounding oxygen (or other specified anion)
             void activate(const Coordinate& central_coord);
-            void activate(index central_ix);                                                                 //Finish
+            void activate(index central_ix);                                                             
             ///Sets all octahera ON
             void activate_all();
 
@@ -48,11 +49,11 @@ namespace SpecializedEnumeration
             ///along with its surrounding oxygen (or other specified anion),
             ///if they are not part of another octahedron
             void deactivate(const Coordinate& central_coord);
-            void deactivate(index central_ix);                                                               //Finish
+            void deactivate(index central_ix);                                                            
             ///Sets all octahera OFF 
-            void deactivate_all();                                                                           //Finish
+            void deactivate_all();                                                                         
 
-            ///Calls activate/deactivate to reverse whether the octahedron is there or not                   //Finish all
+            ///Calls activate/deactivate to reverse whether the octahedron is there or not                  
             void toggle(const Coordinate& central_coord);
             void toggle(index central_ix);
             ///Calls activate/deactivate to reverse whether the octahedron is there or not on every octahedron
@@ -62,7 +63,7 @@ namespace SpecializedEnumeration
             void print(std::ostream& out_stream) const;
 
             ///Get list of available coordinates for centers of possible octahedra (cation sites)
-            std::vector<std::pair<index,Coordinate>> all_octahedron_center_coordinates() const;              //Finish
+            std::vector<std::pair<index,Coordinate>> all_octahedron_center_coordinates() const;              
             
             ///Return the structure for the primitive rocksalt
             static Structure primitive_structure(std::pair<std::string,std::string> species_names);

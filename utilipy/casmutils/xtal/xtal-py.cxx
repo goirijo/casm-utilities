@@ -56,11 +56,34 @@ std::string __str__(const Rewrap::Site& printable)
 }
 } // namespace Site
 
+namespace Coordinate
+{
+std::string __str__(const Rewrap::Coordinate& printable)
+{
+    std::ostringstream sstream;
+    sstream << printable.cart().transpose();
+    return sstream.str();
+}
+} // namespace Site
+
+namespace RockSaltToggler
+{
+void to_poscar(const SpecializedEnumeration::RockSaltOctahedraToggler& writeable, const std::string& filename)
+{
+    std::ofstream rs_outstream;
+    rs_outstream.open(filename);
+    writeable.print(rs_outstream);
+    rs_outstream.close();
+
+    return;
+}
+}
+
 PYBIND11_MODULE(_xtal, m)
 {
     using namespace pybind11;
 
-    m.doc() = "Raw python bindings for a re-wrapped CASM::Structure class.";
+    m.doc() = "Python bindings for classes and functions related to crystal structures.";
 
     {
         using namespace WrapPy::Structure;
@@ -88,6 +111,23 @@ PYBIND11_MODULE(_xtal, m)
             .def("frac", &Rewrap::Site::frac)
             .def("current_occupant_name", &Rewrap::Site::current_occupant_name);
     }
+
+    {
+        using namespace WrapPy::Coordinate;
+        class_<Rewrap::Coordinate>(m, "Coordinate")
+            .def(init<const Eigen::Vector3d&&>())
+            .def("__str__", __str__)
+            .def("cart", &Rewrap::Coordinate::cart);
+    }
+
+    {
+        using namespace WrapPy::RockSaltToggler;
+        class_<SpecializedEnumeration::RockSaltOctahedraToggler>(m, "RockSaltToggler")
+            .def_static("relative_to_primitive", &SpecializedEnumeration::RockSaltOctahedraToggler::relative_to_primitive)
+            .def("all_octahedron_center_coordinates",&SpecializedEnumeration::RockSaltOctahedraToggler::all_octahedron_center_coordinates)
+            .def("to_poscar", to_poscar);
+    }
+
 
     m.def("make_super_structure", Simplicity::make_super_structure);
     m.def("make_primitive", Simplicity::make_primitive);

@@ -48,7 +48,6 @@ void RockSaltOctahedraToggler::activate(index central_coord_index)
 
 void RockSaltOctahedraToggler::activate_all()
 {
-    Simplicity::write_poscar(this->rocksalt_struc,"./dump.vasp");
     for(const auto& centralix_ison_pair : this->central_ion_is_on)
     {
         auto ix=centralix_ison_pair.first;
@@ -67,6 +66,44 @@ void RockSaltOctahedraToggler::activate(const Coordinate& central_coord)
     this->activate(central_coord_index);
     return;
 }
+
+void RockSaltOctahedraToggler::toggle(index central_coord_index)
+{
+    if (!this->is_central_ion_index(central_coord_index))
+    {
+        throw UtilExcept::IncompatibleCoordinate();
+    }
+
+    if (central_ion_is_on.at(central_coord_index))
+    {
+        this->deactivate(central_coord_index);
+    }
+
+    else
+    {
+        this->activate(central_coord_index);
+    }
+
+    return;
+}
+
+void RockSaltOctahedraToggler::toggle(const Coordinate& central_coord)
+{
+    auto central_coord_index = this->coordinate_to_index(central_coord);
+    this->toggle(central_coord_index);
+    return;
+}
+
+void RockSaltOctahedraToggler::toggle_all()
+{
+    for(const auto& centralix_ison_pair : this->central_ion_is_on)
+    {
+        auto ix=centralix_ison_pair.first;
+        this->toggle(ix);
+    }
+    return;
+}
+
 
 void RockSaltOctahedraToggler::deactivate(index central_coordinate_index) 
 {
@@ -93,6 +130,20 @@ void RockSaltOctahedraToggler::deactivate(const Coordinate& central_coord)
 {
     auto central_coord_index = this->coordinate_to_index(central_coord);
     this->deactivate(central_coord_index);
+    return;
+}
+
+void RockSaltOctahedraToggler::deactivate_all()
+{
+    for(const auto& centralix_ison_pair : this->central_ion_is_on)
+    {
+        auto ix=centralix_ison_pair.first;
+        auto is_on=centralix_ison_pair.second;
+        if(is_on)
+        {
+            this->deactivate(ix);
+        }
+    }
     return;
 }
 
@@ -365,30 +416,15 @@ RockSaltOctahedraToggler::initialized_leashed_vertex_ions(const Structure& init_
 std::vector<std::pair<RockSaltOctahedraToggler::index, RockSaltOctahedraToggler::Coordinate>> 
 RockSaltOctahedraToggler::all_octahedron_center_coordinates() const              //Finish
 {
-
-     std::vector<index> list_of_octahedral_indicies;
+     std::vector<std::pair<index, Coordinate>> index_coord_pair_list;
      for(const auto &octahedral_pairs: central_ion_is_on)
      {
 	     index ix=octahedral_pairs.first;
-	     list_of_octahedral_indicies.push_back(ix);
-     }
-     std::vector<Coordinate> list_of_coordinates;
-     for (i=0; i<list_of_octahedral_indicies.size(); i++)  
-     {
-	     list_of_coordinates.push_back(index_to_coordinate(list_of_octahedral_indicies[i]));	     
-     }
+         auto coord=index_to_coordinate(ix);
 
-     std::vector<std::pair<index, Coordinate>> index_coord_pair_list;
-     for (i=0; i<list_of_octahedral_indicies.size(); i++)
-     {
-	     auto pair=std::make_pair(list_of_octahedral_indicies[i], list_of_coordinates[i]);
-             index_coord_pair_list.push_back(pair)l;
+         index_coord_pair_list.emplace_back(ix,coord);
      }
 
      return index_coord_pair_list;
-      
 }
-
-
-
 } // namespace SpecializedEnumeration

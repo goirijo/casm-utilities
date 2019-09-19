@@ -56,6 +56,7 @@ Site::Site(const Rewrap::Coordinate& init_coord, const std::vector<std::string>&
     : casm_site(
           Extend::atomic_site(CASM::Coordinate(init_coord.cart(), CASM::Lattice(), CASM::CART), allowed_occupants))
 {
+
     //Avoid an unitialized state. 
     /* this->casm_site.set_occ_value(0); */
 }
