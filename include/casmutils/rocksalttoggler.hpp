@@ -1,5 +1,4 @@
 #ifndef ROCKSALTTOGGLER_HH
-#define ROCKSALTTOGGLER_HH
 
 #include <utility>
 #include <string>
@@ -24,14 +23,14 @@ namespace SpecializedEnumeration
             ///The species names refers to the species of the cation and anions.
             ///The central specie specifies wheter the cation or anion is at the origin, and will
             ///be the central atom of the octahedra.
-            static RockSaltOctahedraToggler relative_to_primitive(const Eigen::Matrix3i trans_mat, std::pair<std::string,std::string> species_names, bool second_is_central);
+            static RockSaltOctahedraToggler relative_to_primitive(const Eigen::Matrix3i trans_mat, std::pair<std::string,std::string> species_names, bool second_is_central, double init_nn_distance);
 
             //TODO 
             ///Construct with a transformation matrix relative to the conventional structure
             ///The species names refers to the species of the cation and anions.
             ///The central specie specifies wheter the cation or anion is at the origin, and will
             ///be the central atom of the octahedra.
-            static RockSaltOctahedraToggler relative_to_conventional(const Eigen::Matrix3i trans_mat, std::pair<std::string,std::string> species_names, bool second_is_central);
+            static RockSaltOctahedraToggler relative_to_conventional(const Eigen::Matrix3i trans_mat, std::pair<std::string,std::string> species_names, bool second_is_central, double init_nn_distance);
 
             ///Sets the central coordinate (center of octahedron) ON 
             ///along with its surrounding oxygen (or other specified anion)
@@ -64,12 +63,18 @@ namespace SpecializedEnumeration
             Structure structure() const;
             
             ///Return the structure for the primitive rocksalt
-            static Structure primitive_structure(std::pair<std::string,std::string> species_names);
+            static Structure primitive_structure(std::pair<std::string,std::string> species_names, double init_nn_distance);
 
             ///Return the structure for the conventional cell of  rocksalt
-            static Structure conventional_structure(std::pair<std::string,std::string> species_names);
+            static Structure conventional_structure(std::pair<std::string,std::string> species_names, double init_nn_distance);
+
+            ///Defines the nearest neighbor distance (distance between central ion and vertex)
+            double nearest_neighbor_distance() const;
 
         private:
+
+            ///Defines the nearest neighbor distance (distance between central ion and vertex)
+            double nn_distance;
             
             ///The rocksalt structure we're working with, specified at construction by transformation matrix
             ///and species
@@ -91,7 +96,7 @@ namespace SpecializedEnumeration
             ///Useful to know when the vertex_ion can be "released" and switched off (when count becomes zero)
             std::unordered_map<index,int> leashed_vertex_ions;
 
-            RockSaltOctahedraToggler(Structure&& init_struc, std::string init_central_name, std::string init_vertex_name, std::array<Coordinate,6>&& init_nn_deltas, std::unordered_map<index,bool>&& init_central_is_on, std::unordered_map<index,int>&& init_leashes);
+            RockSaltOctahedraToggler(Structure&& init_struc, std::string init_central_name, std::string init_vertex_name, std::array<Coordinate,6>&& init_nn_deltas, std::unordered_map<index,bool>&& init_central_is_on, std::unordered_map<index,int>&& init_leashes, double init_nn_distance);
 
             ///Converts the given coordinate to the corresponding index within the Structure
             index coordinate_to_index(Coordinate coordinate) const;
@@ -123,9 +128,8 @@ namespace SpecializedEnumeration
             void commit_vertex_ions() const;
 
             //helper functions for constructor
-            static double nearest_neighbor_distance();
             static double primitive_lattice_scale_factor();
-            static std::array<Coordinate,6> initialized_nearest_neighbor_deltas();
+            static std::array<Coordinate,6> initialized_nearest_neighbor_deltas(double init_nn_distance);
             static std::unordered_map<index,bool> initialized_central_ion_is_on(const Structure& init_struc, std::string central_name);
             static std::unordered_map<index,int> initialized_leashed_vertex_ions(const Structure& init_struc, std::string vertex_name);
     };
