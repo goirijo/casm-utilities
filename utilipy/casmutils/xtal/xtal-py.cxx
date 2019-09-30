@@ -172,6 +172,7 @@ PYBIND11_MODULE(_xtal, m)
             .def("toggle", (void (RSOT::*)(const Rewrap::Coordinate&)) & RSOT::toggle)
             .def("toggle", (void (RSOT::*)(RSOT::index)) & RSOT::toggle)
             .def("toggle_all", &RSOT::toggle_all)
+            .def("nearest_neighbor_distance", &RSOT::nearest_neighbor_distance)
             .def_static("primitive_structure", &RSOT::primitive_structure);
     }
 
