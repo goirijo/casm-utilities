@@ -1,7 +1,7 @@
-#include <boost/filesystem.hpp>
-#include "casmutils/lattice.hpp"
 #include "casmutils/structure.hpp"
+#include "casmutils/lattice.hpp"
 #include "casmutils/misc.hpp"
+#include <boost/filesystem.hpp>
 
 namespace Extend
 {
@@ -26,6 +26,13 @@ Structure Structure::from_poscar(const fs::path& poscar_path) { return Rewrap::S
 
 bool Structure::is_primitive() const { return CasmStructure::is_primitive(); }
 
+void Structure::set_lattice(const Lattice& new_lattice, COORD_TYPE mode)
+{
+    CasmStructure* base = this;
+    base->set_lattice(new_lattice.__get(), mode);
+    return;
+}
+
 std::vector<Site> Structure::basis_sites() const
 {
     // You are dealing with CASM::Array, but we want to return a std::vector
@@ -44,7 +51,7 @@ Site::Site(const Rewrap::Coordinate& init_coord, const std::vector<std::string>&
           Extend::atomic_site(CASM::Coordinate(init_coord.cart(), CASM::Lattice(), CASM::CART), allowed_occupants))
 {
 
-    //Avoid an unitialized state. 
+    // Avoid an unitialized state.
     /* this->casm_site.set_occ_value(0); */
 }
 
@@ -69,13 +76,14 @@ Coordinate Coordinate::from_fractional(const Eigen::Vector3d& frac_coord, const 
     return Coordinate(coord);
 }
 
-Coordinate Coordinate::from_fractional(double x, double y, double z, const Rewrap::Lattice& lat) {
-return Coordinate::from_fractional(Eigen::Vector3d(x,y,z), lat);
+Coordinate Coordinate::from_fractional(double x, double y, double z, const Rewrap::Lattice& lat)
+{
+    return Coordinate::from_fractional(Eigen::Vector3d(x, y, z), lat);
 }
 
-    void Coordinate::bring_within(const Lattice& lat)
+void Coordinate::bring_within(const Lattice& lat)
 {
-    this->casm_coord.set_lattice(lat,CASM::CART);
+    this->casm_coord.set_lattice(lat, CASM::CART);
     this->casm_coord.within();
     return;
 }

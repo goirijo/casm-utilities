@@ -1,9 +1,10 @@
-#include <boost/filesystem.hpp>
+#include "casmutils/exceptions.hpp"
+#include "casmutils/lattice.hpp"
+#include "casmutils/misc.hpp"
 #include "casmutils/rocksalttoggler.hpp"
 #include "casmutils/structure.hpp"
-#include "casmutils/lattice.hpp"
 #include "casmutils/structure_tools.hpp"
-#include "casmutils/misc.hpp"
+#include <boost/filesystem.hpp>
 #include <string>
 
 #include <pybind11/eigen.h>
@@ -34,6 +35,32 @@ void to_poscar(const Rewrap::Structure& writeable, const std::string& filename)
     Simplicity::write_poscar(writeable, filename);
     return;
 }
+
+void set_lattice(Rewrap::Structure* self, const Rewrap::Lattice& new_lattice, std::string mode)
+{
+    if (mode.size() == 0)
+    {
+        throw UtilExcept::BadCoordMode();
+    }
+
+    char m = std::tolower(mode[0]);
+    switch (m)
+    {
+    case 'f':
+        self->set_lattice(new_lattice, Rewrap::COORD_TYPE::FRAC);
+        break;
+
+    case 'c':
+        self->set_lattice(new_lattice, Rewrap::COORD_TYPE::CART);
+        break;
+
+    default:
+        throw UtilExcept::BadCoordMode();
+    }
+
+    return;
+}
+
 } // namespace Structure
 
 namespace Lattice
@@ -51,7 +78,7 @@ namespace Site
 std::string __str__(const ::Rewrap::Site& printable)
 {
     std::ostringstream sstream;
-    sstream << printable.cart().transpose()<<"    "<<printable.current_occupant_name();
+    sstream << printable.cart().transpose() << "    " << printable.current_occupant_name();
     return sstream.str();
 }
 } // namespace Site
@@ -64,7 +91,7 @@ std::string __str__(const Rewrap::Coordinate& printable)
     sstream << printable.cart().transpose();
     return sstream.str();
 }
-} // namespace Site
+} // namespace Coordinate
 
 namespace RockSaltToggler
 {
@@ -80,10 +107,10 @@ void to_poscar(const SpecializedEnumeration::RockSaltOctahedraToggler& writeable
 
 std::string __str__(const SpecializedEnumeration::RockSaltOctahedraToggler& printable)
 {
-    auto structure=printable.structure();
+    auto structure = printable.structure();
     return Structure::__str__(structure);
 }
-}
+} // namespace RockSaltToggler
 
 PYBIND11_MODULE(_xtal, m)
 {
@@ -97,15 +124,14 @@ PYBIND11_MODULE(_xtal, m)
             .def("__str__", __str__)
             .def("is_primitive", &Rewrap::Structure::is_primitive)
             .def("make_niggli", (Rewrap::Structure(*)(const Rewrap::Structure&))Simplicity::make_niggli)
+            .def("set_lattice", set_lattice)
             .def_static("from_poscar", from_poscar)
             .def("to_poscar", to_poscar);
     }
 
     {
         using namespace WrapPy::Lattice;
-        class_<Rewrap::Lattice>(m, "Lattice")
-            .def(init<const Eigen::Matrix3d&>())
-            .def("__str__", __str__);
+        class_<Rewrap::Lattice>(m, "Lattice").def(init<const Eigen::Matrix3d&>()).def("__str__", __str__);
     }
 
     {
@@ -134,22 +160,22 @@ PYBIND11_MODULE(_xtal, m)
         class_<RSOT>(m, "RockSaltToggler")
             .def("__str__", __str__)
             .def_static("relative_to_primitive", &RSOT::relative_to_primitive)
-            .def("all_octahedron_center_coordinates",&RSOT::all_octahedron_center_coordinates)
+            .def("all_octahedron_center_coordinates", &RSOT::all_octahedron_center_coordinates)
             .def("to_poscar", to_poscar)
             .def("structure", &RSOT::structure)
-            .def("activate", (void (RSOT::*)(const Rewrap::Coordinate&)) &RSOT::activate)
-            .def("activate", (void (RSOT::*)(RSOT::index)) &RSOT::activate)
+            .def("activate", (void (RSOT::*)(const Rewrap::Coordinate&)) & RSOT::activate)
+            .def("activate", (void (RSOT::*)(RSOT::index)) & RSOT::activate)
             .def("activate_all", &RSOT::activate_all)
-            .def("deactivate", (void (RSOT::*)(const Rewrap::Coordinate&)) &RSOT::deactivate)
-            .def("deactivate", (void (RSOT::*)(RSOT::index)) &RSOT::deactivate)
+            .def("deactivate", (void (RSOT::*)(const Rewrap::Coordinate&)) & RSOT::deactivate)
+            .def("deactivate", (void (RSOT::*)(RSOT::index)) & RSOT::deactivate)
             .def("deactivate_all", &RSOT::deactivate_all)
-            .def("toggle", (void (RSOT::*)(const Rewrap::Coordinate&)) &RSOT::toggle)
-            .def("toggle", (void (RSOT::*)(RSOT::index)) &RSOT::toggle)
+            .def("toggle", (void (RSOT::*)(const Rewrap::Coordinate&)) & RSOT::toggle)
+            .def("toggle", (void (RSOT::*)(RSOT::index)) & RSOT::toggle)
             .def("toggle_all", &RSOT::toggle_all)
             .def_static("primitive_structure", &RSOT::primitive_structure);
     }
 
-
+    // clang-format off
     m.def("make_super_structure", Simplicity::make_super_structure);
     m.def("make_primitive", Simplicity::make_primitive);
     m.def("make_niggli", (Rewrap::Structure(*)(const Rewrap::Structure&))Simplicity::make_niggli);
@@ -158,5 +184,6 @@ PYBIND11_MODULE(_xtal, m)
     m.def("structure_score", (std::vector<std::pair<double, double>>(*)(const Rewrap::Structure&, const std::vector<Rewrap::Structure>&))Simplicity::structure_score);
     m.def("make_superstructures_of_volume", (std::vector<Rewrap::Structure>(*)(const Rewrap::Structure&, const int))Simplicity::make_superstructures_of_volume);
     m.def("make_boxiest_superstructure_of_volume", (Rewrap::Structure(*)(const Rewrap::Structure&, const int))Simplicity::make_boxiest_superstructure_of_volume);
+    // clang-format om
 }
 } // namespace WrapPy

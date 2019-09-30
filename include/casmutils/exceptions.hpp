@@ -20,6 +20,14 @@ public:
 private:
 };
 
+class BadCoordMode : public std::runtime_error
+{
+public:
+    BadCoordMode() : std::runtime_error("Invalid mode specified, options are 'CART' and 'FRAC'.") {}
+
+private:
+};
+
 class OverwriteException : public std::runtime_error
 {
 public:

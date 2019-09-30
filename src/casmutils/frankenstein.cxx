@@ -1,5 +1,6 @@
 #include "casmutils/frankenstein.hpp"
 #include "casmutils/exceptions.hpp"
+#include "casmutils/lattice.hpp"
 #include "casmutils/structure.hpp"
 
 #include <casm/CASM_global_definitions.hh>
@@ -231,8 +232,8 @@ Rewrap::Structure vacuum_pack(const Rewrap::Structure& big_struc, std::array<boo
     }
 
     // Set the lattice and you're done
-    CASM::Lattice lat(lat_mat);
-    cpy_big.set_lattice(lat, CASM::CART);
+    Rewrap::Lattice lat(lat_mat);
+    cpy_big.set_lattice(lat, Rewrap::CART);
     return cpy_big;
 }
 

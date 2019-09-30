@@ -94,12 +94,17 @@ public:
     /// Returns true if the structure is already primitive
     bool is_primitive() const;
 
+    /// Give the structure a new lattice, and either keep the Cartesian, or fractional coordinates of the basis
+    void set_lattice(const Lattice& new_lattice, COORD_TYPE mode);
+
     /// Add a new site to the basis
     /* void push_basis(const Rewrap::Site& new_basis_site); */
 
     ///Return a copy of all the basis sites
     std::vector<Site> basis_sites() const;
 
+    ///Return *this as a CASM::BasicStructure
+    const CasmStructure& __get() const {return *this;};
 private:
 };
 } // namespace Rewrap

@@ -3,11 +3,15 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
+#include "casm/CASM_global_definitions.hh"
 
 namespace Rewrap
 {
 namespace fs = boost::filesystem;
 namespace po = boost::program_options;
+using CASM::COORD_TYPE;
+using CASM::CART;
+using CASM::FRAC;
 } // namespace Rewrap
 
 namespace Simplicity
