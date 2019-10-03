@@ -2,6 +2,7 @@ xtalpydir=$(pythondir)/casmutils/xtal
 
 xtalpy_PYTHON=\
 			  utilipy/casmutils/xtal/__init__.py\
+			  utilipy/casmutils/xtal/single_block_wadsley_roth.py\
 			  utilipy/casmutils/xtal/xtal.py
 
 xtalpy_LTLIBRARIES=\
