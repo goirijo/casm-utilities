@@ -94,6 +94,9 @@ public:
     /// Returns true if the structure is already primitive
     bool is_primitive() const;
 
+    /// Returns a copy of the current lattice of the structure
+    Lattice lattice() const;
+
     /// Give the structure a new lattice, and either keep the Cartesian, or fractional coordinates of the basis
     void set_lattice(const Lattice& new_lattice, COORD_TYPE mode);
 

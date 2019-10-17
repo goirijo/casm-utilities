@@ -26,6 +26,8 @@ Structure Structure::from_poscar(const fs::path& poscar_path) { return Rewrap::S
 
 bool Structure::is_primitive() const { return CasmStructure::is_primitive(); }
 
+Lattice Structure::lattice() const { return Lattice(this->__get().lattice()); }
+
 void Structure::set_lattice(const Lattice& new_lattice, COORD_TYPE mode)
 {
     CasmStructure* base = this;
