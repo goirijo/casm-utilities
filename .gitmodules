@@ -6,4 +6,4 @@
 	url = https://github.com/pybind/pybind11
 [submodule "CASMcode-dev"]
 	path = CASMcode-dev
-	url = git@github.com:prisms-center/CASMcode-dev.git
+	url = git@github.com:goirijo/CASMcode-dev.git
