@@ -6,7 +6,7 @@
 namespace
 {
 // Please never use this outisde of the RockSalt context
-void set_site_occupant(CASM::Site* mutating_site, std::string new_occ)
+void set_site_occupant(CASM::xtal::Site* mutating_site, std::string new_occ)
 {
     if (new_occ == "Va")
     {

@@ -3,7 +3,8 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
-#include "casm/CASM_global_definitions.hh"
+#include "casm/global/definitions.hh"
+#include "casm/global/enum.hh"
 
 namespace Rewrap
 {

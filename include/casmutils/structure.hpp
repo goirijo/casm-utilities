@@ -2,8 +2,7 @@
 #define UTILS_STRUCTURE_HH
 
 #include "definitions.hpp"
-#include <casm/CASM_global_definitions.hh>
-#include <casm/crystallography/Structure.hh>
+#include "casm/crystallography/Structure.hh"
 #include <iostream>
 
 namespace Rewrap
@@ -20,9 +19,9 @@ class Coordinate
 {
 public:
     Coordinate() = delete;
-    Coordinate(const CASM::Coordinate& init_coord) : casm_coord(init_coord) {}
+    Coordinate(const CASM::xtal::Coordinate& init_coord) : casm_coord(init_coord) {}
     Coordinate(const Eigen::Vector3d& cart_coord)
-        : Coordinate(CASM::Coordinate(cart_coord, CASM::Lattice(), CASM::CART)){};
+        : Coordinate(CASM::xtal::Coordinate(cart_coord, CASM::Lattice(), CASM::CART)){};
     Coordinate(double x, double y, double z)
         : Coordinate(Eigen::Vector3d(x,y,z)){}
 
@@ -46,14 +45,14 @@ public:
 
 private:
     /// Use the CASM implementation to forward any functionality you want
-    CASM::Coordinate casm_coord;
+    CASM::xtal::Coordinate casm_coord;
 };
 
 class Site
 {
 public:
     Site() = delete;
-    Site(const CASM::Site& init_site): casm_site(init_site){}
+    Site(const CASM::xtal::Site& init_site): casm_site(init_site){}
     Site(const Coordinate& init_coord, const std::vector<std::string>& allowed_occupants);
     Site(const Eigen::Vector3d& init_coord, const std::vector<std::string>& allowed_occupants);
 
@@ -69,13 +68,13 @@ public:
     Eigen::Vector3d frac(const Rewrap::Lattice& ref_lattice) const;
 
     ///Access  the CASM implementation within.
-    const CASM::Site& __get() const {return casm_site;};
+    const CASM::xtal::Site& __get() const {return casm_site;};
 
 private:
-    CASM::Site casm_site;
+    CASM::xtal::Site casm_site;
 };
 
-typedef CASM::BasicStructure<CASM::Site> CasmStructure;
+typedef CASM::xtal::BasicStructure CasmStructure;
 class Structure : public CasmStructure
 {
 public:
@@ -99,9 +98,6 @@ public:
 
     /// Give the structure a new lattice, and either keep the Cartesian, or fractional coordinates of the basis
     void set_lattice(const Lattice& new_lattice, COORD_TYPE mode);
-
-    /// Add a new site to the basis
-    /* void push_basis(const Rewrap::Site& new_basis_site); */
 
     ///Return a copy of all the basis sites
     std::vector<Site> basis_sites() const;

@@ -39,6 +39,7 @@ AX_BOOST_REGEX
 #Why won't it find the libraries???
 # AC_CHECK_HEADER([pybind11/pybind11.h],[],[AC_MSG_ERROR(Pybind11 is required for this operation)])
 AC_CHECK_LIB([dl], [dlopen], [], AC_MSG_ERROR(dlopen from dl library not found!))
+AX_CHECK_ZLIB(,[AC_MSG_ERROR([Could not find zlib])])
 
 
 # Checks for header files.

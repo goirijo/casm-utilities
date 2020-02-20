@@ -14,7 +14,9 @@ dist_bin_SCRIPTS=
 TESTS=
 EXTRA_DIST=
 
-AM_CXXFLAGS=
+AM_CXXFLAGS=\
+			  -DEIGEN_DEFAULT_DENSE_INDEX_TYPE=long\
+			  -DGZSTREAM_NAMESPACE=gz
 
 AM_CPPFLAGS=\
 			 -I$(srcdir)/include\
@@ -23,6 +25,7 @@ AM_CPPFLAGS=\
 			 -I$(srcdir)/CASMcode/include/casm/external\
 			 -I$(srcdir)/CASMcode/include/casm/external/qhull/libqhullcpp\
 			 -I$(srcdir)/CASMcode/include/casm/external/qhull/libqhull_r\
+			 -I$(srcdir)/CASMcode/include/casm/external/gzstream\
 			 $(BOOST_CPPFLAGS)\
 			 $(PYTHON_CPPFLAGS)
 

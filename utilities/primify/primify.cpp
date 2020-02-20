@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
     auto super_path = primify_launch.fetch<fs::path>("superstructure");
 
     // Should all CASM calls be wrapped up?
-    auto super_struc = CASM::Structure(super_path);
+    auto super_struc = CASM::xtal::Structure(super_path);   //BAD. ONLY UTITILIES IMPLEMENTATIONS FOOL
     auto prim_struc = Simplicity::make_primitive(super_struc);
 
     if (primify_launch.vm().count("output"))

@@ -5,12 +5,12 @@
 #include "casmutils/exceptions.hpp"
 #include "casmutils/lattice.hpp"
 
-#include <casm/casm_io/VaspIO.hh>
-#include <casm/clex/ConfigMapping.hh>
-#include <casm/clex/PrimClex.hh>
-#include <casm/strain/StrainConverter.hh>
-#include <casm/crystallography/SupercellEnumerator.hh>
-#include <casm/crystallography/Niggli.hh>
+#include "casm/crystallography/io/VaspIO.hh"
+#include "casm/clex/ConfigMapping.hh"
+#include "casm/clex/PrimClex.hh"
+#include "casm/strain/StrainConverter.hh"
+#include "casm/crystallography/SuperlatticeEnumerator.hh"
+#include "casm/crystallography/Niggli.hh"
 
 namespace
 {
@@ -33,7 +33,7 @@ double boxy_score(const Rewrap::Lattice& lat)
 {
     // Less surface area per volume means more boxy
     // i.e. more volume per surface area means more boxy
-    return std::abs(lat.vol()) / lattice_surface_area(lat);
+    return std::abs(lat.volume()) / lattice_surface_area(lat);
 }
 } // namespace
 
@@ -41,33 +41,35 @@ namespace Simplicity
 {
 Rewrap::Structure make_primitive(const Rewrap::Structure& input)
 {
-    const Rewrap::CasmStructure& casted_input(input);
-    Rewrap::CasmStructure true_prim;
-    //CasmStructure fills up true_prim when you call is_primitive
-    bool is_prim = casted_input.is_primitive(true_prim);
-    return true_prim;
+    throw UtilExcept::NotImplemented();
+    /* const Rewrap::CasmStructure& casted_input(input); */
+    /* Rewrap::CasmStructure true_prim; */
+    /* //CasmStructure fills up true_prim when you call is_primitive */
+    /* bool is_prim = casted_input.is_primitive(true_prim); */
+    /* return true_prim; */
 }
 
 Rewrap::Structure make_niggli(const Rewrap::Structure& non_niggli)
 {
     Rewrap::CasmStructure niggli = non_niggli;
-    CASM::Lattice lat_niggli = CASM::niggli(non_niggli.lattice(), CASM::TOL);
+    CASM::Lattice lat_niggli = CASM::xtal::niggli(non_niggli.lattice(), CASM::TOL);
     niggli.set_lattice(lat_niggli, CASM::CART);
     return niggli;
 }
 
 void make_niggli(Rewrap::Structure* non_niggli)
 {
-    CASM::Lattice lat_niggli = CASM::niggli(non_niggli->lattice(), CASM::TOL);
+    CASM::Lattice lat_niggli = CASM::xtal::niggli(non_niggli->lattice(), CASM::TOL);
     non_niggli->set_lattice(lat_niggli, CASM::CART);
     return;
 }
 
 void print_poscar(const Rewrap::Structure& printable, std::ostream& outstream)
 {
-    CASM::VaspIO::PrintPOSCAR p(printable);
-    p.sort();
-    p.print(outstream);
+    throw UtilExcept::NotImplemented();
+    /* CASM::VaspIO::PrintPOSCAR p(printable); */
+    /* p.sort(); */
+    /* p.print(outstream); */
     return;
 }
 
@@ -128,42 +130,43 @@ Rewrap::Structure apply_strain(const Rewrap::Structure& struc_ptr, const Eigen::
 std::vector<std::pair<double, double>> structure_score(const Rewrap::Structure& map_reference_struc,
                                                        const std::vector<Rewrap::Structure>& mappable_struc_vec)
 {
-    for (const auto& struc : mappable_struc_vec)
-    {
-        if (struc.basis.size() != map_reference_struc.basis.size())
-        {
-            throw UtilExcept::BasisMismatch();
-        }
-    }
+    throw UtilExcept::NotImplemented();
+    /* for (const auto& struc : mappable_struc_vec) */
+    /* { */
+    /*     if (struc.basis.size() != map_reference_struc.basis.size()) */
+    /*     { */
+    /*         throw UtilExcept::BasisMismatch(); */
+    /*     } */
+    /* } */
 
-    // get prim and make PrimClex
-    auto ref_prim = CASM::Structure(make_primitive(map_reference_struc));
-    auto pclex = Extend::quiet_primclex(ref_prim);
+    /* // get prim and make PrimClex */
+    /* auto ref_prim = CASM::Structure(make_primitive(map_reference_struc)); */
+    /* auto pclex = Extend::quiet_primclex(ref_prim); */
 
-    // mapping setup
-    int options = 2;      // robust mapping
-    double vol_tol = 0.5; // not used
-    double weight = 0.5;  // not used
-    CASM::ConfigMapper configmapper(pclex, weight, vol_tol, options, CASM::TOL);
+    /* // mapping setup */
+    /* int options = 2;      // robust mapping */
+    /* double vol_tol = 0.5; // not used */
+    /* double weight = 0.5;  // not used */
+    /* CASM::ConfigMapper configmapper(pclex, weight, vol_tol, options, CASM::TOL); */
 
-    CASM::jsonParser out;          // mapping output
-    std::string name;              // not used
-    std::vector<CASM::Index> best; // not used
-    Eigen::Matrix3d cart_op;       // not used
-    bool update = false;
+    /* CASM::jsonParser out;          // mapping output */
+    /* std::string name;              // not used */
+    /* std::vector<CASM::Index> best; // not used */
+    /* Eigen::Matrix3d cart_op;       // not used */
+    /* bool update = false; */
 
-    std::vector<std::pair<double, double>> all_scores;
-    for (const auto& struc : mappable_struc_vec)
-    {
-        // map it
-        Rewrap::Structure mappable_copy(struc); // can't be const, make copy
-        configmapper.import_structure_occupation(mappable_copy, name, out, best, cart_op, update);
-        double basis = out["best_mapping"]["basis_deformation"].get<double>();
-        double lattice = out["best_mapping"]["lattice_deformation"].get<double>();
-        all_scores.emplace_back(lattice, basis);
-    }
+    /* std::vector<std::pair<double, double>> all_scores; */
+    /* for (const auto& struc : mappable_struc_vec) */
+    /* { */
+    /*     // map it */
+    /*     Rewrap::Structure mappable_copy(struc); // can't be const, make copy */
+    /*     configmapper.import_structure_occupation(mappable_copy, name, out, best, cart_op, update); */
+    /*     double basis = out["best_mapping"]["basis_deformation"].get<double>(); */
+    /*     double lattice = out["best_mapping"]["lattice_deformation"].get<double>(); */
+    /*     all_scores.emplace_back(lattice, basis); */
+    /* } */
 
-    return all_scores;
+    /* return all_scores; */
 }
 
 std::pair<double, double> structure_score(const Rewrap::Structure& map_reference_struc,
@@ -205,15 +208,17 @@ Rewrap::Structure make_boxiest_superstructure_of_volume(const Rewrap::Structure&
 std::vector<Rewrap::Structure> make_superstructures_of_volume(const Rewrap::Structure& structure, const int volume)
 {
     std::vector<Rewrap::Structure> all_superstructures;
-    CASM::ScelEnumProps enum_props(volume, volume+1);
-    CASM::SupercellEnumerator<CASM::Lattice> lat_enumerator(structure.lattice(), enum_props, CASM::TOL);
+    /* CASM::xtal::ScelEnumProps enum_props(volume, volume+1); */
+    /* CASM::xtal::SuperlatticeEnumerator lat_enumerator(structure.lattice(), enum_props, CASM::TOL); */
 
-    for (const auto& lat : lat_enumerator)
-    {
-        Rewrap::Structure super = structure.create_superstruc(lat);
-        Simplicity::make_niggli(&super);
-        all_superstructures.emplace_back(std::move(super));
-    }
+    /* for (const auto& lat : lat_enumerator) */
+    /* { */
+    /*     Rewrap::Structure super = structure.create_superstruc(lat); */
+    /*     Simplicity::make_niggli(&super); */
+    /*     all_superstructures.emplace_back(std::move(super)); */
+    /* } */
+
+    throw UtilExcept::NotImplemented();
 
     return all_superstructures;
 }

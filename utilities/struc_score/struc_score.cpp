@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
     }
 
     auto reference_path = struc_score_launch.fetch<fs::path>("reference"); 
-    auto map_reference_struc = CASM::Structure(reference_path);
+    auto map_reference_struc = CASM::xtal::Structure(reference_path);   //BAD. ONLY UTILITIES IMPLEMENTATIONS
     auto weight = struc_score_launch.fetch<double>("weight"); 
 
     std::vector<fs::path> mappable_paths;

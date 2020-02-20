@@ -2,9 +2,9 @@
 #include "casmutils/exceptions.hpp"
 #include "casmutils/lattice.hpp"
 #include "casmutils/structure.hpp"
+#include "casmutils/definitions.hpp"
 
-#include <casm/CASM_global_definitions.hh>
-#include <casm/casm_io/VaspIO.hh>
+#include <casm/crystallography/io/VaspIO.hh>
 #include <casm/crystallography/Niggli.hh>
 #include <casm/crystallography/Structure.hh>
 #include <boost/filesystem.hpp>
@@ -17,10 +17,11 @@ namespace
 /// coordinates between 0 and 1 only
 void bring_coords_within(Rewrap::Structure* struc)
 {
-    for (auto& site : struc->basis)
-    {
-        site.within();
-    }
+    throw UtilExcept::NotImplemented();
+    /* for (auto& site : struc->basis) */
+    /* { */
+    /*     site.within(); */
+    /* } */
     return;
 }
 } // namespace
@@ -29,61 +30,63 @@ namespace Frankenstein
 {
 void shift_coords_by(Rewrap::Structure* struc, const Eigen::Vector3d& shift_val)
 {
-    for (auto& item : struc->basis)
-    {
-        item += CASM::Coordinate(shift_val, struc->lattice(), CASM::FRAC);
-    }
-    bring_coords_within(struc);
-    return;
+    throw UtilExcept::NotImplemented();
+    /* for (auto& item : struc->basis) */
+    /* { */
+    /*     item += CASM::Coordinate(shift_val, struc->lattice(), CASM::FRAC); */
+    /* } */
+    /* bring_coords_within(struc); */
+    /* return; */
 }
 
 std::pair<Rewrap::Structure, Rewrap::Structure> slice(const Rewrap::Structure& big_struc, double slice_loc, double tol)
 {
-    // Copy the input, we'll do surgery on this guy
-    Rewrap::Structure cpy_big = big_struc;
-    bring_coords_within(&cpy_big);
+    throw UtilExcept::NotImplemented();
+    /* // Copy the input, we'll do surgery on this guy */
+    /* Rewrap::Structure cpy_big = big_struc; */
+    /* bring_coords_within(&cpy_big); */
 
-    // Create lattice for the bottom half of the structure
-    Eigen::Matrix3d lat_mat = big_struc.lattice().lat_column_mat();
-    lat_mat.col(2) = lat_mat.col(2) * (slice_loc);
-    CASM::Lattice bottom_lat(lat_mat);
-    CASM::Structure bottom_struc(bottom_lat);
+    /* // Create lattice for the bottom half of the structure */
+    /* Eigen::Matrix3d lat_mat = big_struc.lattice().lat_column_mat(); */
+    /* lat_mat.col(2) = lat_mat.col(2) * (slice_loc); */
+    /* CASM::xtal::Lattice bottom_lat(lat_mat); */
+    /* CASM::xtal::Structure bottom_struc(bottom_lat); */
 
-    // Create lattice for the top half of the structure
-    lat_mat = big_struc.lattice().lat_column_mat();
-    lat_mat.col(2) = lat_mat.col(2) * (1 - slice_loc);
-    CASM::Lattice top_lat(lat_mat);
-    CASM::Structure top_struc(top_lat);
+    /* // Create lattice for the top half of the structure */
+    /* lat_mat = big_struc.lattice().lat_column_mat(); */
+    /* lat_mat.col(2) = lat_mat.col(2) * (1 - slice_loc); */
+    /* CASM::xtal::Lattice top_lat(lat_mat); */
+    /* CASM::xtal::Structure top_struc(top_lat); */
 
-    // Loop over the basis of the input structure, and assign each
-    // site to either the top or bottom structures, shifting the
-    // sites accordingly
-    for (const auto& item : cpy_big.basis)
-    {
-        // only move basis sites below slice pivot
-        if (item.const_frac()(2) >= 0 && item.const_frac()(2) < slice_loc + tol)
-        {
-            auto coord = CASM::Coordinate(item.const_cart(), bottom_lat, CASM::CART);
-            auto site = CASM::Site(coord, item.occ_name());
-            bottom_struc.basis.push_back(site);
-        }
-        else
-        {
-            CASM::Site new_site = item;
-            // adjust c coord by slice location
-            Eigen::Vector3d altered = new_site.const_frac();
-            altered(2) = new_site.const_frac()(2) - slice_loc;
-            new_site.frac() = altered;
-            auto coord = CASM::Coordinate(new_site.const_cart(), top_lat, CASM::CART);
-            auto site = CASM::Site(coord, item.occ_name());
-            top_struc.basis.push_back(site);
-        }
-    }
+    /* // Loop over the basis of the input structure, and assign each */
+    /* // site to either the top or bottom structures, shifting the */
+    /* // sites accordingly */
+    /* for (const auto& item : cpy_big.basis) */
+    /* { */
+    /*     // only move basis sites below slice pivot */
+    /*     if (item.const_frac()(2) >= 0 && item.const_frac()(2) < slice_loc + tol) */
+    /*     { */
+    /*         auto coord = CASM::xtal::Coordinate(item.const_cart(), bottom_lat, CASM::CART); */
+    /*         auto site = CASM::xtal::Site(coord, item.occ_name()); */
+    /*         bottom_struc.basis.push_back(site); */
+    /*     } */
+    /*     else */
+    /*     { */
+    /*         CASM::Site new_site = item; */
+    /*         // adjust c coord by slice location */
+    /*         Eigen::Vector3d altered = new_site.const_frac(); */
+    /*         altered(2) = new_site.const_frac()(2) - slice_loc; */
+    /*         new_site.frac() = altered; */
+    /*         auto coord = CASM::Coordinate(new_site.const_cart(), top_lat, CASM::CART); */
+    /*         auto site = CASM::Site(coord, item.occ_name()); */
+    /*         top_struc.basis.push_back(site); */
+    /*     } */
+    /* } */
 
-    auto bottom_top = std::make_pair(Rewrap::Structure(bottom_struc), Rewrap::Structure(top_struc));
-    bring_coords_within(&bottom_top.first);
-    bring_coords_within(&bottom_top.second);
-    return bottom_top;
+    /* auto bottom_top = std::make_pair(Rewrap::Structure(bottom_struc), Rewrap::Structure(top_struc)); */
+    /* bring_coords_within(&bottom_top.first); */
+    /* bring_coords_within(&bottom_top.second); */
+    /* return bottom_top; */
 }
 
 std::vector<Rewrap::Structure> _multi_slice(const Rewrap::Structure& big_struc, const Eigen::VectorXd& slice_locs,
@@ -147,94 +150,96 @@ std::vector<Rewrap::Structure> uniformly_slice(const Rewrap::Structure& big_stru
 
 Rewrap::Structure stack(const std::vector<Rewrap::Structure>& sub_strucs)
 {
-    // Create a new lattice that has the same ab vectors. but summed up
-    // the c vectors of every structure
-    Eigen::Matrix3d stacked_lat_mat = sub_strucs[0].lattice().lat_column_mat();
-    for (int i = 1; i < sub_strucs.size(); i++)
-    {
-        Eigen::Matrix3d lat_mat = sub_strucs[i].lattice().lat_column_mat();
-        stacked_lat_mat.col(2) = stacked_lat_mat.col(2) + lat_mat.col(2);
-    }
-    CASM::Lattice stacked_lat(stacked_lat_mat);
+    throw UtilExcept::NotImplemented();
+    /* // Create a new lattice that has the same ab vectors. but summed up */
+    /* // the c vectors of every structure */
+    /* Eigen::Matrix3d stacked_lat_mat = sub_strucs[0].lattice().lat_column_mat(); */
+    /* for (int i = 1; i < sub_strucs.size(); i++) */
+    /* { */
+    /*     Eigen::Matrix3d lat_mat = sub_strucs[i].lattice().lat_column_mat(); */
+    /*     stacked_lat_mat.col(2) = stacked_lat_mat.col(2) + lat_mat.col(2); */
+    /* } */
+    /* CASM::Lattice stacked_lat(stacked_lat_mat); */
 
-    // We now have a template structure with the right shape, we'll put the
-    // sites inside in a second. It already has the basis for the bottom of
-    // the stack
-    CASM::Structure stacked_struc(sub_strucs[0]);
-    stacked_struc.set_lattice(stacked_lat, CASM::CART);
+    /* // We now have a template structure with the right shape, we'll put the */
+    /* // sites inside in a second. It already has the basis for the bottom of */
+    /* // the stack */
+    /* CASM::Structure stacked_struc(sub_strucs[0]); */
+    /* stacked_struc.set_lattice(stacked_lat, CASM::CART); */
 
-    // For each structure we stack, we'll take the basis, shift it up by the
-    // approprate amount, and stick it into our template stacked structure
-    Eigen::Vector3d c_shift = Eigen::Vector3d::Zero();
-    for (int i = 1; i < sub_strucs.size(); i++)
-    {
-        // determine appropriate c-axis shift for position in stacking
-        c_shift = c_shift + sub_strucs[i].lattice().lat_column_mat().col(2);
-        Rewrap::Structure cpy_i = sub_strucs[i];
-        bring_coords_within(&cpy_i);
+    /* // For each structure we stack, we'll take the basis, shift it up by the */
+    /* // approprate amount, and stick it into our template stacked structure */
+    /* Eigen::Vector3d c_shift = Eigen::Vector3d::Zero(); */
+    /* for (int i = 1; i < sub_strucs.size(); i++) */
+    /* { */
+    /*     // determine appropriate c-axis shift for position in stacking */
+    /*     c_shift = c_shift + sub_strucs[i].lattice().lat_column_mat().col(2); */
+    /*     Rewrap::Structure cpy_i = sub_strucs[i]; */
+    /*     bring_coords_within(&cpy_i); */
 
-        // Shift each site of the basis by the appropriate c shift,
-        // and adds them to the stacked structure
-        for (auto new_site : cpy_i.basis)
-        {
-            new_site.cart() += c_shift;
-            new_site.set_lattice(stacked_lat, CASM::CART);
-            stacked_struc.basis.push_back(new_site);
-        }
-    }
+    /*     // Shift each site of the basis by the appropriate c shift, */
+    /*     // and adds them to the stacked structure */
+    /*     for (auto new_site : cpy_i.basis) */
+    /*     { */
+    /*         new_site.cart() += c_shift; */
+    /*         new_site.set_lattice(stacked_lat, CASM::CART); */
+    /*         stacked_struc.basis.push_back(new_site); */
+    /*     } */
+    /* } */
 
-    auto rw_struc = Rewrap::Structure(stacked_struc);
-    bring_coords_within(&rw_struc);
-    return rw_struc;
+    /* auto rw_struc = Rewrap::Structure(stacked_struc); */
+    /* bring_coords_within(&rw_struc); */
+    /* return rw_struc; */
 }
 
 Rewrap::Structure vacuum_pack(const Rewrap::Structure& big_struc, std::array<bool, 3>& dirs, double padding)
 {
-    Rewrap::Structure cpy_big = big_struc;
-    bring_coords_within(&cpy_big);
+    throw UtilExcept::NotImplemented();
+    /* Rewrap::Structure cpy_big = big_struc; */
+    /* bring_coords_within(&cpy_big); */
 
-    // We start by setting the boundaries at the maximum possible limits
-    // There is one pair for each lattice vector
-    std::vector<std::pair<double, double>> limits(3, std::make_pair(0.0, 1.0));
+    /* // We start by setting the boundaries at the maximum possible limits */
+    /* // There is one pair for each lattice vector */
+    /* std::vector<std::pair<double, double>> limits(3, std::make_pair(0.0, 1.0)); */
 
-    // Going through each basis site, we determine the maximum and minimun boundaries,
-    // which correspond to the largest and smallest fractional coordinates of each lattice
-    // vector direction
-    for (auto& site : cpy_big.basis)
-    {
-        auto coord = site.const_frac();
-        for (int i = 0; i < 3; i++)
-        {
-            if (coord(i) > limits[i].first)
-            {
-                limits[i].first = coord(i);
-            }
-            if (coord(i) < limits[i].second)
-            {
-                limits[i].second = coord(i);
-            }
-        }
-    }
+    /* // Going through each basis site, we determine the maximum and minimun boundaries, */
+    /* // which correspond to the largest and smallest fractional coordinates of each lattice */
+    /* // vector direction */
+    /* for (auto& site : cpy_big.basis) */
+    /* { */
+    /*     auto coord = site.const_frac(); */
+    /*     for (int i = 0; i < 3; i++) */
+    /*     { */
+    /*         if (coord(i) > limits[i].first) */
+    /*         { */
+    /*             limits[i].first = coord(i); */
+    /*         } */
+    /*         if (coord(i) < limits[i].second) */
+    /*         { */
+    /*             limits[i].second = coord(i); */
+    /*         } */
+    /*     } */
+    /* } */
 
-    // Shift the atoms so that the vacuum packed atoms are located at the origin
-    Eigen::Vector3d shift(-limits[0].second, -limits[1].second, -limits[2].second);
-    shift_coords_by(&cpy_big, shift);
+    /* // Shift the atoms so that the vacuum packed atoms are located at the origin */
+    /* Eigen::Vector3d shift(-limits[0].second, -limits[1].second, -limits[2].second); */
+    /* shift_coords_by(&cpy_big, shift); */
 
-    // Reduce the lattice vectors so that the lattice only just encloses the atoms
-    Eigen::Matrix3d lat_mat = cpy_big.lattice().lat_column_mat();
-    for (int i = 0; i < 3; i++)
-    {
-        if (dirs[i])
-        {
-            lat_mat.col(i) = lat_mat.col(i) * (limits[i].first - limits[i].second) +
-                             padding * lat_mat.col(i) / lat_mat.col(i).norm();
-        }
-    }
+    /* // Reduce the lattice vectors so that the lattice only just encloses the atoms */
+    /* Eigen::Matrix3d lat_mat = cpy_big.lattice().lat_column_mat(); */
+    /* for (int i = 0; i < 3; i++) */
+    /* { */
+    /*     if (dirs[i]) */
+    /*     { */
+    /*         lat_mat.col(i) = lat_mat.col(i) * (limits[i].first - limits[i].second) + */
+    /*                          padding * lat_mat.col(i) / lat_mat.col(i).norm(); */
+    /*     } */
+    /* } */
 
-    // Set the lattice and you're done
-    Rewrap::Lattice lat(lat_mat);
-    cpy_big.set_lattice(lat, Rewrap::CART);
-    return cpy_big;
+    /* // Set the lattice and you're done */
+    /* Rewrap::Lattice lat(lat_mat); */
+    /* cpy_big.set_lattice(lat, Rewrap::CART); */
+    /* return cpy_big; */
 }
 
 Rewrap::Structure inflate(const Rewrap::Structure& struc, const std::array<double, 3>& padding)

@@ -7,10 +7,13 @@
 
 namespace CASM
 {
+namespace xtal
+{
 class Site;
 class Coordinate;
-class PrimClex;
 class Structure;
+} // namespace xtal
+class PrimClex;
 } // namespace CASM
 
 /**
@@ -25,10 +28,10 @@ class Structure;
 namespace Extend
 {
 /// Make a PrimClex but shut up about it
-CASM::PrimClex quiet_primclex(CASM::Structure& prim);
+CASM::PrimClex quiet_primclex(CASM::xtal::Structure& prim);
 
 /// Alternate construction of a site with only occupant degrees of freedom, and atom as occuapnt (no molecule)
-CASM::Site atomic_site(const CASM::Coordinate& coord, const std::vector<std::string>& allowed_species);
+CASM::xtal::Site atomic_site(const CASM::xtal::Coordinate& coord, const std::vector<std::string>& allowed_species);
 } // namespace Extend
 
 namespace IO
