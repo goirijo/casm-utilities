@@ -1,0 +1,17 @@
+frankensteinpydir=$(pythondir)/casmutils/xtal/frankenstein
+
+frankensteinpy_PYTHON=\
+				  lib-py/casmutils/xtal/frankenstein/__init__.py\
+				  lib-py/casmutils/xtal/frankenstein/frankenstein.py
+
+frankensteinpy_LTLIBRARIES=_frankenstein.la
+
+_frankenstein_la_SOURCES=\
+					 lib-py/casmutils/xtal/frankenstein/frankenstein-py.cxx
+
+_frankenstein_la_LIBADD=\
+					libcasmutils.la
+
+_frankenstein_la_LDFLAGS=\
+					 -module
+

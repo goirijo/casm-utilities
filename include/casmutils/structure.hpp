@@ -60,7 +60,7 @@ public:
     operator Coordinate() const;
 
     ///Return the name of the current type of atom occupying the site
-    std::string current_occupant_name() const;
+    /* std::string current_occupant_name() const; */    //delete this
     
     ///Retreive the Cartesian values of the coordinate
     Eigen::Vector3d cart() const;

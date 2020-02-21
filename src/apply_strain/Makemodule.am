@@ -1,0 +1,11 @@
+bin_PROGRAMS += _casmutils-apply-strain
+
+_casmutils_apply_strain_SOURCES=\
+						  src/apply_strain/apply_strain.cpp
+
+
+_casmutils_apply_strain_LDADD=\
+						libcasmutils.la\
+						$(BOOST_SYSTEM_LIB)\
+						$(BOOST_FILESYSTEM_LIB)\
+						$(BOOST_PROGRAM_OPTIONS_LIB)

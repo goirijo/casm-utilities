@@ -1,0 +1,11 @@
+bin_PROGRAMS += _casmutils-vacuum-pack
+
+_casmutils_vacuum_pack_SOURCES=\
+						  src/vacuum_pack/vacuum_pack.cpp
+
+
+_casmutils_vacuum_pack_LDADD=\
+						libcasmutils.la\
+						$(BOOST_SYSTEM_LIB)\
+						$(BOOST_FILESYSTEM_LIB)\
+						$(BOOST_PROGRAM_OPTIONS_LIB)
