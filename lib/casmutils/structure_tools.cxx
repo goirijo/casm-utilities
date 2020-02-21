@@ -51,17 +51,19 @@ Rewrap::Structure make_primitive(const Rewrap::Structure& input)
 
 Rewrap::Structure make_niggli(const Rewrap::Structure& non_niggli)
 {
-    Rewrap::CasmStructure niggli = non_niggli;
-    CASM::Lattice lat_niggli = CASM::xtal::niggli(non_niggli.lattice(), CASM::TOL);
-    niggli.set_lattice(lat_niggli, CASM::CART);
-    return niggli;
+    throw UtilExcept::NotImplemented();
+    /* Rewrap::CasmStructure niggli = non_niggli; */
+    /* CASM::Lattice lat_niggli = CASM::xtal::niggli(non_niggli.lattice(), CASM::TOL); */
+    /* niggli.set_lattice(lat_niggli, CASM::CART); */
+    /* return niggli; */
 }
 
 void make_niggli(Rewrap::Structure* non_niggli)
 {
-    CASM::Lattice lat_niggli = CASM::xtal::niggli(non_niggli->lattice(), CASM::TOL);
-    non_niggli->set_lattice(lat_niggli, CASM::CART);
-    return;
+    throw UtilExcept::NotImplemented();
+    /* CASM::Lattice lat_niggli = CASM::xtal::niggli(non_niggli->lattice(), CASM::TOL); */
+    /* non_niggli->set_lattice(lat_niggli, CASM::CART); */
+    /* return; */
 }
 
 void print_poscar(const Rewrap::Structure& printable, std::ostream& outstream)
@@ -83,17 +85,19 @@ void write_poscar(const Rewrap::Structure& printable, const Rewrap::fs::path& fi
 
 Rewrap::Structure make_super_structure(const Rewrap::Structure& struc, const Eigen::Matrix3i& col_transf_mat)
 {
-    auto lattice_mat = struc.lattice().lat_column_mat();
-    // had to cast the transformation matrix to double as Eigen does not allow mixing matrix types
-    CASM::Lattice suplat(lattice_mat * col_transf_mat.cast<double>());
-    return struc.create_superstruc(suplat);
+    throw UtilExcept::NotImplemented();
+    /* auto lattice_mat = struc.lattice().lat_column_mat(); */
+    /* // had to cast the transformation matrix to double as Eigen does not allow mixing matrix types */
+    /* CASM::Lattice suplat(lattice_mat * col_transf_mat.cast<double>()); */
+    /* return struc.create_superstruc(suplat); */
 }
 
 void apply_deformation(Rewrap::Structure* struc_ptr, const Eigen::Matrix3d& deformation_tensor)
 {
-    CASM::Lattice strained_lattice(deformation_tensor * struc_ptr->lattice().lat_column_mat());
-    struc_ptr->set_lattice(strained_lattice, CASM::FRAC);
-    return;
+    throw UtilExcept::NotImplemented();
+    /* CASM::Lattice strained_lattice(deformation_tensor * struc_ptr->lattice().lat_column_mat()); */
+    /* struc_ptr->set_lattice(strained_lattice, CASM::FRAC); */
+    /* return; */
 }
 
 Rewrap::Structure apply_deformation(const Rewrap::Structure& struc_ptr, const Eigen::Matrix3d& deformation_tensor)

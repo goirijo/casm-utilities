@@ -10,11 +10,11 @@ namespace Extend
 
 namespace Rewrap
 {
-Structure::Structure(const CasmStructure& init_struc) : CasmStructure(init_struc) {}
-Structure::Structure(Rewrap::fs::path& filename) : CasmStructure(filename) {}
+Structure::Structure(const CASM::xtal::BasicStructure& init_struc): structure_lattice(init_struc.lattice()){
+    throw UtilExcept::NotImplemented();
+}
 
-Structure::Structure(const Rewrap::Lattice& init_lat, const std::vector<Rewrap::Site>& init_basis)
-    : CasmStructure(init_lat)
+Structure::Structure(const Rewrap::Lattice& init_lat, const std::vector<Rewrap::Site>& init_basis):structure_lattice(init_lat)
 {
     throw UtilExcept::NotImplemented();
     /* for (const auto& site : init_basis) */
@@ -24,23 +24,19 @@ Structure::Structure(const Rewrap::Lattice& init_lat, const std::vector<Rewrap::
     /* } */
 }
 
-Structure Structure::from_poscar(const fs::path& poscar_path) { return Rewrap::Structure(CasmStructure(poscar_path)); }
-
-bool Structure::is_primitive() const { 
+Structure Structure::from_poscar(const fs::path &poscar_path){
     throw UtilExcept::NotImplemented();
-    //return CasmStructure::is_primitive(); 
 }
 
-Lattice Structure::lattice() const { return Lattice(this->__get().lattice()); }
+const Lattice& Structure::lattice() const { return this->structure_lattice;}
 
 void Structure::set_lattice(const Lattice& new_lattice, COORD_TYPE mode)
 {
-    CasmStructure* base = this;
-    base->set_lattice(new_lattice.__get(), mode);
+    throw UtilExcept::NotImplemented();
     return;
 }
 
-std::vector<Site> Structure::basis_sites() const
+const std::vector<Site>& Structure::basis_sites() const
 {
     throw UtilExcept::NotImplemented();
     // You are dealing with CASM::Array, but we want to return a std::vector
@@ -48,13 +44,22 @@ std::vector<Site> Structure::basis_sites() const
     //return basis;
 }
 
+    ///Return *this as a CASM::BasicStructure
+    template<>
+    const CASM::xtal::SimpleStructure& Structure::__get<CASM::xtal::SimpleStructure>() const {return this->casm_simplestructure;}
+
+    ///Return *this as a CASM::BasicStructure
+    template<>
+    const CASM::xtal::BasicStructure& Structure::__get<CASM::xtal::BasicStructure>() const {return this->casm_basicstructure;}
+
+
 //**************************************************************************************************************//
 
 Site::operator Coordinate() const { return Coordinate(this->casm_site); }
 
-Site::Site(const Rewrap::Coordinate& init_coord, const std::vector<std::string>& allowed_occupants)
-    : casm_site(
-          Extend::atomic_site(CASM::xtal::Coordinate(init_coord.cart(), CASM::xtal::Lattice(), CASM::CART), allowed_occupants))
+Site::Site(const Rewrap::Coordinate& init_coord, const std::string& occupant_name)
+    : casm_site(CASM::xtal::Site(init_coord.__get(),occupant_name))
+          
 {
     throw UtilExcept::NotImplemented();
 
@@ -62,24 +67,18 @@ Site::Site(const Rewrap::Coordinate& init_coord, const std::vector<std::string>&
     /* this->casm_site.set_occ_value(0); */
 }
 
-Site::Site(const Eigen::Vector3d& init_coord, const std::vector<std::string>& allowed_occupants)
-    : Site(Rewrap::Coordinate(init_coord), allowed_occupants)
-{
-}
-
 Eigen::Vector3d Site::cart() const { return this->casm_site.cart(); }
 
 Eigen::Vector3d Site::frac(const Rewrap::Lattice& ref_lattice) const
 {
-    const_cast<CASM::xtal::Site*>(&this->casm_site)->set_lattice(ref_lattice, CASM::CART);
-    return this->casm_site.frac();
+    throw UtilExcept::NotImplemented();
 }
 
 //**************************************************************************************************************//
 
 Coordinate Coordinate::from_fractional(const Eigen::Vector3d& frac_coord, const Rewrap::Lattice& lat)
 {
-    CASM::xtal::Coordinate coord(frac_coord, lat, CASM::FRAC);
+    CASM::xtal::Coordinate coord(frac_coord, lat.__get(), CASM::FRAC);
     return Coordinate(coord);
 }
 
@@ -90,7 +89,7 @@ Coordinate Coordinate::from_fractional(double x, double y, double z, const Rewra
 
 void Coordinate::bring_within(const Lattice& lat)
 {
-    this->casm_coord.set_lattice(lat, CASM::CART);
+    this->casm_coord.set_lattice(lat.__get(), CASM::CART);
     this->casm_coord.within();
     return;
 }
@@ -99,7 +98,7 @@ Eigen::Vector3d Coordinate::cart() const { return this->casm_coord.cart(); }
 
 Eigen::Vector3d Coordinate::frac(const Rewrap::Lattice& ref_lattice) const
 {
-    const_cast<CASM::xtal::Coordinate*>(&this->casm_coord)->set_lattice(ref_lattice, CASM::CART);
+    const_cast<CASM::xtal::Coordinate*>(&this->casm_coord)->set_lattice(ref_lattice.__get(), CASM::CART);
     return this->casm_coord.frac();
 }
 

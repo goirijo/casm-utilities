@@ -68,7 +68,7 @@ namespace Lattice
 std::string __str__(const Rewrap::Lattice& printable)
 {
     std::ostringstream sstream;
-    sstream << printable.lat_column_mat();
+    sstream << printable.column_vector_matrix();
     return sstream.str();
 }
 } // namespace Lattice
@@ -122,7 +122,7 @@ PYBIND11_MODULE(_xtal, m)
         using namespace WrapPy::Structure;
         class_<Rewrap::Structure>(m, "Structure")
             .def("__str__", __str__)
-            .def("is_primitive", &Rewrap::Structure::is_primitive)
+            //.def("is_primitive", &Rewrap::Structure::is_primitive)
             .def("make_niggli", (Rewrap::Structure(*)(const Rewrap::Structure&))Simplicity::make_niggli)
             .def("set_lattice", set_lattice)
             .def_static("from_poscar", from_poscar)
@@ -137,8 +137,8 @@ PYBIND11_MODULE(_xtal, m)
     {
         using namespace WrapPy::Site;
         class_<Rewrap::Site>(m, "Site")
-            .def(init<const Eigen::Vector3d&, const std::vector<std::string>&>())
-            .def(init<const Rewrap::Coordinate&, const std::vector<std::string>&>())
+            .def(init<const Eigen::Vector3d&, const std::string&>())
+            .def(init<const Rewrap::Coordinate&, const std::string&>())
             .def("__str__", __str__)
             .def("cart", &Rewrap::Site::cart)
             .def("frac", &Rewrap::Site::frac);

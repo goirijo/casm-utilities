@@ -303,28 +303,29 @@ RockSaltOctahedraToggler::Coordinate RockSaltOctahedraToggler::index_to_coordina
 RockSaltOctahedraToggler::Structure
 RockSaltOctahedraToggler::primitive_structure(std::pair<std::string, std::string> species_names, double init_nn_distance)
 {
-    const auto& central_ion_name = species_names.first;
-    const auto& vertex_ion_name = species_names.second;
+    throw UtilExcept::NotImplemented();
+    //const auto& central_ion_name = species_names.first;
+    //const auto& vertex_ion_name = species_names.second;
 
-    Eigen::Matrix3d lat_mat;
-    lat_mat<<0,1,1,1,0,1,1,1,0;
-    lat_mat*=init_nn_distance;
-    /* auto scaled_lat = lat.scaled_lattice(2*nn_distance); */
-    Lattice scaled_lat(lat_mat);
+    //Eigen::Matrix3d lat_mat;
+    //lat_mat<<0,1,1,1,0,1,1,1,0;
+    //lat_mat*=init_nn_distance;
+    ///* auto scaled_lat = lat.scaled_lattice(2*nn_distance); */
+    //Lattice scaled_lat(lat_mat);
 
-    std::vector<Rewrap::Site> basis;
+    //std::vector<Rewrap::Site> basis;
 
-    Rewrap::Coordinate pos_central = Rewrap::Coordinate::from_fractional(0, 0, 0, scaled_lat);
-    Rewrap::Coordinate pos_vertex = Rewrap::Coordinate::from_fractional(0.5, 0.5, 0.5, scaled_lat);
+    //Rewrap::Coordinate pos_central = Rewrap::Coordinate::from_fractional(0, 0, 0, scaled_lat);
+    //Rewrap::Coordinate pos_vertex = Rewrap::Coordinate::from_fractional(0.5, 0.5, 0.5, scaled_lat);
 
-    Rewrap::Site central_site(pos_central, std::vector<std::string>{"Va", central_ion_name});
-    Rewrap::Site vertex_site(pos_vertex, std::vector<std::string>{"Va", vertex_ion_name});
+    //Rewrap::Site central_site(pos_central, std::vector<std::string>{"Va", central_ion_name});
+    //Rewrap::Site vertex_site(pos_vertex, std::vector<std::string>{"Va", vertex_ion_name});
 
-    basis.push_back(central_site);
-    basis.push_back(vertex_site);
+    //basis.push_back(central_site);
+    //basis.push_back(vertex_site);
 
-    Rewrap::Structure primitive_structure(scaled_lat, basis);
-    return primitive_structure;
+    //Rewrap::Structure primitive_structure(scaled_lat, basis);
+    //return primitive_structure;
 }
 
 RockSaltOctahedraToggler::Structure conventional_structure(std::pair<std::string, std::string> species_names,

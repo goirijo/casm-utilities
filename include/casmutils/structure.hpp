@@ -1,8 +1,11 @@
 #ifndef UTILS_STRUCTURE_HH
 #define UTILS_STRUCTURE_HH
 
+#include "casmutils/lattice.hpp"
 #include "definitions.hpp"
-#include "casm/crystallography/Structure.hh"
+#include "casm/crystallography/BasicStructure.hh"
+#include "casm/crystallography/Site.hh"
+#include "casm/crystallography/SimpleStructure.hh"
 #include <iostream>
 
 namespace Rewrap
@@ -21,7 +24,7 @@ public:
     Coordinate() = delete;
     Coordinate(const CASM::xtal::Coordinate& init_coord) : casm_coord(init_coord) {}
     Coordinate(const Eigen::Vector3d& cart_coord)
-        : Coordinate(CASM::xtal::Coordinate(cart_coord, CASM::Lattice(), CASM::CART)){};
+        : Coordinate(CASM::xtal::Coordinate(cart_coord, CASM::xtal::Lattice(), CASM::CART)){};
     Coordinate(double x, double y, double z)
         : Coordinate(Eigen::Vector3d(x,y,z)){}
 
@@ -43,39 +46,51 @@ public:
     ///Returns true if the distance between the coordinates is within CASM::TOL
     bool operator==(const Coordinate &coord_to_compare);
 
+    ///Access  the CASM implementation within.
+    const CASM::xtal::Coordinate& __get() const {return casm_coord;};
 private:
     /// Use the CASM implementation to forward any functionality you want
     CASM::xtal::Coordinate casm_coord;
 };
 
+/**
+ * A coordinate and type of species. Even though it's implemented
+ * with CASM::xtal::Site, it can *NOT* describe mutiple possible occupants.
+ */
+
 class Site
 {
 public:
     Site() = delete;
-    Site(const CASM::xtal::Site& init_site): casm_site(init_site){}
-    Site(const Coordinate& init_coord, const std::vector<std::string>& allowed_occupants);
-    Site(const Eigen::Vector3d& init_coord, const std::vector<std::string>& allowed_occupants);
+    Site(const CASM::xtal::Site& init_site, int occupant): casm_site(init_site){}
+    Site(const Coordinate& init_coord, const std::string& occupant_name);
+    /* Site(const Eigen::Vector3d& init_coord, const std::string& occupant_name); */
 
     ///Allow casting to Coordinate, by stripping everything away except the Cartesian position
     operator Coordinate() const;
 
-    ///Return the name of the current type of atom occupying the site
-    /* std::string current_occupant_name() const; */    //delete this
-    
     ///Retreive the Cartesian values of the coordinate
     Eigen::Vector3d cart() const;
     ///Retreive the fractional values of the coordinate relative to the provided lattice
     Eigen::Vector3d frac(const Rewrap::Lattice& ref_lattice) const;
 
+    ///Name of the species residing on the site
+    std::string label() const;
+
     ///Access  the CASM implementation within.
-    const CASM::xtal::Site& __get() const {return casm_site;};
+    /* const CASM::xtal::Site& __get() const {return casm_site;}; */
 
 private:
     CASM::xtal::Site casm_site;
 };
 
-typedef CASM::xtal::BasicStructure CasmStructure;
-class Structure : public CasmStructure
+/**
+ * Describes a current, fixed state of a crystal. Composed of a lattice,
+ * and collection of basis atoms (Sites). Each site contains the position of
+ * the species, and a label for the species.
+ */
+
+class Structure
 {
 public:
     Structure() = delete;
@@ -84,27 +99,42 @@ public:
     static Structure from_poscar(const fs::path& poscar_path);
 
     /// Construct from parent CASM class
-    Structure(const CasmStructure& init_struc);
-    Structure(Rewrap::fs::path& filename);
+    Structure(const CASM::xtal::SimpleStructure& init_struc);
+    Structure(const CASM::xtal::BasicStructure& init_struc);
 
     /// Construct with a lattice and list of sites (basis)
     Structure(const Rewrap::Lattice& init_lat, const std::vector<Rewrap::Site>& init_basis);
 
-    /// Returns true if the structure is already primitive
-    bool is_primitive() const;
-
     /// Returns a copy of the current lattice of the structure
-    Lattice lattice() const;
+    const Lattice& lattice() const;
 
     /// Give the structure a new lattice, and either keep the Cartesian, or fractional coordinates of the basis
     void set_lattice(const Lattice& new_lattice, COORD_TYPE mode);
 
-    ///Return a copy of all the basis sites
-    std::vector<Site> basis_sites() const;
+    /// Give the structure a new lattice, and either keep the Cartesian, or fractional coordinates of the basis
+    Structure set_lattice(const Lattice& new_lattice, COORD_TYPE mode) const;
 
-    ///Return *this as a CASM::BasicStructure
-    const CasmStructure& __get() const {return *this;};
+    ///Return a copy of all the basis sites
+    const std::vector<Site>& basis_sites() const;
+
+    ///Retreive the CASM implementations of *this
+    template<typename CASMType>
+    const CASMType& __get() const;
+
 private:
+
+    ///CASM::SimpleStructure representation
+    CASM::xtal::SimpleStructure casm_simplestructure;
+    
+    ///CASM::SimpleStructure representation
+    CASM::xtal::BasicStructure casm_basicstructure;
+
+    ///Rewrap representation of the basis
+    std::vector<Site> basis;
+
+    ///Rewrap representation of the lattice
+    Lattice structure_lattice;
+    
 };
 } // namespace Rewrap
 
