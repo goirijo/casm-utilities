@@ -14,7 +14,7 @@ LT_INIT
 
 # Checks for programs.
 AC_PROG_CXX
-AX_CXX_COMPILE_STDCXX_11
+AX_CXX_COMPILE_STDCXX_17
 
 #Is this how you get it to find the python related things for compiling the wrapper?
 # AX_PYTHON_DEVEL(=='3.5')
