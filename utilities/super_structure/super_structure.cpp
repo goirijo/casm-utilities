@@ -2,7 +2,7 @@
 #include "casmutils/handlers.hpp"
 #include "casmutils/structure.hpp"
 #include "casmutils/structure_tools.hpp"
-
+#include <boost/filesystem/fstream.hpp> //pls no
 #include <boost/program_options.hpp>
 #include <fstream>
 #include <iostream>

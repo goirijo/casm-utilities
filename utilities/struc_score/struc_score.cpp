@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
     for (auto& path : mappable_paths)
     {
         mappable_strucs.push_back(Rewrap::Structure(path));
-        max_path_length=std::max(max_path_length,path.size());
+        max_path_length=std::max(max_path_length,path.string().size());
     }
 
     auto all_scores = Simplicity::structure_score(map_reference_struc, mappable_strucs);    

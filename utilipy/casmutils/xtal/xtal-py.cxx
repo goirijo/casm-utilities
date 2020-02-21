@@ -6,7 +6,7 @@
 #include "casmutils/structure_tools.hpp"
 #include <boost/filesystem.hpp>
 #include <string>
-
+#include <fstream>
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
