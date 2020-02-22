@@ -14,6 +14,10 @@ libcasmutils_la_SOURCES+=\
 						 include/casmutils/frankenstein.hpp\
 						 lib/casmutils/rocksalttoggler.cxx\
 						 include/casmutils/rocksalttoggler.hpp\
+						 lib/casmutils/coordinate.cxx\
+						 include/casmutils/coordinate.hpp\
+						 lib/casmutils/site.cxx\
+						 include/casmutils/site.hpp\
 						 lib/casmutils/misc.cxx\
 						 include/casmutils/misc.hpp\
 						 lib/casmutils/handlers.cxx\

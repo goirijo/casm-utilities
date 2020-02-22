@@ -7,6 +7,7 @@
 #include "casmutils/definitions.hpp"
 #include "casmutils/lattice.hpp"
 #include "casmutils/structure.hpp"
+#include "casmutils/coordinate.hpp"
 
 namespace SpecializedEnumeration
 {
