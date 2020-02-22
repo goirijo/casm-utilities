@@ -12,7 +12,12 @@ check_PROGRAMS=
 man1_MANS=
 dist_bin_SCRIPTS=
 TESTS=
-EXTRA_DIST=
+
+#Completely overkill, but we want the copyright files too
+EXTRA_DIST=\
+		   cxxopts\
+		   CASMcode\
+		   googletest
 
 AM_CXXFLAGS=\
 			  -DEIGEN_DEFAULT_DENSE_INDEX_TYPE=long\
@@ -22,6 +27,8 @@ AM_CPPFLAGS=\
 			 -I$(srcdir)/include\
 			 -I$(srcdir)/pybind11/include\
 			 -I$(srcdir)/CASMcode/include\
+			 -I$(srcdir)/googletest/googletest\
+			 -I$(srcdir)/googletest/googletest/include\
 			 -I$(srcdir)/CASMcode/include/casm/external\
 			 -I$(srcdir)/CASMcode/include/casm/external/qhull/libqhullcpp\
 			 -I$(srcdir)/CASMcode/include/casm/external/qhull/libqhull_r\
@@ -40,25 +47,8 @@ include $(srcdir)/src/Makemodule.am			#command line utilities
 include $(srcdir)/lib-py/Makemodule.am 			#python library wrappers to utilities library
 # include $(srcdir)/src-py/Makemodule.am			#command line utilities using python modules
 
-#===========================================================================#
-#Accept .cxpy as a c++ extension
-# $(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
-# $(CXXCOMPILE) -MT $@ -MD -MP -MF -c -o $@ $< 
-# SUFFIXES: .cxpy
-# .cxpy.o:
-# 	$(CXXCOMPILE) -c -o $@ $<
-
-# .cxpy.obj:
-# 	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
-# 	$(CXXCOMPILE) -MT $@ -MD -MP -MF -c -o $@ `$(CYGPATH_W) '$<'` 
-
-# .cxpy.lo:
-# 	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
-# 	$(LTCXXCOMPILE) -MT $@ -MD -MP -MF -c -o $@ $< 
-
 
 #===========================================================================#
-
 var-check:
 	echo $(LIBS)
 	echo $(PYTHON_LIBS)
