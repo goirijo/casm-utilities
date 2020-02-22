@@ -4,4 +4,4 @@ libgtest_la_SOURCES = \
 # libgtest_la_CPPFLAGS = -I$(srcdir)/googletest/googletest/include -I$(srcdir)/googletest/googletest
 libgtest_la_LDFLAGS = -lpthread
 
-include tests/unit/stage/Makemodule.am
+include tests/unit/casmutils/Makemodule.am
