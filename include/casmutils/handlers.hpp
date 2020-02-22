@@ -27,8 +27,7 @@ public:
 
     const po::variables_map& vm() const;
 
-    template <typename T>
-    T fetch(const std::string& prog_option) const;
+    template <typename T> T fetch(const std::string& prog_option) const;
 
     int argc() const;
 
@@ -47,11 +46,7 @@ private:
 
 //************************************************************************************//
 
-template <typename T>
-T Handler::fetch(const std::string& prog_option) const
-{
-    return vm()[prog_option].as<T>();
-}
+template <typename T> T Handler::fetch(const std::string& prog_option) const { return vm()[prog_option].as<T>(); }
 
 //************************************************************************************//
 

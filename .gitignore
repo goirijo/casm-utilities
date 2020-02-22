@@ -53,3 +53,5 @@ include/Eigen
 
 #personal things
 .vimrc.local
+include/casmutils/rules.hpp
+lib/casmutils/rules.cxx

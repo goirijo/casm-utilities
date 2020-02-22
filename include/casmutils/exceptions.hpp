@@ -6,11 +6,11 @@
 namespace UtilExcept
 {
 
-    class NotImplemented : public std::runtime_error
-    {
-        public:
-        NotImplemented() : std::runtime_error("Routine has not been implemented"){}
-    };
+class NotImplemented : public std::runtime_error
+{
+public:
+    NotImplemented() : std::runtime_error("Routine has not been implemented") {}
+};
 
 class IncompatibleCoordinate : public std::runtime_error
 {

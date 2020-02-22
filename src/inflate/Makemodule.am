@@ -1,0 +1,11 @@
+bin_PROGRAMS += _casmutils-inflate
+
+_casmutils_inflate_SOURCES=\
+						  src/inflate/inflate.cpp
+
+
+_casmutils_inflate_LDADD=\
+						libcasmutils.la\
+						$(BOOST_SYSTEM_LIB)\
+						$(BOOST_FILESYSTEM_LIB)\
+						$(BOOST_PROGRAM_OPTIONS_LIB)

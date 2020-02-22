@@ -1,0 +1,21 @@
+TESTS+=check_stage
+check_PROGRAMS += check_stage
+check_stage_SOURCES = tests/unit/casmutils/stage.cpp
+check_stage_LDADD=\
+					libgtest.la\
+					libcasmutils.la
+
+
+TESTS+=check_coordinate
+check_PROGRAMS += check_coordinate
+check_coordinate_SOURCES = tests/unit/casmutils/coordinate.cpp
+check_coordinate_LDADD=\
+					libgtest.la\
+					libcasmutils.la\
+				    $(BOOST_SYSTEM_LIB)\
+				    $(BOOST_FILESYSTEM_LIB)\
+				    $(BOOST_CHRONO_LIB)\
+				    $(BOOST_REGEX_LIB)\
+				    $(BOOST_PROGRAM_OPTIONS_LIB)
+
+
