@@ -1,13 +1,13 @@
 #include "casmutils/frankenstein.hpp"
+#include "casmutils/definitions.hpp"
 #include "casmutils/exceptions.hpp"
 #include "casmutils/lattice.hpp"
 #include "casmutils/structure.hpp"
-#include "casmutils/definitions.hpp"
 
-#include <casm/crystallography/io/VaspIO.hh>
+#include <boost/filesystem.hpp>
 #include <casm/crystallography/Niggli.hh>
 #include <casm/crystallography/Structure.hh>
-#include <boost/filesystem.hpp>
+#include <casm/crystallography/io/VaspIO.hh>
 #include <fstream>
 #include <set>
 
@@ -245,19 +245,19 @@ Rewrap::Structure vacuum_pack(const Rewrap::Structure& big_struc, std::array<boo
 Rewrap::Structure inflate(const Rewrap::Structure& struc, const std::array<double, 3>& padding)
 {
     throw UtilExcept::NotImplemented();
-    //Rewrap::CasmStructure cpy_struc = struc;
-    //Eigen::Matrix3d lat_mat = cpy_struc.lattice().lat_column_mat();
+    // Rewrap::CasmStructure cpy_struc = struc;
+    // Eigen::Matrix3d lat_mat = cpy_struc.lattice().lat_column_mat();
 
     //// Add padding to each lattice vector
-    //for (int i = 0; i < 3; i++)
+    // for (int i = 0; i < 3; i++)
     //{
     //    lat_mat.col(i) = lat_mat.col(i) * (1.0 + padding[i] / lat_mat.col(i).norm());
     //}
 
-    //cpy_struc.set_lattice(CASM::Lattice(lat_mat), CASM::CART);
-    //Rewrap::Structure rw_struc(cpy_struc);
-    //bring_coords_within(&rw_struc);
-    //return rw_struc;
+    // cpy_struc.set_lattice(CASM::Lattice(lat_mat), CASM::CART);
+    // Rewrap::Structure rw_struc(cpy_struc);
+    // bring_coords_within(&rw_struc);
+    // return rw_struc;
 }
 
 } // namespace Frankenstein

@@ -6,8 +6,8 @@
 
 #include <boost/program_options.hpp>
 #include <fstream>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
 namespace Utilities
 {

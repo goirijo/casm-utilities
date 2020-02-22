@@ -1,16 +1,16 @@
 #include <fstream>
 
-#include "casmutils/structure_tools.hpp"
-#include "casmutils/misc.hpp"
 #include "casmutils/exceptions.hpp"
 #include "casmutils/lattice.hpp"
+#include "casmutils/misc.hpp"
+#include "casmutils/structure_tools.hpp"
 
-#include "casm/crystallography/io/VaspIO.hh"
 #include "casm/clex/ConfigMapping.hh"
 #include "casm/clex/PrimClex.hh"
-#include "casm/strain/StrainConverter.hh"
-#include "casm/crystallography/SuperlatticeEnumerator.hh"
 #include "casm/crystallography/Niggli.hh"
+#include "casm/crystallography/SuperlatticeEnumerator.hh"
+#include "casm/crystallography/io/VaspIO.hh"
+#include "casm/strain/StrainConverter.hh"
 
 namespace
 {
@@ -124,7 +124,8 @@ void apply_strain(Rewrap::Structure* struc_ptr, const Eigen::VectorXd& unrolled_
     return;
 }
 
-Rewrap::Structure apply_strain(const Rewrap::Structure& struc_ptr, const Eigen::VectorXd& unrolled_strain, const std::string& mode)
+Rewrap::Structure apply_strain(const Rewrap::Structure& struc_ptr, const Eigen::VectorXd& unrolled_strain,
+                               const std::string& mode)
 {
     Rewrap::Structure copy_struc(struc_ptr);
     apply_strain(&copy_struc, unrolled_strain, mode);
@@ -183,19 +184,20 @@ std::pair<double, double> structure_score(const Rewrap::Structure& map_reference
 
 // Finds the superstructure with the highest volume/surface_area
 // Assuming that the input has structures of same volume
-std::vector<Rewrap::Structure>::size_type boxiest_structure_index(const std::vector<Rewrap::Structure>& candidate_structures)
+std::vector<Rewrap::Structure>::size_type
+boxiest_structure_index(const std::vector<Rewrap::Structure>& candidate_structures)
 {
-    //TODO: throw exception on empty vector
+    // TODO: throw exception on empty vector
     double running_score = 0;
-    std::vector<Rewrap::Structure>::size_type ix=0;
-    std::vector<Rewrap::Structure>::size_type best_ix=ix;
+    std::vector<Rewrap::Structure>::size_type ix = 0;
+    std::vector<Rewrap::Structure>::size_type best_ix = ix;
     for (const auto& scel : candidate_structures)
     {
         double candidate_score = boxy_score(scel.lattice());
         if (candidate_score > running_score)
         {
             running_score = candidate_score;
-            best_ix=ix;
+            best_ix = ix;
         }
         ++ix;
     }
@@ -205,8 +207,8 @@ std::vector<Rewrap::Structure>::size_type boxiest_structure_index(const std::vec
 // Find the boxiest superstructure per volume for range of volumes
 Rewrap::Structure make_boxiest_superstructure_of_volume(const Rewrap::Structure& structure, const int volume)
 {
-        std::vector<Rewrap::Structure> same_vol_scels = make_superstructures_of_volume(structure, volume);
-        return same_vol_scels[boxiest_structure_index(same_vol_scels)];
+    std::vector<Rewrap::Structure> same_vol_scels = make_superstructures_of_volume(structure, volume);
+    return same_vol_scels[boxiest_structure_index(same_vol_scels)];
 }
 
 std::vector<Rewrap::Structure> make_superstructures_of_volume(const Rewrap::Structure& structure, const int volume)

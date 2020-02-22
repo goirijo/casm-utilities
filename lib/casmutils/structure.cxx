@@ -1,5 +1,5 @@
-#include "casmutils/exceptions.hpp"
 #include "casmutils/structure.hpp"
+#include "casmutils/exceptions.hpp"
 #include "casmutils/lattice.hpp"
 #include "casmutils/misc.hpp"
 #include <boost/filesystem.hpp>
@@ -10,11 +10,13 @@ namespace Extend
 
 namespace Rewrap
 {
-Structure::Structure(const CASM::xtal::BasicStructure& init_struc): structure_lattice(init_struc.lattice()){
+Structure::Structure(const CASM::xtal::BasicStructure& init_struc) : structure_lattice(init_struc.lattice())
+{
     throw UtilExcept::NotImplemented();
 }
 
-Structure::Structure(const Rewrap::Lattice& init_lat, const std::vector<Rewrap::Site>& init_basis):structure_lattice(init_lat)
+Structure::Structure(const Rewrap::Lattice& init_lat, const std::vector<Rewrap::Site>& init_basis)
+    : structure_lattice(init_lat)
 {
     throw UtilExcept::NotImplemented();
     /* for (const auto& site : init_basis) */
@@ -24,11 +26,9 @@ Structure::Structure(const Rewrap::Lattice& init_lat, const std::vector<Rewrap::
     /* } */
 }
 
-Structure Structure::from_poscar(const fs::path &poscar_path){
-    throw UtilExcept::NotImplemented();
-}
+Structure Structure::from_poscar(const fs::path& poscar_path) { throw UtilExcept::NotImplemented(); }
 
-const Lattice& Structure::lattice() const { return this->structure_lattice;}
+const Lattice& Structure::lattice() const { return this->structure_lattice; }
 
 void Structure::set_lattice(const Lattice& new_lattice, COORD_TYPE mode)
 {
@@ -40,26 +40,29 @@ const std::vector<Site>& Structure::basis_sites() const
 {
     throw UtilExcept::NotImplemented();
     // You are dealing with CASM::Array, but we want to return a std::vector
-    //std::vector<Site> basis(this->basis.begin(), this->basis.end());
-    //return basis;
+    // std::vector<Site> basis(this->basis.begin(), this->basis.end());
+    // return basis;
 }
 
-    ///Return *this as a CASM::BasicStructure
-    template<>
-    const CASM::xtal::SimpleStructure& Structure::__get<CASM::xtal::SimpleStructure>() const {return this->casm_simplestructure;}
+/// Return *this as a CASM::BasicStructure
+template <> const CASM::xtal::SimpleStructure& Structure::__get<CASM::xtal::SimpleStructure>() const
+{
+    return this->casm_simplestructure;
+}
 
-    ///Return *this as a CASM::BasicStructure
-    template<>
-    const CASM::xtal::BasicStructure& Structure::__get<CASM::xtal::BasicStructure>() const {return this->casm_basicstructure;}
-
+/// Return *this as a CASM::BasicStructure
+template <> const CASM::xtal::BasicStructure& Structure::__get<CASM::xtal::BasicStructure>() const
+{
+    return this->casm_basicstructure;
+}
 
 //**************************************************************************************************************//
 
 Site::operator Coordinate() const { return Coordinate(this->casm_site); }
 
 Site::Site(const Rewrap::Coordinate& init_coord, const std::string& occupant_name)
-    : casm_site(CASM::xtal::Site(init_coord.__get(),occupant_name))
-          
+    : casm_site(CASM::xtal::Site(init_coord.__get(), occupant_name))
+
 {
     throw UtilExcept::NotImplemented();
 
@@ -69,10 +72,7 @@ Site::Site(const Rewrap::Coordinate& init_coord, const std::string& occupant_nam
 
 Eigen::Vector3d Site::cart() const { return this->casm_site.cart(); }
 
-Eigen::Vector3d Site::frac(const Rewrap::Lattice& ref_lattice) const
-{
-    throw UtilExcept::NotImplemented();
-}
+Eigen::Vector3d Site::frac(const Rewrap::Lattice& ref_lattice) const { throw UtilExcept::NotImplemented(); }
 
 //**************************************************************************************************************//
 

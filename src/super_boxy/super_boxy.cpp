@@ -1,6 +1,6 @@
 #include "casmutils/definitions.hpp"
-#include "casmutils/stage.hpp"
 #include "casmutils/handlers.hpp"
+#include "casmutils/stage.hpp"
 #include "casmutils/structure.hpp"
 #include "casmutils/structure_tools.hpp"
 
@@ -16,8 +16,9 @@ void super_boxy_initializer(po::options_description& super_boxy_desc)
     UtilityProgramOptions::add_help_suboption(super_boxy_desc);
     UtilityProgramOptions::add_output_suboption(super_boxy_desc);
     super_boxy_desc.add_options()("structure,s", po::value<fs::path>()->required(),
-                               "POS.vasp like file that you want to get the boxy supercell for.");
-    super_boxy_desc.add_options()("volume,v",po::value<int>()->required(), "Volume of the boxy superstructure, relative to the input structure");
+                                  "POS.vasp like file that you want to get the boxy supercell for.");
+    super_boxy_desc.add_options()("volume,v", po::value<int>()->required(),
+                                  "Volume of the boxy superstructure, relative to the input structure");
 
     return;
 }
@@ -46,13 +47,13 @@ int main(int argc, char* argv[])
         return 2;
     }
 
-     // initialize structure from POSCAR file
-    //Rewrap::Structure in_struc("/home/julija/programming/casm-utilities/test/POSCAR_1");
+    // initialize structure from POSCAR file
+    // Rewrap::Structure in_struc("/home/julija/programming/casm-utilities/test/POSCAR_1");
     auto in_struc_path = super_boxy_launch.fetch<fs::path>("structure");
     auto in_struc = Rewrap::Structure(in_struc_path);
-    auto in_vol=super_boxy_launch.fetch<int>("volume");
+    auto in_vol = super_boxy_launch.fetch<int>("volume");
 
-    auto boxy_struc=Simplicity::make_boxiest_superstructure_of_volume(in_struc, in_vol);
+    auto boxy_struc = Simplicity::make_boxiest_superstructure_of_volume(in_struc, in_vol);
 
     if (super_boxy_launch.vm().count("output"))
     {

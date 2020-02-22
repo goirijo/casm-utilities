@@ -1,5 +1,5 @@
-#include "casmutils/exceptions.hpp"
 #include "casmutils/misc.hpp"
+#include "casmutils/exceptions.hpp"
 #include <casm/clex/PrimClex.hh>
 #include <casm/crystallography/Site.hh>
 #include <casm/external/Eigen/Core>
@@ -16,7 +16,7 @@ CASM::PrimClex quiet_primclex(CASM::Structure& prim)
 
 CASM::xtal::Site atomic_site(const CASM::xtal::Coordinate& coord, const std::vector<std::string>& allowed_species)
 {
-    throw UtilExcept::NotImplemented(); //PS: This is already a static method of Molecule
+    throw UtilExcept::NotImplemented(); // PS: This is already a static method of Molecule
     /* CASM::Array<CASM::Molecule> allowed_molecules; */
     /* for (auto specie : allowed_species) */
     /* { */

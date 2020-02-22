@@ -4,14 +4,10 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-
 namespace WrapPy
 {
-    std::string test()
-    {
-        return "This was a test. Did it work?";
-    }
-}
+std::string test() { return "This was a test. Did it work?"; }
+} // namespace WrapPy
 
 PYBIND11_MODULE(_stage, m)
 {

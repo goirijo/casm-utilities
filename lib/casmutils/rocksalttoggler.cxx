@@ -47,11 +47,11 @@ void RockSaltOctahedraToggler::activate(index central_coord_index)
 
 void RockSaltOctahedraToggler::activate_all()
 {
-    for(const auto& centralix_ison_pair : this->central_ion_is_on)
+    for (const auto& centralix_ison_pair : this->central_ion_is_on)
     {
-        auto ix=centralix_ison_pair.first;
-        auto is_on=centralix_ison_pair.second;
-        if(!is_on)
+        auto ix = centralix_ison_pair.first;
+        auto is_on = centralix_ison_pair.second;
+        if (!is_on)
         {
             this->activate(ix);
         }
@@ -95,16 +95,15 @@ void RockSaltOctahedraToggler::toggle(const Coordinate& central_coord)
 
 void RockSaltOctahedraToggler::toggle_all()
 {
-    for(const auto& centralix_ison_pair : this->central_ion_is_on)
+    for (const auto& centralix_ison_pair : this->central_ion_is_on)
     {
-        auto ix=centralix_ison_pair.first;
+        auto ix = centralix_ison_pair.first;
         this->toggle(ix);
     }
     return;
 }
 
-
-void RockSaltOctahedraToggler::deactivate(index central_coordinate_index) 
+void RockSaltOctahedraToggler::deactivate(index central_coordinate_index)
 {
     if (!this->is_central_ion_index(central_coordinate_index))
     {
@@ -118,11 +117,11 @@ void RockSaltOctahedraToggler::deactivate(index central_coordinate_index)
 
     this->turn_central_ion_off(central_coordinate_index);
 
-    auto nearest_vertex_ions = this->nearest_neighbor_site_coordinates(this->index_to_coordinate(central_coordinate_index));
+    auto nearest_vertex_ions =
+        this->nearest_neighbor_site_coordinates(this->index_to_coordinate(central_coordinate_index));
     this->reduce_leashes(nearest_vertex_ions);
 
     return;
-
 }
 
 void RockSaltOctahedraToggler::deactivate(const Coordinate& central_coord)
@@ -134,11 +133,11 @@ void RockSaltOctahedraToggler::deactivate(const Coordinate& central_coord)
 
 void RockSaltOctahedraToggler::deactivate_all()
 {
-    for(const auto& centralix_ison_pair : this->central_ion_is_on)
+    for (const auto& centralix_ison_pair : this->central_ion_is_on)
     {
-        auto ix=centralix_ison_pair.first;
-        auto is_on=centralix_ison_pair.second;
-        if(is_on)
+        auto ix = centralix_ison_pair.first;
+        auto is_on = centralix_ison_pair.second;
+        if (is_on)
         {
             this->deactivate(ix);
         }
@@ -175,7 +174,8 @@ std::array<RockSaltOctahedraToggler::index, 6>
 RockSaltOctahedraToggler::nearest_neighbor_site_indexes(index central_coord_index) const
 {
     throw UtilExcept::NotImplemented();
-    /* auto nearest_coordinates = this->nearest_neighbor_site_coordinates(this->index_to_coordinate(central_coord_index)); */
+    /* auto nearest_coordinates =
+     * this->nearest_neighbor_site_coordinates(this->index_to_coordinate(central_coord_index)); */
     /* std::array<index, 6> nearest_coord_indexes; */
 
     /* for (int i = 0; i < 6; ++i) */
@@ -251,7 +251,7 @@ void RockSaltOctahedraToggler::commit_central_ions() const
 
 void RockSaltOctahedraToggler::commit_vertex_ions() const
 {
-    throw  UtilExcept::NotImplemented();
+    throw UtilExcept::NotImplemented();
     /* for (const auto& ix_count : this->leashed_vertex_ions) */
     /* { */
     /*     auto ix = ix_count.first; */
@@ -272,7 +272,7 @@ void RockSaltOctahedraToggler::commit_vertex_ions() const
 
 RockSaltOctahedraToggler::index RockSaltOctahedraToggler::coordinate_to_index(Coordinate coordinate) const
 {
-    //TODO: Bring the coordinate within relative to the rocksalt structure lattice before making any comparisons
+    // TODO: Bring the coordinate within relative to the rocksalt structure lattice before making any comparisons
     coordinate.bring_within(this->rocksalt_struc.lattice());
     // Go through the basis of the structure
     // and find out which basis index the
@@ -301,31 +301,32 @@ RockSaltOctahedraToggler::Coordinate RockSaltOctahedraToggler::index_to_coordina
 }
 
 RockSaltOctahedraToggler::Structure
-RockSaltOctahedraToggler::primitive_structure(std::pair<std::string, std::string> species_names, double init_nn_distance)
+RockSaltOctahedraToggler::primitive_structure(std::pair<std::string, std::string> species_names,
+                                              double init_nn_distance)
 {
     throw UtilExcept::NotImplemented();
-    //const auto& central_ion_name = species_names.first;
-    //const auto& vertex_ion_name = species_names.second;
+    // const auto& central_ion_name = species_names.first;
+    // const auto& vertex_ion_name = species_names.second;
 
-    //Eigen::Matrix3d lat_mat;
-    //lat_mat<<0,1,1,1,0,1,1,1,0;
-    //lat_mat*=init_nn_distance;
+    // Eigen::Matrix3d lat_mat;
+    // lat_mat<<0,1,1,1,0,1,1,1,0;
+    // lat_mat*=init_nn_distance;
     ///* auto scaled_lat = lat.scaled_lattice(2*nn_distance); */
-    //Lattice scaled_lat(lat_mat);
+    // Lattice scaled_lat(lat_mat);
 
-    //std::vector<Rewrap::Site> basis;
+    // std::vector<Rewrap::Site> basis;
 
-    //Rewrap::Coordinate pos_central = Rewrap::Coordinate::from_fractional(0, 0, 0, scaled_lat);
-    //Rewrap::Coordinate pos_vertex = Rewrap::Coordinate::from_fractional(0.5, 0.5, 0.5, scaled_lat);
+    // Rewrap::Coordinate pos_central = Rewrap::Coordinate::from_fractional(0, 0, 0, scaled_lat);
+    // Rewrap::Coordinate pos_vertex = Rewrap::Coordinate::from_fractional(0.5, 0.5, 0.5, scaled_lat);
 
-    //Rewrap::Site central_site(pos_central, std::vector<std::string>{"Va", central_ion_name});
-    //Rewrap::Site vertex_site(pos_vertex, std::vector<std::string>{"Va", vertex_ion_name});
+    // Rewrap::Site central_site(pos_central, std::vector<std::string>{"Va", central_ion_name});
+    // Rewrap::Site vertex_site(pos_vertex, std::vector<std::string>{"Va", vertex_ion_name});
 
-    //basis.push_back(central_site);
-    //basis.push_back(vertex_site);
+    // basis.push_back(central_site);
+    // basis.push_back(vertex_site);
 
-    //Rewrap::Structure primitive_structure(scaled_lat, basis);
-    //return primitive_structure;
+    // Rewrap::Structure primitive_structure(scaled_lat, basis);
+    // return primitive_structure;
 }
 
 RockSaltOctahedraToggler::Structure conventional_structure(std::pair<std::string, std::string> species_names,
@@ -336,8 +337,10 @@ RockSaltOctahedraToggler::Structure conventional_structure(std::pair<std::string
     // apply trasnformation matrix
 }
 
-RockSaltOctahedraToggler RockSaltOctahedraToggler::relative_to_primitive(
-    const Eigen::Matrix3i trans_mat, std::pair<std::string, std::string> species_names, bool central_is_second, double init_nn_distance)
+RockSaltOctahedraToggler
+RockSaltOctahedraToggler::relative_to_primitive(const Eigen::Matrix3i trans_mat,
+                                                std::pair<std::string, std::string> species_names,
+                                                bool central_is_second, double init_nn_distance)
 {
     if (central_is_second)
     {
@@ -350,11 +353,14 @@ RockSaltOctahedraToggler RockSaltOctahedraToggler::relative_to_primitive(
     return RockSaltOctahedraToggler(std::move(super_struc), species_names.first, species_names.second,
                                     initialized_nearest_neighbor_deltas(init_nn_distance),
                                     initialized_central_ion_is_on(super_struc, species_names.first),
-                                    initialized_leashed_vertex_ions(super_struc, species_names.second),init_nn_distance);
+                                    initialized_leashed_vertex_ions(super_struc, species_names.second),
+                                    init_nn_distance);
 }
 
-RockSaltOctahedraToggler RockSaltOctahedraToggler::relative_to_conventional(
-    const Eigen::Matrix3i trans_mat, std::pair<std::string, std::string> species_names, bool central_is_second, double init_nn_distance)
+RockSaltOctahedraToggler
+RockSaltOctahedraToggler::relative_to_conventional(const Eigen::Matrix3i trans_mat,
+                                                   std::pair<std::string, std::string> species_names,
+                                                   bool central_is_second, double init_nn_distance)
 {
     throw UtilExcept::NotImplemented();
 }
@@ -375,11 +381,12 @@ RockSaltOctahedraToggler::RockSaltOctahedraToggler(Structure&& init_struc, std::
 {
 }
 
-double RockSaltOctahedraToggler::nearest_neighbor_distance() const { return this->nn_distance;}
+double RockSaltOctahedraToggler::nearest_neighbor_distance() const { return this->nn_distance; }
 
-std::array<RockSaltOctahedraToggler::Coordinate, 6> RockSaltOctahedraToggler::initialized_nearest_neighbor_deltas(double init_nn_distance)
+std::array<RockSaltOctahedraToggler::Coordinate, 6>
+RockSaltOctahedraToggler::initialized_nearest_neighbor_deltas(double init_nn_distance)
 {
-    auto d=init_nn_distance;
+    auto d = init_nn_distance;
     // need a lattice for the coordinate type
     // need to CART type for coordinate, but this syntax is giving compiling errors...
     std::array<RockSaltOctahedraToggler::Coordinate, 6> deltas = {
@@ -422,20 +429,18 @@ RockSaltOctahedraToggler::initialized_leashed_vertex_ions(const Structure& init_
     /* return initialized_map; */
 }
 
-
-std::vector<std::pair<RockSaltOctahedraToggler::index, RockSaltOctahedraToggler::Coordinate>> 
-RockSaltOctahedraToggler::all_octahedron_center_coordinates() const              //Finish
+std::vector<std::pair<RockSaltOctahedraToggler::index, RockSaltOctahedraToggler::Coordinate>>
+RockSaltOctahedraToggler::all_octahedron_center_coordinates() const // Finish
 {
-     std::vector<std::pair<index, Coordinate>> index_coord_pair_list;
-     for(const auto &octahedral_pairs: central_ion_is_on)
-     {
-	     index ix=octahedral_pairs.first;
-         auto coord=index_to_coordinate(ix);
+    std::vector<std::pair<index, Coordinate>> index_coord_pair_list;
+    for (const auto& octahedral_pairs : central_ion_is_on)
+    {
+        index ix = octahedral_pairs.first;
+        auto coord = index_to_coordinate(ix);
 
-         index_coord_pair_list.emplace_back(ix,coord);
-     }
+        index_coord_pair_list.emplace_back(ix, coord);
+    }
 
-     return index_coord_pair_list;
+    return index_coord_pair_list;
 }
 } // namespace SpecializedEnumeration
-
