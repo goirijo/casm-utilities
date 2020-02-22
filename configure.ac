@@ -34,6 +34,7 @@ AX_BOOST_CHRONO
 AX_BOOST_REGEX
 
 AC_CHECK_LIB([dl], [dlopen], [], AC_MSG_ERROR(dlopen from dl library not found!))
+AC_CHECK_LIB(pthread,pthread_getspecific,[], AC_MSG_WARN(Unit testing requires libpthread!),[])
 AX_CHECK_ZLIB(,[AC_MSG_ERROR([Could not find zlib])])
 
 AC_CONFIG_FILES([Makefile])

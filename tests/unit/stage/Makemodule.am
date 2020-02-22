@@ -1,0 +1,7 @@
+TESTS+=check_stage
+check_PROGRAMS += check_stage
+check_stage_SOURCES = tests/unit/stage/stage.cpp
+check_stage_LDADD=\
+					libgtest.la\
+					libcasmutils.la
+# check_stage_LDFLAGS=-pthread
