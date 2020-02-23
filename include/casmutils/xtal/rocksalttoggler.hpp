@@ -4,19 +4,19 @@
 #include <unordered_map>
 #include <utility>
 
-#include "casmutils/definitions.hpp"
-#include "casmutils/lattice.hpp"
-#include "casmutils/structure.hpp"
-#include "casmutils/coordinate.hpp"
+#include <casmutils/xtal/coordinate.hpp>
+#include <casmutils/definitions.hpp>
+#include <casmutils/xtal/lattice.hpp>
+#include <casmutils/xtal/structure.hpp>
 
-namespace SpecializedEnumeration
+namespace enumeration
 {
 class RockSaltOctahedraToggler
 {
 public:
-    typedef Rewrap::Coordinate Coordinate;
-    typedef Rewrap::Structure Structure;
-    typedef Rewrap::Lattice Lattice;
+    typedef rewrap::Coordinate Coordinate;
+    typedef rewrap::Structure Structure;
+    typedef rewrap::Lattice Lattice;
     typedef int index;
 
     /// Construct with a transformation matrix relative to the primitive structure.
@@ -141,6 +141,6 @@ private:
     static std::unordered_map<index, int> initialized_leashed_vertex_ions(const Structure& init_struc,
                                                                           std::string vertex_name);
 };
-} // namespace SpecializedEnumeration
+} // namespace enumeration
 
 #endif

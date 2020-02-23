@@ -1,14 +1,10 @@
 #ifndef UTILS_LATTICE_HH
 #define UTILS_LATTICE_HH
 
-#include "casmutils/definitions.hpp"
+#include <casmutils/definitions.hpp>
 #include <casm/crystallography/Lattice.hh>
 
-namespace CASM
-{
-}
-
-namespace Rewrap
+namespace rewrap
 {
 class Lattice
 {
@@ -38,6 +34,14 @@ public:
 private:
     CASM::xtal::Lattice casm_lattice;
 };
-} // namespace Rewrap
+} // namespace rewrap
+
+namespace casmutils
+{
+    namespace xtal
+    {
+        using rewrap::Lattice;
+    }
+}
 
 #endif

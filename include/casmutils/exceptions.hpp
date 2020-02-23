@@ -3,7 +3,7 @@
 
 #include <stdexcept>
 
-namespace UtilExcept
+namespace except
 {
 
 class NotImplemented : public std::runtime_error
@@ -49,5 +49,5 @@ class UserInputMangle : public std::runtime_error
 public:
     UserInputMangle(const std::string& init_message) : std::runtime_error(init_message) {}
 };
-} // namespace UtilExcept
+} // namespace except
 #endif

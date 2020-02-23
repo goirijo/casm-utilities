@@ -1,10 +1,7 @@
-#include "casmutils/frankenstein.hpp"
-#include "casmutils/definitions.hpp"
-#include "casmutils/exceptions.hpp"
-#include "casmutils/lattice.hpp"
-#include "casmutils/structure.hpp"
+#include <casmutils/xtal/frankenstein.hpp>
+#include <casmutils/definitions.hpp>
+#include <casmutils/exceptions.hpp>
 
-#include <boost/filesystem.hpp>
 #include <casm/crystallography/Niggli.hh>
 #include <casm/crystallography/Structure.hh>
 #include <casm/crystallography/io/VaspIO.hh>
@@ -15,9 +12,9 @@ namespace
 {
 /// This function alters the coordinates of the given struc to have fractional
 /// coordinates between 0 and 1 only
-void bring_coords_within(Rewrap::Structure* struc)
+void bring_coords_within(rewrap::Structure* struc)
 {
-    throw UtilExcept::NotImplemented();
+    throw except::NotImplemented();
     /* for (auto& site : struc->basis) */
     /* { */
     /*     site.within(); */
@@ -26,11 +23,11 @@ void bring_coords_within(Rewrap::Structure* struc)
 }
 } // namespace
 
-namespace Frankenstein
+namespace frankenstein
 {
-void shift_coords_by(Rewrap::Structure* struc, const Eigen::Vector3d& shift_val)
+void shift_coords_by(rewrap::Structure* struc, const Eigen::Vector3d& shift_val)
 {
-    throw UtilExcept::NotImplemented();
+    throw except::NotImplemented();
     /* for (auto& item : struc->basis) */
     /* { */
     /*     item += CASM::Coordinate(shift_val, struc->lattice(), CASM::FRAC); */
@@ -39,11 +36,11 @@ void shift_coords_by(Rewrap::Structure* struc, const Eigen::Vector3d& shift_val)
     /* return; */
 }
 
-std::pair<Rewrap::Structure, Rewrap::Structure> slice(const Rewrap::Structure& big_struc, double slice_loc, double tol)
+std::pair<rewrap::Structure, rewrap::Structure> slice(const rewrap::Structure& big_struc, double slice_loc, double tol)
 {
-    throw UtilExcept::NotImplemented();
+    throw except::NotImplemented();
     /* // Copy the input, we'll do surgery on this guy */
-    /* Rewrap::Structure cpy_big = big_struc; */
+    /* rewrap::Structure cpy_big = big_struc; */
     /* bring_coords_within(&cpy_big); */
 
     /* // Create lattice for the bottom half of the structure */
@@ -83,18 +80,18 @@ std::pair<Rewrap::Structure, Rewrap::Structure> slice(const Rewrap::Structure& b
     /*     } */
     /* } */
 
-    /* auto bottom_top = std::make_pair(Rewrap::Structure(bottom_struc), Rewrap::Structure(top_struc)); */
+    /* auto bottom_top = std::make_pair(rewrap::Structure(bottom_struc), rewrap::Structure(top_struc)); */
     /* bring_coords_within(&bottom_top.first); */
     /* bring_coords_within(&bottom_top.second); */
     /* return bottom_top; */
 }
 
-std::vector<Rewrap::Structure> _multi_slice(const Rewrap::Structure& big_struc, const Eigen::VectorXd& slice_locs,
+std::vector<rewrap::Structure> _multi_slice(const rewrap::Structure& big_struc, const Eigen::VectorXd& slice_locs,
                                             double tol)
 {
     // Begin by performing the first slice
     auto struc_pair = slice(big_struc, slice_locs(0), tol);
-    std::vector<Rewrap::Structure> slices;
+    std::vector<rewrap::Structure> slices;
     slices.push_back(struc_pair.first);
 
     // If that's the only slice left, you're done. Give the two
@@ -117,7 +114,7 @@ std::vector<Rewrap::Structure> _multi_slice(const Rewrap::Structure& big_struc, 
     return slices;
 }
 
-std::vector<Rewrap::Structure> multi_slice(const Rewrap::Structure& big_struc, const std::set<double>& slice_locs,
+std::vector<rewrap::Structure> multi_slice(const rewrap::Structure& big_struc, const std::set<double>& slice_locs,
                                            double tol)
 {
     Eigen::VectorXd sanitized_slice_locs(slice_locs.size());
@@ -127,8 +124,8 @@ std::vector<Rewrap::Structure> multi_slice(const Rewrap::Structure& big_struc, c
     {
         if (slice < 0.0 || slice > 1.0)
         {
-            throw UtilExcept::UserInputMangle(
-                "Slice locations for Frankenstein structures must be between 0.0 and 1.0");
+            throw except::UserInputMangle(
+                "Slice locations for frankenstein structures must be between 0.0 and 1.0");
         }
 
         sanitized_slice_locs(i) = slice;
@@ -138,7 +135,7 @@ std::vector<Rewrap::Structure> multi_slice(const Rewrap::Structure& big_struc, c
     return _multi_slice(big_struc, sanitized_slice_locs, tol);
 }
 
-std::vector<Rewrap::Structure> uniformly_slice(const Rewrap::Structure& big_struc, int n_pieces)
+std::vector<rewrap::Structure> uniformly_slice(const rewrap::Structure& big_struc, int n_pieces)
 {
     std::set<double> slice_locs;
     for (int i = 1; i < n_pieces; i++)
@@ -148,9 +145,9 @@ std::vector<Rewrap::Structure> uniformly_slice(const Rewrap::Structure& big_stru
     return multi_slice(big_struc, slice_locs, CASM::TOL);
 }
 
-Rewrap::Structure stack(const std::vector<Rewrap::Structure>& sub_strucs)
+rewrap::Structure stack(const std::vector<rewrap::Structure>& sub_strucs)
 {
-    throw UtilExcept::NotImplemented();
+    throw except::NotImplemented();
     /* // Create a new lattice that has the same ab vectors. but summed up */
     /* // the c vectors of every structure */
     /* Eigen::Matrix3d stacked_lat_mat = sub_strucs[0].lattice().lat_column_mat(); */
@@ -174,7 +171,7 @@ Rewrap::Structure stack(const std::vector<Rewrap::Structure>& sub_strucs)
     /* { */
     /*     // determine appropriate c-axis shift for position in stacking */
     /*     c_shift = c_shift + sub_strucs[i].lattice().lat_column_mat().col(2); */
-    /*     Rewrap::Structure cpy_i = sub_strucs[i]; */
+    /*     rewrap::Structure cpy_i = sub_strucs[i]; */
     /*     bring_coords_within(&cpy_i); */
 
     /*     // Shift each site of the basis by the appropriate c shift, */
@@ -187,15 +184,15 @@ Rewrap::Structure stack(const std::vector<Rewrap::Structure>& sub_strucs)
     /*     } */
     /* } */
 
-    /* auto rw_struc = Rewrap::Structure(stacked_struc); */
+    /* auto rw_struc = rewrap::Structure(stacked_struc); */
     /* bring_coords_within(&rw_struc); */
     /* return rw_struc; */
 }
 
-Rewrap::Structure vacuum_pack(const Rewrap::Structure& big_struc, std::array<bool, 3>& dirs, double padding)
+rewrap::Structure vacuum_pack(const rewrap::Structure& big_struc, std::array<bool, 3>& dirs, double padding)
 {
-    throw UtilExcept::NotImplemented();
-    /* Rewrap::Structure cpy_big = big_struc; */
+    throw except::NotImplemented();
+    /* rewrap::Structure cpy_big = big_struc; */
     /* bring_coords_within(&cpy_big); */
 
     /* // We start by setting the boundaries at the maximum possible limits */
@@ -237,15 +234,15 @@ Rewrap::Structure vacuum_pack(const Rewrap::Structure& big_struc, std::array<boo
     /* } */
 
     /* // Set the lattice and you're done */
-    /* Rewrap::Lattice lat(lat_mat); */
-    /* cpy_big.set_lattice(lat, Rewrap::CART); */
+    /* rewrap::Lattice lat(lat_mat); */
+    /* cpy_big.set_lattice(lat, rewrap::CART); */
     /* return cpy_big; */
 }
 
-Rewrap::Structure inflate(const Rewrap::Structure& struc, const std::array<double, 3>& padding)
+rewrap::Structure inflate(const rewrap::Structure& struc, const std::array<double, 3>& padding)
 {
-    throw UtilExcept::NotImplemented();
-    // Rewrap::CasmStructure cpy_struc = struc;
+    throw except::NotImplemented();
+    // rewrap::CasmStructure cpy_struc = struc;
     // Eigen::Matrix3d lat_mat = cpy_struc.lattice().lat_column_mat();
 
     //// Add padding to each lattice vector
@@ -255,9 +252,9 @@ Rewrap::Structure inflate(const Rewrap::Structure& struc, const std::array<doubl
     //}
 
     // cpy_struc.set_lattice(CASM::Lattice(lat_mat), CASM::CART);
-    // Rewrap::Structure rw_struc(cpy_struc);
+    // rewrap::Structure rw_struc(cpy_struc);
     // bring_coords_within(&rw_struc);
     // return rw_struc;
 }
 
-} // namespace Frankenstein
+} // namespace frankenstein

@@ -1,10 +1,10 @@
 #ifndef UTILS_SITE_HH
 #define UTILS_SITE_HH
 
-#include "casm/crystallography/Site.hh"
-#include "definitions.hpp"
+#include <casm/crystallography/Site.hh>
+#include <casmutils/definitions.hpp>
 
-namespace Rewrap
+namespace rewrap
 {
 
 class Lattice;
@@ -29,7 +29,7 @@ public:
     /// Retreive the Cartesian values of the coordinate
     Eigen::Vector3d cart() const;
     /// Retreive the fractional values of the coordinate relative to the provided lattice
-    Eigen::Vector3d frac(const Rewrap::Lattice& ref_lattice) const;
+    Eigen::Vector3d frac(const rewrap::Lattice& ref_lattice) const;
 
     /// Name of the species residing on the site
     std::string label() const;
@@ -40,7 +40,14 @@ public:
 private:
     CASM::xtal::Site casm_site;
 };
+} // namespace rewrap
 
-} // namespace Rewrap
+namespace casmutils
+{
+    namespace xtal
+    {
+        using rewrap::Site;
+    }
+}
 
 #endif

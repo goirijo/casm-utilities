@@ -1,0 +1,9 @@
+#!@PYTHON@
+
+import _xtal
+
+def main():
+    print("Successfully imported _xtal")
+
+if __name__=="__main__":
+    main()

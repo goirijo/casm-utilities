@@ -1,0 +1,26 @@
+noinst_LTLIBRARIES += libcasmutils-xtal.la
+
+libcasmutils_xtal_la_SOURCES=
+libcasmutils_xtal_la_SOURCES+=\
+						 lib/casmutils/xtal/structure.cxx\
+						 include/casmutils/xtal/structure.hpp\
+						 lib/casmutils/xtal/structure_tools.cxx\
+						 include/casmutils/xtal/structure_tools.hpp\
+						 lib/casmutils/xtal/lattice.cxx\
+						 include/casmutils/xtal/lattice.hpp\
+						 lib/casmutils/xtal/frankenstein.cxx\
+						 include/casmutils/xtal/frankenstein.hpp\
+						 lib/casmutils/xtal/rocksalttoggler.cxx\
+						 include/casmutils/xtal/rocksalttoggler.hpp\
+						 lib/casmutils/xtal/coordinate.cxx\
+						 include/casmutils/xtal/coordinate.hpp\
+						 lib/casmutils/xtal/site.cxx\
+						 include/casmutils/xtal/site.hpp
+
+# libcasmutils_xtal_la_LIBADD=\
+# 					   libcasmblob.la\
+# 					   $(BOOST_SYSTEM_LIB)\
+# 					   $(BOOST_FILESYSTEM_LIB)\
+# 					   $(BOOST_CHRONO_LIB)\
+# 					   $(BOOST_REGEX_LIB)\
+# 					   $(BOOST_PROGRAM_OPTIONS_LIB)

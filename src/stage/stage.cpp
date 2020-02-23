@@ -1,6 +1,9 @@
-#include "casmutils/stage.hpp"
-#include "casmutils/rocksalttoggler.hpp"
-#include "casmutils/structure_tools.hpp"
+#include <algorithm>
+#include <casmutils/stage.hpp>
+#include <casmutils/definitions.hpp>
+#include <filesystem>
 #include <iostream>
 
-int main() { return 0; }
+int main() { 
+    return 0; 
+}

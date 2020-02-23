@@ -32,10 +32,43 @@ AX_BOOST_PROGRAM_OPTIONS
 #If you're compiling casm for them, you need these also
 AX_BOOST_CHRONO
 AX_BOOST_REGEX
+AX_CHECK_ZLIB([],AC_MSG_ERROR(zlib library not found!))
+AX_PTHREAD([],AC_MSG_WARN(pthread is required to run tests!))
 
-AC_CHECK_LIB([dl], [dlopen], [], AC_MSG_ERROR(dlopen from dl library not found!))
-AC_CHECK_LIB(pthread,pthread_getspecific,[], AC_MSG_WARN(Unit testing requires libpthread!),[])
-AX_CHECK_ZLIB(,[AC_MSG_ERROR([Could not find zlib])])
+AC_SEARCH_LIBS(dlopen, dl, [], AC_MSG_ERROR(dl library not found!))
+# AC_SEARCH_LIBS(std::filesystem::status_known,stdc++fs,[], AC_MSG_ERROR(stdc++fs not found!),[])
+
+# Why is this such a pain in the butt? I just want to -lstdc++fs, I could be doing this in the
+# Makefile, but instead I'm following this example:
+# https://github.com/LibreOffice/online/blob/master/configure.ac
+AC_MSG_CHECKING(for std::filesystem features in -lstdc++fs)
+STD_FILESYSTEM=
+    save_CXXFLAGS=$CXXFLAGS
+    CXXFLAGS="$CXXFLAGS -Werror"
+    save_LIBS=$LIBS
+    LIBS="$save_LIBS -lstdc++fs"
+    AC_LANG_PUSH([C++])
+    AC_LINK_IFELSE([AC_LANG_SOURCE([[
+            #include <filesystem>
+            int main()
+            {
+                if (!std::filesystem::temp_directory_path().empty())
+                    return 0;
+                return 1;
+            }
+            ]])],[STD_FILESYSTEM=TRUE], AC_MSG_ERROR(stdc++fs not found!))
+    AC_LANG_POP([C++])
+    CXXFLAGS=$save_CXXFLAGS
+    LIBS=$save_LIBS
+
+if test -n "$STD_FILESYSTEM" ; then
+    LIBS="$LIBS -lstdc++fs"
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_ERROR("libstdc++fs library not found!)
+fi
 
 AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([tests/py/_xtal-import.py],[chmod +x tests/py/_xtal-import.py])
+AC_CONFIG_FILES([tests/integration/cu-import.py],[chmod +x tests/integration/cu-import.py])
 AC_OUTPUT

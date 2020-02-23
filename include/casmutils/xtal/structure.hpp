@@ -1,14 +1,14 @@
 #ifndef UTILS_STRUCTURE_HH
 #define UTILS_STRUCTURE_HH
 
-#include "casm/crystallography/BasicStructure.hh"
-#include "casm/crystallography/SimpleStructure.hh"
-#include "casmutils/lattice.hpp"
-#include "casmutils/site.hpp"
-#include "definitions.hpp"
+#include <casm/crystallography/BasicStructure.hh>
+#include <casm/crystallography/SimpleStructure.hh>
+#include <casmutils/xtal/lattice.hpp>
+#include <casmutils/xtal/site.hpp>
+#include <casmutils/definitions.hpp>
 #include <iostream>
 
-namespace Rewrap
+namespace rewrap
 {
 
 /**
@@ -30,7 +30,7 @@ public:
     Structure(const CASM::xtal::BasicStructure& init_struc);
 
     /// Construct with a lattice and list of sites (basis)
-    Structure(const Rewrap::Lattice& init_lat, const std::vector<Site>& init_basis);
+    Structure(const rewrap::Lattice& init_lat, const std::vector<Site>& init_basis);
 
     /// Returns a copy of the current lattice of the structure
     const Lattice& lattice() const;
@@ -54,12 +54,20 @@ private:
     /// CASM::SimpleStructure representation
     CASM::xtal::BasicStructure casm_basicstructure;
 
-    /// Rewrap representation of the basis
+    /// rewrap representation of the basis
     std::vector<Site> basis;
 
-    /// Rewrap representation of the lattice
+    /// rewrap representation of the lattice
     Lattice structure_lattice;
 };
-} // namespace Rewrap
+} // namespace rewrap
+
+namespace casmutils
+{
+    namespace xtal
+    {
+        using rewrap::Structure;
+    }
+}
 
 #endif

@@ -51,6 +51,9 @@ include $(srcdir)/tests/Makemodule.am 		#All types of tests
 
 #===========================================================================#
 var-check:
+	echo ${prefix}
+	echo ${srcdir}
+	echo ${abs_top_builddir}
 	echo $(LIBS)
 	echo $(PYTHON_LIBS)
 	echo $(BOOST_SYSTEM_LIB)
