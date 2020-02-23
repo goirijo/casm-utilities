@@ -1,28 +1,28 @@
-#include "casmutils/definitions.hpp"
-#include "casmutils/handlers.hpp"
-#include "casmutils/structure.hpp"
-#include "casmutils/structure_tools.hpp"
+#include <casmutils/definitions.hpp>
+#include <casmutils/handlers.hpp>
+#include <casmutils/xtal/structure.hpp>
+#include <casmutils/xtal/structure_tools.hpp>
 
 #include <boost/program_options.hpp>
 #include <fstream>
 #include <iostream>
 
-namespace Utilities
+namespace utilities
 {
 
 void primify_initializer(po::options_description& primify_desc)
 {
-    UtilityProgramOptions::add_help_suboption(primify_desc);
-    UtilityProgramOptions::add_output_suboption(primify_desc);
+    utilities::add_help_suboption(primify_desc);
+    utilities::add_output_suboption(primify_desc);
 
     primify_desc.add_options()("superstructure,s", po::value<fs::path>()->required(),
                                "POS.vasp like file that you want to get the primitive structure for.");
 
     return;
 }
-} // namespace Utilities
+} // namespace utilities
 
-using namespace Utilities;
+using namespace utilities;
 
 int main(int argc, char* argv[])
 {
@@ -49,18 +49,18 @@ int main(int argc, char* argv[])
     auto super_path = primify_launch.fetch<fs::path>("superstructure");
 
     // Should all CASM calls be wrapped up?
-    auto super_struc = Rewrap::Structure(super_path); // BAD. ONLY UTITILIES IMPLEMENTATIONS FOOL
-    auto prim_struc = Simplicity::make_primitive(super_struc);
+    auto super_struc = rewrap::Structure::from_poscar(super_path);
+    auto prim_struc = simplicity::make_primitive(super_struc);
 
     if (primify_launch.vm().count("output"))
     {
         auto out_path = primify_launch.fetch<fs::path>("output");
-        Simplicity::write_poscar(prim_struc, out_path);
+        simplicity::write_poscar(prim_struc, out_path);
     }
 
     else
     {
-        Simplicity::print_poscar(prim_struc, std::cout);
+        simplicity::print_poscar(prim_struc, std::cout);
     }
 
     return 0;

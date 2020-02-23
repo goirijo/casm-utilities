@@ -6,31 +6,31 @@
 #include <filesystem>
 #include <boost/program_options.hpp>
 
-namespace CASMUtils
+namespace casmutils
 {
 namespace fs = std::filesystem;
 namespace po = boost::program_options;
-} // namespace Utilities
+} // namespace utilities
 
-namespace Utilities
+namespace utilities
 {
 namespace fs = std::filesystem;
 namespace po = boost::program_options;
-} // namespace Utilities
+} // namespace utilities
 
 namespace rewrap
 {
-namespace fs=CASMUtils::fs;
-namespace po=CASMUtils::po;
+namespace fs=casmutils::fs;
+namespace po=casmutils::po;
 using CASM::CART;
 using CASM::COORD_TYPE;
 using CASM::FRAC;
 } // namespace rewrap
 
-namespace Simplicity
+namespace simplicity
 {
-namespace fs=CASMUtils::fs;
-namespace po=CASMUtils::po;
-} // namespace Simplicity
+namespace fs=casmutils::fs;
+namespace po=casmutils::po;
+} // namespace simplicity
 
 #endif

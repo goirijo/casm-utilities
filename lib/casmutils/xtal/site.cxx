@@ -5,20 +5,20 @@
 #include "casmutils/misc.hpp"
 #include <boost/filesystem.hpp>
 
-namespace Extend
+namespace extend
 {
-} // namespace Extend
+} // namespace extend
 
-namespace Rewrap
+namespace rewrap
 {
 
 Site::operator Coordinate() const { return Coordinate(this->casm_site); }
 
-Site::Site(const Rewrap::Coordinate& init_coord, const std::string& occupant_name)
+Site::Site(const rewrap::Coordinate& init_coord, const std::string& occupant_name)
     : casm_site(CASM::xtal::Site(init_coord.__get(), occupant_name))
 
 {
-    throw UtilExcept::NotImplemented();
+    throw except::NotImplemented();
 
     // Avoid an unitialized state.
     /* this->casm_site.set_occ_value(0); */
@@ -26,6 +26,6 @@ Site::Site(const Rewrap::Coordinate& init_coord, const std::string& occupant_nam
 
 Eigen::Vector3d Site::cart() const { return this->casm_site.cart(); }
 
-Eigen::Vector3d Site::frac(const Rewrap::Lattice& ref_lattice) const { throw UtilExcept::NotImplemented(); }
+Eigen::Vector3d Site::frac(const rewrap::Lattice& ref_lattice) const { throw except::NotImplemented(); }
 
-} // namespace Rewrap
+} // namespace rewrap

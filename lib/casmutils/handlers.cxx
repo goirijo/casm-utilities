@@ -4,7 +4,7 @@
 #include "casmutils/exceptions.hpp"
 #include "casmutils/handlers.hpp"
 
-namespace Utilities
+namespace utilities
 {
 Handler::Handler(int argc, char* argv[], const std::function<void(po::options_description&)>& init_initializer)
     : m_argc(argc)
@@ -28,7 +28,7 @@ int Handler::argc() const { return m_argc; }
 
 const po::options_description& Handler::desc() const { return m_desc; }
 
-namespace UtilityProgramOptions
+namespace utilities
 {
 void add_help_suboption(po::options_description& handler_desc)
 {
@@ -39,7 +39,7 @@ void add_help_suboption(po::options_description& handler_desc)
 
 void add_desc_suboption(po::options_description& handler_desc)
 {
-    handler_desc.add_options()("desc", "Extended usage description");
+    handler_desc.add_options()("desc", "extended usage description");
 
     return;
 }
@@ -50,5 +50,5 @@ void add_output_suboption(po::options_description& handler_desc)
 
     return;
 }
-} // namespace UtilityProgramOptions
-} // namespace Utilities
+} // namespace utilities
+} // namespace utilities

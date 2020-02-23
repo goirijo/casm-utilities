@@ -1,22 +1,21 @@
 #include "casmutils/definitions.hpp"
-#include "casmutils/frankenstein.hpp"
+#include "casmutils/xtal/frankenstein.hpp"
 #include "casmutils/handlers.hpp"
-#include "casmutils/structure.hpp"
-#include "casmutils/structure_tools.hpp"
+#include "casmutils/xtal/structure_tools.hpp"
 
 #include <boost/program_options.hpp>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 
-namespace Utilities
+namespace utilities
 {
 
 void frankenslice_initializer(po::options_description& frankenslice_desc)
 {
-    UtilityProgramOptions::add_help_suboption(frankenslice_desc);
-    UtilityProgramOptions::add_desc_suboption(frankenslice_desc);
-    UtilityProgramOptions::add_output_suboption(frankenslice_desc);
+    utilities::add_help_suboption(frankenslice_desc);
+    utilities::add_desc_suboption(frankenslice_desc);
+    utilities::add_output_suboption(frankenslice_desc);
     frankenslice_desc.add_options()("superstructure,s", po::value<fs::path>()->required(),
                                     "POS.vasp like file that you want to "
                                     "get the primitive structure for.");
@@ -27,9 +26,9 @@ void frankenslice_initializer(po::options_description& frankenslice_desc)
 
     return;
 }
-} // namespace Utilities
+} // namespace utilities
 
-using namespace Utilities;
+using namespace utilities;
 
 int main(int argc, char* argv[])
 {
@@ -55,18 +54,18 @@ int main(int argc, char* argv[])
 
     auto super_path = frankenslice_launch.fetch<fs::path>("superstructure");
 
-    auto super_struc = Rewrap::Structure(super_path);
-    std::vector<Rewrap::Structure> snippets;
+    auto super_struc = rewrap::Structure::from_poscar(super_path);
+    std::vector<rewrap::Structure> snippets;
     if (frankenslice_launch.vm().count("slice-locations"))
     {
         auto raw_slice_locs = frankenslice_launch.fetch<std::vector<double>>("slice-locations");
         std::set<double> slice_locs(raw_slice_locs.begin(), raw_slice_locs.end());
-        snippets = Frankenstein::multi_slice(super_struc, slice_locs, tol);
+        snippets = frankenstein::multi_slice(super_struc, slice_locs, tol);
     }
     else if (frankenslice_launch.vm().count("number"))
     {
         auto num_slices = frankenslice_launch.fetch<int>("number");
-        snippets = Frankenstein::uniformly_slice(super_struc, num_slices);
+        snippets = frankenstein::uniformly_slice(super_struc, num_slices);
     }
     else
     {
@@ -84,7 +83,7 @@ int main(int argc, char* argv[])
             // TODO: what if directory doesn't exist?
             std::ostringstream ostr;
             ostr << std::setfill('0') << std::setw(2) << count;
-            Simplicity::write_poscar(item, out_path / Rewrap::fs::path("slice" + ostr.str() + "POSCAR"));
+            simplicity::write_poscar(item, out_path / rewrap::fs::path("slice" + ostr.str() + "POSCAR"));
             count++;
         }
     }
@@ -95,7 +94,7 @@ int main(int argc, char* argv[])
         for (auto& item : snippets)
         {
             std::cout << "slice " << count << std::endl;
-            Simplicity::print_poscar(item, std::cout);
+            simplicity::print_poscar(item, std::cout);
             count++;
         }
     }

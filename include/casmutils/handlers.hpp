@@ -5,7 +5,7 @@
 /* #include "casmutils/handlers.hpp" */
 /* #include "casmutils/rules.hpp" */
 
-namespace Utilities
+namespace utilities
 {
 /**
  * Container class for parsing command line
@@ -55,7 +55,7 @@ template <typename T> T Handler::fetch(const std::string& prog_option) const { r
  * across different UtilityHandler objects
  */
 
-namespace UtilityProgramOptions
+namespace utilities
 {
 /// \brief Lame help message with each available option
 void add_help_suboption(po::options_description& handler_desc);
@@ -65,8 +65,8 @@ void add_desc_suboption(po::options_description& handler_desc);
 
 /// \brief Store a fs::path to which whatever you're going to output should be saved
 void add_output_suboption(po::options_description& handler_desc);
-} // namespace UtilityProgramOptions
+} // namespace utilities
 
-} // namespace Utilities
+} // namespace utilities
 
 #endif

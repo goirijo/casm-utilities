@@ -9,7 +9,7 @@
 #include <casmutils/xtal/lattice.hpp>
 #include <casmutils/xtal/structure.hpp>
 
-namespace SpecializedEnumeration
+namespace enumeration
 {
 class RockSaltOctahedraToggler
 {
@@ -141,6 +141,6 @@ private:
     static std::unordered_map<index, int> initialized_leashed_vertex_ions(const Structure& init_struc,
                                                                           std::string vertex_name);
 };
-} // namespace SpecializedEnumeration
+} // namespace enumeration
 
 #endif

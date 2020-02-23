@@ -4,10 +4,10 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-namespace WrapPy
+namespace wrappy
 {
 std::string test() { return "This was a test. Did it work?"; }
-} // namespace WrapPy
+} // namespace wrappy
 
 PYBIND11_MODULE(_stage, m)
 {
@@ -15,5 +15,5 @@ PYBIND11_MODULE(_stage, m)
 
     m.doc() = "Temporary module for testing out work in progress.";
 
-    m.def("test", WrapPy::test);
+    m.def("test", wrappy::test);
 }

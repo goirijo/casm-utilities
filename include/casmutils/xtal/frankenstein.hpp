@@ -5,11 +5,11 @@
 #include <casmutils/xtal/structure.hpp>
 #include <set>
 
-/// The evil doctor has come to town the namespace Frankenstein is
+/// The evil doctor has come to town the namespace frankenstein is
 /// for doing all the things the doctor did to that poor monster.
 /// Snipping structures into partial components and Fastening them back together
 /// to create whatever atrocity you seek
-namespace Frankenstein
+namespace frankenstein
 {
 
 /// This function takes a structure (where the slice direction is perpendicular to ab plane)
@@ -54,6 +54,6 @@ rewrap::Structure inflate(const rewrap::Structure& struc, const std::array<doubl
 /// This function takes a structures and shifts the origin by shift val
 /// shift val is in fractional coordinates of the lattice
 void shift_coords_by(rewrap::Structure* struc, const Eigen::Vector3d& shift_val);
-} // namespace Frankenstein
+} // namespace frankenstein
 
 #endif

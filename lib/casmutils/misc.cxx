@@ -4,11 +4,11 @@
 #include <casm/crystallography/Site.hh>
 #include <casm/external/Eigen/Core>
 
-namespace Extend
+namespace extend
 {
 CASM::PrimClex quiet_primclex(CASM::Structure& prim)
 {
-    throw UtilExcept::NotImplemented();
+    throw except::NotImplemented();
     /* CASM::Log log(std::cout, 0); */
     /* CASM::Logging logging(log); */
     /* return CASM::PrimClex(prim, logging); */
@@ -16,7 +16,7 @@ CASM::PrimClex quiet_primclex(CASM::Structure& prim)
 
 CASM::xtal::Site atomic_site(const CASM::xtal::Coordinate& coord, const std::vector<std::string>& allowed_species)
 {
-    throw UtilExcept::NotImplemented(); // PS: This is already a static method of Molecule
+    throw except::NotImplemented(); // PS: This is already a static method of Molecule
     /* CASM::Array<CASM::Molecule> allowed_molecules; */
     /* for (auto specie : allowed_species) */
     /* { */
@@ -29,9 +29,9 @@ CASM::xtal::Site atomic_site(const CASM::xtal::Coordinate& coord, const std::vec
 
     /* return site; */
 }
-} // namespace Extend
+} // namespace extend
 
-namespace IO
+namespace io
 {
 Eigen::IOFormat coord_format() { return Eigen::IOFormat(4, 0, 0, ", ", "\n", "[", "]"); }
 } // namespace IO

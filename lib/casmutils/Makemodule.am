@@ -1,3 +1,5 @@
+include lib/casmutils/xtal/Makemodule.am
+
 lib_LTLIBRARIES += libcasmutils.la
 
 libcasmutils_la_SOURCES=

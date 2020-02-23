@@ -42,7 +42,7 @@ private:
 };
 } // namespace rewrap
 
-namespace CASMUtils
+namespace casmutils
 {
     namespace xtal
     {

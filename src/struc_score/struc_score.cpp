@@ -1,21 +1,20 @@
-#include "casmutils/definitions.hpp"
-#include "casmutils/handlers.hpp"
-#include "casmutils/stage.hpp"
-#include "casmutils/structure.hpp"
-#include "casmutils/structure_tools.hpp"
+#include <casmutils/definitions.hpp>
+#include <casmutils/handlers.hpp>
+#include <casmutils/stage.hpp>
+#include <casmutils/xtal/structure_tools.hpp>
 #include <algorithm>
 #include <boost/program_options.hpp>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 
-namespace Utilities
+namespace utilities
 {
 
 void struc_score_initializer(po::options_description& struc_score_desc)
 {
-    UtilityProgramOptions::add_help_suboption(struc_score_desc);
-    UtilityProgramOptions::add_output_suboption(struc_score_desc);
+    utilities::add_help_suboption(struc_score_desc);
+    utilities::add_output_suboption(struc_score_desc);
 
     struc_score_desc.add_options()("reference,r", po::value<fs::path>()->required(),
                                    "POS.vasp like file to use as reference structure.");
@@ -27,9 +26,9 @@ void struc_score_initializer(po::options_description& struc_score_desc)
                                    "Weight w in structure score: w*lattice_score + (1-w)*basis_score.");
     return;
 }
-} // namespace Utilities
+} // namespace utilities
 
-using namespace Utilities;
+using namespace utilities;
 
 int main(int argc, char* argv[])
 {
@@ -53,7 +52,7 @@ int main(int argc, char* argv[])
     }
 
     auto reference_path = struc_score_launch.fetch<fs::path>("reference");
-    auto map_reference_struc = Rewrap::Structure::from_poscar(reference_path);
+    auto map_reference_struc = rewrap::Structure::from_poscar(reference_path);
     auto weight = struc_score_launch.fetch<double>("weight");
 
     std::vector<fs::path> mappable_paths;
@@ -78,15 +77,15 @@ int main(int argc, char* argv[])
         return 2;
     }
 
-    std::vector<Rewrap::Structure> mappable_strucs;
+    std::vector<rewrap::Structure> mappable_strucs;
     fs::path::string_type::size_type max_path_length = 0;
     for (auto& path : mappable_paths)
     {
-        mappable_strucs.push_back(Rewrap::Structure(path));
-        max_path_length = std::max(max_path_length, path.size());
+        mappable_strucs.push_back(rewrap::Structure::from_poscar(path));
+        max_path_length = std::max(max_path_length, path.string().size());
     }
 
-    auto all_scores = Simplicity::structure_score(map_reference_struc, mappable_strucs);
+    auto all_scores = simplicity::structure_score(map_reference_struc, mappable_strucs);
 
     std::ostream* out_stream_ptr = &std::cout;
     std::ofstream specified_out_stream;

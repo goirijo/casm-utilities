@@ -3,7 +3,7 @@
 
 #include <casmutils/xtal/structure.hpp>
 
-namespace Simplicity
+namespace simplicity
 {
 /// Given a Structure, write out its information into a file in a vasp compatible format
 void write_poscar(const rewrap::Structure& printable, const rewrap::fs::path& filename);
@@ -61,13 +61,13 @@ boxiest_structure_index(const std::vector<rewrap::Structure>& candidate_structur
 
 /// Find the most boxy superstructure at each volume
 rewrap::Structure make_boxiest_superstructure_of_volume(const rewrap::Structure& structure, const int volume);
-} // namespace Simplicity
+} // namespace simplicity
 
-namespace CASMUtils
+namespace casmutils
 {
     namespace xtal
     {
-        using Simplicity::write_poscar;
+        using simplicity::write_poscar;
     }
 }
 
