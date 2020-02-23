@@ -1,7 +1,7 @@
-#include "casmutils/structure.hpp"
-#include "casmutils/exceptions.hpp"
-#include "casmutils/misc.hpp"
-#include <boost/filesystem.hpp>
+#include <casmutils/xtal/structure.hpp>
+#include <casmutils/exceptions.hpp>
+#include <casmutils/misc.hpp>
+#include <casmutils/definitions.hpp>
 
 namespace Extend
 {

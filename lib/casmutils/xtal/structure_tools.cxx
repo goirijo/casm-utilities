@@ -1,16 +1,14 @@
 #include <fstream>
-
-#include "casmutils/exceptions.hpp"
-#include "casmutils/lattice.hpp"
-#include "casmutils/misc.hpp"
-#include "casmutils/structure_tools.hpp"
-
-#include "casm/clex/ConfigMapping.hh"
-#include "casm/clex/PrimClex.hh"
-#include "casm/crystallography/Niggli.hh"
-#include "casm/crystallography/SuperlatticeEnumerator.hh"
-#include "casm/crystallography/io/VaspIO.hh"
-#include "casm/strain/StrainConverter.hh"
+#include <casmutils/exceptions.hpp>
+#include <casmutils/xtal/lattice.hpp>
+#include <casmutils/misc.hpp>
+#include <casmutils/xtal/structure_tools.hpp>
+#include <casm/clex/ConfigMapping.hh>
+#include <casm/clex/PrimClex.hh>
+#include <casm/crystallography/Niggli.hh>
+#include <casm/crystallography/SuperlatticeEnumerator.hh>
+#include <casm/crystallography/io/VaspIO.hh>
+#include <casm/strain/StrainConverter.hh>
 
 namespace
 {

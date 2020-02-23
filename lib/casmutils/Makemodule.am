@@ -4,20 +4,6 @@ libcasmutils_la_SOURCES=
 libcasmutils_la_SOURCES+=\
 						 lib/casmutils/stage.cxx\
 						 include/casmutils/stage.hpp\
-						 lib/casmutils/structure.cxx\
-						 include/casmutils/structure.hpp\
-						 lib/casmutils/structure_tools.cxx\
-						 include/casmutils/structure_tools.hpp\
-						 lib/casmutils/lattice.cxx\
-						 include/casmutils/lattice.hpp\
-						 lib/casmutils/frankenstein.cxx\
-						 include/casmutils/frankenstein.hpp\
-						 lib/casmutils/rocksalttoggler.cxx\
-						 include/casmutils/rocksalttoggler.hpp\
-						 lib/casmutils/coordinate.cxx\
-						 include/casmutils/coordinate.hpp\
-						 lib/casmutils/site.cxx\
-						 include/casmutils/site.hpp\
 						 lib/casmutils/misc.cxx\
 						 include/casmutils/misc.hpp\
 						 lib/casmutils/handlers.cxx\
@@ -25,6 +11,7 @@ libcasmutils_la_SOURCES+=\
 
 libcasmutils_la_LIBADD=\
 					   libcasmblob.la\
+					   libcasmutils-xtal.la\
 					   $(BOOST_SYSTEM_LIB)\
 					   $(BOOST_FILESYSTEM_LIB)\
 					   $(BOOST_CHRONO_LIB)\

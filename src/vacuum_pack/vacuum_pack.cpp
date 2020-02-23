@@ -1,8 +1,8 @@
 #include "casmutils/definitions.hpp"
-#include "casmutils/frankenstein.hpp"
+#include "casmutils/xtal/frankenstein.hpp"
 #include "casmutils/handlers.hpp"
-#include "casmutils/structure.hpp"
-#include "casmutils/structure_tools.hpp"
+#include "casmutils/xtal/structure.hpp"
+#include "casmutils/xtal/structure_tools.hpp"
 
 #include <boost/program_options.hpp>
 #include <fstream>
@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
     }
 
     auto struc_path = vacuumpack_launch.fetch<fs::path>("structure");
-    auto struc = Rewrap::Structure(struc_path);
+    auto struc = Rewrap::Structure::from_poscar(struc_path);
     auto out_struc = struc;
     auto dirs = vacuumpack_launch.fetch<std::string>("dirs");
     auto padding = vacuumpack_launch.fetch<double>("padding");

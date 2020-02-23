@@ -1,6 +1,6 @@
-#include "casmutils/coordinate.hpp"
+#include "casmutils/xtal/coordinate.hpp"
 #include "casmutils/exceptions.hpp"
-#include "casmutils/lattice.hpp"
+#include "casmutils/xtal/lattice.hpp"
 #include "casmutils/misc.hpp"
 
 namespace Rewrap

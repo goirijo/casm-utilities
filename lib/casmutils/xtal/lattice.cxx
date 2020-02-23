@@ -1,4 +1,4 @@
-#include "casmutils/lattice.hpp"
+#include <casmutils/xtal/lattice.hpp>
 
 namespace Rewrap
 {
