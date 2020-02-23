@@ -69,4 +69,6 @@ else
 fi
 
 AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([tests/py/_xtal-import.py],[chmod +x tests/py/_xtal-import.py])
+AC_CONFIG_FILES([tests/integration/cu-import.py],[chmod +x tests/integration/cu-import.py])
 AC_OUTPUT

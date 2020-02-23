@@ -1,0 +1,10 @@
+#!@PYTHON@
+
+import casmutils as cu
+import casmutils.xtal
+
+def main():
+    print("Successfully imported casmutils")
+
+if __name__=="__main__":
+    main()

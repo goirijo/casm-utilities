@@ -1,0 +1,3 @@
+installcheck-local:
+	make install
+	${abs_top_builddir}/tests/integration/cu-import.py
