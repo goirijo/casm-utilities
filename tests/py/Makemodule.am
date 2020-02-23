@@ -1,1 +1,4 @@
-TESTS += tests/py/_xtal-import.py
+TESTS += \
+		 tests/py/xtal-import.py\
+		 tests/py/stage-import.py\
+		 tests/py/cu-import.py

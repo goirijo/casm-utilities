@@ -3,5 +3,5 @@ include tests/py/Makemodule.am
 include tests/integration/Makemodule.am
 
 AM_TESTS_ENVIRONMENT= \
-					  PYTHONPATH=${abs_top_builddir}/.libs:$PYTHONPATH
+					  PYTHONPATH=${abs_top_builddir}/tests/integration/_python_modules:$PYTHONPATH
 

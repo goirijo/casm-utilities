@@ -69,6 +69,15 @@ else
 fi
 
 AC_CONFIG_FILES([Makefile])
-AC_CONFIG_FILES([tests/py/_xtal-import.py],[chmod +x tests/py/_xtal-import.py])
+
+##############Prepares all tests scripts related to python modules################# 
+AC_CONFIG_FILES([tests/py/xtal-import.py],[chmod +x tests/py/xtal-import.py])
+AC_CONFIG_FILES([tests/py/stage-import.py],[chmod +x tests/py/stage-import.py])
+AC_CONFIG_FILES([tests/py/cu-import.py],[chmod +x tests/py/cu-import.py])
+
+AC_CONFIG_FILES([tests/integration/phony_module_installation.sh])
 AC_CONFIG_FILES([tests/integration/cu-import.py],[chmod +x tests/integration/cu-import.py])
+####################################################################################
+
+
 AC_OUTPUT
