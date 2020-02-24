@@ -1,9 +1,9 @@
+#include <algorithm>
+#include <boost/program_options.hpp>
 #include <casmutils/definitions.hpp>
 #include <casmutils/handlers.hpp>
 #include <casmutils/stage.hpp>
 #include <casmutils/xtal/structure_tools.hpp>
-#include <algorithm>
-#include <boost/program_options.hpp>
 #include <fstream>
 #include <iomanip>
 #include <iostream>

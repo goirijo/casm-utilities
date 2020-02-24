@@ -6,7 +6,7 @@ git_root()
 find_source_files()
 {
     cd $(git_root)
-    for d in ./include ./src ./lib ./lib-py; do
+    for d in ./include ./src ./lib ./lib-py ./tests; do
         find $d -type f -name "*.hpp" -o -name "*.cpp" -o -name "*.cxx"
     done
 }

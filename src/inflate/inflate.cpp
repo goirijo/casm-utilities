@@ -1,6 +1,6 @@
 #include <casmutils/definitions.hpp>
-#include <casmutils/xtal/frankenstein.hpp>
 #include <casmutils/handlers.hpp>
+#include <casmutils/xtal/frankenstein.hpp>
 #include <casmutils/xtal/structure_tools.hpp>
 
 #include <boost/program_options.hpp>

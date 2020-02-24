@@ -65,10 +65,10 @@ rewrap::Structure make_boxiest_superstructure_of_volume(const rewrap::Structure&
 
 namespace casmutils
 {
-    namespace xtal
-    {
-        using simplicity::write_poscar;
-    }
+namespace xtal
+{
+using simplicity::write_poscar;
 }
+} // namespace casmutils
 
 #endif

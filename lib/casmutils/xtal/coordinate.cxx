@@ -1,7 +1,7 @@
 #include "casmutils/xtal/coordinate.hpp"
 #include "casmutils/exceptions.hpp"
-#include "casmutils/xtal/lattice.hpp"
 #include "casmutils/misc.hpp"
+#include "casmutils/xtal/lattice.hpp"
 
 namespace rewrap
 {

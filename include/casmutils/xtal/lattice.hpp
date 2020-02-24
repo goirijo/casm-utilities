@@ -1,8 +1,8 @@
 #ifndef UTILS_LATTICE_HH
 #define UTILS_LATTICE_HH
 
-#include <casmutils/definitions.hpp>
 #include <casm/crystallography/Lattice.hh>
+#include <casmutils/definitions.hpp>
 
 namespace rewrap
 {
@@ -38,10 +38,10 @@ private:
 
 namespace casmutils
 {
-    namespace xtal
-    {
-        using rewrap::Lattice;
-    }
+namespace xtal
+{
+using rewrap::Lattice;
 }
+} // namespace casmutils
 
 #endif

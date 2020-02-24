@@ -1,5 +1,5 @@
-#include <casmutils/xtal/rocksalttoggler.hpp>
 #include <casmutils/exceptions.hpp>
+#include <casmutils/xtal/rocksalttoggler.hpp>
 #include <casmutils/xtal/structure.hpp>
 #include <casmutils/xtal/structure_tools.hpp>
 

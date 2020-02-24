@@ -3,14 +3,14 @@
 
 #include "casm/global/definitions.hh"
 #include "casm/global/enum.hh"
-#include <filesystem>
 #include <boost/program_options.hpp>
+#include <filesystem>
 
 namespace casmutils
 {
 namespace fs = std::filesystem;
 namespace po = boost::program_options;
-} // namespace utilities
+} // namespace casmutils
 
 namespace utilities
 {
@@ -20,8 +20,8 @@ namespace po = boost::program_options;
 
 namespace rewrap
 {
-namespace fs=casmutils::fs;
-namespace po=casmutils::po;
+namespace fs = casmutils::fs;
+namespace po = casmutils::po;
 using CASM::CART;
 using CASM::COORD_TYPE;
 using CASM::FRAC;
@@ -29,8 +29,8 @@ using CASM::FRAC;
 
 namespace simplicity
 {
-namespace fs=casmutils::fs;
-namespace po=casmutils::po;
+namespace fs = casmutils::fs;
+namespace po = casmutils::po;
 } // namespace simplicity
 
 #endif

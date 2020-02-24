@@ -44,10 +44,10 @@ private:
 
 namespace casmutils
 {
-    namespace xtal
-    {
-        using rewrap::Site;
-    }
+namespace xtal
+{
+using rewrap::Site;
 }
+} // namespace casmutils
 
 #endif

@@ -1,8 +1,2 @@
 casmutilspydir=$(pythondir)/casmutils
-
-casmutilspy_PYTHON=\
-				   lib-py/casmutils/__init__.py
-
-include lib-py/casmutils/stage/Makemodule.am
-include lib-py/casmutils/xtal/Makemodule.am
-include lib-py/casmutils/xtal/frankenstein/Makemodule.am
+include lib-py/casmutils/Makemodule.am

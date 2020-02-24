@@ -1,6 +1,6 @@
-#include <casmutils/xtal/frankenstein.hpp>
 #include <casmutils/definitions.hpp>
 #include <casmutils/exceptions.hpp>
+#include <casmutils/xtal/frankenstein.hpp>
 
 #include <casm/crystallography/Niggli.hh>
 #include <casm/crystallography/Structure.hh>
@@ -124,8 +124,7 @@ std::vector<rewrap::Structure> multi_slice(const rewrap::Structure& big_struc, c
     {
         if (slice < 0.0 || slice > 1.0)
         {
-            throw except::UserInputMangle(
-                "Slice locations for frankenstein structures must be between 0.0 and 1.0");
+            throw except::UserInputMangle("Slice locations for frankenstein structures must be between 0.0 and 1.0");
         }
 
         sanitized_slice_locs(i) = slice;

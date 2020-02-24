@@ -4,8 +4,8 @@
 #include <unordered_map>
 #include <utility>
 
-#include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/definitions.hpp>
+#include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/xtal/lattice.hpp>
 #include <casmutils/xtal/structure.hpp>
 
