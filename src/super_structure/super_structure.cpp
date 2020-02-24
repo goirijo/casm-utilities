@@ -51,7 +51,8 @@ int main(int argc, char* argv[])
     auto transf_file_path = superstructure_launch.fetch<fs::path>("transf-matrix");
     // read the matrix from the file into an eigen matrix
     Eigen::Matrix3i transf_mat;
-    std::ifstream mat_file(transf_file_path);   //If you came here looking for something weird going on, this is probably the cuplit
+    std::ifstream mat_file(
+        transf_file_path); // If you came here looking for something weird going on, this is probably the cuplit
     mat_file >> transf_mat;
 
     throw except::NotImplemented();

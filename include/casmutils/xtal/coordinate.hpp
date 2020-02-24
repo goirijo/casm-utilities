@@ -52,10 +52,10 @@ private:
 
 namespace casmutils
 {
-    namespace xtal
-    {
-        using rewrap::Coordinate;
-    }
+namespace xtal
+{
+using rewrap::Coordinate;
 }
+} // namespace casmutils
 
 #endif

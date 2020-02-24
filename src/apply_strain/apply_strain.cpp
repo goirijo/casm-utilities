@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
     auto struc_path = applystrain_launch.fetch<fs::path>("structure");
     const auto strain_path = applystrain_launch.fetch<fs::path>("tensor");
     const auto mode = applystrain_launch.fetch<std::string>("mode");
-    rewrap::Structure strained_struc=rewrap::Structure::from_poscar(struc_path);
+    rewrap::Structure strained_struc = rewrap::Structure::from_poscar(struc_path);
 
     // check if the mode is a strain convention type or deformation mode
     // reads the input as a vector if its an unrolled strain in case of GL, B, H, EA modes else if its deformation mode

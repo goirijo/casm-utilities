@@ -18,10 +18,7 @@ protected:
     std::unique_ptr<rewrap::Coordinate> coord1_ptr;
 };
 
-TEST_F(CoordinateTest, Construct)
-{
-    EXPECT_EQ(coord0_ptr->cart(),coord1_ptr->cart());
-}
+TEST_F(CoordinateTest, Construct) { EXPECT_EQ(coord0_ptr->cart(), coord1_ptr->cart()); }
 
 int main(int argc, char** argv)
 {

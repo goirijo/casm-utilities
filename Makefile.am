@@ -13,6 +13,8 @@ man1_MANS=
 dist_bin_SCRIPTS=
 TESTS=
 
+BUILT_SOURCES=
+
 #Completely overkill, but we want the copyright files too
 EXTRA_DIST=\
 		   cxxopts\
@@ -53,6 +55,7 @@ include $(srcdir)/tests/Makemodule.am 		#All types of tests
 var-check:
 	echo ${prefix}
 	echo ${srcdir}
+	echo ${abs_srcdir}
 	echo ${abs_top_builddir}
 	echo $(LIBS)
 	echo $(PYTHON_LIBS)

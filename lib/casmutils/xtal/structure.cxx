@@ -1,7 +1,7 @@
-#include <casmutils/xtal/structure.hpp>
+#include <casmutils/definitions.hpp>
 #include <casmutils/exceptions.hpp>
 #include <casmutils/misc.hpp>
-#include <casmutils/definitions.hpp>
+#include <casmutils/xtal/structure.hpp>
 
 namespace extend
 {

@@ -3,9 +3,9 @@
 
 #include <casm/crystallography/BasicStructure.hh>
 #include <casm/crystallography/SimpleStructure.hh>
+#include <casmutils/definitions.hpp>
 #include <casmutils/xtal/lattice.hpp>
 #include <casmutils/xtal/site.hpp>
-#include <casmutils/definitions.hpp>
 #include <iostream>
 
 namespace rewrap
@@ -64,10 +64,10 @@ private:
 
 namespace casmutils
 {
-    namespace xtal
-    {
-        using rewrap::Structure;
-    }
+namespace xtal
+{
+using rewrap::Structure;
 }
+} // namespace casmutils
 
 #endif

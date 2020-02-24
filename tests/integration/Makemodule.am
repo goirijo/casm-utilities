@@ -1,3 +1,8 @@
+BUILT_SOURCES+=_phony_module_installation.sh
+
+_phony_module_installation.sh:
+	bash ${abs_top_builddir}/tests/integration/phony_module_installation.sh
+
 installcheck-local:
 	make install
 	${abs_top_builddir}/tests/integration/cu-import.py

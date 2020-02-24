@@ -1,9 +1,15 @@
-#include "casmutils/exceptions.hpp"
-#include "casmutils/misc.hpp"
-#include "casmutils/xtal/rocksalttoggler.hpp"
-#include "casmutils/xtal/structure_tools.hpp"
-#include <string>
+#include "./coordinate-py.hpp"
+#include "./site-py.hpp"
+#include "./lattice-py.hpp"
+#include "./structure-py.hpp"
+#include "./rocksalttoggler-py.hpp"
+
+#include <casmutils/xtal/structure.hpp>
+#include <casmutils/xtal/coordinate.hpp>
+#include <casmutils/xtal/rocksalttoggler.hpp>
+#include <casmutils/xtal/structure_tools.hpp>
 #include <fstream>
+#include <string>
 
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
@@ -14,102 +20,6 @@
 
 namespace wrappy
 {
-namespace Structure
-{
-rewrap::Structure from_poscar(const std::string& filename);
-void to_poscar(const rewrap::Structure& writeable, const std::string& filename);
-
-std::string __str__(const rewrap::Structure& printable)
-{
-    std::ostringstream sstream;
-    simplicity::print_poscar(printable, sstream);
-    return sstream.str();
-}
-
-rewrap::Structure from_poscar(const std::string& filename) { return rewrap::Structure::from_poscar(filename); }
-
-void to_poscar(const rewrap::Structure& writeable, const std::string& filename)
-{
-    simplicity::write_poscar(writeable, filename);
-    return;
-}
-
-void set_lattice(rewrap::Structure* self, const rewrap::Lattice& new_lattice, std::string mode)
-{
-    if (mode.size() == 0)
-    {
-        throw except::BadCoordMode();
-    }
-
-    char m = std::tolower(mode[0]);
-    switch (m)
-    {
-    case 'f':
-        self->set_lattice(new_lattice, rewrap::COORD_TYPE::FRAC);
-        break;
-
-    case 'c':
-        self->set_lattice(new_lattice, rewrap::COORD_TYPE::CART);
-        break;
-
-    default:
-        throw except::BadCoordMode();
-    }
-
-    return;
-}
-
-} // namespace Structure
-
-namespace Lattice
-{
-std::string __str__(const rewrap::Lattice& printable)
-{
-    std::ostringstream sstream;
-    sstream << printable.column_vector_matrix();
-    return sstream.str();
-}
-} // namespace Lattice
-
-namespace Site
-{
-std::string __str__(const ::rewrap::Site& printable)
-{
-    std::ostringstream sstream;
-    throw except::NotImplemented();
-    return sstream.str();
-}
-} // namespace Site
-
-namespace Coordinate
-{
-std::string __str__(const rewrap::Coordinate& printable)
-{
-    std::ostringstream sstream;
-    sstream << printable.cart().transpose();
-    return sstream.str();
-}
-} // namespace Coordinate
-
-namespace RockSaltToggler
-{
-void to_poscar(const enumeration::RockSaltOctahedraToggler& writeable, const std::string& filename)
-{
-    std::ofstream rs_outstream;
-    rs_outstream.open(filename);
-    writeable.print(rs_outstream);
-    rs_outstream.close();
-
-    return;
-}
-
-std::string __str__(const enumeration::RockSaltOctahedraToggler& printable)
-{
-    auto structure = printable.structure();
-    return Structure::__str__(structure);
-}
-} // namespace RockSaltToggler
-
 PYBIND11_MODULE(_xtal, m)
 {
     using namespace pybind11;

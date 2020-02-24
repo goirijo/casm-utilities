@@ -1,0 +1,38 @@
+#!bin/bash
+
+phony_path=@abs_top_builddir@/tests/integration/_python_modules
+module_source=@abs_top_srcdir@/lib-py
+compiled_libs_path=@abs_top_builddir@/.libs
+
+prepare_environment()
+{
+    rm -rf ${phony_path}
+    mkdir ${phony_path}
+    cp -r ${module_source}/casmutils ${phony_path}
+}
+
+softlink_all_here()
+{
+    for f in "$@"; do
+        ln -s $f
+    done
+}
+
+phony__xtal_install()
+{
+    cd ${phony_path}/casmutils/xtal
+    softlink_all_here ${compiled_libs_path}/_xtal*
+
+    cd frankenstein
+    softlink_all_here ${compiled_libs_path}/_frankenstein*
+}
+
+phony__stage_install()
+{
+    cd ${phony_path}/casmutils/stage
+    softlink_all_here -s ${compiled_libs_path}/_stage*
+}
+
+prepare_environment
+phony__xtal_install
+phony__stage_install

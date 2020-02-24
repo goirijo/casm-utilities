@@ -34,4 +34,4 @@ CASM::xtal::Site atomic_site(const CASM::xtal::Coordinate& coord, const std::vec
 namespace io
 {
 Eigen::IOFormat coord_format() { return Eigen::IOFormat(4, 0, 0, ", ", "\n", "[", "]"); }
-} // namespace IO
+} // namespace io
