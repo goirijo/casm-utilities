@@ -7,7 +7,7 @@ frankensteinpy_PYTHON=\
 frankensteinpy_LTLIBRARIES=_frankenstein.la
 
 _frankenstein_la_SOURCES=\
-					 lib-py/casmutils/xtal/frankenstein/frankenstein-py.cxx
+					 lib-py/casmutils/xtal/frankenstein/_frankenstein-py.cxx
 
 _frankenstein_la_LIBADD=\
 					libcasmutils.la
