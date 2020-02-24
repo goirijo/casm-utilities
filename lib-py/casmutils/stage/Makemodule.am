@@ -8,7 +8,7 @@ stagepy_LTLIBRARIES=\
 				   _stage.la
 
 _stage_la_SOURCES=\
-				 lib-py/casmutils/stage/stage-py.cxx
+				 lib-py/casmutils/stage/_stage-py.cxx
 
 _stage_la_LIBADD=\
 				libcasmutils.la
