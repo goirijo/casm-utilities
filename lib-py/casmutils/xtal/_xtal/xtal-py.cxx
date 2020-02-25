@@ -1,12 +1,12 @@
 #include "./coordinate-py.hpp"
-#include "./site-py.hpp"
 #include "./lattice-py.hpp"
-#include "./structure-py.hpp"
 #include "./rocksalttoggler-py.hpp"
+#include "./site-py.hpp"
+#include "./structure-py.hpp"
 
-#include <casmutils/xtal/structure.hpp>
 #include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/xtal/rocksalttoggler.hpp>
+#include <casmutils/xtal/structure.hpp>
 #include <casmutils/xtal/structure_tools.hpp>
 #include <fstream>
 #include <string>
