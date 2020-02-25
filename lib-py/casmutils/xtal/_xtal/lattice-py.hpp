@@ -5,7 +5,7 @@
 
 namespace rewrap
 {
-    class Lattice;
+class Lattice;
 }
 
 namespace wrappy
@@ -15,6 +15,5 @@ namespace Lattice
 std::string __str__(const rewrap::Lattice& printable);
 } // namespace Lattice
 } // namespace wrappy
-
 
 #endif
