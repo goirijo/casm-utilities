@@ -35,8 +35,9 @@ void Structure::set_lattice(const Lattice& new_lattice, COORD_TYPE mode)
     return;
 }
 
-[[nodiscard]] Structure Structure::set_lattice(const Lattice& new_lattice, COORD_TYPE mode) const{
-	throw except::NotImplemented();
+[[nodiscard]] Structure Structure::set_lattice(const Lattice& new_lattice, COORD_TYPE mode) const
+{
+    throw except::NotImplemented();
 }
 const std::vector<Site>& Structure::basis_sites() const
 {
@@ -45,8 +46,6 @@ const std::vector<Site>& Structure::basis_sites() const
     // std::vector<Site> basis(this->basis.begin(), this->basis.end());
     // return basis;
 }
-
-
 
 /// Return *this as a CASM::BasicStructure
 template <> const CASM::xtal::SimpleStructure& Structure::__get<CASM::xtal::SimpleStructure>() const

@@ -66,11 +66,11 @@ namespace casmutils
 {
 namespace xtal
 {
-using rewrap::Structure;
+using rewrap::CART;
 using rewrap::COORD_TYPE;
 using rewrap::FRAC;
-using rewrap::CART;
-}
+using rewrap::Structure;
+} // namespace xtal
 } // namespace casmutils
 
 #endif
