@@ -47,19 +47,21 @@ namespace casmutils
 namespace xtal
 {
 using rewrap::Site;
-///This functor class provides a unary equals operator
+/// This functor class provides a unary equals operator
 /// for casmutils::xtal::Site
-class SiteEquals_f {
-	public:
-		///Equals compares to reference site with a tolerance
-		SiteEquals_f(const Site &ref_site, double tol);
-		///Returns true if other is equal to ref_site
-		bool operator()(const Site &other);
-	private:	
-		Site ref_site;
-		double tol;
+class SiteEquals_f
+{
+public:
+    /// Equals compares to reference site with a tolerance
+    SiteEquals_f(const Site& ref_site, double tol);
+    /// Returns true if other is equal to ref_site
+    bool operator()(const Site& other);
+
+private:
+    Site ref_site;
+    double tol;
 };
-}
+} // namespace xtal
 } // namespace casmutils
 
 #endif

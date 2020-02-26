@@ -41,21 +41,22 @@ namespace casmutils
 namespace xtal
 {
 using rewrap::Lattice;
-///This functor class provides a unary predicate equals function 
+/// This functor class provides a unary predicate equals function
 /// for casmutils::xtal::Lattice .
-class LatticeEquals_f {
-	public:
-		//The comparator requires a tolerance
-		LatticeEquals_f(const Lattice &ref_lat, double tol);
-		//returns true is ref_lat is equal to other
-		bool operator()(const Lattice &other);
-	private:
-		Lattice ref_lat;
-		double tol;
+class LatticeEquals_f
+{
+public:
+    // The comparator requires a tolerance
+    LatticeEquals_f(const Lattice& ref_lat, double tol);
+    // returns true is ref_lat is equal to other
+    bool operator()(const Lattice& other);
 
+private:
+    Lattice ref_lat;
+    double tol;
 };
 
-}
+} // namespace xtal
 } // namespace casmutils
 
 #endif

@@ -53,9 +53,9 @@ TEST_F(SiteTest, FracConversion)
 };
 TEST_F(SiteTest, SiteEquals)
 {
-    // This test checks the ability to determine the equality of sites 
-	double tol=1e-5;
-	casmutils::xtal::SiteEquals_f equalizer(*lithium_site_ptr,tol);
+    // This test checks the ability to determine the equality of sites
+    double tol = 1e-5;
+    casmutils::xtal::SiteEquals_f equalizer(*lithium_site_ptr, tol);
     EXPECT_TRUE(equalizer(*lithium_site_ptr));
     EXPECT_TRUE(!equalizer(*nickel_site_ptr));
 };
