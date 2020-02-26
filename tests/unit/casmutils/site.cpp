@@ -51,7 +51,14 @@ TEST_F(SiteTest, FracConversion)
     // coordinates of a site with respect to a lattice
     EXPECT_EQ(lithium_site_ptr->frac(*cubic_lattice_ptr), Eigen::Vector3d(0.025, 0.05, 0.075));
 };
-
+TEST_F(SiteTest, SiteEquals)
+{
+    // This test checks the ability to determine the equality of sites 
+	double tol=1e-5;
+	casmutils::xtal::SiteEquals_f equalizer(*lithium_site_ptr,tol);
+    EXPECT_TRUE(equalizer(*lithium_site_ptr));
+    EXPECT_TRUE(!equalizer(*nickel_site_ptr));
+};
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);

@@ -49,7 +49,14 @@ TEST_F(LatticeTest, VectorAccess)
     // tests a(), b(), c()
     EXPECT_EQ(bcc_ptr->a().norm(), bcc_ptr->b().norm());
     EXPECT_EQ(bcc_ptr->a().norm(), bcc_ptr->c().norm());
-    EXPECT_EQ((hcp_ptr->a().norm() - hcp_ptr->b().norm()) < 1e-5, true);
+    EXPECT_TRUE((hcp_ptr->a().norm() - hcp_ptr->b().norm()) < 1e-5);
+}
+TEST_F(LatticeTest,LatticeEquals){
+	// This test checks the ability to determine if two lattices
+	// are equivalent within numerical tolerance
+	double tol=1e-5;
+	casmutils::xtal::LatticeEquals_f equalizer(*fcc_ptr,tol);
+	EXPECT_TRUE(equalizer(*fcc2_ptr));
 }
 
 int main(int argc, char** argv)

@@ -34,3 +34,15 @@ Eigen::Vector3d Site::frac(const rewrap::Lattice& ref_lattice) const
 }
 
 } // namespace rewrap
+
+namespace casmutils
+{
+namespace xtal
+{
+	SiteEquals_f::SiteEquals_f(const Site &ref_site,double tol):ref_site(ref_site),tol(tol){}
+	bool SiteEquals_f::operator()(const Site &other){
+		return ref_site.cart().isApprox(other.cart(),tol) && ref_site.label()==other.label();
+	}
+
+}
+}
