@@ -39,7 +39,7 @@ public:
     void set_lattice(const Lattice& new_lattice, COORD_TYPE mode);
 
     /// Give the structure a new lattice, and either keep the Cartesian, or fractional coordinates of the basis
-    Structure set_lattice(const Lattice& new_lattice, COORD_TYPE mode) const;
+    [[nodiscard]] Structure set_lattice(const Lattice& new_lattice, COORD_TYPE mode) const;
 
     /// Return a copy of all the basis sites
     const std::vector<Site>& basis_sites() const;
@@ -67,6 +67,9 @@ namespace casmutils
 namespace xtal
 {
 using rewrap::Structure;
+using rewrap::COORD_TYPE;
+using rewrap::FRAC;
+using rewrap::CART;
 }
 } // namespace casmutils
 
