@@ -1,4 +1,5 @@
 // These are classes that structure depends on
+#include "../../autotools.hh"
 #include <casmutils/definitions.hpp>
 #include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/xtal/lattice.hpp>
@@ -58,9 +59,10 @@ TEST_F(StructureTest, ReadfromPOSCAR)
     // This test checks the static function that reads
     // a POSCAR from a file and creates a casmutils::xtal::Structure
     // from the contents
-    casmutils::fs::path pos_path("input_files/simple_cubic_Ni.vasp");
-    casmutils::xtal::Structure pos = casmutils::xtal::Structure::from_poscar(pos_path.string());
+    casmutils::fs::path pos_path(casmutils::autotools::input_filesdir / "simple_cubic_Ni.vasp");
+    casmutils::xtal::Structure pos = casmutils::xtal::Structure::from_poscar(pos_path);
     EXPECT_TRUE((*lattice_equal_ptr)(pos.lattice()));
+    std::cout << pos.basis_sites()[0].cart() << std::endl;
     EXPECT_TRUE((*site0_equal_ptr)(pos.basis_sites()[0]));
 }
 TEST_F(StructureTest, SetLattice)

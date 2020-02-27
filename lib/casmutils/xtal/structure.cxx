@@ -90,11 +90,12 @@ void Structure::_update_simple_from_basic()
 void Structure::_update_internals_from_basic()
 {
     this->structure_lattice = casmutils::xtal::Lattice(this->casm_basicstructure.lattice());
-    this->basis.clear();
+    std::vector<casmutils::xtal::Site> new_basis;
     for (const auto& site : this->casm_basicstructure.basis())
     {
-        this->basis.emplace_back(site, 0);
+        new_basis.emplace_back(site, 0);
     }
+    this->basis = new_basis;
 }
 
 void Structure::_update_basic_from_simple()
@@ -116,13 +117,14 @@ void Structure::_update_basic_from_simple()
 void Structure::_update_internals_from_simple()
 {
     this->structure_lattice = casmutils::xtal::Lattice(casm_simplestructure.lat_column_mat);
-    this->basis.clear();
+    std::vector<casmutils::xtal::Site> new_basis;
     for (int index = 0; index < this->casm_simplestructure.n_atom(); index++)
     {
         const auto& info = this->casm_simplestructure.info(CASM::xtal::SimpleStructure::SpeciesMode::ATOM);
         Eigen::Vector3d raw_coord = info.coord(index);
-        this->basis.emplace_back(casmutils::xtal::Coordinate(raw_coord), info.names[index]);
+        new_basis.emplace_back(casmutils::xtal::Coordinate(raw_coord), info.names[index]);
     }
+    this->basis = new_basis;
 }
 
 void Structure::_update_basic_from_internals()

@@ -23,7 +23,11 @@ Site::Site(const rewrap::Coordinate& init_coord, const std::string& occupant_nam
     // Avoid an unitialized state.
     this->casm_site.set_label(0);
 }
-
+Site::Site(const CASM::xtal::Site& init_site, int occupant) : casm_site(init_site)
+{
+    // Avoid an unitialized state.
+    this->casm_site.set_label(occupant);
+}
 std::string Site::label() const { return this->casm_site.allowed_occupants()[this->casm_site.label()]; }
 
 Eigen::Vector3d Site::cart() const { return this->casm_site.cart(); }
