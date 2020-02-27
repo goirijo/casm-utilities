@@ -68,14 +68,14 @@ TEST_F(StructureTest, ReadfromPOSCAR)
 }
 TEST_F(StructureTest, SetLatticeFrac)
 {
-    /// FRACTIONAL CALL SHOULD CHANGE BASIS
+    // FRACTIONAL CALL SHOULD CHANGE BASIS
     cubic_Ni_struc_ptr->set_lattice(*big_cubic_lat_ptr, casmutils::xtal::FRAC);
-    /// Basis should now be different (site0 transforms to site1 from test frame)
+    // Basis should now be different (site0 transforms to site1 from test frame)
     EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>((*basis1_ptr)[0],
                                                                    cubic_Ni_struc_ptr->basis_sites()[0], tol));
-    /// Lattice should be different
-    EXPECT_TRUE(
-        !casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(*cubic_lat_ptr, cubic_Ni_struc_ptr->lattice(), tol));
+    // Lattice should be different
+    EXPECT_FALSE(
+        casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(*cubic_lat_ptr, cubic_Ni_struc_ptr->lattice(), tol));
 }
 TEST_F(StructureTest, ConstSetLatticeCart)
 {
@@ -93,7 +93,7 @@ TEST_F(StructureTest, ConstSetLatticeCart)
         casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(*cubic_lat_ptr, cubic_Ni_strucref.lattice(), tol));
     // Const call to set_lattice does return new structure
     EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>((*basis0_ptr)[0], new_struc.basis_sites()[0], tol));
-    EXPECT_TRUE(!casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(*cubic_lat_ptr, new_struc.lattice(), tol));
+    EXPECT_FALSE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(*cubic_lat_ptr, new_struc.lattice(), tol));
 }
 int main(int argc, char** argv)
 {

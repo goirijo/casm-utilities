@@ -49,8 +49,8 @@ public:
 
 private:
     ///  updates the appropriate members using
-    /// the argument given as a reference
-    template <typename StructureRepresentation> void _update_using(const StructureRepresentation& struc);
+    /// the template type given as a reference
+    template <typename StructureRepresentation> void _update_using();
     ///  updates the casm_simplestructure member
     /// using casm_basicstructure as a reference
     void _update_simple_from_basic();

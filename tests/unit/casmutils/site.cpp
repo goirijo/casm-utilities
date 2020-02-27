@@ -58,7 +58,7 @@ TEST_F(SiteTest, SiteEquals)
     double tol = 1e-5;
     casmutils::xtal::SiteEquals_f is_equal_to_lithium_site(*lithium_site_ptr, tol);
     EXPECT_TRUE(is_equal_to_lithium_site(*lithium_site_ptr));
-    EXPECT_TRUE(!is_equal_to_lithium_site(*nickel_site_ptr));
+    EXPECT_FALSE(is_equal_to_lithium_site(*nickel_site_ptr));
 };
 int main(int argc, char** argv)
 {

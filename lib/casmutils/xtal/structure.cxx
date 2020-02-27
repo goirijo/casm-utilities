@@ -15,19 +15,19 @@ namespace extend
 namespace rewrap
 {
 
-template <> void Structure::_update_using<CASM::xtal::BasicStructure>(const CASM::xtal::BasicStructure& struc)
+template <> void Structure::_update_using<CASM::xtal::BasicStructure>()
 {
     _update_simple_from_basic();
     _update_internals_from_basic();
 }
 
-template <> void Structure::_update_using<CASM::xtal::SimpleStructure>(const CASM::xtal::SimpleStructure& struc)
+template <> void Structure::_update_using<CASM::xtal::SimpleStructure>()
 {
     _update_basic_from_simple();
     _update_internals_from_simple();
 }
 
-template <> void Structure::_update_using<casmutils::xtal::Structure>(const casmutils::xtal::Structure& struc)
+template <> void Structure::_update_using<casmutils::xtal::Structure>()
 {
     _update_basic_from_internals();
     _update_simple_from_internals();
@@ -48,17 +48,17 @@ template <> const CASM::xtal::BasicStructure& Structure::__get<CASM::xtal::Basic
 Structure::Structure(const CASM::xtal::BasicStructure& init_struc)
     : structure_lattice(init_struc.lattice()), casm_basicstructure(init_struc)
 {
-    _update_using(this->__get<CASM::xtal::BasicStructure>());
+    _update_using<CASM::xtal::BasicStructure>();
 }
 Structure::Structure(const CASM::xtal::SimpleStructure& init_struc)
     : structure_lattice(init_struc.lat_column_mat), casm_simplestructure(init_struc)
 {
-    _update_using(this->__get<CASM::xtal::SimpleStructure>());
+    _update_using<CASM::xtal::SimpleStructure>();
 }
 Structure::Structure(const rewrap::Lattice& init_lat, const std::vector<rewrap::Site>& init_basis)
     : structure_lattice(init_lat), basis(init_basis)
 {
-    _update_using(*this);
+    _update_using<casmutils::xtal::Structure>();
 }
 
 Structure Structure::from_poscar(const fs::path& poscar_path)
@@ -78,7 +78,7 @@ const Lattice& Structure::lattice() const { return this->structure_lattice; }
 void Structure::set_lattice(const Lattice& new_lattice, COORD_TYPE mode)
 {
     this->casm_basicstructure.set_lattice(CASM::xtal::Lattice(new_lattice.column_vector_matrix()), mode);
-    _update_using(this->__get<CASM::xtal::BasicStructure>());
+    _update_using<CASM::xtal::BasicStructure>();
     return;
 }
 
@@ -108,10 +108,10 @@ void Structure::_update_internals_from_basic()
 
 void Structure::_update_basic_from_simple()
 {
-    /// Syncing Lattice
+    // Syncing Lattice
     this->casm_basicstructure =
         CASM::xtal::BasicStructure(CASM::xtal::Lattice(this->__get<CASM::xtal::SimpleStructure>().lat_column_mat));
-    /// Lattice has been synced
+    // Lattice has been synced
     auto& basic_basis = this->casm_basicstructure.set_basis();
     for (int index = 0; index < this->__get<CASM::xtal::SimpleStructure>().n_atom(); index++)
     {
@@ -140,10 +140,10 @@ void Structure::_update_internals_from_simple()
 
 void Structure::_update_basic_from_internals()
 {
-    /// Syncing Lattice
+    // Syncing Lattice
     this->casm_basicstructure =
         CASM::xtal::BasicStructure(CASM::xtal::Lattice(this->structure_lattice.column_vector_matrix()));
-    /// Lattice has been synced
+    // Lattice has been synced
     auto& basic_basis = this->casm_basicstructure.set_basis();
     for (const auto& site : this->basis)
     {
@@ -155,7 +155,7 @@ void Structure::_update_basic_from_internals()
 
 void Structure::_update_simple_from_internals()
 {
-    /// This seems like a horrible way to do this but it's because SimpleStructure only has a
+    // This seems like a horrible way to do this but it's because SimpleStructure only has a
     // default constructor and a whole bunch of empty fields.
     // I also didn't want to call _update_basic_from_internals here.
     CASM::xtal::BasicStructure temp_basic(CASM::xtal::Lattice(this->structure_lattice.column_vector_matrix()));
