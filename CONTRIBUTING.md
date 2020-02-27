@@ -5,3 +5,6 @@
 * libraries vs utitilites
 * How to document
 * When it's OK to invoke CASM
+
+# Naming conventions
+* `is_*` for functions/functors returning booleans
