@@ -1,6 +1,7 @@
 #ifndef CASM_UTILS_EXCPEPTIONS_HH
 #define CASM_UTILS_EXCPEPTIONS_HH
 
+#include <casmutils/definitions.hpp>
 #include <stdexcept>
 
 namespace except
@@ -36,7 +37,9 @@ private:
 class BadPath : public std::runtime_error
 {
 public:
-    BadPath() : std::runtime_error("Invalid path specified, file does not exist.") {}
+    BadPath(const casmutils::fs::path& path) : std::runtime_error("Invalid path specified, Received: " + path.string())
+    {
+    }
 
 private:
 };

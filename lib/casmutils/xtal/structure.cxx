@@ -66,7 +66,7 @@ Structure Structure::from_poscar(const fs::path& poscar_path)
     CASM::xtal::BasicStructure pos;
     if (!fs::exists(poscar_path))
     {
-        throw except::BadPath();
+        throw except::BadPath(poscar_path);
     }
     std::ifstream infile(poscar_path);
     pos.read(infile);
