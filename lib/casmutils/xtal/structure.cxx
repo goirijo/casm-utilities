@@ -1,12 +1,12 @@
+#include <casm/crystallography/BasicStructure.hh>
 #include <casm/crystallography/SimpleStructure.hh>
 #include <casm/crystallography/SimpleStructureTools.hh>
-#include <casm/crystallography/BasicStructure.hh>
+#include <casm/global/definitions.hh>
 #include <casmutils/definitions.hpp>
 #include <casmutils/exceptions.hpp>
 #include <casmutils/misc.hpp>
 #include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/xtal/structure.hpp>
-#include <casm/global/definitions.hh>
 #include <fstream>
 namespace extend
 {
@@ -30,30 +30,32 @@ Structure::Structure(const rewrap::Lattice& init_lat, const std::vector<rewrap::
     _update_using("internal");
 }
 
-Structure Structure::from_poscar(const fs::path& poscar_path) {
-	CASM::xtal::BasicStructure pos;
-      if(!fs::exists(poscar_path)) {
-		  throw except::UserInputMangle("Path does not exist");
-      }
-      std::ifstream infile(poscar_path);
-      pos.read(infile);
-	return casmutils::xtal::Structure(pos);
+Structure Structure::from_poscar(const fs::path& poscar_path)
+{
+    CASM::xtal::BasicStructure pos;
+    if (!fs::exists(poscar_path))
+    {
+        throw except::UserInputMangle("Path does not exist");
+    }
+    std::ifstream infile(poscar_path);
+    pos.read(infile);
+    return casmutils::xtal::Structure(pos);
 }
 
 const Lattice& Structure::lattice() const { return this->structure_lattice; }
 
 void Structure::set_lattice(const Lattice& new_lattice, COORD_TYPE mode)
 {
-	this->casm_basicstructure.set_lattice(CASM::xtal::Lattice(new_lattice.column_vector_matrix()),mode);
-	_update_using("basic");
+    this->casm_basicstructure.set_lattice(CASM::xtal::Lattice(new_lattice.column_vector_matrix()), mode);
+    _update_using("basic");
     return;
 }
 
 [[nodiscard]] Structure Structure::set_lattice(const Lattice& new_lattice, COORD_TYPE mode) const
 {
-	casmutils::xtal::Structure new_struc=*this;
-	new_struc.set_lattice(new_lattice,mode);
-	return new_struc;
+    casmutils::xtal::Structure new_struc = *this;
+    new_struc.set_lattice(new_lattice, mode);
+    return new_struc;
 }
 const std::vector<Site>& Structure::basis_sites() const { return this->basis; }
 
