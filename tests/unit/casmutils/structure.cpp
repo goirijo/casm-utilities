@@ -1,4 +1,5 @@
 // These are classes that structure depends on
+#include <casmutils/definitions.hpp>
 #include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/xtal/lattice.hpp>
 #include <casmutils/xtal/site.hpp>
@@ -51,6 +52,15 @@ TEST_F(StructureTest, ConstBasisAccess)
     // This test checks the const accessor method to
     // the basis of the structure
     EXPECT_TRUE((*site0_equal_ptr)(struc0_ptr->basis_sites()[0]));
+}
+TEST_F(StructureTest,ReadfromPOSCAR){
+	// This test checks the static function that reads 
+	// a POSCAR from a file and creates a casmutils::xtal::Structure
+	// from the contents
+	casmutils::fs::path pos_path("input_files/simple_cubic_Ni.vasp");
+	casmutils::xtal::Structure pos=casmutils::xtal::Structure::from_poscar(pos_path.string());
+    EXPECT_TRUE((*lattice_equal_ptr)(pos.lattice()));
+    EXPECT_TRUE((*site0_equal_ptr)(pos.basis_sites()[0]));
 }
 TEST_F(StructureTest, SetLattice)
 {
