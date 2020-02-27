@@ -39,7 +39,7 @@ public:
     void set_lattice(const Lattice& new_lattice, COORD_TYPE mode);
 
     /// Give the structure a new lattice, and either keep the Cartesian, or fractional coordinates of the basis
-    Structure set_lattice(const Lattice& new_lattice, COORD_TYPE mode) const;
+    [[nodiscard]] Structure set_lattice(const Lattice& new_lattice, COORD_TYPE mode) const;
 
     /// Return a copy of all the basis sites
     const std::vector<Site>& basis_sites() const;
@@ -48,6 +48,32 @@ public:
     template <typename CASMType> const CASMType& __get() const;
 
 private:
+    ///  updates the appropriate members using
+    /// the template type given as a reference
+    template <typename StructureRepresentation> void _update_using();
+    ///  updates the casm_simplestructure member
+    /// using casm_basicstructure as a reference
+    void _update_simple_from_basic();
+    ///  updates the casm_basicstructure member
+    /// using casm_simplestructure as a reference
+    void _update_basic_from_simple();
+
+    ///  updates the lattice and basis member
+    /// using casm_simplestructure as a reference
+    void _update_internals_from_simple();
+
+    ///  updates the lattice and basis member
+    /// using casm_basicstructure as a reference
+    void _update_internals_from_basic();
+
+    ///  updates casm_basicstructure
+    /// using the lattice and basis member as a reference
+    void _update_basic_from_internals();
+
+    ///  updates casm_simplestructure
+    /// using the lattice and basis member as a reference
+    void _update_simple_from_internals();
+
     /// CASM::SimpleStructure representation
     CASM::xtal::SimpleStructure casm_simplestructure;
 
@@ -66,8 +92,11 @@ namespace casmutils
 {
 namespace xtal
 {
+using rewrap::CART;
+using rewrap::COORD_TYPE;
+using rewrap::FRAC;
 using rewrap::Structure;
-}
+} // namespace xtal
 } // namespace casmutils
 
 #endif

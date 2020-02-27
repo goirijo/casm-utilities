@@ -1,6 +1,7 @@
 #ifndef CASM_UTILS_EXCPEPTIONS_HH
 #define CASM_UTILS_EXCPEPTIONS_HH
 
+#include <casmutils/definitions.hpp>
 #include <stdexcept>
 
 namespace except
@@ -33,7 +34,15 @@ public:
 
 private:
 };
+class BadPath : public std::runtime_error
+{
+public:
+    BadPath(const casmutils::fs::path& path) : std::runtime_error("Invalid path specified, Received: " + path.string())
+    {
+    }
 
+private:
+};
 class OverwriteException : public std::runtime_error
 {
 public:

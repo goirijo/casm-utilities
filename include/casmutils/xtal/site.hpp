@@ -19,7 +19,7 @@ class Site
 {
 public:
     Site() = delete;
-    Site(const CASM::xtal::Site& init_site, int occupant) : casm_site(init_site) {}
+    Site(const CASM::xtal::Site& init_site, int occupant);
     Site(const Coordinate& init_coord, const std::string& occupant_name);
     /* Site(const Eigen::Vector3d& init_coord, const std::string& occupant_name); */
 
@@ -47,7 +47,21 @@ namespace casmutils
 namespace xtal
 {
 using rewrap::Site;
-}
+/// This functor class provides a unary equals operator
+/// for casmutils::xtal::Site
+class SiteEquals_f
+{
+public:
+    /// Determines whether test is equal to reference site with a tolerance
+    SiteEquals_f(const Site& ref_site, double tol);
+    /// Returns true if other is equal to ref_site
+    bool operator()(const Site& other);
+
+private:
+    Site ref_site;
+    double tol;
+};
+} // namespace xtal
 } // namespace casmutils
 
 #endif
