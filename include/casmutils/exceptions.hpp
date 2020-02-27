@@ -33,7 +33,13 @@ public:
 
 private:
 };
+class BadPath : public std::runtime_error
+{
+public:
+    BadPath() : std::runtime_error("Invalid path specified, file does not exist.") {}
 
+private:
+};
 class OverwriteException : public std::runtime_error
 {
 public:

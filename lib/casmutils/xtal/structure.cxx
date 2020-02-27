@@ -14,20 +14,51 @@ namespace extend
 
 namespace rewrap
 {
+
+template <> void Structure::_update_using<CASM::xtal::BasicStructure>(const CASM::xtal::BasicStructure& struc)
+{
+    _update_simple_from_basic();
+    _update_internals_from_basic();
+}
+
+template <> void Structure::_update_using<CASM::xtal::SimpleStructure>(const CASM::xtal::SimpleStructure& struc)
+{
+    _update_basic_from_simple();
+    _update_internals_from_simple();
+}
+
+template <> void Structure::_update_using<casmutils::xtal::Structure>(const casmutils::xtal::Structure& struc)
+{
+    _update_basic_from_internals();
+    _update_simple_from_internals();
+}
+
+/// Return *this as a CASM::BasicStructure
+template <> const CASM::xtal::SimpleStructure& Structure::__get<CASM::xtal::SimpleStructure>() const
+{
+    return this->casm_simplestructure;
+}
+
+/// Return *this as a CASM::BasicStructure
+template <> const CASM::xtal::BasicStructure& Structure::__get<CASM::xtal::BasicStructure>() const
+{
+    return this->casm_basicstructure;
+}
+
 Structure::Structure(const CASM::xtal::BasicStructure& init_struc)
     : structure_lattice(init_struc.lattice()), casm_basicstructure(init_struc)
 {
-    _update_using("basic");
+    _update_using(this->__get<CASM::xtal::BasicStructure>());
 }
 Structure::Structure(const CASM::xtal::SimpleStructure& init_struc)
     : structure_lattice(init_struc.lat_column_mat), casm_simplestructure(init_struc)
 {
-    _update_using("simple");
+    _update_using(this->__get<CASM::xtal::SimpleStructure>());
 }
 Structure::Structure(const rewrap::Lattice& init_lat, const std::vector<rewrap::Site>& init_basis)
     : structure_lattice(init_lat), basis(init_basis)
 {
-    _update_using("internal");
+    _update_using(*this);
 }
 
 Structure Structure::from_poscar(const fs::path& poscar_path)
@@ -35,7 +66,7 @@ Structure Structure::from_poscar(const fs::path& poscar_path)
     CASM::xtal::BasicStructure pos;
     if (!fs::exists(poscar_path))
     {
-        throw except::UserInputMangle("Path does not exist");
+        throw except::BadPath();
     }
     std::ifstream infile(poscar_path);
     pos.read(infile);
@@ -47,7 +78,7 @@ const Lattice& Structure::lattice() const { return this->structure_lattice; }
 void Structure::set_lattice(const Lattice& new_lattice, COORD_TYPE mode)
 {
     this->casm_basicstructure.set_lattice(CASM::xtal::Lattice(new_lattice.column_vector_matrix()), mode);
-    _update_using("basic");
+    _update_using(this->__get<CASM::xtal::BasicStructure>());
     return;
 }
 
@@ -59,39 +90,16 @@ void Structure::set_lattice(const Lattice& new_lattice, COORD_TYPE mode)
 }
 const std::vector<Site>& Structure::basis_sites() const { return this->basis; }
 
-void Structure::_update_using(std::string reference)
-{
-    if (reference == "basic")
-    {
-        _update_simple_from_basic();
-        _update_internals_from_basic();
-    }
-    else if (reference == "simple")
-    {
-        _update_basic_from_simple();
-        _update_internals_from_simple();
-    }
-    else if (reference == "internal")
-    {
-        _update_basic_from_internals();
-        _update_simple_from_internals();
-    }
-    else
-    {
-        throw except::UserInputMangle("Check the update reference you used. Not compatible.");
-    }
-}
-
 void Structure::_update_simple_from_basic()
 {
-    this->casm_simplestructure = CASM::xtal::make_simple_structure(this->casm_basicstructure);
+    this->casm_simplestructure = CASM::xtal::make_simple_structure(this->__get<CASM::xtal::BasicStructure>());
 }
 
 void Structure::_update_internals_from_basic()
 {
-    this->structure_lattice = casmutils::xtal::Lattice(this->casm_basicstructure.lattice());
+    this->structure_lattice = casmutils::xtal::Lattice(this->__get<CASM::xtal::BasicStructure>().lattice());
     std::vector<casmutils::xtal::Site> new_basis;
-    for (const auto& site : this->casm_basicstructure.basis())
+    for (const auto& site : this->__get<CASM::xtal::BasicStructure>().basis())
     {
         new_basis.emplace_back(site, 0);
     }
@@ -102,15 +110,17 @@ void Structure::_update_basic_from_simple()
 {
     /// Syncing Lattice
     this->casm_basicstructure =
-        CASM::xtal::BasicStructure(CASM::xtal::Lattice(this->casm_simplestructure.lat_column_mat));
+        CASM::xtal::BasicStructure(CASM::xtal::Lattice(this->__get<CASM::xtal::SimpleStructure>().lat_column_mat));
     /// Lattice has been synced
     auto& basic_basis = this->casm_basicstructure.set_basis();
-    for (int index = 0; index < this->casm_simplestructure.n_atom(); index++)
+    for (int index = 0; index < this->__get<CASM::xtal::SimpleStructure>().n_atom(); index++)
     {
-        const auto& info = this->casm_simplestructure.info(CASM::xtal::SimpleStructure::SpeciesMode::ATOM);
+        const auto& info =
+            this->__get<CASM::xtal::SimpleStructure>().info(CASM::xtal::SimpleStructure::SpeciesMode::ATOM);
         Eigen::Vector3d raw_coord = info.coord(index);
-        basic_basis.emplace_back(CASM::xtal::Coordinate(raw_coord, this->casm_basicstructure.lattice(), CASM::CART),
-                                 info.names[index]);
+        basic_basis.emplace_back(
+            CASM::xtal::Coordinate(raw_coord, this->__get<CASM::xtal::BasicStructure>().lattice(), CASM::CART),
+            info.names[index]);
     }
 }
 
@@ -118,9 +128,10 @@ void Structure::_update_internals_from_simple()
 {
     this->structure_lattice = casmutils::xtal::Lattice(casm_simplestructure.lat_column_mat);
     std::vector<casmutils::xtal::Site> new_basis;
-    for (int index = 0; index < this->casm_simplestructure.n_atom(); index++)
+    for (int index = 0; index < this->__get<CASM::xtal::SimpleStructure>().n_atom(); index++)
     {
-        const auto& info = this->casm_simplestructure.info(CASM::xtal::SimpleStructure::SpeciesMode::ATOM);
+        const auto& info =
+            this->__get<CASM::xtal::SimpleStructure>().info(CASM::xtal::SimpleStructure::SpeciesMode::ATOM);
         Eigen::Vector3d raw_coord = info.coord(index);
         new_basis.emplace_back(casmutils::xtal::Coordinate(raw_coord), info.names[index]);
     }
@@ -136,8 +147,9 @@ void Structure::_update_basic_from_internals()
     auto& basic_basis = this->casm_basicstructure.set_basis();
     for (const auto& site : this->basis)
     {
-        basic_basis.emplace_back(CASM::xtal::Coordinate(site.cart(), this->casm_basicstructure.lattice(), CASM::CART),
-                                 site.label());
+        basic_basis.emplace_back(
+            CASM::xtal::Coordinate(site.cart(), this->__get<CASM::xtal::BasicStructure>().lattice(), CASM::CART),
+            site.label());
     }
 }
 
@@ -153,18 +165,6 @@ void Structure::_update_simple_from_internals()
         basic_basis.emplace_back(CASM::xtal::Coordinate(site.cart(), temp_basic.lattice(), CASM::CART), site.label());
     }
     this->casm_simplestructure = CASM::xtal::make_simple_structure(temp_basic);
-}
-
-/// Return *this as a CASM::BasicStructure
-template <> const CASM::xtal::SimpleStructure& Structure::__get<CASM::xtal::SimpleStructure>() const
-{
-    return this->casm_simplestructure;
-}
-
-/// Return *this as a CASM::BasicStructure
-template <> const CASM::xtal::BasicStructure& Structure::__get<CASM::xtal::BasicStructure>() const
-{
-    return this->casm_basicstructure;
 }
 
 } // namespace rewrap

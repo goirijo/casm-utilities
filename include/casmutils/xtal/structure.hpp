@@ -48,29 +48,29 @@ public:
     template <typename CASMType> const CASMType& __get() const;
 
 private:
-    /// This function updates the appropriate members using
-    /// the flag given as a reference
-    void _update_using(std::string reference);
-    /// This function updates the casm_simplestructure member
+    ///  updates the appropriate members using
+    /// the argument given as a reference
+    template <typename StructureRepresentation> void _update_using(const StructureRepresentation& struc);
+    ///  updates the casm_simplestructure member
     /// using casm_basicstructure as a reference
     void _update_simple_from_basic();
-    /// This function updates the casm_basicstructure member
+    ///  updates the casm_basicstructure member
     /// using casm_simplestructure as a reference
     void _update_basic_from_simple();
 
-    /// This function updates the lattice and basis member
+    ///  updates the lattice and basis member
     /// using casm_simplestructure as a reference
     void _update_internals_from_simple();
 
-    /// This function updates the lattice and basis member
+    ///  updates the lattice and basis member
     /// using casm_basicstructure as a reference
     void _update_internals_from_basic();
 
-    /// This function updates casm_basicstructure
+    ///  updates casm_basicstructure
     /// using the lattice and basis member as a reference
     void _update_basic_from_internals();
 
-    /// This function updates casm_simplestructure
+    ///  updates casm_simplestructure
     /// using the lattice and basis member as a reference
     void _update_simple_from_internals();
 
