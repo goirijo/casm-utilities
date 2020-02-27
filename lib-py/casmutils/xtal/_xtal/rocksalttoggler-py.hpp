@@ -5,7 +5,7 @@
 
 namespace enumeration
 {
-    class RockSaltOctahedraToggler;
+class RockSaltOctahedraToggler;
 }
 
 namespace wrappy

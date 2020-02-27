@@ -1,11 +1,11 @@
 #ifndef SITE_PY_HH
 #define SITE_PY_HH
 
-#include<string>
+#include <string>
 
 namespace rewrap
 {
-    class Site;
+class Site;
 }
 
 namespace wrappy
