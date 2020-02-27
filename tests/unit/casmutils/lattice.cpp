@@ -10,7 +10,7 @@ protected:
         Eigen::Matrix3d fcc_matrix;
         fcc_matrix << 0.0, 1.5, 1.5, 1.5, 0.0, 1.5, 1.5, 1.5, 0.0;
         fcc_ptr.reset(new rewrap::Lattice(fcc_matrix));
-        fcc2_ptr.reset(new rewrap::Lattice(fcc_matrix));
+        fcc_copy_ptr.reset(new rewrap::Lattice(fcc_matrix));
         Eigen::Matrix3d bcc_matrix;
         bcc_matrix << -1.5, 1.5, 1.5, 1.5, -1.5, 1.5, 1.5, 1.5, -1.5;
         bcc_ptr.reset(new rewrap::Lattice(bcc_matrix));
@@ -21,8 +21,10 @@ protected:
 
     // Use unique pointers because Lattice has no default constructor
     std::unique_ptr<rewrap::Lattice> fcc_ptr;
-    std::unique_ptr<rewrap::Lattice> fcc2_ptr;
+    std::unique_ptr<rewrap::Lattice> fcc_copy_ptr;
+
     std::unique_ptr<rewrap::Lattice> bcc_ptr;
+
     std::unique_ptr<rewrap::Lattice> hcp_ptr;
 };
 
@@ -31,7 +33,7 @@ TEST_F(LatticeTest, ConstructandGetMatrix)
     // This test constructs two different objects with the same matrix
     // This test examines the functionality of the constructor and
     // column_vector_matrix()
-    EXPECT_EQ(fcc_ptr->column_vector_matrix(), fcc2_ptr->column_vector_matrix());
+    EXPECT_EQ(fcc_ptr->column_vector_matrix(), fcc_copy_ptr->column_vector_matrix());
 }
 
 TEST_F(LatticeTest, BracketOperator)
@@ -53,15 +55,15 @@ TEST_F(LatticeTest, VectorAccess)
 }
 TEST_F(LatticeTest, LatticeEquals)
 {
-    Eigen::Matrix3d fcc3_matrix;
-    fcc3_matrix << 0.0, 1.5, 1.5, 1.5, 0.0, 1.5, 1.5, 1.5 + 1e-4, 0.0;
-    casmutils::xtal::Lattice fcc3_lat(fcc3_matrix);
+    Eigen::Matrix3d fcc_with_distortion_matrix;
+    fcc_with_distortion_matrix << 0.0, 1.5, 1.5, 1.5, 0.0, 1.5, 1.5, 1.5 + 1e-4, 0.0;
+    casmutils::xtal::Lattice fcc_with_distortion_lat(fcc_with_distortion_matrix);
     // This test checks the ability to determine if two lattices
     // are equivalent within numerical tolerance
     double tol = 1e-5;
-    casmutils::xtal::LatticeEquals_f equalizer(*fcc_ptr, tol);
-    EXPECT_TRUE(equalizer(*fcc2_ptr));
-    EXPECT_TRUE(!equalizer(fcc3_lat));
+    casmutils::xtal::LatticeEquals_f is_equal_to_fcc_lattice(*fcc_ptr, tol);
+    EXPECT_TRUE(is_equal_to_fcc_lattice(*fcc_copy_ptr));
+    EXPECT_TRUE(!is_equal_to_fcc_lattice(fcc_with_distortion_lat));
 }
 
 int main(int argc, char** argv)
