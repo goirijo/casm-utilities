@@ -44,7 +44,7 @@ rewrap::Structure make_primitive(const rewrap::Structure& input)
 {
     const auto& casted_input = input.__get<CASM::xtal::BasicStructure>();
     // CasmStructure fills up true_prim when you call is_primitive
-    casmutils::xtal::Structure true_prim = casmutils::xtal::Structure(CASM::xtal::make_primitive(casted_input));
+    Structure true_prim(CASM::xtal::make_primitive(casted_input));
     return true_prim;
 }
 
@@ -86,7 +86,7 @@ rewrap::Structure make_super_structure(const rewrap::Structure& struc, const Eig
     auto lattice_mat = struc.lattice().column_vector_matrix();
     // had to cast the transformation matrix to double as Eigen does not allow mixing matrix types
     CASM::xtal::Lattice suplat(lattice_mat * col_transf_mat.cast<double>());
-    return casmutils::xtal::Structure(struc.__get<CASM::xtal::BasicStructure>().create_superstruc(suplat));
+    return Structure(struc.__get<CASM::xtal::BasicStructure>().create_superstruc(suplat));
 }
 
 void apply_deformation(rewrap::Structure* struc_ptr, const Eigen::Matrix3d& deformation_tensor)
