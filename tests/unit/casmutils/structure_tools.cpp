@@ -54,6 +54,18 @@ TEST_F(StructureToolsTest, MakePrimitive)
     EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(primitive_fcc_Ni_ptr->basis_sites()[0],
                                                                    constructed_primitive.basis_sites()[0], tol));
 }
+TEST_F(StructureToolsTest, MakeSuperstructure)
+{
+    // checks to see if primitive fcc transforms into conventional cell correctly
+    Eigen::Matrix3i transf_mat;
+    transf_mat << -1, 1, 1, 1, -1, 1, 1, 1, -1;
+    const casmutils::xtal::Structure constructed_superstructure =
+        casmutils::xtal::make_super_structure(*primitive_fcc_Ni_ptr, transf_mat);
+    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(conventional_fcc_Ni_ptr->lattice(),
+                                                                      constructed_superstructure.lattice(), tol));
+    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(conventional_fcc_Ni_ptr->basis_sites()[0],
+                                                                   constructed_superstructure.basis_sites()[0], tol));
+}
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);

@@ -83,11 +83,10 @@ void write_poscar(const rewrap::Structure& printable, const rewrap::fs::path& fi
 
 rewrap::Structure make_super_structure(const rewrap::Structure& struc, const Eigen::Matrix3i& col_transf_mat)
 {
-    throw except::NotImplemented();
-    /* auto lattice_mat = struc.lattice().lat_column_mat(); */
-    /* // had to cast the transformation matrix to double as Eigen does not allow mixing matrix types */
-    /* CASM::Lattice suplat(lattice_mat * col_transf_mat.cast<double>()); */
-    /* return struc.create_superstruc(suplat); */
+    auto lattice_mat = struc.lattice().column_vector_matrix();
+    // had to cast the transformation matrix to double as Eigen does not allow mixing matrix types
+    CASM::xtal::Lattice suplat(lattice_mat * col_transf_mat.cast<double>());
+    return casmutils::xtal::Structure(struc.__get<CASM::xtal::BasicStructure>().create_superstruc(suplat));
 }
 
 void apply_deformation(rewrap::Structure* struc_ptr, const Eigen::Matrix3d& deformation_tensor)
