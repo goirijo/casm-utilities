@@ -57,6 +57,18 @@ check_structure_LDADD=\
 				    $(BOOST_REGEX_LIB)\
 				    $(BOOST_PROGRAM_OPTIONS_LIB)
 
+TESTS+=check_structure_tools
+check_PROGRAMS += check_structure_tools
+check_structure_tools_SOURCES = tests/unit/casmutils/structure_tools.cpp
+check_structure_tools_LDADD=\
+					libgtest.la\
+					libcasmutils.la\
+				    $(BOOST_SYSTEM_LIB)\
+				    $(BOOST_FILESYSTEM_LIB)\
+				    $(BOOST_CHRONO_LIB)\
+				    $(BOOST_REGEX_LIB)\
+				    $(BOOST_PROGRAM_OPTIONS_LIB)
+
 
 TESTS+=check_meta
 check_PROGRAMS += check_meta

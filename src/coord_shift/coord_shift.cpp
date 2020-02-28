@@ -55,9 +55,9 @@ int main(int argc, char* argv[])
     frankenstein::shift_coords_by(&out_struc, Eigen::Map<Eigen::Vector3d>(&vec[0]));
     if (coord_shift_launch.vm().count("output"))
     {
-        simplicity::write_poscar(out_struc, coord_shift_launch.fetch<fs::path>("output"));
+        casmutils::xtal::write_poscar(out_struc, coord_shift_launch.fetch<fs::path>("output"));
         return 0;
     }
-    simplicity::print_poscar(out_struc, std::cout);
+    casmutils::xtal::print_poscar(out_struc, std::cout);
     return 0;
 }

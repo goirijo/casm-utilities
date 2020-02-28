@@ -1,5 +1,6 @@
 #include <casm/clex/ConfigMapping.hh>
 #include <casm/clex/PrimClex.hh>
+#include <casm/crystallography/BasicStructureTools.hh>
 #include <casm/crystallography/Niggli.hh>
 #include <casm/crystallography/SuperlatticeEnumerator.hh>
 #include <casm/crystallography/io/VaspIO.hh>
@@ -35,16 +36,16 @@ double boxy_score(const rewrap::Lattice& lat)
 }
 } // namespace
 
-namespace simplicity
+namespace casmutils
+{
+namespace xtal
 {
 rewrap::Structure make_primitive(const rewrap::Structure& input)
 {
-    throw except::NotImplemented();
-    /* const rewrap::CasmStructure& casted_input(input); */
-    /* rewrap::CasmStructure true_prim; */
-    /* //CasmStructure fills up true_prim when you call is_primitive */
-    /* bool is_prim = casted_input.is_primitive(true_prim); */
-    /* return true_prim; */
+    const auto& casted_input = input.__get<CASM::xtal::BasicStructure>();
+    // CasmStructure fills up true_prim when you call is_primitive
+    casmutils::xtal::Structure true_prim = casmutils::xtal::Structure(CASM::xtal::make_primitive(casted_input));
+    return true_prim;
 }
 
 rewrap::Structure make_niggli(const rewrap::Structure& non_niggli)
@@ -66,10 +67,9 @@ void make_niggli(rewrap::Structure* non_niggli)
 
 void print_poscar(const rewrap::Structure& printable, std::ostream& outstream)
 {
-    throw except::NotImplemented();
-    /* CASM::VaspIO::PrintPOSCAR p(printable); */
-    /* p.sort(); */
-    /* p.print(outstream); */
+    CASM::VaspIO::PrintPOSCAR p(printable.__get<CASM::xtal::SimpleStructure>());
+    p.sort();
+    p.print(outstream);
     return;
 }
 
@@ -226,4 +226,5 @@ std::vector<rewrap::Structure> make_superstructures_of_volume(const rewrap::Stru
 
     return all_superstructures;
 }
-} // namespace simplicity
+} // namespace xtal
+} // namespace casmutils

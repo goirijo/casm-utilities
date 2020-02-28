@@ -64,9 +64,9 @@ int main(int argc, char* argv[])
     out_struc = frankenstein::inflate(struc, lengths);
     if (inflate_launch.vm().count("output"))
     {
-        simplicity::write_poscar(out_struc, inflate_launch.fetch<fs::path>("output"));
+        casmutils::xtal::write_poscar(out_struc, inflate_launch.fetch<fs::path>("output"));
         return 0;
     }
-    simplicity::print_poscar(out_struc, std::cout);
+    casmutils::xtal::print_poscar(out_struc, std::cout);
     return 0;
 }

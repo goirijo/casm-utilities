@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
             // TODO: what if directory doesn't exist?
             std::ostringstream ostr;
             ostr << std::setfill('0') << std::setw(2) << count;
-            simplicity::write_poscar(item, out_path / rewrap::fs::path("slice" + ostr.str() + "POSCAR"));
+            casmutils::xtal::write_poscar(item, out_path / rewrap::fs::path("slice" + ostr.str() + "POSCAR"));
             count++;
         }
     }
@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
         for (auto& item : snippets)
         {
             std::cout << "slice " << count << std::endl;
-            simplicity::print_poscar(item, std::cout);
+            casmutils::xtal::print_poscar(item, std::cout);
             count++;
         }
     }
