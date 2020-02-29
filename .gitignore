@@ -48,6 +48,10 @@ config.h*
 *.m4
 *.cache
 
+#Doxygen generated
+docs/dox/html
+docs/dox/latex
+
 #linked external libraries
 include/Eigen
 
