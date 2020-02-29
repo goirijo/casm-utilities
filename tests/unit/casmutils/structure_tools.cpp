@@ -16,15 +16,21 @@ protected:
     using Structure = casmutils::xtal::Structure;
     void SetUp() override
     {
+        // Paths to testing poscars
         casmutils::fs::path cubic_path(casmutils::autotools::input_filesdir / "simple_cubic_Ni.vasp");
         casmutils::fs::path conventional_path(casmutils::autotools::input_filesdir / "conventional_fcc_Ni.vasp");
+        casmutils::fs::path nonniggli_conventional_path(casmutils::autotools::input_filesdir /
+                                                        "nonniggli_conventional_fcc_Ni.vasp");
         casmutils::fs::path primitive_path(casmutils::autotools::input_filesdir / "primitive_fcc_Ni.vasp");
         casmutils::fs::path deformed_conventional_path(casmutils::autotools::input_filesdir /
                                                        "deformed_conventional_fcc_Ni.vasp");
-
+        // test deformation
         deformation << 1.0, 0.02, 0.02, 0.0, 1.0, 0.0, 0.0, 0.0, 1.05;
+        // load the poscars
         cubic_Ni_struc_ptr = std::make_unique<Structure>(Structure::from_poscar(cubic_path));
         conventional_fcc_Ni_ptr = std::make_unique<Structure>(Structure::from_poscar(conventional_path));
+        nonniggli_conventional_fcc_Ni_ptr =
+            std::make_unique<Structure>(Structure::from_poscar(nonniggli_conventional_path));
         primitive_fcc_Ni_ptr = std::make_unique<Structure>(Structure::from_poscar(primitive_path));
         deformed_conventional_fcc_Ni_ptr =
             std::make_unique<Structure>(Structure::from_poscar(deformed_conventional_path));
@@ -33,9 +39,12 @@ protected:
     // Use unique pointers because Structure has no default constructor
     std::unique_ptr<Structure> cubic_Ni_struc_ptr;
     std::unique_ptr<Structure> conventional_fcc_Ni_ptr;
+    std::unique_ptr<Structure> nonniggli_conventional_fcc_Ni_ptr;
     std::unique_ptr<Structure> deformed_conventional_fcc_Ni_ptr;
     std::unique_ptr<Structure> primitive_fcc_Ni_ptr;
+
     double tol = 1e-5;
+
     Eigen::Matrix3d deformation;
 };
 
@@ -69,8 +78,39 @@ TEST_F(StructureToolsTest, MakeSuperstructure)
         casmutils::xtal::make_super_structure(*primitive_fcc_Ni_ptr, transf_mat);
     EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(conventional_fcc_Ni_ptr->lattice(),
                                                                       constructed_superstructure.lattice(), tol));
-    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(conventional_fcc_Ni_ptr->basis_sites()[0],
-                                                                   constructed_superstructure.basis_sites()[0], tol));
+    const auto& constructed_basis = constructed_superstructure.basis_sites();
+    for (int i = 0; i < 4; i++)
+    {
+        // construct an equals predicate
+        casmutils::xtal::SiteEquals_f is_equal_to_site_i(conventional_fcc_Ni_ptr->basis_sites()[i], tol);
+        // search in constructed basis for site equivalent to conventional fcc site i
+        EXPECT_NE(std::find_if(constructed_basis.begin(), constructed_basis.end(), is_equal_to_site_i),
+                  constructed_basis.end());
+    }
+}
+TEST_F(StructureToolsTest, MakeNiggli)
+{
+    // checks to see if you can make a skewed cell as niggli
+    casmutils::xtal::make_niggli(nonniggli_conventional_fcc_Ni_ptr.get());
+    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(
+        conventional_fcc_Ni_ptr->lattice(), nonniggli_conventional_fcc_Ni_ptr->lattice(), tol));
+    for (int i = 0; i < 4; i++)
+    {
+        EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(
+            conventional_fcc_Ni_ptr->basis_sites()[i], nonniggli_conventional_fcc_Ni_ptr->basis_sites()[i], tol));
+    }
+}
+TEST_F(StructureToolsTest, ConstMakeNiggli)
+{
+    // checks to see if you can make a skewed cell as niggli
+    const Structure niggli = casmutils::xtal::make_niggli(*nonniggli_conventional_fcc_Ni_ptr);
+    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(conventional_fcc_Ni_ptr->lattice(),
+                                                                      niggli.lattice(), tol));
+    for (int i = 0; i < 4; i++)
+    {
+        EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(conventional_fcc_Ni_ptr->basis_sites()[i],
+                                                                       niggli.basis_sites()[i], tol));
+    }
 }
 TEST_F(StructureToolsTest, ApplyDeformation)
 {

@@ -49,19 +49,17 @@ Structure make_primitive(const Structure& input)
 
 Structure make_niggli(const Structure& non_niggli)
 {
-    throw except::NotImplemented();
-    /* CasmStructure niggli = non_niggli; */
-    /* CASM::Lattice lat_niggli = CASM::xtal::niggli(non_niggli.lattice(), CASM::TOL); */
-    /* niggli.set_lattice(lat_niggli, CASM::CART); */
-    /* return niggli; */
+    Structure niggli = non_niggli;
+    make_niggli(&niggli);
+    return niggli;
 }
 
 void make_niggli(Structure* non_niggli)
 {
-    throw except::NotImplemented();
-    /* CASM::Lattice lat_niggli = CASM::xtal::niggli(non_niggli->lattice(), CASM::TOL); */
-    /* non_niggli->set_lattice(lat_niggli, CASM::CART); */
-    /* return; */
+    Lattice lat_niggli =
+        CASM::xtal::niggli(CASM::xtal::Lattice(non_niggli->lattice().column_vector_matrix()), CASM::TOL);
+    non_niggli->set_lattice(lat_niggli, CART);
+    return;
 }
 
 void print_poscar(const Structure& printable, std::ostream& outstream)
