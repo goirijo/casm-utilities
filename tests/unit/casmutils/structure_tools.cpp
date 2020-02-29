@@ -19,16 +19,24 @@ protected:
         casmutils::fs::path cubic_path(casmutils::autotools::input_filesdir / "simple_cubic_Ni.vasp");
         casmutils::fs::path conventional_path(casmutils::autotools::input_filesdir / "conventional_fcc_Ni.vasp");
         casmutils::fs::path primitive_path(casmutils::autotools::input_filesdir / "primitive_fcc_Ni.vasp");
+        casmutils::fs::path deformed_conventional_path(casmutils::autotools::input_filesdir /
+                                                       "deformed_conventional_fcc_Ni.vasp");
+
+        deformation << 1.0, 0.02, 0.02, 0.0, 1.0, 0.0, 0.0, 0.0, 1.05;
         cubic_Ni_struc_ptr = std::make_unique<Structure>(Structure::from_poscar(cubic_path));
         conventional_fcc_Ni_ptr = std::make_unique<Structure>(Structure::from_poscar(conventional_path));
         primitive_fcc_Ni_ptr = std::make_unique<Structure>(Structure::from_poscar(primitive_path));
+        deformed_conventional_fcc_Ni_ptr =
+            std::make_unique<Structure>(Structure::from_poscar(deformed_conventional_path));
     }
 
     // Use unique pointers because Structure has no default constructor
     std::unique_ptr<Structure> cubic_Ni_struc_ptr;
     std::unique_ptr<Structure> conventional_fcc_Ni_ptr;
+    std::unique_ptr<Structure> deformed_conventional_fcc_Ni_ptr;
     std::unique_ptr<Structure> primitive_fcc_Ni_ptr;
     double tol = 1e-5;
+    Eigen::Matrix3d deformation;
 };
 
 TEST_F(StructureToolsTest, WritePOSCAR)
@@ -63,6 +71,48 @@ TEST_F(StructureToolsTest, MakeSuperstructure)
                                                                       constructed_superstructure.lattice(), tol));
     EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(conventional_fcc_Ni_ptr->basis_sites()[0],
                                                                    constructed_superstructure.basis_sites()[0], tol));
+}
+TEST_F(StructureToolsTest, ApplyDeformation)
+{
+    // checks the application of a deformation matrix on a structure
+    casmutils::xtal::apply_deformation(conventional_fcc_Ni_ptr.get(), deformation);
+    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(deformed_conventional_fcc_Ni_ptr->lattice(),
+                                                                      conventional_fcc_Ni_ptr->lattice(), tol));
+    for (int i = 0; i < 4; i++)
+    {
+        EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(
+            deformed_conventional_fcc_Ni_ptr->basis_sites()[i], conventional_fcc_Ni_ptr->basis_sites()[i], tol));
+    }
+}
+TEST_F(StructureToolsTest, ConstApplyDeformation)
+{
+    // checks the application of a deformation matrix on a structure
+    const Structure deformed_fcc_Ni = casmutils::xtal::apply_deformation(*conventional_fcc_Ni_ptr, deformation);
+    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(deformed_conventional_fcc_Ni_ptr->lattice(),
+                                                                      deformed_fcc_Ni.lattice(), tol));
+    for (int i = 0; i < 4; i++)
+    {
+        EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(
+            deformed_conventional_fcc_Ni_ptr->basis_sites()[i], deformed_fcc_Ni.basis_sites()[i], tol));
+        // cartesian location of sites should have changed
+        if (i != 0)
+        {
+            // every point but the origin changes its cartesian position
+            EXPECT_FALSE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(conventional_fcc_Ni_ptr->basis_sites()[i],
+                                                                            deformed_fcc_Ni.basis_sites()[i], tol));
+        }
+        else
+        {
+            // origin point is index 0
+            EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(conventional_fcc_Ni_ptr->basis_sites()[i],
+                                                                           deformed_fcc_Ni.basis_sites()[i], tol));
+        }
+        // fractional sites should not change
+        bool isequal = conventional_fcc_Ni_ptr->basis_sites()[i]
+                           .frac(conventional_fcc_Ni_ptr->lattice())
+                           .isApprox(deformed_fcc_Ni.basis_sites()[i].frac(deformed_fcc_Ni.lattice()), tol);
+        EXPECT_TRUE(isequal);
+    }
 }
 
 int main(int argc, char** argv)
