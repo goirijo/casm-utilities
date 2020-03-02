@@ -19,7 +19,7 @@ namespace Structure
 std::string __str__(const rewrap::Structure& printable)
 {
     std::ostringstream sstream;
-    simplicity::print_poscar(printable, sstream);
+    casmutils::xtal::print_poscar(printable, sstream);
     return sstream.str();
 }
 
@@ -27,7 +27,7 @@ rewrap::Structure from_poscar(const std::string& filename) { return rewrap::Stru
 
 void to_poscar(const rewrap::Structure& writeable, const std::string& filename)
 {
-    simplicity::write_poscar(writeable, filename);
+    casmutils::xtal::write_poscar(writeable, filename);
     return;
 }
 

@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
         Eigen::Matrix3d deformation_tensor;
         std::ifstream mat_file(strain_path);
         mat_file >> deformation_tensor;
-        simplicity::apply_deformation(&strained_struc, deformation_tensor);
+        casmutils::xtal::apply_deformation(&strained_struc, deformation_tensor);
     }
     else
     {
@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
             Eigen::VectorXd unrolled_strain(6);
             std::ifstream mat_file(strain_path);
             mat_file >> unrolled_strain;
-            simplicity::apply_strain(&strained_struc, unrolled_strain, mode);
+            casmutils::xtal::apply_strain(&strained_struc, unrolled_strain, mode);
         }
 
         catch (except::UserInputMangle)
@@ -92,12 +92,12 @@ int main(int argc, char* argv[])
     if (applystrain_launch.vm().count("output"))
     {
         auto out_path = applystrain_launch.fetch<fs::path>("output");
-        simplicity::write_poscar(strained_struc, out_path);
+        casmutils::xtal::write_poscar(strained_struc, out_path);
     }
 
     else
     {
-        simplicity::print_poscar(strained_struc, std::cout);
+        casmutils::xtal::print_poscar(strained_struc, std::cout);
     }
 
     return 0;
