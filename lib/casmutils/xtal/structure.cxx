@@ -88,6 +88,14 @@ void Structure::set_lattice(const Lattice& new_lattice, COORD_TYPE mode)
     new_struc.set_lattice(new_lattice, mode);
     return new_struc;
 }
+
+void Structure::within()
+{
+    this->casm_basicstructure.within();
+    _update_using<CASM::xtal::BasicStructure>();
+    return;
+}
+
 const std::vector<Site>& Structure::basis_sites() const { return this->basis; }
 
 void Structure::_update_simple_from_basic()

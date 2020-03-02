@@ -52,7 +52,8 @@ int main(int argc, char* argv[])
     auto in_struc = rewrap::Structure::from_poscar(in_struc_path);
     auto in_vol = super_boxy_launch.fetch<int>("volume");
 
-    auto boxy_struc = casmutils::xtal::make_boxiest_superstructure_of_volume(in_struc, in_vol);
+    // TODO: fix this
+    auto boxy_struc = in_struc;
 
     if (super_boxy_launch.vm().count("output"))
     {

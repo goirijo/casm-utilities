@@ -89,9 +89,8 @@ PYBIND11_MODULE(_xtal, m)
     m.def("make_niggli", (rewrap::Structure(*)(const rewrap::Structure&))casmutils::xtal::make_niggli);
     m.def("apply_strain", (rewrap::Structure(*)(const rewrap::Structure&, const Eigen::VectorXd&, const std::string&))casmutils::xtal::apply_strain);
     m.def("apply_deformation", (rewrap::Structure(*)(const rewrap::Structure&, const Eigen::Matrix3d&))casmutils::xtal::apply_deformation);
-    m.def("structure_score", (std::vector<std::pair<double, double>>(*)(const rewrap::Structure&, const std::vector<rewrap::Structure>&))casmutils::xtal::structure_score);
+    //m.def("structure_score", (std::vector<std::pair<double, double>>(*)(const rewrap::Structure&, const std::vector<rewrap::Structure>&))casmutils::xtal::structure_score);
     m.def("make_superstructures_of_volume", (std::vector<rewrap::Structure>(*)(const rewrap::Structure&, const int))casmutils::xtal::make_superstructures_of_volume);
-    m.def("make_boxiest_superstructure_of_volume", (rewrap::Structure(*)(const rewrap::Structure&, const int))casmutils::xtal::make_boxiest_superstructure_of_volume);
-    // clang-format om
+    // clang-format on
 }
 } // namespace wrappy

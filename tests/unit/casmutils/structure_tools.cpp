@@ -83,6 +83,28 @@ protected:
         }
         return true;
     }
+    // returns true if ref basis is the same as test basis (permutation allowed) false otherwise
+    bool cartesian_basis_is_equal_with_permutation(const std::vector<casmutils::xtal::Site>& ref_basis,
+                                                   const std::vector<casmutils::xtal::Site>& test_basis)
+    {
+        if (ref_basis.size() != test_basis.size())
+        {
+            return false;
+        }
+        for (int i = 0; i < ref_basis.size(); i++)
+        {
+            // construct an equals predicate
+            casmutils::xtal::SiteEquals_f is_equal_to_site_i(ref_basis[i], tol);
+            // search in constructed basis for site equivalent to conventional fcc site i
+            if (std::find_if(test_basis.begin(), test_basis.end(), is_equal_to_site_i) == test_basis.end())
+            {
+                // if hit end iterator return false
+                return false;
+            }
+        }
+        return true;
+    }
+
     // Use unique pointers because Structure has no default constructor
     std::unique_ptr<Structure> cubic_Ni_struc_ptr;
     std::unique_ptr<Structure> conventional_fcc_Ni_ptr;
@@ -127,14 +149,8 @@ TEST_F(StructureToolsTest, MakeSuperstructure)
                                                                       constructed_superstructure.lattice(), tol));
     const auto& constructed_basis = constructed_superstructure.basis_sites();
     // need to compare basis differently here because it may be permuted
-    for (int i = 0; i < 4; i++)
-    {
-        // construct an equals predicate
-        casmutils::xtal::SiteEquals_f is_equal_to_site_i(conventional_fcc_Ni_ptr->basis_sites()[i], tol);
-        // search in constructed basis for site equivalent to conventional fcc site i
-        EXPECT_NE(std::find_if(constructed_basis.begin(), constructed_basis.end(), is_equal_to_site_i),
-                  constructed_basis.end());
-    }
+    EXPECT_TRUE(cartesian_basis_is_equal_with_permutation(conventional_fcc_Ni_ptr->basis_sites(),
+                                                          constructed_superstructure.basis_sites()));
 }
 TEST_F(StructureToolsTest, MakeNiggli)
 {
@@ -197,6 +213,54 @@ TEST_F(StructureToolsTest, ConstApplyStrain)
     // fractional basis should remain unchanged
     EXPECT_TRUE(fractional_basis_is_equal(conventional_fcc_Ni_ptr->lattice(), conventional_fcc_Ni_ptr->basis_sites(),
                                           strained_fcc_Ni.lattice(), strained_fcc_Ni.basis_sites()));
+}
+TEST_F(StructureToolsTest, MakeSuperstructuresofVol)
+{
+    // create transformation matrices for volume 2 and 3
+    Eigen::Matrix3i vol2_var0, vol2_var1, vol3_var0, vol3_var1, vol3_var2;
+    vol2_var0 << 1, 0, 1, 0, 1, 1, -1, -1, 0;
+    vol2_var1 << 0, -1, -1, 1, 0, 1, 0, 1, -1;
+    vol3_var0 << -1, 1, 1, 0, -1, 1, 1, 0, 1;
+    vol3_var1 << -1, 1, 0, 0, -1, 2, 1, 1, -1;
+    vol3_var2 << -1, 0, 2, 0, 1, -2, 1, 0, 1;
+    // create structures
+    Structure struc_vol2_0 =
+        casmutils::xtal::make_niggli(casmutils::xtal::make_super_structure(*primitive_fcc_Ni_ptr, vol2_var0));
+    Structure struc_vol2_1 =
+        casmutils::xtal::make_niggli(casmutils::xtal::make_super_structure(*primitive_fcc_Ni_ptr, vol2_var1));
+    Structure struc_vol3_0 =
+        casmutils::xtal::make_niggli(casmutils::xtal::make_super_structure(*primitive_fcc_Ni_ptr, vol3_var0));
+    Structure struc_vol3_1 =
+        casmutils::xtal::make_niggli(casmutils::xtal::make_super_structure(*primitive_fcc_Ni_ptr, vol3_var1));
+    Structure struc_vol3_2 =
+        casmutils::xtal::make_niggli(casmutils::xtal::make_super_structure(*primitive_fcc_Ni_ptr, vol3_var2));
+    // create vol2 and vol3 all at same time
+    std::vector<Structure> vol2_superstrucs = casmutils::xtal::make_superstructures_of_volume(*primitive_fcc_Ni_ptr, 2);
+    std::vector<Structure> vol3_superstrucs = casmutils::xtal::make_superstructures_of_volume(*primitive_fcc_Ni_ptr, 3);
+    // These equalities are sensitive to similarity transforms as well as the ordering the in vector
+    // More robust equality checking methods could ensure that this test lasts
+    // check lattices
+    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(struc_vol2_0.lattice(),
+                                                                      vol2_superstrucs[0].lattice(), tol));
+    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(struc_vol2_1.lattice(),
+                                                                      vol2_superstrucs[1].lattice(), tol));
+    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(struc_vol3_0.lattice(),
+                                                                      vol3_superstrucs[0].lattice(), tol));
+    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(struc_vol3_1.lattice(),
+                                                                      vol3_superstrucs[1].lattice(), tol));
+    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(struc_vol3_2.lattice(),
+                                                                      vol3_superstrucs[2].lattice(), tol));
+    // check bases
+    EXPECT_TRUE(
+        cartesian_basis_is_equal_with_permutation(struc_vol2_0.basis_sites(), vol2_superstrucs[0].basis_sites()));
+    EXPECT_TRUE(
+        cartesian_basis_is_equal_with_permutation(struc_vol2_1.basis_sites(), vol2_superstrucs[1].basis_sites()));
+    EXPECT_TRUE(
+        cartesian_basis_is_equal_with_permutation(struc_vol3_0.basis_sites(), vol3_superstrucs[0].basis_sites()));
+    EXPECT_TRUE(
+        cartesian_basis_is_equal_with_permutation(struc_vol3_1.basis_sites(), vol3_superstrucs[1].basis_sites()));
+    EXPECT_TRUE(
+        cartesian_basis_is_equal_with_permutation(struc_vol3_2.basis_sites(), vol3_superstrucs[2].basis_sites()));
 }
 
 int main(int argc, char** argv)

@@ -3,6 +3,7 @@
 #include <casm/crystallography/BasicStructureTools.hh>
 #include <casm/crystallography/Niggli.hh>
 #include <casm/crystallography/SuperlatticeEnumerator.hh>
+#include <casm/crystallography/SymTools.hh>
 #include <casm/crystallography/io/VaspIO.hh>
 #include <casm/strain/StrainConverter.hh>
 #include <casmutils/exceptions.hpp>
@@ -59,6 +60,7 @@ void make_niggli(Structure* non_niggli)
     Lattice lat_niggli =
         CASM::xtal::niggli(CASM::xtal::Lattice(non_niggli->lattice().column_vector_matrix()), CASM::TOL);
     non_niggli->set_lattice(lat_niggli, CART);
+    non_niggli->within();
     return;
 }
 
@@ -173,48 +175,20 @@ std::pair<double, double> structure_score(const Structure& map_reference_struc, 
     return structure_score(map_reference_struc, one).back();
 }
 
-// Finds the superstructure with the highest volume/surface_area
-// Assuming that the input has structures of same volume
-std::vector<Structure>::size_type boxiest_structure_index(const std::vector<Structure>& candidate_structures)
-{
-    // TODO: throw exception on empty vector
-    double running_score = 0;
-    std::vector<Structure>::size_type ix = 0;
-    std::vector<Structure>::size_type best_ix = ix;
-    for (const auto& scel : candidate_structures)
-    {
-        double candidate_score = boxy_score(scel.lattice());
-        if (candidate_score > running_score)
-        {
-            running_score = candidate_score;
-            best_ix = ix;
-        }
-        ++ix;
-    }
-    return best_ix;
-}
-
-// Find the boxiest superstructure per volume for range of volumes
-Structure make_boxiest_superstructure_of_volume(const Structure& structure, const int volume)
-{
-    std::vector<Structure> same_vol_scels = make_superstructures_of_volume(structure, volume);
-    return same_vol_scels[boxiest_structure_index(same_vol_scels)];
-}
-
 std::vector<Structure> make_superstructures_of_volume(const Structure& structure, const int volume)
 {
     std::vector<Structure> all_superstructures;
-    /* CASM::xtal::ScelEnumProps enum_props(volume, volume+1); */
-    /* CASM::xtal::SuperlatticeEnumerator lat_enumerator(structure.lattice(), enum_props, CASM::TOL); */
+    CASM::xtal::ScelEnumProps enum_props(volume, volume + 1);
+    std::vector<CASM::xtal::SymOp> pg = CASM::xtal::make_point_group(structure.lattice().__get());
+    CASM::xtal::SuperlatticeEnumerator lat_enumerator(structure.lattice().__get(), pg, enum_props);
 
-    /* for (const auto& lat : lat_enumerator) */
-    /* { */
-    /*     Structure super = structure.create_superstruc(lat); */
-    /*     simplicity::make_niggli(&super); */
-    /*     all_superstructures.emplace_back(std::move(super)); */
-    /* } */
+    for (const auto& lat : lat_enumerator)
+    {
+        Structure super = structure.__get<CASM::xtal::BasicStructure>().create_superstruc(lat);
+        make_niggli(&super);
 
-    throw except::NotImplemented();
+        all_superstructures.emplace_back(std::move(super));
+    }
 
     return all_superstructures;
 }
