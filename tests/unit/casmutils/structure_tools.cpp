@@ -30,9 +30,9 @@ protected:
         deformation << 1.0, 0.02, 0.02, 0.0, 1.0, 0.0, 0.0, 0.0, 1.05;
         // test GL strain
         Eigen::Matrix3d GL_tensor = (deformation * deformation - Eigen::Matrix3d::Identity()) / 2;
-        GL_unrolled_strain = {GL_tensor(0, 0), GL_tensor(1, 1), GL_tensor(2, 2),
-                              GL_tensor(1, 2), GL_tensor(0, 2), GL_tensor(0, 1)};
-
+        GL_unrolled_strain.resize(6);
+        GL_unrolled_strain << GL_tensor(0, 0), GL_tensor(1, 1), GL_tensor(2, 2), GL_tensor(1, 2), GL_tensor(0, 2),
+            GL_tensor(0, 1);
         // load the poscars
         cubic_Ni_struc_ptr = std::make_unique<Structure>(Structure::from_poscar(cubic_path));
         conventional_fcc_Ni_ptr = std::make_unique<Structure>(Structure::from_poscar(conventional_path));
@@ -45,6 +45,44 @@ protected:
             std::make_unique<Structure>(Structure::from_poscar(strained_conventional_path));
     }
 
+    // returns true if ref basis is exactly the same as test basis (permutation not allowed) false otherwise
+    bool cartesian_basis_is_equal(const std::vector<casmutils::xtal::Site>& ref_basis,
+                                  const std::vector<casmutils::xtal::Site>& test_basis)
+    {
+        if (ref_basis.size() != test_basis.size())
+        {
+            return false;
+        }
+        for (int i = 0; i < ref_basis.size(); i++)
+        {
+            if (!casmutils::is_equal<casmutils::xtal::SiteEquals_f>(ref_basis[i], test_basis[i], tol))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // returns true if fractional ref basis is exactly the same as fractional test basis (permutation not allowed) false
+    // otherwise
+    bool fractional_basis_is_equal(const casmutils::xtal::Lattice& ref_lattice,
+                                   const std::vector<casmutils::xtal::Site>& ref_basis,
+                                   const casmutils::xtal::Lattice& test_lattice,
+                                   const std::vector<casmutils::xtal::Site>& test_basis)
+    {
+        if (ref_basis.size() != test_basis.size())
+        {
+            return false;
+        }
+        for (int i = 0; i < ref_basis.size(); i++)
+        {
+            if (!ref_basis[i].frac(ref_lattice).isApprox(test_basis[i].frac(test_lattice), tol))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
     // Use unique pointers because Structure has no default constructor
     std::unique_ptr<Structure> cubic_Ni_struc_ptr;
     std::unique_ptr<Structure> conventional_fcc_Ni_ptr;
@@ -56,7 +94,7 @@ protected:
     double tol = 1e-5;
 
     Eigen::Matrix3d deformation;
-    std::vector<double> GL_unrolled_strain;
+    Eigen::VectorXd GL_unrolled_strain;
 };
 
 TEST_F(StructureToolsTest, WritePOSCAR)
@@ -68,8 +106,7 @@ TEST_F(StructureToolsTest, WritePOSCAR)
     const Structure pos = Structure::from_poscar(write_path);
     EXPECT_TRUE(
         casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(cubic_Ni_struc_ptr->lattice(), pos.lattice(), tol));
-    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(cubic_Ni_struc_ptr->basis_sites()[0],
-                                                                   pos.basis_sites()[0], tol));
+    EXPECT_TRUE(cartesian_basis_is_equal(cubic_Ni_struc_ptr->basis_sites(), pos.basis_sites()));
 }
 TEST_F(StructureToolsTest, MakePrimitive)
 {
@@ -77,8 +114,7 @@ TEST_F(StructureToolsTest, MakePrimitive)
     const Structure constructed_primitive = casmutils::xtal::make_primitive(*conventional_fcc_Ni_ptr);
     EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(primitive_fcc_Ni_ptr->lattice(),
                                                                       constructed_primitive.lattice(), tol));
-    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(primitive_fcc_Ni_ptr->basis_sites()[0],
-                                                                   constructed_primitive.basis_sites()[0], tol));
+    EXPECT_TRUE(cartesian_basis_is_equal(primitive_fcc_Ni_ptr->basis_sites(), constructed_primitive.basis_sites()));
 }
 TEST_F(StructureToolsTest, MakeSuperstructure)
 {
@@ -90,6 +126,7 @@ TEST_F(StructureToolsTest, MakeSuperstructure)
     EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(conventional_fcc_Ni_ptr->lattice(),
                                                                       constructed_superstructure.lattice(), tol));
     const auto& constructed_basis = constructed_superstructure.basis_sites();
+    // need to compare basis differently here because it may be permuted
     for (int i = 0; i < 4; i++)
     {
         // construct an equals predicate
@@ -105,11 +142,8 @@ TEST_F(StructureToolsTest, MakeNiggli)
     casmutils::xtal::make_niggli(nonniggli_conventional_fcc_Ni_ptr.get());
     EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(
         conventional_fcc_Ni_ptr->lattice(), nonniggli_conventional_fcc_Ni_ptr->lattice(), tol));
-    for (int i = 0; i < 4; i++)
-    {
-        EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(
-            conventional_fcc_Ni_ptr->basis_sites()[i], nonniggli_conventional_fcc_Ni_ptr->basis_sites()[i], tol));
-    }
+    EXPECT_TRUE(cartesian_basis_is_equal(conventional_fcc_Ni_ptr->basis_sites(),
+                                         nonniggli_conventional_fcc_Ni_ptr->basis_sites()));
 }
 TEST_F(StructureToolsTest, ConstMakeNiggli)
 {
@@ -117,11 +151,7 @@ TEST_F(StructureToolsTest, ConstMakeNiggli)
     const Structure niggli = casmutils::xtal::make_niggli(*nonniggli_conventional_fcc_Ni_ptr);
     EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(conventional_fcc_Ni_ptr->lattice(),
                                                                       niggli.lattice(), tol));
-    for (int i = 0; i < 4; i++)
-    {
-        EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(conventional_fcc_Ni_ptr->basis_sites()[i],
-                                                                       niggli.basis_sites()[i], tol));
-    }
+    EXPECT_TRUE(cartesian_basis_is_equal(conventional_fcc_Ni_ptr->basis_sites(), niggli.basis_sites()));
 }
 TEST_F(StructureToolsTest, ApplyDeformation)
 {
@@ -129,11 +159,8 @@ TEST_F(StructureToolsTest, ApplyDeformation)
     casmutils::xtal::apply_deformation(conventional_fcc_Ni_ptr.get(), deformation);
     EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(deformed_conventional_fcc_Ni_ptr->lattice(),
                                                                       conventional_fcc_Ni_ptr->lattice(), tol));
-    for (int i = 0; i < 4; i++)
-    {
-        EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(
-            deformed_conventional_fcc_Ni_ptr->basis_sites()[i], conventional_fcc_Ni_ptr->basis_sites()[i], tol));
-    }
+    EXPECT_TRUE(cartesian_basis_is_equal(deformed_conventional_fcc_Ni_ptr->basis_sites(),
+                                         conventional_fcc_Ni_ptr->basis_sites()));
 }
 TEST_F(StructureToolsTest, ConstApplyDeformation)
 {
@@ -141,76 +168,37 @@ TEST_F(StructureToolsTest, ConstApplyDeformation)
     const Structure deformed_fcc_Ni = casmutils::xtal::apply_deformation(*conventional_fcc_Ni_ptr, deformation);
     EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(deformed_conventional_fcc_Ni_ptr->lattice(),
                                                                       deformed_fcc_Ni.lattice(), tol));
-    for (int i = 0; i < 4; i++)
-    {
-        EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(
-            deformed_conventional_fcc_Ni_ptr->basis_sites()[i], deformed_fcc_Ni.basis_sites()[i], tol));
-        // cartesian location of sites should have changed
-        if (i != 0)
-        {
-            // every point but the origin changes its cartesian position
-            EXPECT_FALSE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(conventional_fcc_Ni_ptr->basis_sites()[i],
-                                                                            deformed_fcc_Ni.basis_sites()[i], tol));
-        }
-        else
-        {
-            // origin point is index 0
-            EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(conventional_fcc_Ni_ptr->basis_sites()[i],
-                                                                           deformed_fcc_Ni.basis_sites()[i], tol));
-        }
-        // fractional sites should not change
-        bool isequal = conventional_fcc_Ni_ptr->basis_sites()[i]
-                           .frac(conventional_fcc_Ni_ptr->lattice())
-                           .isApprox(deformed_fcc_Ni.basis_sites()[i].frac(deformed_fcc_Ni.lattice()), tol);
-        EXPECT_TRUE(isequal);
-    }
+    EXPECT_TRUE(
+        cartesian_basis_is_equal(deformed_conventional_fcc_Ni_ptr->basis_sites(), deformed_fcc_Ni.basis_sites()));
+    // cartesian basis should change on deformation
+    EXPECT_FALSE(cartesian_basis_is_equal(conventional_fcc_Ni_ptr->basis_sites(), deformed_fcc_Ni.basis_sites()));
+    EXPECT_TRUE(fractional_basis_is_equal(conventional_fcc_Ni_ptr->lattice(), conventional_fcc_Ni_ptr->basis_sites(),
+                                          deformed_fcc_Ni.lattice(), deformed_fcc_Ni.basis_sites()));
 }
 TEST_F(StructureToolsTest, ApplyStrain)
 {
     // checks the application of a GL strain on a structure
-    Eigen::VectorXd casted =
-        Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(GL_unrolled_strain.data(), GL_unrolled_strain.size());
-    casmutils::xtal::apply_strain(conventional_fcc_Ni_ptr.get(), casted, "GL");
+    casmutils::xtal::apply_strain(conventional_fcc_Ni_ptr.get(), GL_unrolled_strain, "GL");
     EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(strained_conventional_fcc_Ni_ptr->lattice(),
                                                                       conventional_fcc_Ni_ptr->lattice(), tol));
-    for (int i = 0; i < 4; i++)
-    {
-        EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(
-            strained_conventional_fcc_Ni_ptr->basis_sites()[i], conventional_fcc_Ni_ptr->basis_sites()[i], tol));
-    }
+    EXPECT_TRUE(cartesian_basis_is_equal(strained_conventional_fcc_Ni_ptr->basis_sites(),
+                                         conventional_fcc_Ni_ptr->basis_sites()));
 }
 TEST_F(StructureToolsTest, ConstApplyStrain)
 {
     // checks the application of a GL strain on a structure
-    Eigen::VectorXd casted =
-        Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(GL_unrolled_strain.data(), GL_unrolled_strain.size());
-    const Structure strained_fcc_Ni = casmutils::xtal::apply_strain(*conventional_fcc_Ni_ptr, casted, "GL");
+    const Structure strained_fcc_Ni = casmutils::xtal::apply_strain(*conventional_fcc_Ni_ptr, GL_unrolled_strain, "GL");
     EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(strained_conventional_fcc_Ni_ptr->lattice(),
                                                                       strained_fcc_Ni.lattice(), tol));
-    for (int i = 0; i < 4; i++)
-    {
-        EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(
-            strained_conventional_fcc_Ni_ptr->basis_sites()[i], strained_fcc_Ni.basis_sites()[i], tol));
-        // cartesian location of sites should have changed
-        if (i != 0)
-        {
-            // every point but the origin changes its cartesian position
-            EXPECT_FALSE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(conventional_fcc_Ni_ptr->basis_sites()[i],
-                                                                            strained_fcc_Ni.basis_sites()[i], tol));
-        }
-        else
-        {
-            // origin point is index 0
-            EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(conventional_fcc_Ni_ptr->basis_sites()[i],
-                                                                           strained_fcc_Ni.basis_sites()[i], tol));
-        }
-        // fractional sites should not change
-        bool isequal = conventional_fcc_Ni_ptr->basis_sites()[i]
-                           .frac(conventional_fcc_Ni_ptr->lattice())
-                           .isApprox(strained_fcc_Ni.basis_sites()[i].frac(strained_fcc_Ni.lattice()), tol);
-        EXPECT_TRUE(isequal);
-    }
+    EXPECT_TRUE(
+        cartesian_basis_is_equal(strained_conventional_fcc_Ni_ptr->basis_sites(), strained_fcc_Ni.basis_sites()));
+    // cartesian basis should change on straining
+    EXPECT_FALSE(cartesian_basis_is_equal(conventional_fcc_Ni_ptr->basis_sites(), strained_fcc_Ni.basis_sites()));
+    // fractional basis should remain unchanged
+    EXPECT_TRUE(fractional_basis_is_equal(conventional_fcc_Ni_ptr->lattice(), conventional_fcc_Ni_ptr->basis_sites(),
+                                          strained_fcc_Ni.lattice(), strained_fcc_Ni.basis_sites()));
 }
+
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
