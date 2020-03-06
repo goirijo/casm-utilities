@@ -5,6 +5,13 @@
 
 namespace casmutils
 {
+
+namespace mapping
+{
+struct MappingNode;
+struct MappingInput;
+} // namespace mapping
+
 namespace xtal
 { /// Given a Structure, write out its information into a file in a vasp compatible format
 void write_poscar(const Structure& printable, const fs::path& filename);
@@ -41,24 +48,23 @@ Structure apply_deformation(const Structure& struc_ptr, const Eigen::Matrix3d& d
 void apply_strain(Structure* struc_ptr, const Eigen::VectorXd& unrolled_strain, const std::string& mode);
 Structure apply_strain(const Structure& struc_ptr, const Eigen::VectorXd& unrolled_strain, const std::string& mode);
 
-/// Map a vector of structures onto a single reference structures, return a vector of score pairs
-/// for the lattice (first) and basis (second).
-std::vector<std::pair<double, double>> structure_score(const Structure& map_reference_struc,
-                                                       const std::vector<Structure>& mappable_struc_vec);
-
-/// Map a single structure onto a reference structure.
-/// Returns scores for lattice (first) and basis (second) as a pair.
-std::pair<double, double> structure_score(const Structure& map_reference_struc, const Structure& mappable_struc);
-
 /// Given a structure, find all the superstructures between volumes min_vol and max_vol
 std::vector<Structure> make_superstructures_of_volume(const Structure& structure, const int volume);
 
-/// Find the index of the superstructure with the highest volume/surface_area ratio of the ones given
-std::vector<Structure>::size_type boxiest_structure_index(const std::vector<Structure>& candidate_structures);
-/* const Structure& boxiest_structure(const std::vector<Structure>& candidate_structures); */
+///// Map a vector of structures onto a single reference structures, return a vector of score pairs
+///// for the lattice (first) and basis (second).
+// std::vector<std::pair<double, double>> structure_score(const Structure& map_reference_struc,
+//                                                       const std::vector<Structure>& mappable_struc_vec);
 
-/// Find the most boxy superstructure at each volume
-Structure make_boxiest_superstructure_of_volume(const Structure& structure, const int volume);
+/// Calculates lattice and basis score from ideal lattice, stretch tensor and displacement matrix
+/// Returns scores for lattice (first) and basis (second) as a pair.
+std::pair<double, double> structure_score(const mapping::MappingNode& mapping_data);
+
+/// Map a single structure onto a reference structure with settings specified in the
+/// mapping input structure.
+/// Returns Ideal Superlattice as a matrix, Left Stretch tensor, and displacement matrix that
+/// represents the distortion field of the mapping
+mapping::MappingNode structure_map(const mapping::MappingInput& input, const Structure& mappable_struc);
 
 } // namespace xtal
 } // namespace casmutils

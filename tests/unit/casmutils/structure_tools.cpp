@@ -1,7 +1,8 @@
-// These are classes that structure depends on
+// These are classes that structure_tools depends on
 #include "../../autotools.hh"
 #include <casmutils/definitions.hpp>
 #include <casmutils/misc.hpp>
+#include <casmutils/stage.hpp>
 #include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/xtal/lattice.hpp>
 #include <casmutils/xtal/site.hpp>
@@ -21,7 +22,7 @@ protected:
         casmutils::fs::path conventional_path(casmutils::autotools::input_filesdir / "conventional_fcc_Ni.vasp");
         casmutils::fs::path nonniggli_conventional_path(casmutils::autotools::input_filesdir /
                                                         "nonniggli_conventional_fcc_Ni.vasp");
-        casmutils::fs::path primitive_path(casmutils::autotools::input_filesdir / "primitive_fcc_Ni.vasp");
+        casmutils::fs::path primitive_fcc_path(casmutils::autotools::input_filesdir / "primitive_fcc_Ni.vasp");
         casmutils::fs::path deformed_conventional_path(casmutils::autotools::input_filesdir /
                                                        "deformed_conventional_fcc_Ni.vasp");
         casmutils::fs::path strained_conventional_path(casmutils::autotools::input_filesdir /
@@ -38,7 +39,7 @@ protected:
         conventional_fcc_Ni_ptr = std::make_unique<Structure>(Structure::from_poscar(conventional_path));
         nonniggli_conventional_fcc_Ni_ptr =
             std::make_unique<Structure>(Structure::from_poscar(nonniggli_conventional_path));
-        primitive_fcc_Ni_ptr = std::make_unique<Structure>(Structure::from_poscar(primitive_path));
+        primitive_fcc_Ni_ptr = std::make_unique<Structure>(Structure::from_poscar(primitive_fcc_path));
         deformed_conventional_fcc_Ni_ptr =
             std::make_unique<Structure>(Structure::from_poscar(deformed_conventional_path));
         strained_conventional_fcc_Ni_ptr =
@@ -119,6 +120,33 @@ protected:
     Eigen::VectorXd GL_unrolled_strain;
 };
 
+class StructureMapTest : public testing::Test
+{
+protected:
+    using Structure = casmutils::xtal::Structure;
+    void SetUp() override
+    {
+        // Paths to testing poscars
+        casmutils::fs::path primitive_fcc_path(casmutils::autotools::input_filesdir / "primitive_fcc_Ni.vasp");
+        casmutils::fs::path primitive_bcc_path(casmutils::autotools::input_filesdir / "primitive_bcc_Ni.vasp");
+        casmutils::fs::path partial_bain_path(casmutils::autotools::input_filesdir / "partial_bain_Ni.vasp");
+        casmutils::fs::path perfect_bain_path(casmutils::autotools::input_filesdir / "perfectly_bained_Ni.vasp");
+        casmutils::fs::path displaced_path(casmutils::autotools::input_filesdir / "displaced_fcc_Ni.vasp");
+        // load the poscars
+        primitive_fcc_Ni_ptr = std::make_unique<Structure>(Structure::from_poscar(primitive_fcc_path));
+        primitive_bcc_Ni_ptr = std::make_unique<Structure>(Structure::from_poscar(primitive_bcc_path));
+        partial_bain_Ni_ptr = std::make_unique<Structure>(Structure::from_poscar(partial_bain_path));
+        perfect_bain_Ni_ptr = std::make_unique<Structure>(Structure::from_poscar(perfect_bain_path));
+        displaced_fcc_Ni_ptr = std::make_unique<Structure>(Structure::from_poscar(displaced_path));
+    }
+
+    // Use unique pointers because Structure has no default constructor
+    std::unique_ptr<Structure> primitive_fcc_Ni_ptr;
+    std::unique_ptr<Structure> primitive_bcc_Ni_ptr;
+    std::unique_ptr<Structure> partial_bain_Ni_ptr;
+    std::unique_ptr<Structure> perfect_bain_Ni_ptr;
+    std::unique_ptr<Structure> displaced_fcc_Ni_ptr;
+};
 TEST_F(StructureToolsTest, WritePOSCAR)
 {
     // checks to see if writing a POSCAR from a structure
@@ -261,6 +289,35 @@ TEST_F(StructureToolsTest, MakeSuperstructuresofVol)
         cartesian_basis_is_equal_with_permutation(struc_vol3_1.basis_sites(), vol3_superstrucs[1].basis_sites()));
     EXPECT_TRUE(
         cartesian_basis_is_equal_with_permutation(struc_vol3_2.basis_sites(), vol3_superstrucs[2].basis_sites()));
+}
+
+TEST_F(StructureMapTest, StructureMap)
+{
+    // map with fcc as reference and bcc,fully bained fcc and partially bained fcc as test structures
+    casmutils::mapping::MappingNode full_bain =
+        casmutils::xtal::structure_map(*primitive_fcc_Ni_ptr, *primitive_bcc_Ni_ptr);
+    casmutils::mapping::MappingNode perfect_bain =
+        casmutils::xtal::structure_map(*primitive_fcc_Ni_ptr, *perfect_bain_Ni_ptr);
+    casmutils::mapping::MappingNode partial_bain =
+        casmutils::xtal::structure_map(*primitive_fcc_Ni_ptr, *partial_bain_Ni_ptr);
+    auto [full_bain_lattice_score, full_bain_basis_score] = casmutils::xtal::structure_score(full_bain);
+    auto [partial_bain_lattice_score, partial_bain_basis_score] = casmutils::xtal::structure_score(partial_bain);
+    auto [perfect_bain_lattice_score, perfect_bain_basis_score] = casmutils::xtal::structure_score(perfect_bain);
+    // lattice score should be finite and identical for bcc and fully bained no matter the volume
+    EXPECT_TRUE(std::abs(full_bain_lattice_score - perfect_bain_lattice_score) < 1e-10);
+    // partially bained fcc should have a lower score than bcc
+    EXPECT_TRUE(full_bain_lattice_score > partial_bain_lattice_score);
+    // basis scores should be 0
+    EXPECT_TRUE(std::abs(full_bain_basis_score - partial_bain_basis_score) < 1e-10);
+    EXPECT_TRUE(std::abs(perfect_bain_basis_score - partial_bain_basis_score) < 1e-10);
+    EXPECT_TRUE(std::abs(perfect_bain_basis_score) < 1e-10);
+
+    // map with fcc as reference and displaced fcc as test structure
+    casmutils::mapping::MappingNode displaced =
+        casmutils::xtal::structure_map(*primitive_fcc_Ni_ptr, *displaced_fcc_Ni_ptr);
+    auto [lattice_score, basis_score] = casmutils::xtal::structure_score(displaced);
+    EXPECT_TRUE(std::abs(lattice_score) < 1e-10);
+    EXPECT_TRUE(std::abs(basis_score - 0.08) < 1e-10);
 }
 
 int main(int argc, char** argv)

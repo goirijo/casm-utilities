@@ -1,6 +1,8 @@
+#include <algorithm>
 #include <casm/clex/ConfigMapping.hh>
 #include <casm/clex/PrimClex.hh>
 #include <casm/crystallography/BasicStructureTools.hh>
+#include <casm/crystallography/LatticeMap.hh>
 #include <casm/crystallography/Niggli.hh>
 #include <casm/crystallography/SuperlatticeEnumerator.hh>
 #include <casm/crystallography/SymTools.hh>
@@ -8,10 +10,10 @@
 #include <casm/strain/StrainConverter.hh>
 #include <casmutils/exceptions.hpp>
 #include <casmutils/misc.hpp>
+#include <casmutils/stage.hpp>
 #include <casmutils/xtal/lattice.hpp>
 #include <casmutils/xtal/structure_tools.hpp>
 #include <fstream>
-
 namespace
 {
 // surface area of a given lattice
@@ -126,53 +128,38 @@ Structure apply_strain(const Structure& struc_ptr, const Eigen::VectorXd& unroll
     return copy_struc;
 }
 
-std::vector<std::pair<double, double>> structure_score(const Structure& map_reference_struc,
-                                                       const std::vector<Structure>& mappable_struc_vec)
+mapping::MappingNode structure_map(const Structure& map_reference_struc, const Structure& mappable_struc)
 {
     throw except::NotImplemented();
-    /* for (const auto& struc : mappable_struc_vec) */
-    /* { */
-    /*     if (struc.basis.size() != map_reference_struc.basis.size()) */
-    /*     { */
-    /*         throw except::BasisMismatch(); */
-    /*     } */
-    /* } */
-
-    /* // get prim and make PrimClex */
-    /* auto ref_prim = CASM::Structure(make_primitive(map_reference_struc)); */
-    /* auto pclex = extend::quiet_primclex(ref_prim); */
-
-    /* // mapping setup */
-    /* int options = 2;      // robust mapping */
-    /* double vol_tol = 0.5; // not used */
-    /* double weight = 0.5;  // not used */
-    /* CASM::ConfigMapper configmapper(pclex, weight, vol_tol, options, CASM::TOL); */
-
-    /* CASM::jsonParser out;          // mapping output */
-    /* std::string name;              // not used */
-    /* std::vector<CASM::Index> best; // not used */
-    /* Eigen::Matrix3d cart_op;       // not used */
-    /* bool update = false; */
-
-    /* std::vector<std::pair<double, double>> all_scores; */
-    /* for (const auto& struc : mappable_struc_vec) */
-    /* { */
-    /*     // map it */
-    /*     Structure mappable_copy(struc); // can't be const, make copy */
-    /*     configmapper.import_structure_occupation(mappable_copy, name, out, best, cart_op, update); */
-    /*     double basis = out["best_mapping"]["basis_deformation"].get<double>(); */
-    /*     double lattice = out["best_mapping"]["lattice_deformation"].get<double>(); */
-    /*     all_scores.emplace_back(lattice, basis); */
-    /* } */
-
-    /* return all_scores; */
 }
 
-std::pair<double, double> structure_score(const Structure& map_reference_struc, const Structure& mappable_struc)
+std::pair<double, double> structure_score(const mapping::MappingNode& mapping_data)
 {
-    std::vector<Structure> one = {mappable_struc};
-    // just calls vector version of function
-    return structure_score(map_reference_struc, one).back();
+    double lattice_score = CASM::xtal::StrainCostCalculator::iso_strain_cost(
+        mapping_data.stretch,
+        mapping_data.child.column_vector_matrix().determinant() / std::max(int(mapping_data.permutation.size()), 1));
+    double basis_score = (mapping_data.stretch.inverse() * mapping_data.displacement).squaredNorm() /
+                         double(std::max(int(mapping_data.permutation.size()), 1));
+    return std::make_pair(lattice_score, basis_score);
+}
+
+mapping::MappingNode structure_map(const mapping::MappingInput& input, const Structure& mappable_struc)
+{
+    std::vector<std::unordered_set<std::string>> allowed_at_sites(input.parent.basis_sites().size(),
+                                                                  input.allowed_species);
+    CASM::xtal::SimpleStrucMapCalculator calc_interface(input.parent.__get<CASM::xtal::SimpleStructure>(),
+                                                        input.point_group, input.mode, allowed_at_sites);
+    CASM::xtal::StrucMapper mapper(calc_interface, input.strain_weight, input.max_volume_change, input.options,
+                                   input.tol, input.min_va_frac, input.max_va_frac);
+    if (input.is_ideal)
+    {
+        return mapper.map_ideal_struc(mappable_struc.__get<CASM::xtal::SimpleStructure>(), input.num_best_maps);
+    }
+
+    return *(mapper
+                 .map_deformed_struc(mappable_struc.__get<CASM::xtal::SimpleStructure>(), input.num_best_maps,
+                                     input.max_cost, input.min_cost, input.keep_invalid_mapping_nodes)
+                 .begin());
 }
 
 std::vector<Structure> make_superstructures_of_volume(const Structure& structure, const int volume)
