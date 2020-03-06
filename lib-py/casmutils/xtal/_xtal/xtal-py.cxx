@@ -1,12 +1,12 @@
 #include "./coordinate-py.hpp"
-#include "./site-py.hpp"
 #include "./lattice-py.hpp"
-#include "./structure-py.hpp"
 #include "./rocksalttoggler-py.hpp"
+#include "./site-py.hpp"
+#include "./structure-py.hpp"
 
-#include <casmutils/xtal/structure.hpp>
 #include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/xtal/rocksalttoggler.hpp>
+#include <casmutils/xtal/structure.hpp>
 #include <casmutils/xtal/structure_tools.hpp>
 #include <fstream>
 #include <string>
@@ -31,7 +31,7 @@ PYBIND11_MODULE(_xtal, m)
         class_<rewrap::Structure>(m, "Structure")
             .def("__str__", __str__)
             //.def("is_primitive", &rewrap::Structure::is_primitive)
-            .def("make_niggli", (rewrap::Structure(*)(const rewrap::Structure&))simplicity::make_niggli)
+            .def("make_niggli", (rewrap::Structure(*)(const rewrap::Structure&))casmutils::xtal::make_niggli)
             .def("set_lattice", set_lattice)
             .def_static("from_poscar", from_poscar)
             .def("to_poscar", to_poscar);
@@ -84,14 +84,14 @@ PYBIND11_MODULE(_xtal, m)
     }
 
     // clang-format off
-    m.def("make_super_structure", simplicity::make_super_structure);
-    m.def("make_primitive", simplicity::make_primitive);
-    m.def("make_niggli", (rewrap::Structure(*)(const rewrap::Structure&))simplicity::make_niggli);
-    m.def("apply_strain", (rewrap::Structure(*)(const rewrap::Structure&, const Eigen::VectorXd&, const std::string&))simplicity::apply_strain);
-    m.def("apply_deformation", (rewrap::Structure(*)(const rewrap::Structure&, const Eigen::Matrix3d&))simplicity::apply_deformation);
-    m.def("structure_score", (std::vector<std::pair<double, double>>(*)(const rewrap::Structure&, const std::vector<rewrap::Structure>&))simplicity::structure_score);
-    m.def("make_superstructures_of_volume", (std::vector<rewrap::Structure>(*)(const rewrap::Structure&, const int))simplicity::make_superstructures_of_volume);
-    m.def("make_boxiest_superstructure_of_volume", (rewrap::Structure(*)(const rewrap::Structure&, const int))simplicity::make_boxiest_superstructure_of_volume);
+    m.def("make_super_structure", casmutils::xtal::make_super_structure);
+    m.def("make_primitive", casmutils::xtal::make_primitive);
+    m.def("make_niggli", (rewrap::Structure(*)(const rewrap::Structure&))casmutils::xtal::make_niggli);
+    m.def("apply_strain", (rewrap::Structure(*)(const rewrap::Structure&, const Eigen::VectorXd&, const std::string&))casmutils::xtal::apply_strain);
+    m.def("apply_deformation", (rewrap::Structure(*)(const rewrap::Structure&, const Eigen::Matrix3d&))casmutils::xtal::apply_deformation);
+    m.def("structure_score", (std::vector<std::pair<double, double>>(*)(const rewrap::Structure&, const std::vector<rewrap::Structure>&))casmutils::xtal::structure_score);
+    m.def("make_superstructures_of_volume", (std::vector<rewrap::Structure>(*)(const rewrap::Structure&, const int))casmutils::xtal::make_superstructures_of_volume);
+    m.def("make_boxiest_superstructure_of_volume", (rewrap::Structure(*)(const rewrap::Structure&, const int))casmutils::xtal::make_boxiest_superstructure_of_volume);
     // clang-format om
 }
 } // namespace wrappy

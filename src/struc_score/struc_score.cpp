@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
         max_path_length = std::max(max_path_length, path.string().size());
     }
 
-    auto all_scores = simplicity::structure_score(map_reference_struc, mappable_strucs);
+    auto all_scores = casmutils::xtal::structure_score(map_reference_struc, mappable_strucs);
 
     std::ostream* out_stream_ptr = &std::cout;
     std::ofstream specified_out_stream;

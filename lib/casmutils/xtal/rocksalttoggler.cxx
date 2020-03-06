@@ -210,7 +210,7 @@ void RockSaltOctahedraToggler::print(std::ostream& out_stream) const
 {
     this->commit();
 
-    simplicity::print_poscar(this->rocksalt_struc, out_stream);
+    casmutils::xtal::print_poscar(this->rocksalt_struc, out_stream);
     return;
 }
 
@@ -348,7 +348,7 @@ RockSaltOctahedraToggler::relative_to_primitive(const Eigen::Matrix3i trans_mat,
     }
 
     auto prim_struc = primitive_structure(species_names, init_nn_distance);
-    auto super_struc = simplicity::make_super_structure(prim_struc, trans_mat);
+    auto super_struc = casmutils::xtal::make_super_structure(prim_struc, trans_mat);
 
     return RockSaltOctahedraToggler(std::move(super_struc), species_names.first, species_names.second,
                                     initialized_nearest_neighbor_deltas(init_nn_distance),

@@ -114,9 +114,9 @@ int main(int argc, char* argv[])
     std::cout << "IT'S ALIVE " << std::endl;
     if (frankenstack_launch.vm().count("output"))
     {
-        simplicity::write_poscar(big_struc, frankenstack_launch.fetch<fs::path>("output"));
+        casmutils::xtal::write_poscar(big_struc, frankenstack_launch.fetch<fs::path>("output"));
         return 0;
     }
-    simplicity::print_poscar(big_struc, std::cout);
+    casmutils::xtal::print_poscar(big_struc, std::cout);
     return 0;
 }

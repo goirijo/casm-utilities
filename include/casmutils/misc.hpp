@@ -16,6 +16,17 @@ class Structure;
 class PrimClex;
 } // namespace CASM
 
+namespace casmutils
+{
+
+template <typename ComparatorType_f, typename CompareType, typename... Args>
+bool is_equal(const CompareType& reference, const CompareType& other, const Args&... functor_params)
+{
+    ComparatorType_f reference_equals(reference, functor_params...);
+    return reference_equals(other);
+}
+} // namespace casmutils
+
 /**
  * This namespace is reserved for convenience functions
  * that reduce boilerplate code within library functions
@@ -24,7 +35,6 @@ class PrimClex;
  * outside of any implementation, these are not utility
  * library functions, they're just here for convenience.
  */
-
 namespace extend
 {
 /// Make a PrimClex but shut up about it

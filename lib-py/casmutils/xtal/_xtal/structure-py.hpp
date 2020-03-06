@@ -5,9 +5,9 @@
 
 namespace rewrap
 {
-    class Structure;
-    class Lattice;
-}
+class Structure;
+class Lattice;
+} // namespace rewrap
 
 namespace wrappy
 {

@@ -63,9 +63,9 @@ int main(int argc, char* argv[])
     out_struc = frankenstein::vacuum_pack(struc, allowed_dirs, padding);
     if (vacuumpack_launch.vm().count("output"))
     {
-        simplicity::write_poscar(out_struc, vacuumpack_launch.fetch<fs::path>("output"));
+        casmutils::xtal::write_poscar(out_struc, vacuumpack_launch.fetch<fs::path>("output"));
         return 0;
     }
-    simplicity::print_poscar(out_struc, std::cout);
+    casmutils::xtal::print_poscar(out_struc, std::cout);
     return 0;
 }

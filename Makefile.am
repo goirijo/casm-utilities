@@ -36,7 +36,9 @@ AM_CPPFLAGS=\
 			 -I$(srcdir)/CASMcode/include/casm/external/qhull/libqhull_r\
 			 -I$(srcdir)/CASMcode/include/casm/external/gzstream\
 			 $(BOOST_CPPFLAGS)\
-			 $(PYTHON_CPPFLAGS)
+			 $(PYTHON_CPPFLAGS)\
+			 -DABS_SRCDIR=\"$(abs_srcdir)\"\
+			 -DABS_TOP_BUILDDIR=\"$(abs_top_builddir)\"
 
 AM_LDFLAGS=$(BOOST_LDFLAGS)
 
