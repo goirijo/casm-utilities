@@ -25,14 +25,14 @@ protected:
 TEST_F(CoordinateTest, Construct) { EXPECT_EQ(coord0_ptr->cart(), coord1_ptr->cart()); }
 
 TEST_F(CoordinateTest, FracRetrieve){ 
-    casmutils::xtal::Coordinate coords_rewrap = casmutils::xtal::Coordinate::from_fractional(frac_coords,*lattice_ptr);     
-    EXPECT_TRUE(frac_coords.isApprox(coords_rewrap.frac(*lattice_ptr)));
+    casmutils::xtal::Coordinate coord2 = casmutils::xtal::Coordinate::from_fractional(frac_coords,*lattice_ptr);
+    EXPECT_TRUE(frac_coords.isApprox(coord2.frac(*lattice_ptr)));
 }
 
 TEST_F(CoordinateTest, BringWithIn){
     //Bring within using the member function
-    casmutils::xtal::Coordinate coords_rewrap = casmutils::xtal::Coordinate::from_fractional(frac_coords,*lattice_ptr);
-    coords_rewrap.bring_within(*lattice_ptr);  
+    casmutils::xtal::Coordinate coord2 = casmutils::xtal::Coordinate::from_fractional(frac_coords,*lattice_ptr);
+    coord2.bring_within(*lattice_ptr);  
     //Bring within using formuation
     for (int i=0; i<3; ++i){
         if (frac_coords(i)>=1 || frac_coords(i)<0){
@@ -40,7 +40,7 @@ TEST_F(CoordinateTest, BringWithIn){
         }
     }
     
-    EXPECT_TRUE(coords_rewrap.frac(*lattice_ptr).isApprox(frac_coords));
+    EXPECT_TRUE(coord2.frac(*lattice_ptr).isApprox(frac_coords));
 }
 TEST_F(CoordinateTest, PlusEqualOperator){
     Eigen::Vector3d coord_to_compare(0.2,0.4,0.6);
