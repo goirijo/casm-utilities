@@ -3,16 +3,17 @@
 
 #include <string>
 
-namespace rewrap
+namespace casmutils::xtal
 {
 class Site;
 }
 
 namespace wrappy
 {
+using namespace casmutils;
 namespace Site
 {
-std::string __str__(const ::rewrap::Site& printable);
+std::string __str__(const xtal::Site& printable);
 } // namespace Site
 } // namespace wrappy
 

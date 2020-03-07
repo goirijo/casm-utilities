@@ -14,24 +14,25 @@
 
 namespace wrappy
 {
+using namespace casmutils;
 namespace Structure
 {
-std::string __str__(const rewrap::Structure& printable)
+std::string __str__(const xtal::Structure& printable)
 {
     std::ostringstream sstream;
     casmutils::xtal::print_poscar(printable, sstream);
     return sstream.str();
 }
 
-rewrap::Structure from_poscar(const std::string& filename) { return rewrap::Structure::from_poscar(filename); }
+xtal::Structure from_poscar(const std::string& filename) { return xtal::Structure::from_poscar(filename); }
 
-void to_poscar(const rewrap::Structure& writeable, const std::string& filename)
+void to_poscar(const xtal::Structure& writeable, const std::string& filename)
 {
     casmutils::xtal::write_poscar(writeable, filename);
     return;
 }
 
-void set_lattice(rewrap::Structure* self, const rewrap::Lattice& new_lattice, std::string mode)
+void set_lattice(xtal::Structure* self, const xtal::Lattice& new_lattice, std::string mode)
 {
     if (mode.size() == 0)
     {
@@ -42,11 +43,11 @@ void set_lattice(rewrap::Structure* self, const rewrap::Lattice& new_lattice, st
     switch (m)
     {
     case 'f':
-        self->set_lattice(new_lattice, rewrap::COORD_TYPE::FRAC);
+        self->set_lattice(new_lattice, xtal::COORD_TYPE::FRAC);
         break;
 
     case 'c':
-        self->set_lattice(new_lattice, rewrap::COORD_TYPE::CART);
+        self->set_lattice(new_lattice, xtal::COORD_TYPE::CART);
         break;
 
     default:

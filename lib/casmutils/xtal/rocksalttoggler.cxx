@@ -1,4 +1,5 @@
 #include <casmutils/exceptions.hpp>
+#include <casmutils/misc.hpp>
 #include <casmutils/xtal/rocksalttoggler.hpp>
 #include <casmutils/xtal/structure.hpp>
 #include <casmutils/xtal/structure_tools.hpp>
@@ -280,7 +281,8 @@ RockSaltOctahedraToggler::index RockSaltOctahedraToggler::coordinate_to_index(Co
     auto basis = this->rocksalt_struc.basis_sites();
     for (int ix = 0; ix < basis.size(); ++ix)
     {
-        if (static_cast<Coordinate>(basis[ix]) == coordinate)
+        if (casmutils::is_equal<casmutils::xtal::CoordinateEquals_f>(static_cast<Coordinate>(basis[ix]), coordinate,
+                                                                     1e-5))
         {
             return ix;
         }

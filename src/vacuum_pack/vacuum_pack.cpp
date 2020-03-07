@@ -32,6 +32,7 @@ using namespace utilities;
 
 int main(int argc, char* argv[])
 {
+    using namespace casmutils;
     Handler vacuumpack_launch(argc, argv, vacuumpack_initializer);
 
     if (vacuumpack_launch.count("help"))
@@ -52,7 +53,7 @@ int main(int argc, char* argv[])
     }
 
     auto struc_path = vacuumpack_launch.fetch<fs::path>("structure");
-    auto struc = rewrap::Structure::from_poscar(struc_path);
+    auto struc = xtal::Structure::from_poscar(struc_path);
     auto out_struc = struc;
     auto dirs = vacuumpack_launch.fetch<std::string>("dirs");
     auto padding = vacuumpack_launch.fetch<double>("padding");

@@ -10,9 +10,10 @@
 
 namespace
 {
+using namespace casmutils;
 /// This function alters the coordinates of the given struc to have fractional
 /// coordinates between 0 and 1 only
-void bring_coords_within(rewrap::Structure* struc)
+void bring_coords_within(xtal::Structure* struc)
 {
     throw except::NotImplemented();
     /* for (auto& site : struc->basis) */
@@ -23,9 +24,11 @@ void bring_coords_within(rewrap::Structure* struc)
 }
 } // namespace
 
+namespace casmutils
+{
 namespace frankenstein
 {
-void shift_coords_by(rewrap::Structure* struc, const Eigen::Vector3d& shift_val)
+void shift_coords_by(xtal::Structure* struc, const Eigen::Vector3d& shift_val)
 {
     throw except::NotImplemented();
     /* for (auto& item : struc->basis) */
@@ -36,11 +39,11 @@ void shift_coords_by(rewrap::Structure* struc, const Eigen::Vector3d& shift_val)
     /* return; */
 }
 
-std::pair<rewrap::Structure, rewrap::Structure> slice(const rewrap::Structure& big_struc, double slice_loc, double tol)
+std::pair<xtal::Structure, xtal::Structure> slice(const xtal::Structure& big_struc, double slice_loc, double tol)
 {
     throw except::NotImplemented();
     /* // Copy the input, we'll do surgery on this guy */
-    /* rewrap::Structure cpy_big = big_struc; */
+    /* xtal::Structure cpy_big = big_struc; */
     /* bring_coords_within(&cpy_big); */
 
     /* // Create lattice for the bottom half of the structure */
@@ -80,18 +83,18 @@ std::pair<rewrap::Structure, rewrap::Structure> slice(const rewrap::Structure& b
     /*     } */
     /* } */
 
-    /* auto bottom_top = std::make_pair(rewrap::Structure(bottom_struc), rewrap::Structure(top_struc)); */
+    /* auto bottom_top = std::make_pair(xtal::Structure(bottom_struc), xtal::Structure(top_struc)); */
     /* bring_coords_within(&bottom_top.first); */
     /* bring_coords_within(&bottom_top.second); */
     /* return bottom_top; */
 }
 
-std::vector<rewrap::Structure> _multi_slice(const rewrap::Structure& big_struc, const Eigen::VectorXd& slice_locs,
-                                            double tol)
+std::vector<xtal::Structure> _multi_slice(const xtal::Structure& big_struc, const Eigen::VectorXd& slice_locs,
+                                          double tol)
 {
     // Begin by performing the first slice
     auto struc_pair = slice(big_struc, slice_locs(0), tol);
-    std::vector<rewrap::Structure> slices;
+    std::vector<xtal::Structure> slices;
     slices.push_back(struc_pair.first);
 
     // If that's the only slice left, you're done. Give the two
@@ -114,8 +117,8 @@ std::vector<rewrap::Structure> _multi_slice(const rewrap::Structure& big_struc, 
     return slices;
 }
 
-std::vector<rewrap::Structure> multi_slice(const rewrap::Structure& big_struc, const std::set<double>& slice_locs,
-                                           double tol)
+std::vector<xtal::Structure> multi_slice(const xtal::Structure& big_struc, const std::set<double>& slice_locs,
+                                         double tol)
 {
     Eigen::VectorXd sanitized_slice_locs(slice_locs.size());
 
@@ -134,7 +137,7 @@ std::vector<rewrap::Structure> multi_slice(const rewrap::Structure& big_struc, c
     return _multi_slice(big_struc, sanitized_slice_locs, tol);
 }
 
-std::vector<rewrap::Structure> uniformly_slice(const rewrap::Structure& big_struc, int n_pieces)
+std::vector<xtal::Structure> uniformly_slice(const xtal::Structure& big_struc, int n_pieces)
 {
     std::set<double> slice_locs;
     for (int i = 1; i < n_pieces; i++)
@@ -144,7 +147,7 @@ std::vector<rewrap::Structure> uniformly_slice(const rewrap::Structure& big_stru
     return multi_slice(big_struc, slice_locs, CASM::TOL);
 }
 
-rewrap::Structure stack(const std::vector<rewrap::Structure>& sub_strucs)
+xtal::Structure stack(const std::vector<xtal::Structure>& sub_strucs)
 {
     throw except::NotImplemented();
     /* // Create a new lattice that has the same ab vectors. but summed up */
@@ -170,7 +173,7 @@ rewrap::Structure stack(const std::vector<rewrap::Structure>& sub_strucs)
     /* { */
     /*     // determine appropriate c-axis shift for position in stacking */
     /*     c_shift = c_shift + sub_strucs[i].lattice().lat_column_mat().col(2); */
-    /*     rewrap::Structure cpy_i = sub_strucs[i]; */
+    /*     xtal::Structure cpy_i = sub_strucs[i]; */
     /*     bring_coords_within(&cpy_i); */
 
     /*     // Shift each site of the basis by the appropriate c shift, */
@@ -183,15 +186,15 @@ rewrap::Structure stack(const std::vector<rewrap::Structure>& sub_strucs)
     /*     } */
     /* } */
 
-    /* auto rw_struc = rewrap::Structure(stacked_struc); */
+    /* auto rw_struc = xtal::Structure(stacked_struc); */
     /* bring_coords_within(&rw_struc); */
     /* return rw_struc; */
 }
 
-rewrap::Structure vacuum_pack(const rewrap::Structure& big_struc, std::array<bool, 3>& dirs, double padding)
+xtal::Structure vacuum_pack(const xtal::Structure& big_struc, std::array<bool, 3>& dirs, double padding)
 {
     throw except::NotImplemented();
-    /* rewrap::Structure cpy_big = big_struc; */
+    /* xtal::Structure cpy_big = big_struc; */
     /* bring_coords_within(&cpy_big); */
 
     /* // We start by setting the boundaries at the maximum possible limits */
@@ -233,15 +236,15 @@ rewrap::Structure vacuum_pack(const rewrap::Structure& big_struc, std::array<boo
     /* } */
 
     /* // Set the lattice and you're done */
-    /* rewrap::Lattice lat(lat_mat); */
-    /* cpy_big.set_lattice(lat, rewrap::CART); */
+    /* xtal::Lattice lat(lat_mat); */
+    /* cpy_big.set_lattice(lat, xtal::CART); */
     /* return cpy_big; */
 }
 
-rewrap::Structure inflate(const rewrap::Structure& struc, const std::array<double, 3>& padding)
+xtal::Structure inflate(const xtal::Structure& struc, const std::array<double, 3>& padding)
 {
     throw except::NotImplemented();
-    // rewrap::CasmStructure cpy_struc = struc;
+    // xtal::CasmStructure cpy_struc = struc;
     // Eigen::Matrix3d lat_mat = cpy_struc.lattice().lat_column_mat();
 
     //// Add padding to each lattice vector
@@ -251,9 +254,10 @@ rewrap::Structure inflate(const rewrap::Structure& struc, const std::array<doubl
     //}
 
     // cpy_struc.set_lattice(CASM::Lattice(lat_mat), CASM::CART);
-    // rewrap::Structure rw_struc(cpy_struc);
+    // xtal::Structure rw_struc(cpy_struc);
     // bring_coords_within(&rw_struc);
     // return rw_struc;
 }
 
 } // namespace frankenstein
+} // namespace casmutils

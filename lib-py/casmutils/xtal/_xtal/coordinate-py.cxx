@@ -11,10 +11,11 @@
 
 namespace wrappy
 {
+using namespace casmutils;
 
 namespace Coordinate
 {
-std::string __str__(const rewrap::Coordinate& printable)
+std::string __str__(const xtal::Coordinate& printable)
 {
     std::ostringstream sstream;
     sstream << printable.cart().transpose();

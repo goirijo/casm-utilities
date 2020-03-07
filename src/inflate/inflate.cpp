@@ -29,6 +29,7 @@ using namespace utilities;
 
 int main(int argc, char* argv[])
 {
+    using namespace casmutils;
     Handler inflate_launch(argc, argv, inflate_initializer);
 
     if (inflate_launch.count("help"))
@@ -58,7 +59,7 @@ int main(int argc, char* argv[])
     }
 
     auto struc_path = inflate_launch.fetch<fs::path>("structure");
-    auto struc = rewrap::Structure::from_poscar(struc_path);
+    auto struc = xtal::Structure::from_poscar(struc_path);
     auto out_struc = struc;
     std::array<double, 3> lengths{raw_lengths[0], raw_lengths[1], raw_lengths[2]};
     out_struc = frankenstein::inflate(struc, lengths);
