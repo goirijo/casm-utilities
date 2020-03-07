@@ -15,6 +15,7 @@
 
 namespace wrappy
 {
+using namespace casmutils;
 namespace RockSaltToggler
 {
 void to_poscar(const enumeration::RockSaltOctahedraToggler& writeable, const std::string& filename)
@@ -29,7 +30,7 @@ void to_poscar(const enumeration::RockSaltOctahedraToggler& writeable, const std
 
 std::string __str__(const enumeration::RockSaltOctahedraToggler& printable)
 {
-    auto structure = printable.structure();
+    xtal::Structure structure = printable.structure();
     return Structure::__str__(structure);
 }
 } // namespace RockSaltToggler
