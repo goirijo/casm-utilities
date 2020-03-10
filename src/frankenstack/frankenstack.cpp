@@ -29,6 +29,8 @@ using namespace utilities;
 
 int main(int argc, char* argv[])
 {
+    using namespace casmutils;
+
     Handler frankenstack_launch(argc, argv, frankenstack_initializer);
 
     if (frankenstack_launch.count("help"))
@@ -54,25 +56,25 @@ int main(int argc, char* argv[])
     {
         std::cerr << "Missing substructure path " << std::endl;
     }
-    auto big_struc = rewrap::Structure::from_poscar(sub_paths[0]);
+    auto big_struc = casmutils::xtal::Structure::from_poscar(sub_paths[0]);
     if (sub_paths.size() == 1)
     {
-        auto unit = rewrap::Structure::from_poscar(sub_paths[0]);
+        auto unit = casmutils::xtal::Structure::from_poscar(sub_paths[0]);
         int num_stacks = 1;
         if (frankenstack_launch.vm().count("number"))
         {
             num_stacks = frankenstack_launch.fetch<int>("number");
         }
-        std::vector<rewrap::Structure> struc_vec;
+        std::vector<casmutils::xtal::Structure> struc_vec;
         struc_vec.insert(struc_vec.end(), num_stacks, unit);
         big_struc = frankenstein::stack(struc_vec);
     }
     else
     {
-        std::vector<rewrap::Structure> units;
+        std::vector<casmutils::xtal::Structure> units;
         for (auto& item : sub_paths)
         {
-            units.push_back(rewrap::Structure::from_poscar(item));
+            units.push_back(casmutils::xtal::Structure::from_poscar(item));
         }
         big_struc = frankenstein::stack(units);
     }
