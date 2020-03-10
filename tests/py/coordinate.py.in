@@ -17,12 +17,14 @@ def test_coordinate_within():
     assert(cu.xtal.Coordinate.is_equal(translated_coord,start_coord,1e-5))
 
 
+
 def main():
     #This is NOT how we want to test python code, it's just a step in the
     #right direction. We need some sort of framework like we have googletest
     #for the c++ parts
     coord=cu.xtal.Coordinate(np.array([0.5,0.6,-0.1]))
     print(coord._cart_const())
+    print(coord.cart())
 
     test_coordinate_within()
 
