@@ -3,16 +3,17 @@
 #include "casmutils/misc.hpp"
 #include "casmutils/xtal/lattice.hpp"
 
-namespace rewrap
+namespace casmutils
 {
-
-Coordinate Coordinate::from_fractional(const Eigen::Vector3d& frac_coord, const rewrap::Lattice& lat)
+namespace xtal
+{
+Coordinate Coordinate::from_fractional(const Eigen::Vector3d& frac_coord, const Lattice& lat)
 {
     CASM::xtal::Coordinate coord(frac_coord, lat.__get(), CASM::FRAC);
     return Coordinate(coord);
 }
 
-Coordinate Coordinate::from_fractional(double x, double y, double z, const rewrap::Lattice& lat)
+Coordinate Coordinate::from_fractional(double x, double y, double z, const Lattice& lat)
 {
     return Coordinate::from_fractional(Eigen::Vector3d(x, y, z), lat);
 }
@@ -26,7 +27,7 @@ void Coordinate::bring_within(const Lattice& lat)
 
 Eigen::Vector3d Coordinate::cart() const { return this->casm_coord.cart(); }
 
-Eigen::Vector3d Coordinate::frac(const rewrap::Lattice& ref_lattice) const
+Eigen::Vector3d Coordinate::frac(const Lattice& ref_lattice) const
 {
     const_cast<CASM::xtal::Coordinate*>(&this->casm_coord)->set_lattice(ref_lattice.__get(), CASM::CART);
     return this->casm_coord.frac();
@@ -38,9 +39,21 @@ Coordinate& Coordinate::operator+=(const Coordinate& coord_to_add)
     return *this;
 }
 
-bool Coordinate::operator==(const Coordinate& coord_to_compare)
+Coordinate Coordinate::operator+(const Coordinate& coord_to_add) const
 {
-    return this->casm_coord == coord_to_compare.casm_coord;
+    Coordinate summed_coord = *this;
+    summed_coord += coord_to_add;
+    return summed_coord;
 }
 
-} // namespace rewrap
+CoordinateEquals_f::CoordinateEquals_f(const Coordinate& ref_coordinate, double tol)
+    : ref_coordinate(ref_coordinate), tol(tol)
+{
+}
+bool CoordinateEquals_f::operator()(const Coordinate& other)
+{
+    return ref_coordinate.cart().isApprox(other.cart(), tol);
+}
+
+} // namespace xtal
+} // namespace casmutils

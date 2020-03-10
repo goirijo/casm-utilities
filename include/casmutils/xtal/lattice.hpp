@@ -4,7 +4,9 @@
 #include <casm/crystallography/Lattice.hh>
 #include <casmutils/definitions.hpp>
 
-namespace rewrap
+namespace casmutils
+{
+namespace xtal
 {
 class Lattice
 {
@@ -37,13 +39,7 @@ public:
 private:
     CASM::xtal::Lattice casm_lattice;
 };
-} // namespace rewrap
 
-namespace casmutils
-{
-namespace xtal
-{
-using rewrap::Lattice;
 /// This functor class provides a unary predicate equals function
 /// for casmutils::xtal::Lattice .
 class LatticeEquals_f

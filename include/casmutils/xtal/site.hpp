@@ -4,7 +4,9 @@
 #include <casm/crystallography/Site.hh>
 #include <casmutils/definitions.hpp>
 
-namespace rewrap
+namespace casmutils
+{
+namespace xtal
 {
 
 class Lattice;
@@ -29,7 +31,7 @@ public:
     /// Retreive the Cartesian values of the coordinate
     Eigen::Vector3d cart() const;
     /// Retreive the fractional values of the coordinate relative to the provided lattice
-    Eigen::Vector3d frac(const rewrap::Lattice& ref_lattice) const;
+    Eigen::Vector3d frac(const Lattice& ref_lattice) const;
 
     /// Name of the species residing on the site
     std::string label() const;
@@ -40,13 +42,7 @@ public:
 private:
     CASM::xtal::Site casm_site;
 };
-} // namespace rewrap
 
-namespace casmutils
-{
-namespace xtal
-{
-using rewrap::Site;
 /// This functor class provides a unary equals operator
 /// for casmutils::xtal::Site
 class SiteEquals_f

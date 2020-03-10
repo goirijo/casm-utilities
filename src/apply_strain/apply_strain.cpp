@@ -35,6 +35,7 @@ using namespace utilities;
 
 int main(int argc, char* argv[])
 {
+    using namespace casmutils;
     Handler applystrain_launch(argc, argv, applystrain_initializer);
 
     if (applystrain_launch.count("help"))
@@ -57,7 +58,7 @@ int main(int argc, char* argv[])
     auto struc_path = applystrain_launch.fetch<fs::path>("structure");
     const auto strain_path = applystrain_launch.fetch<fs::path>("tensor");
     const auto mode = applystrain_launch.fetch<std::string>("mode");
-    rewrap::Structure strained_struc = rewrap::Structure::from_poscar(struc_path);
+    xtal::Structure strained_struc = xtal::Structure::from_poscar(struc_path);
 
     // check if the mode is a strain convention type or deformation mode
     // reads the input as a vector if its an unrolled strain in case of GL, B, H, EA modes else if its deformation mode
@@ -67,7 +68,7 @@ int main(int argc, char* argv[])
         Eigen::Matrix3d deformation_tensor;
         std::ifstream mat_file(strain_path);
         mat_file >> deformation_tensor;
-        simplicity::apply_deformation(&strained_struc, deformation_tensor);
+        casmutils::xtal::apply_deformation(&strained_struc, deformation_tensor);
     }
     else
     {
@@ -76,7 +77,7 @@ int main(int argc, char* argv[])
             Eigen::VectorXd unrolled_strain(6);
             std::ifstream mat_file(strain_path);
             mat_file >> unrolled_strain;
-            simplicity::apply_strain(&strained_struc, unrolled_strain, mode);
+            casmutils::xtal::apply_strain(&strained_struc, unrolled_strain, mode);
         }
 
         catch (except::UserInputMangle)
@@ -92,12 +93,12 @@ int main(int argc, char* argv[])
     if (applystrain_launch.vm().count("output"))
     {
         auto out_path = applystrain_launch.fetch<fs::path>("output");
-        simplicity::write_poscar(strained_struc, out_path);
+        xtal::write_poscar(strained_struc, out_path);
     }
 
     else
     {
-        simplicity::print_poscar(strained_struc, std::cout);
+        xtal::print_poscar(strained_struc, std::cout);
     }
 
     return 0;

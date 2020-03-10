@@ -32,6 +32,7 @@ using namespace utilities;
 
 int main(int argc, char* argv[])
 {
+    using namespace casmutils;
     double tol = 1e-5;
     Handler frankenslice_launch(argc, argv, frankenslice_initializer);
 
@@ -54,8 +55,8 @@ int main(int argc, char* argv[])
 
     auto super_path = frankenslice_launch.fetch<fs::path>("superstructure");
 
-    auto super_struc = rewrap::Structure::from_poscar(super_path);
-    std::vector<rewrap::Structure> snippets;
+    auto super_struc = casmutils::xtal::Structure::from_poscar(super_path);
+    std::vector<casmutils::xtal::Structure> snippets;
     if (frankenslice_launch.vm().count("slice-locations"))
     {
         auto raw_slice_locs = frankenslice_launch.fetch<std::vector<double>>("slice-locations");
@@ -83,7 +84,7 @@ int main(int argc, char* argv[])
             // TODO: what if directory doesn't exist?
             std::ostringstream ostr;
             ostr << std::setfill('0') << std::setw(2) << count;
-            simplicity::write_poscar(item, out_path / rewrap::fs::path("slice" + ostr.str() + "POSCAR"));
+            xtal::write_poscar(item, out_path / fs::path("slice" + ostr.str() + "POSCAR"));
             count++;
         }
     }
@@ -94,7 +95,7 @@ int main(int argc, char* argv[])
         for (auto& item : snippets)
         {
             std::cout << "slice " << count << std::endl;
-            simplicity::print_poscar(item, std::cout);
+            xtal::print_poscar(item, std::cout);
             count++;
         }
     }

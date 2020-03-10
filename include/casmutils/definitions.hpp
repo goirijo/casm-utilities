@@ -18,15 +18,6 @@ namespace fs = std::filesystem;
 namespace po = boost::program_options;
 } // namespace utilities
 
-namespace rewrap
-{
-namespace fs = casmutils::fs;
-namespace po = casmutils::po;
-using CASM::CART;
-using CASM::COORD_TYPE;
-using CASM::FRAC;
-} // namespace rewrap
-
 namespace simplicity
 {
 namespace fs = casmutils::fs;

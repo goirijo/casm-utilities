@@ -3,16 +3,17 @@
 
 #include <string>
 
-namespace rewrap
+namespace casmutils::xtal
 {
 class Coordinate;
 }
 
 namespace wrappy
 {
+using namespace casmutils;
 namespace Coordinate
 {
-std::string __str__(const rewrap::Coordinate& printable);
+std::string __str__(const xtal::Coordinate& printable);
 }
 } // namespace wrappy
 

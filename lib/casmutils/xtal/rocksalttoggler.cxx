@@ -1,4 +1,5 @@
 #include <casmutils/exceptions.hpp>
+#include <casmutils/misc.hpp>
 #include <casmutils/xtal/rocksalttoggler.hpp>
 #include <casmutils/xtal/structure.hpp>
 #include <casmutils/xtal/structure_tools.hpp>
@@ -210,7 +211,7 @@ void RockSaltOctahedraToggler::print(std::ostream& out_stream) const
 {
     this->commit();
 
-    simplicity::print_poscar(this->rocksalt_struc, out_stream);
+    casmutils::xtal::print_poscar(this->rocksalt_struc, out_stream);
     return;
 }
 
@@ -280,7 +281,8 @@ RockSaltOctahedraToggler::index RockSaltOctahedraToggler::coordinate_to_index(Co
     auto basis = this->rocksalt_struc.basis_sites();
     for (int ix = 0; ix < basis.size(); ++ix)
     {
-        if (static_cast<Coordinate>(basis[ix]) == coordinate)
+        if (casmutils::is_equal<casmutils::xtal::CoordinateEquals_f>(static_cast<Coordinate>(basis[ix]), coordinate,
+                                                                     1e-5))
         {
             return ix;
         }
@@ -348,7 +350,7 @@ RockSaltOctahedraToggler::relative_to_primitive(const Eigen::Matrix3i trans_mat,
     }
 
     auto prim_struc = primitive_structure(species_names, init_nn_distance);
-    auto super_struc = simplicity::make_super_structure(prim_struc, trans_mat);
+    auto super_struc = casmutils::xtal::make_super_structure(prim_struc, trans_mat);
 
     return RockSaltOctahedraToggler(std::move(super_struc), species_names.first, species_names.second,
                                     initialized_nearest_neighbor_deltas(init_nn_distance),

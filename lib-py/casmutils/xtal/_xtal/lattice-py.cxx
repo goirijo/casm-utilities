@@ -11,9 +11,10 @@
 
 namespace wrappy
 {
+using namespace casmutils;
 namespace Lattice
 {
-std::string __str__(const rewrap::Lattice& printable)
+std::string __str__(const xtal::Lattice& printable)
 {
     std::ostringstream sstream;
     sstream << printable.column_vector_matrix();
