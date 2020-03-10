@@ -3,6 +3,7 @@
 #include "./rocksalttoggler-py.hpp"
 #include "./site-py.hpp"
 #include "./structure-py.hpp"
+#include "casmutils/xtal/lattice.hpp"
 
 #include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/xtal/rocksalttoggler.hpp>
@@ -54,12 +55,18 @@ PYBIND11_MODULE(_xtal, m)
     }
 
     {
-        using namespace wrappy::Coordinate;
+        typedef xtal::Coordinate x_Coord;
         class_<xtal::Coordinate>(m, "Coordinate")
             .def(init<const Eigen::Vector3d&&>())
-            .def("__str__", __str__)
-            .def("cart", &xtal::Coordinate::cart)
-            .def("frac", &xtal::Coordinate::frac);
+            .def_static("from_fractional", (x_Coord (*)(const Eigen::Vector3d&, const xtal::Lattice&))& x_Coord::from_fractional)
+            .def("__str__", wrappy::Coordinate::__str__)
+            .def("__add__", &x_Coord::operator+, pybind11::is_operator())
+            .def("__iadd__", &x_Coord::operator+=, pybind11::is_operator())
+            .def("_bring_within_const", (x_Coord (x_Coord::*)(const xtal::Lattice&)const)& x_Coord::bring_within)
+            .def("_bring_within", (void (x_Coord::*)(const xtal::Lattice&)) & x_Coord::bring_within)
+            .def("_cart_const", &x_Coord::cart)
+            .def("_frac_const", &x_Coord::frac)
+            .def_static("is_equal", &wrappy::Coordinate::is_equal);
     }
 
     {
