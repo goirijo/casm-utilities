@@ -52,7 +52,7 @@ class CoordinateTest(unittest.TestCase):
         self.assertFalse(cu.xtal.Coordinate.is_equal(translated_coord,self.start_coord,1e-5))
         self.assertTrue(cu.xtal.Coordinate.is_equal(withined_coord,self.start_coord,1e-5))
         translated_coord._bring_within(self.lat)
-        assertTrue(cu.xtal.Coordinate.is_equal(translated_coord,self.start_coord,1e-5))
+        self.assertTrue(cu.xtal.Coordinate.is_equal(translated_coord,self.start_coord,1e-5))
 
 if __name__ == '__main__':
     unittest.main()
