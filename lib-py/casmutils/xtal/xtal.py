@@ -1,7 +1,8 @@
 from __future__ import absolute_import
 
 # from ._xtal import *
-from .coordinate import *
+from . import coordinate
+from .coordinate import Coordinate
 from .lattice import *
 # from .single_block_wadsley_roth import *
 

@@ -20,6 +20,8 @@ protected:
         Eigen::Matrix3d hcp_matrix;
         hcp_matrix << -2.871, -1.4355, 0.0, 0.0, 2.486358934265, 0.0, 0.0, 0.0, 4.635;
         hcp_ptr.reset(new Lattice(hcp_matrix));
+
+        lat_by_vector.reset(new Lattice(a,b,c));
     }
     using Lattice = casmutils::xtal::Lattice;
     // Use unique pointers because Lattice has no default constructor
@@ -27,9 +29,37 @@ protected:
     std::unique_ptr<Lattice> fcc_copy_ptr;
 
     std::unique_ptr<Lattice> bcc_ptr;
-
     std::unique_ptr<Lattice> hcp_ptr;
+
+    Eigen::Vector3d a=Eigen::Vector3d(1,1,1);
+    Eigen::Vector3d b=Eigen::Vector3d(2,2,2);
+    Eigen::Vector3d c=Eigen::Vector3d(3,3,3);
+    std::unique_ptr<Lattice> lat_by_vector;
 };
+
+TEST_F(LatticeTest, ContructByVector)
+{
+    //Construct the lattice one vector at a time
+    EXPECT_TRUE(lat_by_vector->a()==a);
+    EXPECT_TRUE(lat_by_vector->b()==b);
+    EXPECT_TRUE(lat_by_vector->c()==c);
+}
+
+TEST_F(LatticeTest, ColumnMatrixCheck)
+{
+    Eigen::Matrix3d column_matrix=lat_by_vector->column_vector_matrix();
+    EXPECT_TRUE(Eigen::Vector3d(column_matrix.col(0))==a);
+    EXPECT_TRUE(Eigen::Vector3d(column_matrix.col(1))==b);
+    EXPECT_TRUE(Eigen::Vector3d(column_matrix.col(2))==c);
+}
+
+TEST_F(LatticeTest, RowMatrixCheck)
+{
+    Eigen::Matrix3d row_matrix=lat_by_vector->row_vector_matrix();
+    EXPECT_TRUE(Eigen::Vector3d(row_matrix.row(0))==a);
+    EXPECT_TRUE(Eigen::Vector3d(row_matrix.row(1))==b);
+    EXPECT_TRUE(Eigen::Vector3d(row_matrix.row(2))==c);
+}
 
 TEST_F(LatticeTest, ConstructandGetMatrix)
 {

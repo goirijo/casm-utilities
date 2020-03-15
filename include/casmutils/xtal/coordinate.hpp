@@ -58,7 +58,7 @@ struct CoordinateEquals_f
 public:
     /// Determines whether test is equal to reference site with a tolerance
     CoordinateEquals_f(const Coordinate& ref_coordinate, double tol);
-    /// Returns true if other is equal to ref_site
+    /// Returns true if other is equal to the Coordinate the comparator was constructed with
     bool operator()(const Coordinate& other);
 
 private:

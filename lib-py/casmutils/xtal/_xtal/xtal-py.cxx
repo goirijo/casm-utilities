@@ -41,7 +41,33 @@ PYBIND11_MODULE(_xtal, m)
 
     {
         using namespace wrappy::Lattice;
-        class_<xtal::Lattice>(m, "Lattice").def(init<const Eigen::Matrix3d&>()).def("__str__", __str__);
+        class_<xtal::Lattice>(m, "Lattice")
+            .def(init<const Eigen::Vector3d&, const Eigen::Vector3d&, const Eigen::Vector3d&>())
+            .def("__str__", __str__)
+            .def("a",&xtal::Lattice::a)
+            .def("b",&xtal::Lattice::b)
+            .def("c",&xtal::Lattice::c);
+    }
+
+    {
+        typedef xtal::Coordinate xCoord;
+        class_<xtal::Coordinate>(m, "Coordinate")
+            .def(init<const Eigen::Vector3d&&>())
+            .def_static("from_fractional",
+                        (xCoord(*)(const Eigen::Vector3d&, const xtal::Lattice&)) & xCoord::from_fractional)
+            .def("__str__", wrappy::Coordinate::__str__)
+            .def("__add__", &xCoord::operator+, pybind11::is_operator())
+            .def("__iadd__", &xCoord::operator+=)
+            .def("_bring_within_const", (xCoord(xCoord::*)(const xtal::Lattice&) const) & xCoord::bring_within)
+            .def("_bring_within", (void (xCoord::*)(const xtal::Lattice&)) & xCoord::bring_within)
+            .def("_cart_const", &xCoord::cart)
+            .def("_frac_const", &xCoord::frac);
+    }
+
+    {
+        class_<xtal::CoordinateEquals_f>(m, "CoordinateEquals_f")
+            .def(init<xtal::Coordinate, double>())
+            .def("__call__", &xtal::CoordinateEquals_f::operator());
     }
 
     {
@@ -52,21 +78,6 @@ PYBIND11_MODULE(_xtal, m)
             .def("__str__", __str__)
             .def("cart", &xtal::Site::cart)
             .def("frac", &xtal::Site::frac);
-    }
-
-    {
-        typedef xtal::Coordinate x_Coord;
-        class_<xtal::Coordinate>(m, "Coordinate")
-            .def(init<const Eigen::Vector3d&&>())
-            .def_static("from_fractional", (x_Coord (*)(const Eigen::Vector3d&, const xtal::Lattice&))& x_Coord::from_fractional)
-            .def("__str__", wrappy::Coordinate::__str__)
-            .def("__add__", &x_Coord::operator+, pybind11::is_operator())
-            .def("__iadd__", &x_Coord::operator+=, pybind11::is_operator())
-            .def("_bring_within_const", (x_Coord (x_Coord::*)(const xtal::Lattice&)const)& x_Coord::bring_within)
-            .def("_bring_within", (void (x_Coord::*)(const xtal::Lattice&)) & x_Coord::bring_within)
-            .def("_cart_const", &x_Coord::cart)
-            .def("_frac_const", &x_Coord::frac)
-            .def_static("is_equal", &wrappy::Coordinate::is_equal);
     }
 
     {
