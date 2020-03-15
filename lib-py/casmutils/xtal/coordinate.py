@@ -46,7 +46,7 @@ class _Coordinate(_xtal.Coordinate):
         TODO
 
         """
-        self._equals=method(self, args)
+        self._equals=method(self, *args)
 
     def __eq__(self, other):
         """Passes the "other" value to the current comparator
@@ -99,7 +99,7 @@ class Coordinate(_Coordinate):
         Coordinate
 
         """
-        return self.bring_within_const(lat)
+        return self._bring_within_const(lat)
 
 class MutableCoordinate(_Coordinate):
 
@@ -121,6 +121,6 @@ class MutableCoordinate(_Coordinate):
         None
 
         """
-        self.bring_within(lat)
+        self._bring_within(lat)
         return
 
