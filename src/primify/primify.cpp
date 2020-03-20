@@ -1,60 +1,47 @@
+#include "CLI/Option.hpp"
+#include "CLI/Validators.hpp"
+#include <CLI/CLI.hpp>
 #include <casmutils/definitions.hpp>
 #include <casmutils/handlers.hpp>
 #include <casmutils/xtal/structure.hpp>
 #include <casmutils/xtal/structure_tools.hpp>
 
-#include <boost/program_options.hpp>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 
 namespace utilities
 {
-
-void primify_initializer(po::options_description& primify_desc)
+// TODO: Move somewhere common. You can make a custom callback so that
+// fs::path is recognized as PATH instad of TEXT
+CLI::Option* add_output_suboption(CLI::App* app, fs::path* output_path)
 {
-    utilities::add_help_suboption(primify_desc);
-    utilities::add_output_suboption(primify_desc);
-
-    primify_desc.add_options()("superstructure,s", po::value<fs::path>()->required(),
-                               "POS.vasp like file that you want to get the primitive structure for.");
-
-    return;
+    auto* opt = app->add_option("-o,--output", *output_path, "Target output file");
+    return opt;
 }
-} // namespace utilities
 
-using namespace utilities;
+} // namespace utilities
 
 int main(int argc, char* argv[])
 {
-    Handler primify_launch(argc, argv, primify_initializer);
+    CLI::App app;
 
-    /* if(primify_launch.count("help") || primify_launch.argc()<2) */
-    if (primify_launch.count("help"))
-    {
-        std::cout << primify_launch.desc() << std::endl;
-        return 1;
-    }
+    utilities::fs::path out_path;
+    CLI::Option* out_path_opt = utilities::add_output_suboption(&app, &out_path);
 
-    try
-    {
-        primify_launch.notify();
-    }
+    casmutils::fs::path super_path;
+    CLI::Option* super_path_opt = app.add_option("-s,--superstructure", super_path,
+                                                 "POS.vasp like file that you want to get the primitive structure for.")
+                                      ->required();
+    super_path_opt->check(CLI::ExistingFile);
 
-    catch (po::required_option& e)
-    {
-        std::cerr << e.what() << std::endl;
-        return 2;
-    }
+    CLI11_PARSE(app, argc, argv);
 
-    auto super_path = primify_launch.fetch<fs::path>("superstructure");
-
-    // Should all CASM calls be wrapped up?
     auto super_struc = casmutils::xtal::Structure::from_poscar(super_path);
     auto prim_struc = casmutils::xtal::make_primitive(super_struc);
 
-    if (primify_launch.vm().count("output"))
+    if (out_path_opt->count())
     {
-        auto out_path = primify_launch.fetch<fs::path>("output");
         casmutils::xtal::write_poscar(prim_struc, out_path);
     }
 

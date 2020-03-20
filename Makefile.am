@@ -28,6 +28,7 @@ AM_CXXFLAGS=\
 AM_CPPFLAGS=\
 			 -I$(srcdir)/include\
 			 -I$(srcdir)/pybind11/include\
+			 -I$(srcdir)/CLI11/include\
 			 -I$(srcdir)/CASMcode/include\
 			 -I$(srcdir)/googletest/googletest\
 			 -I$(srcdir)/googletest/googletest/include\
