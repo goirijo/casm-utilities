@@ -26,6 +26,7 @@ class Structure
 public:
     Structure() = delete;
 
+    //TODO: Take a stream, not a file. Extract from class?
     /// Construct by providing a path to a POSCAR like file
     static Structure from_poscar(const fs::path& poscar_path);
 

@@ -78,12 +78,20 @@ void write_poscar(const Structure& printable, const fs::path& filename)
     return;
 }
 
-Structure make_super_structure(const Structure& struc, const Eigen::Matrix3i& col_transf_mat)
+Structure make_superstructure(const Structure& struc, const Eigen::Matrix3i& col_transf_mat)
 {
-    auto lattice_mat = struc.lattice().column_vector_matrix();
-    // had to cast the transformation matrix to double as Eigen does not allow mixing matrix types
-    CASM::xtal::Lattice suplat(lattice_mat * col_transf_mat.cast<double>());
-    return Structure(struc.__get<CASM::xtal::BasicStructure>().create_superstruc(suplat));
+    CASM::BasicStructure superstructure(CASM::xtal::make_superstructure(struc.__get<CASM::xtal::BasicStructure>(),col_transf_mat));
+    std::cout<<"********"<<std::endl;
+    for(const auto& s : superstructure.basis())
+    {
+        std::cout<<s.const_cart().transpose()<<"    "<<s.allowed_occupants()[0]<<std::endl;
+    }
+    std::cout<<"********"<<std::endl;
+    return Structure(superstructure);
+    /* auto lattice_mat = struc.lattice().column_vector_matrix(); */
+    /* // had to cast the transformation matrix to double as Eigen does not allow mixing matrix types */
+    /* CASM::xtal::Lattice suplat(lattice_mat * col_transf_mat.cast<double>()); */
+    /* return Structure(struc.__get<CASM::xtal::BasicStructure>().create_superstruc(suplat)); */
 }
 
 void apply_deformation(Structure* struc_ptr, const Eigen::Matrix3d& deformation_tensor)

@@ -122,10 +122,15 @@ TEST_F(StructureToolsTest, MakeSuperstructure)
     Eigen::Matrix3i transf_mat;
     transf_mat << -1, 1, 1, 1, -1, 1, 1, 1, -1;
     const Structure constructed_superstructure =
-        casmutils::xtal::make_super_structure(*primitive_fcc_Ni_ptr, transf_mat);
+        casmutils::xtal::make_superstructure(*primitive_fcc_Ni_ptr, transf_mat);
     EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(conventional_fcc_Ni_ptr->lattice(),
                                                                       constructed_superstructure.lattice(), tol));
     const auto& constructed_basis = constructed_superstructure.basis_sites();
+
+    casmutils::xtal::print_poscar(*conventional_fcc_Ni_ptr,std::cout);
+    std::cout<<"------------"<<std::endl;
+    casmutils::xtal::print_poscar(constructed_superstructure,std::cout);
+
     // need to compare basis differently here because it may be permuted
     for (int i = 0; i < 4; i++)
     {

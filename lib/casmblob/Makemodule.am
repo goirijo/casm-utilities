@@ -43,6 +43,7 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/app/sym.hh\
     CASMcode/include/casm/app/update.hh\
     CASMcode/include/casm/app/view.hh\
+    CASMcode/include/casm/basis_set/Adapter.hh\
     CASMcode/include/casm/basis_set/BasisFunction.hh\
     CASMcode/include/casm/basis_set/BasisSet.hh\
     CASMcode/include/casm/basis_set/DisplacementDoFTraits.hh\
@@ -58,6 +59,7 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/basis_set/PolynomialFunction.hh\
     CASMcode/include/casm/basis_set/StrainDoFTraits.hh\
     CASMcode/include/casm/basis_set/Variable.hh\
+    CASMcode/include/casm/casm_io/FileData.hh\
     CASMcode/include/casm/casm_io/FormatFlag.hh\
     CASMcode/include/casm/casm_io/Help.hh\
     CASMcode/include/casm/casm_io/Log.hh\
@@ -124,6 +126,7 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/clex/HasPrimClex_impl.hh\
     CASMcode/include/casm/clex/HasSupercell.hh\
     CASMcode/include/casm/clex/HasSupercell_impl.hh\
+    CASMcode/include/casm/clex/MappedProperties.hh\
     CASMcode/include/casm/clex/MappedPropertiesTools.hh\
     CASMcode/include/casm/clex/NeighborList.hh\
     CASMcode/include/casm/clex/Norm.hh\
@@ -137,6 +140,7 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/clex/ScelEnum.hh\
     CASMcode/include/casm/clex/ScelEnumEquivalents.hh\
     CASMcode/include/casm/clex/ScelEnum_impl.hh\
+    CASMcode/include/casm/clex/SimpleStructureTools.hh\
     CASMcode/include/casm/clex/SuperConfigEnum.hh\
     CASMcode/include/casm/clex/Supercell.hh\
     CASMcode/include/casm/clex/SupercellIO.hh\
@@ -144,6 +148,7 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/clex/Supercell_functions.hh\
     CASMcode/include/casm/clex/Supercell_impl.hh\
     CASMcode/include/casm/clex/io/json/ChemicalReference.hh\
+    CASMcode/include/casm/clex/io/json/ConfigMapping.hh\
     CASMcode/include/casm/clex/json_io.hh\
     CASMcode/include/casm/clusterography/ClusterDecl.hh\
     CASMcode/include/casm/clusterography/ClusterInvariants.hh\
@@ -169,6 +174,7 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/container/IsoCounter.hh\
     CASMcode/include/casm/container/MultiCounter.hh\
     CASMcode/include/casm/container/Permutation.hh\
+    CASMcode/include/casm/container/io/PermutationIO.hh\
     CASMcode/include/casm/container/PolyTrie.hh\
     CASMcode/include/casm/container/Template_Algorithms.hh\
     CASMcode/include/casm/container/Tensor.hh\
@@ -178,11 +184,9 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/crystallography/AnisoValTraits.hh\
     CASMcode/include/casm/crystallography/BasicStructure.hh\
     CASMcode/include/casm/crystallography/BasicStructureTools.hh\
-    CASMcode/include/casm/crystallography/BasicStructure_impl.hh\
     CASMcode/include/casm/crystallography/CanonicalForm.hh\
     CASMcode/include/casm/crystallography/Coordinate.hh\
     CASMcode/include/casm/crystallography/CoordinateSystems.hh\
-    CASMcode/include/casm/crystallography/DoF.hh\
     CASMcode/include/casm/crystallography/DoFDecl.hh\
     CASMcode/include/casm/crystallography/DoFSet.hh\
     CASMcode/include/casm/crystallography/HermiteCounter.hh\
@@ -200,6 +204,7 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/crystallography/SimpleStructureTools.hh\
     CASMcode/include/casm/crystallography/Site.hh\
     CASMcode/include/casm/crystallography/SpeciesAttribute.hh\
+    CASMcode/include/casm/crystallography/Strain.hh\
     CASMcode/include/casm/crystallography/StrucMapCalculatorInterface.hh\
     CASMcode/include/casm/crystallography/StrucMapping.hh\
     CASMcode/include/casm/crystallography/Structure.hh\
@@ -210,8 +215,13 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/crystallography/SymTypeComparator.hh\
     CASMcode/include/casm/crystallography/UnitCellCoord.hh\
     CASMcode/include/casm/crystallography/UnitCellCoordTraits.hh\
+    CASMcode/include/casm/crystallography/io/DoFSetIO.hh\
+    CASMcode/include/casm/crystallography/io/LatticeIO.hh\
+    CASMcode/include/casm/crystallography/io/SimpleStructureIO.hh\
+    CASMcode/include/casm/crystallography/io/SuperlatticeEnumeratorIO.hh\
+    CASMcode/include/casm/crystallography/io/UnitCellCoordIO.hh\
     CASMcode/include/casm/crystallography/io/VaspIO.hh\
-    CASMcode/include/casm/crystallography/jsonStruc.hh\
+    CASMcode/include/casm/crystallography/io/jsonStruc.hh\
     CASMcode/include/casm/database/Cache.hh\
     CASMcode/include/casm/database/ConfigData.hh\
     CASMcode/include/casm/database/ConfigData_impl.hh\
@@ -233,7 +243,6 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/database/DiffTransOrbitDatabase.hh\
     CASMcode/include/casm/database/Import.hh\
     CASMcode/include/casm/database/Import_impl.hh\
-    CASMcode/include/casm/database/MappedProperties.hh\
     CASMcode/include/casm/database/Named.hh\
     CASMcode/include/casm/database/Named_impl.hh\
     CASMcode/include/casm/database/PropertiesDatabase.hh\
@@ -758,6 +767,7 @@ libcasmblob_la_SOURCES=\
     CASMcode/src/casm/basis_set/Variable.cc\
     CASMcode/src/casm/casm_io/DataFormatter.cc\
     CASMcode/src/casm/casm_io/DataStream.cc\
+    CASMcode/src/casm/casm_io/FileData.cc\
     CASMcode/src/casm/casm_io/FormatFlag.cc\
     CASMcode/src/casm/casm_io/InputParser.cc\
     CASMcode/src/casm/casm_io/Log.cc\
@@ -787,11 +797,11 @@ libcasmblob_la_SOURCES=\
     CASMcode/src/casm/clex/ConfigIONovelty.cc\
     CASMcode/src/casm/clex/ConfigIOStrain.cc\
     CASMcode/src/casm/clex/ConfigIOStrucScore.cc\
-    CASMcode/src/casm/clex/ConfigIsEquivalent.cc\
     CASMcode/src/casm/clex/ConfigMapping.cc\
     CASMcode/src/casm/clex/Configuration.cc\
     CASMcode/src/casm/clex/ConfigurationTraits.cc\
     CASMcode/src/casm/clex/ECIContainer.cc\
+    CASMcode/src/casm/clex/MappedProperties.cc\
     CASMcode/src/casm/clex/MappedPropertiesTools.cc\
     CASMcode/src/casm/clex/NeighborList.cc\
     CASMcode/src/casm/clex/OrbitFunctionTraits.cc\
@@ -801,11 +811,11 @@ libcasmblob_la_SOURCES=\
     CASMcode/src/casm/clex/RemoveSupercell.cc\
     CASMcode/src/casm/clex/ScelEnum.cc\
     CASMcode/src/casm/clex/ScelEnumEquivalents.cc\
+    CASMcode/src/casm/clex/SimpleStructureTools.cc\
     CASMcode/src/casm/clex/SuperConfigEnum.cc\
     CASMcode/src/casm/clex/Supercell.cc\
     CASMcode/src/casm/clex/SupercellIO.cc\
     CASMcode/src/casm/clex/SupercellTraits.cc\
-    CASMcode/src/casm/clex/Supercell_functions.cc\
     CASMcode/src/casm/clusterography/ClusterOrbits.cc\
     CASMcode/src/casm/clusterography/ClusterSpecsParser.cc\
     CASMcode/src/casm/clusterography/ClusterSymCompareSpecializations.cc\
@@ -813,13 +823,13 @@ libcasmblob_la_SOURCES=\
     CASMcode/src/casm/completer/Complete.cc\
     CASMcode/src/casm/completer/Handlers.cc\
     CASMcode/src/casm/container/Permutation.cc\
+    CASMcode/src/casm/container/io/PermutationIO.cc\
     CASMcode/src/casm/crystallography/AnisoValTraits.cc\
     CASMcode/src/casm/crystallography/BasicStructure.cc\
     CASMcode/src/casm/crystallography/BasicStructureTools.cc\
     CASMcode/src/casm/crystallography/CanonicalForm.cc\
     CASMcode/src/casm/crystallography/Coordinate.cc\
     CASMcode/src/casm/crystallography/CoordinateSystems.cc\
-    CASMcode/src/casm/crystallography/DoF.cc\
     CASMcode/src/casm/crystallography/DoFSet.cc\
     CASMcode/src/casm/crystallography/HermiteCounter.cc\
     CASMcode/src/casm/crystallography/Lattice.cc\
@@ -835,6 +845,7 @@ libcasmblob_la_SOURCES=\
     CASMcode/src/casm/crystallography/SimpleStructureTools.cc\
     CASMcode/src/casm/crystallography/Site.cc\
     CASMcode/src/casm/crystallography/SpeciesAttribute.cc\
+    CASMcode/src/casm/crystallography/Strain.cc\
     CASMcode/src/casm/crystallography/StrucMapping.cc\
     CASMcode/src/casm/crystallography/Structure.cc\
     CASMcode/src/casm/crystallography/SuperlatticeEnumerator.cc\
@@ -843,6 +854,11 @@ libcasmblob_la_SOURCES=\
     CASMcode/src/casm/crystallography/SymTypeComparator.cc\
     CASMcode/src/casm/crystallography/UnitCellCoord.cc\
     CASMcode/src/casm/crystallography/UnitCellCoordTraits.cc\
+    CASMcode/src/casm/crystallography/io/DoFSetIO.cc\
+    CASMcode/src/casm/crystallography/io/LatticeIO.cc\
+    CASMcode/src/casm/crystallography/io/SimpleStructureIO.cc\
+    CASMcode/src/casm/crystallography/io/SuperlatticeEnumeratorIO.cc\
+    CASMcode/src/casm/crystallography/io/UnitCellCoordIO.cc\
     CASMcode/src/casm/crystallography/io/VaspIO.cc\
     CASMcode/src/casm/database/ConfigData.cc\
     CASMcode/src/casm/database/ConfigDatabase.cc\
@@ -854,13 +870,11 @@ libcasmblob_la_SOURCES=\
     CASMcode/src/casm/database/DiffTransConfigImport.cc\
     CASMcode/src/casm/database/DiffTransOrbitDatabase.cc\
     CASMcode/src/casm/database/Import.cc\
-    CASMcode/src/casm/database/MappedProperties.cc\
     CASMcode/src/casm/database/PropertiesDatabase.cc\
     CASMcode/src/casm/database/Remove.cc\
     CASMcode/src/casm/database/ScelDatabase.cc\
     CASMcode/src/casm/database/Selected.cc\
     CASMcode/src/casm/database/Selection.cc\
-    CASMcode/src/casm/database/Update.cc\
     CASMcode/src/casm/database/json/jsonDatabase.cc\
     CASMcode/src/casm/database/json/jsonPropertiesDatabase.cc\
     CASMcode/src/casm/enumerator/EnumInputParser.cc\

@@ -103,7 +103,7 @@ PYBIND11_MODULE(_xtal, m)
     }
 
     // clang-format off
-    m.def("make_super_structure", casmutils::xtal::make_super_structure);
+    m.def("make_superstructure", casmutils::xtal::make_superstructure);
     m.def("make_primitive", casmutils::xtal::make_primitive);
     m.def("make_niggli", (xtal::Structure(*)(const xtal::Structure&))casmutils::xtal::make_niggli);
     m.def("apply_strain", (xtal::Structure(*)(const xtal::Structure&, const Eigen::VectorXd&, const std::string&))casmutils::xtal::apply_strain);

@@ -24,7 +24,7 @@ Structure make_primitive(const Structure& input);
 /// Returns a super structure after applying a transformation matrix to the structure.
 /// Applies transformation to the lattice and uses CASM::Structure::create_superstruc to fill the basis.
 /// transformed_lattice =  original_lattice * transformation_matrix
-Structure make_super_structure(const Structure& struc, const Eigen::Matrix3i& col_transf_mat);
+Structure make_superstructure(const Structure& struc, const Eigen::Matrix3i& col_transf_mat);
 
 /// Takes a pointer to a structure and applies deformation to that structure.
 /// Deforms the lattice and keeps the basis constant in fractional space.
