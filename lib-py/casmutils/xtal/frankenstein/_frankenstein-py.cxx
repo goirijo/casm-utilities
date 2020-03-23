@@ -11,8 +11,9 @@
 
 namespace wrappy
 {
+using namespace casmutils;
 
-rewrap::Structure shift_coords_by(rewrap::Structure* struc, const Eigen::Vector3d& shift_val)
+xtal::Structure shift_coords_by(xtal::Structure* struc, const Eigen::Vector3d& shift_val)
 {
     auto mutable_struc = *struc;
     frankenstein::shift_coords_by(&mutable_struc, shift_val);

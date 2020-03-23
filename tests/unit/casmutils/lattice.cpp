@@ -10,25 +10,25 @@ protected:
         Eigen::Matrix3d fcc_matrix;
         fcc_matrix << 0.0, 1.5, 1.5, 1.5, 0.0, 1.5, 1.5, 1.5, 0.0;
 
-        fcc_ptr.reset(new rewrap::Lattice(fcc_matrix));
-        fcc_copy_ptr.reset(new rewrap::Lattice(fcc_matrix));
+        fcc_ptr.reset(new Lattice(fcc_matrix));
+        fcc_copy_ptr.reset(new Lattice(fcc_matrix));
 
         Eigen::Matrix3d bcc_matrix;
         bcc_matrix << -1.5, 1.5, 1.5, 1.5, -1.5, 1.5, 1.5, 1.5, -1.5;
-        bcc_ptr.reset(new rewrap::Lattice(bcc_matrix));
+        bcc_ptr.reset(new Lattice(bcc_matrix));
 
         Eigen::Matrix3d hcp_matrix;
         hcp_matrix << -2.871, -1.4355, 0.0, 0.0, 2.486358934265, 0.0, 0.0, 0.0, 4.635;
-        hcp_ptr.reset(new rewrap::Lattice(hcp_matrix));
+        hcp_ptr.reset(new Lattice(hcp_matrix));
     }
-
+    using Lattice = casmutils::xtal::Lattice;
     // Use unique pointers because Lattice has no default constructor
-    std::unique_ptr<rewrap::Lattice> fcc_ptr;
-    std::unique_ptr<rewrap::Lattice> fcc_copy_ptr;
+    std::unique_ptr<Lattice> fcc_ptr;
+    std::unique_ptr<Lattice> fcc_copy_ptr;
 
-    std::unique_ptr<rewrap::Lattice> bcc_ptr;
+    std::unique_ptr<Lattice> bcc_ptr;
 
-    std::unique_ptr<rewrap::Lattice> hcp_ptr;
+    std::unique_ptr<Lattice> hcp_ptr;
 };
 
 TEST_F(LatticeTest, ConstructandGetMatrix)

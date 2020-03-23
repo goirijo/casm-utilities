@@ -3,16 +3,17 @@
 
 #include <string>
 
-namespace rewrap
+namespace casmutils::xtal
 {
 class Lattice;
 }
 
 namespace wrappy
 {
+using namespace casmutils;
 namespace Lattice
 {
-std::string __str__(const rewrap::Lattice& printable);
+std::string __str__(const xtal::Lattice& printable);
 } // namespace Lattice
 } // namespace wrappy
 

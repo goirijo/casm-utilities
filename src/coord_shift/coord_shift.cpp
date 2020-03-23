@@ -29,6 +29,7 @@ using namespace utilities;
 
 int main(int argc, char* argv[])
 {
+    using namespace casmutils;
     Handler coord_shift_launch(argc, argv, coord_shift_initializer);
 
     if (coord_shift_launch.count("help"))
@@ -49,7 +50,7 @@ int main(int argc, char* argv[])
     }
 
     auto struc_path = coord_shift_launch.fetch<fs::path>("structure");
-    auto struc = rewrap::Structure::from_poscar(struc_path);
+    auto struc = xtal::Structure::from_poscar(struc_path);
     auto out_struc = struc;
     auto vec = coord_shift_launch.fetch<std::vector<double>>("shift");
     frankenstein::shift_coords_by(&out_struc, Eigen::Map<Eigen::Vector3d>(&vec[0]));

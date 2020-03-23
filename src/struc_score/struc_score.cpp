@@ -32,6 +32,7 @@ using namespace utilities;
 
 int main(int argc, char* argv[])
 {
+    using namespace casmutils;
     Handler struc_score_launch(argc, argv, struc_score_initializer);
 
     if (struc_score_launch.count("help"))
@@ -52,7 +53,7 @@ int main(int argc, char* argv[])
     }
 
     auto reference_path = struc_score_launch.fetch<fs::path>("reference");
-    auto map_reference_struc = rewrap::Structure::from_poscar(reference_path);
+    auto map_reference_struc = xtal::Structure::from_poscar(reference_path);
     auto weight = struc_score_launch.fetch<double>("weight");
 
     std::vector<fs::path> mappable_paths;
@@ -77,11 +78,11 @@ int main(int argc, char* argv[])
         return 2;
     }
 
-    std::vector<rewrap::Structure> mappable_strucs;
+    std::vector<xtal::Structure> mappable_strucs;
     fs::path::string_type::size_type max_path_length = 0;
     for (auto& path : mappable_paths)
     {
-        mappable_strucs.push_back(rewrap::Structure::from_poscar(path));
+        mappable_strucs.push_back(xtal::Structure::from_poscar(path));
         max_path_length = std::max(max_path_length, path.string().size());
     }
     throw except::NotImplemented();

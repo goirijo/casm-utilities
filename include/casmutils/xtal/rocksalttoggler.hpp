@@ -14,9 +14,9 @@ namespace enumeration
 class RockSaltOctahedraToggler
 {
 public:
-    typedef rewrap::Coordinate Coordinate;
-    typedef rewrap::Structure Structure;
-    typedef rewrap::Lattice Lattice;
+    typedef casmutils::xtal::Coordinate Coordinate;
+    typedef casmutils::xtal::Structure Structure;
+    typedef casmutils::xtal::Lattice Lattice;
     typedef int index;
 
     /// Construct with a transformation matrix relative to the primitive structure.

@@ -12,7 +12,10 @@ namespace extend
 {
 } // namespace extend
 
-namespace rewrap
+namespace casmutils
+{
+namespace xtal
+
 {
 
 template <> void Structure::_update_using<CASM::xtal::BasicStructure>()
@@ -55,7 +58,7 @@ Structure::Structure(const CASM::xtal::SimpleStructure& init_struc)
 {
     _update_using<CASM::xtal::SimpleStructure>();
 }
-Structure::Structure(const rewrap::Lattice& init_lat, const std::vector<rewrap::Site>& init_basis)
+Structure::Structure(const Lattice& init_lat, const std::vector<Site>& init_basis)
     : structure_lattice(init_lat), basis(init_basis)
 {
     _update_using<casmutils::xtal::Structure>();
@@ -174,5 +177,5 @@ void Structure::_update_simple_from_internals()
     }
     this->casm_simplestructure = CASM::xtal::make_simple_structure(temp_basic);
 }
-
-} // namespace rewrap
+} // namespace xtal
+} // namespace casmutils
