@@ -11,12 +11,7 @@ check_PROGRAMS += check_coordinate
 check_coordinate_SOURCES = tests/unit/casmutils/coordinate.cpp
 check_coordinate_LDADD=\
 					libgtest.la\
-					libcasmutils.la\
-				    $(BOOST_SYSTEM_LIB)\
-				    $(BOOST_FILESYSTEM_LIB)\
-				    $(BOOST_CHRONO_LIB)\
-				    $(BOOST_REGEX_LIB)\
-				    $(BOOST_PROGRAM_OPTIONS_LIB)
+					libcasmutils.la
 
 
 TESTS+=check_site
@@ -24,12 +19,7 @@ check_PROGRAMS += check_site
 check_site_SOURCES = tests/unit/casmutils/site.cpp
 check_site_LDADD=\
 					libgtest.la\
-					libcasmutils.la\
-				    $(BOOST_SYSTEM_LIB)\
-				    $(BOOST_FILESYSTEM_LIB)\
-				    $(BOOST_CHRONO_LIB)\
-				    $(BOOST_REGEX_LIB)\
-				    $(BOOST_PROGRAM_OPTIONS_LIB)
+					libcasmutils.la
 
 
 TESTS+=check_lattice
@@ -37,12 +27,7 @@ check_PROGRAMS += check_lattice
 check_lattice_SOURCES = tests/unit/casmutils/lattice.cpp
 check_lattice_LDADD=\
 					libgtest.la\
-					libcasmutils.la\
-				    $(BOOST_SYSTEM_LIB)\
-				    $(BOOST_FILESYSTEM_LIB)\
-				    $(BOOST_CHRONO_LIB)\
-				    $(BOOST_REGEX_LIB)\
-				    $(BOOST_PROGRAM_OPTIONS_LIB)
+					libcasmutils.la
 
 
 TESTS+=check_structure
@@ -50,24 +35,14 @@ check_PROGRAMS += check_structure
 check_structure_SOURCES = tests/unit/casmutils/structure.cpp
 check_structure_LDADD=\
 					libgtest.la\
-					libcasmutils.la\
-				    $(BOOST_SYSTEM_LIB)\
-				    $(BOOST_FILESYSTEM_LIB)\
-				    $(BOOST_CHRONO_LIB)\
-				    $(BOOST_REGEX_LIB)\
-				    $(BOOST_PROGRAM_OPTIONS_LIB)
+					libcasmutils.la
 
 TESTS+=check_structure_tools
 check_PROGRAMS += check_structure_tools
 check_structure_tools_SOURCES = tests/unit/casmutils/structure_tools.cpp
 check_structure_tools_LDADD=\
 					libgtest.la\
-					libcasmutils.la\
-				    $(BOOST_SYSTEM_LIB)\
-				    $(BOOST_FILESYSTEM_LIB)\
-				    $(BOOST_CHRONO_LIB)\
-				    $(BOOST_REGEX_LIB)\
-				    $(BOOST_PROGRAM_OPTIONS_LIB)
+					libcasmutils.la
 
 
 TESTS+=check_meta
@@ -75,11 +50,4 @@ check_PROGRAMS += check_meta
 check_meta_SOURCES = tests/unit/casmutils/meta.cpp
 check_meta_LDADD=\
 					libgtest.la\
-					libcasmutils.la\
-				    $(BOOST_SYSTEM_LIB)\
-				    $(BOOST_FILESYSTEM_LIB)\
-				    $(BOOST_CHRONO_LIB)\
-				    $(BOOST_REGEX_LIB)\
-				    $(BOOST_PROGRAM_OPTIONS_LIB)
-
-
+					libcasmutils.la

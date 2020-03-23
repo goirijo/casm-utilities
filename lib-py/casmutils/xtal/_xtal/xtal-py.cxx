@@ -3,6 +3,7 @@
 #include "./rocksalttoggler-py.hpp"
 #include "./site-py.hpp"
 #include "./structure-py.hpp"
+#include "casmutils/xtal/lattice.hpp"
 
 #include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/xtal/rocksalttoggler.hpp>
@@ -40,7 +41,33 @@ PYBIND11_MODULE(_xtal, m)
 
     {
         using namespace wrappy::Lattice;
-        class_<xtal::Lattice>(m, "Lattice").def(init<const Eigen::Matrix3d&>()).def("__str__", __str__);
+        class_<xtal::Lattice>(m, "Lattice")
+            .def(init<const Eigen::Vector3d&, const Eigen::Vector3d&, const Eigen::Vector3d&>())
+            .def("__str__", __str__)
+            .def("a",&xtal::Lattice::a)
+            .def("b",&xtal::Lattice::b)
+            .def("c",&xtal::Lattice::c);
+    }
+
+    {
+        typedef xtal::Coordinate xCoord;
+        class_<xtal::Coordinate>(m, "Coordinate")
+            .def(init<const Eigen::Vector3d&&>())
+            .def_static("from_fractional",
+                        (xCoord(*)(const Eigen::Vector3d&, const xtal::Lattice&)) & xCoord::from_fractional)
+            .def("__str__", wrappy::Coordinate::__str__)
+            .def("__add__", &xCoord::operator+, pybind11::is_operator())
+            .def("__iadd__", &xCoord::operator+=)
+            .def("_bring_within_const", (xCoord(xCoord::*)(const xtal::Lattice&) const) & xCoord::bring_within)
+            .def("_bring_within", (void (xCoord::*)(const xtal::Lattice&)) & xCoord::bring_within)
+            .def("_cart_const", &xCoord::cart)
+            .def("_frac_const", &xCoord::frac);
+    }
+
+    {
+        class_<xtal::CoordinateEquals_f>(m, "CoordinateEquals_f")
+            .def(init<xtal::Coordinate, double>())
+            .def("__call__", &xtal::CoordinateEquals_f::operator());
     }
 
     {
@@ -51,15 +78,6 @@ PYBIND11_MODULE(_xtal, m)
             .def("__str__", __str__)
             .def("cart", &xtal::Site::cart)
             .def("frac", &xtal::Site::frac);
-    }
-
-    {
-        using namespace wrappy::Coordinate;
-        class_<xtal::Coordinate>(m, "Coordinate")
-            .def(init<const Eigen::Vector3d&&>())
-            .def("__str__", __str__)
-            .def("cart", &xtal::Coordinate::cart)
-            .def("frac", &xtal::Coordinate::frac);
     }
 
     {
@@ -85,7 +103,7 @@ PYBIND11_MODULE(_xtal, m)
     }
 
     // clang-format off
-    m.def("make_super_structure", casmutils::xtal::make_super_structure);
+    m.def("make_superstructure", casmutils::xtal::make_superstructure);
     m.def("make_primitive", casmutils::xtal::make_primitive);
     m.def("make_niggli", (xtal::Structure(*)(const xtal::Structure&))casmutils::xtal::make_niggli);
     m.def("apply_strain", (xtal::Structure(*)(const xtal::Structure&, const Eigen::VectorXd&, const std::string&))casmutils::xtal::apply_strain);

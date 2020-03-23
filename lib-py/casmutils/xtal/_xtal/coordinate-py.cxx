@@ -1,4 +1,5 @@
 #include <casmutils/xtal/coordinate.hpp>
+#include <casmutils/misc.hpp>
 #include <fstream>
 #include <string>
 
@@ -21,5 +22,14 @@ std::string __str__(const xtal::Coordinate& printable)
     sstream << printable.cart().transpose();
     return sstream.str();
 }
+
+/* bool is_equal(const xtal::Coordinate& lhs, const xtal::Coordinate& rhs, double tol) */
+/* { */
+/*     return casmutils::is_equal<xtal::CoordinateEquals_f>(lhs,rhs,tol); */
+/* } */
+
+//TODO: Could have different comparison functions, e.g. periodic compare, and that takes a Lattice
+//and a tolerance
+
 } // namespace Coordinate
 } // namespace wrappy

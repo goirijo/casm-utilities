@@ -13,9 +13,4 @@ libcasmutils_la_SOURCES+=\
 
 libcasmutils_la_LIBADD=\
 					   libcasmblob.la\
-					   libcasmutils-xtal.la\
-					   $(BOOST_SYSTEM_LIB)\
-					   $(BOOST_FILESYSTEM_LIB)\
-					   $(BOOST_CHRONO_LIB)\
-					   $(BOOST_REGEX_LIB)\
-					   $(BOOST_PROGRAM_OPTIONS_LIB)
+					   libcasmutils-xtal.la

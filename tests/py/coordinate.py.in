@@ -1,14 +1,32 @@
 #!@PYTHON@
 
+import unittest
 import casmutils as cu
 import numpy as np
 
-def main():
-    #This is NOT how we want to test python code, it's just a step in the
-    #right direction. We need some sort of framework like we have googletest
-    #for the c++ parts
-    coord=cu.xtal.Coordinate(np.array([0.5,0.6,-0.1]))
-    print(coord.cart())
+class CoordinateTest(unittest.TestCase):
+    def setUp(self):
+        self.lattice_matrix = np.array([[2,0,0],[0,2,0],[0,0,2]])
+        self.raw_coord = np.array([0.1,0.2,0.3])
+        self.start_coord = cu.xtal.Coordinate(self.raw_coord)
+        self.lat = cu.xtal.Lattice(*self.lattice_matrix)
 
-if __name__=="__main__":
-    main()
+    def test_cart_retrieve(self):
+        self.assertTrue(np.array_equal(self.start_coord.cart(),self.raw_coord))
+
+    def test_within(self):
+        lat_translation = cu.xtal.Coordinate.from_fractional(np.array([2,3,4]),self.lat)
+        translated_coord = self.start_coord+lat_translation
+        withined_coord = translated_coord._bring_within_const(self.lat)
+
+        self.start_coord.set_compare_method(cu.xtal.coordinate.Equals,1e-5)
+        # self.assertFalse(cu.xtal.Coordinate.is_equal(translated_coord,self.start_coord,1e-5))
+        self.assertFalse(self.start_coord==translated_coord)
+        # self.assertTrue(cu.xtal.Coordinate.is_equal(withined_coord,self.start_coord,1e-5))
+        self.assertTrue(self.start_coord==withined_coord)
+        translated_coord._bring_within(self.lat)
+        # self.assertTrue(cu.xtal.Coordinate.is_equal(translated_coord,self.start_coord,1e-5))
+        self.assertTrue(self.start_coord==translated_coord)
+
+if __name__ == '__main__':
+    unittest.main()

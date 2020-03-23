@@ -53,11 +53,13 @@ Structure::Structure(const CASM::xtal::BasicStructure& init_struc)
 {
     _update_using<CASM::xtal::BasicStructure>();
 }
+
 Structure::Structure(const CASM::xtal::SimpleStructure& init_struc)
     : structure_lattice(init_struc.lat_column_mat), casm_simplestructure(init_struc)
 {
     _update_using<CASM::xtal::SimpleStructure>();
 }
+
 Structure::Structure(const Lattice& init_lat, const std::vector<Site>& init_basis)
     : structure_lattice(init_lat), basis(init_basis)
 {
@@ -66,13 +68,12 @@ Structure::Structure(const Lattice& init_lat, const std::vector<Site>& init_basi
 
 Structure Structure::from_poscar(const fs::path& poscar_path)
 {
-    CASM::xtal::BasicStructure pos;
     if (!fs::exists(poscar_path))
     {
         throw except::BadPath(poscar_path);
     }
     std::ifstream infile(poscar_path);
-    pos.read(infile);
+    CASM::xtal::BasicStructure pos=CASM::xtal::BasicStructure::from_poscar_stream(infile);
     return casmutils::xtal::Structure(pos);
 }
 
@@ -128,7 +129,7 @@ void Structure::_update_basic_from_simple()
     {
         const auto& info =
             this->__get<CASM::xtal::SimpleStructure>().info(CASM::xtal::SimpleStructure::SpeciesMode::ATOM);
-        Eigen::Vector3d raw_coord = info.coord(index);
+        Eigen::Vector3d raw_coord = info.cart_coord(index);
         basic_basis.emplace_back(
             CASM::xtal::Coordinate(raw_coord, this->__get<CASM::xtal::BasicStructure>().lattice(), CASM::CART),
             info.names[index]);
@@ -143,7 +144,7 @@ void Structure::_update_internals_from_simple()
     {
         const auto& info =
             this->__get<CASM::xtal::SimpleStructure>().info(CASM::xtal::SimpleStructure::SpeciesMode::ATOM);
-        Eigen::Vector3d raw_coord = info.coord(index);
+        Eigen::Vector3d raw_coord = info.cart_coord(index);
         new_basis.emplace_back(casmutils::xtal::Coordinate(raw_coord), info.names[index]);
     }
     this->basis = new_basis;
