@@ -106,6 +106,21 @@ Structure apply_deformation(const Structure& struc_ptr, const Eigen::Matrix3d& d
     return copy_struc;
 }
 
+Eigen::Matrix3d rollup_strain_metric(const Eigen::Ref<const Eigen::VectorXd>& unrolled_strain)
+{
+    Eigen::Matrix3d rolled_up_strain = Eigen::Matrix3d::Zero();
+    rolled_up_strain(0, 0) = unrolled_strain(0);
+    rolled_up_strain(1, 1) = unrolled_strain(1);
+    rolled_up_strain(2, 2) = unrolled_strain(2);
+    rolled_up_strain(1, 2) = unrolled_strain(3) / sqrt(2);
+    rolled_up_strain(0, 2) = unrolled_strain(4) / sqrt(2);
+    rolled_up_strain(0, 1) = unrolled_strain(5) / sqrt(2);
+    rolled_up_strain(2, 1) = unrolled_strain(3) / sqrt(2);
+    rolled_up_strain(2, 0) = unrolled_strain(4) / sqrt(2);
+    rolled_up_strain(1, 0) = unrolled_strain(5) / sqrt(2);
+    return rolled_up_strain;
+}
+
 void apply_strain(Structure* struc_ptr, const Eigen::VectorXd& unrolled_strain, const std::string& mode)
 {
     std::set<std::string> allowed_strain_metrics = {"GL", "B", "H", "EA"};
@@ -115,7 +130,7 @@ void apply_strain(Structure* struc_ptr, const Eigen::VectorXd& unrolled_strain, 
         // There's a small amount you need that's not in there right now, grab it
         // and shove it in the CASM namespace, but in a local file, then push it
         // into actual CASMcode repo
-        auto strain_tensor = CASM::strain::rollup_strain_metric(unrolled_strain);
+        auto strain_tensor = rollup_strain_metric(unrolled_strain);
         auto deformation_tensor =
             CASM::strain::metric_to_deformation_tensor<CASM::strain::METRIC::GREEN_LAGRANGE>(strain_tensor);
         apply_deformation(struc_ptr, deformation_tensor);

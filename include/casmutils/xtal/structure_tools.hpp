@@ -40,6 +40,10 @@ Structure make_superstructure(const Structure& struc, const Eigen::Matrix3i& col
 void apply_deformation(Structure* struc_ptr, const Eigen::Matrix3d& deformation_tensor);
 Structure apply_deformation(const Structure& struc_ptr, const Eigen::Matrix3d& deformation_tensor);
 
+/// Takes the unique elements of a strain metric and arranges them correctly
+/// in a matrix with the proper normalization
+Eigen::Matrix3d rollup_strain_metric(const Eigen::Ref<const Eigen::VectorXd>& unrolled_strain);
+
 /// Takes a pointer to a structure and applies strain to that structure.
 /// Input is unrolled strain in conventional metrics as defined in the mode.
 /// Allowed modes are 'GL' [Green-Lagrange], 'EA' [Euler-Almansi], 'B' [Biot], or 'H' [Hencky] and throws an error if
