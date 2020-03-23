@@ -44,9 +44,9 @@ PYBIND11_MODULE(_xtal, m)
         class_<xtal::Lattice>(m, "Lattice")
             .def(init<const Eigen::Vector3d&, const Eigen::Vector3d&, const Eigen::Vector3d&>())
             .def("__str__", __str__)
-            .def("a",&xtal::Lattice::a)
-            .def("b",&xtal::Lattice::b)
-            .def("c",&xtal::Lattice::c);
+            .def("a", &xtal::Lattice::a)
+            .def("b", &xtal::Lattice::b)
+            .def("c", &xtal::Lattice::c);
     }
 
     {

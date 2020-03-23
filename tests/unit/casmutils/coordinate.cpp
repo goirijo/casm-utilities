@@ -61,12 +61,12 @@ TEST_F(CoordinateTest, BringWithIn)
 
 TEST_F(CoordinateTest, ConstBringWithIn)
 {
-    Coordinate lattice_translation = Coordinate::from_fractional(2,3,4, *lattice_ptr);
+    Coordinate lattice_translation = Coordinate::from_fractional(2, 3, 4, *lattice_ptr);
     const Coordinate translated_coordinate = *coord0_ptr + lattice_translation;
-    Coordinate original_coord=translated_coordinate.bring_within(*lattice_ptr);
+    Coordinate original_coord = translated_coordinate.bring_within(*lattice_ptr);
 
-    EXPECT_FALSE(casmutils::is_equal<CoordinateEquals_f>(translated_coordinate,original_coord,tol));
-    EXPECT_TRUE(casmutils::is_equal<CoordinateEquals_f>(*coord0_ptr,original_coord,tol));
+    EXPECT_FALSE(casmutils::is_equal<CoordinateEquals_f>(translated_coordinate, original_coord, tol));
+    EXPECT_TRUE(casmutils::is_equal<CoordinateEquals_f>(*coord0_ptr, original_coord, tol));
 }
 
 TEST_F(CoordinateTest, PlusOperator)

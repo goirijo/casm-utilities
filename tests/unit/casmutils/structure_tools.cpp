@@ -177,9 +177,9 @@ TEST_F(StructureToolsTest, MakeSuperstructure)
                                                                       constructed_superstructure.lattice(), tol));
     const auto& constructed_basis = constructed_superstructure.basis_sites();
 
-    casmutils::xtal::print_poscar(*conventional_fcc_Ni_ptr,std::cout);
-    std::cout<<"------------"<<std::endl;
-    casmutils::xtal::print_poscar(constructed_superstructure,std::cout);
+    casmutils::xtal::print_poscar(*conventional_fcc_Ni_ptr, std::cout);
+    std::cout << "------------" << std::endl;
+    casmutils::xtal::print_poscar(constructed_superstructure, std::cout);
 
     // need to compare basis differently here because it may be permuted
     EXPECT_TRUE(cartesian_basis_is_equal_with_permutation(conventional_fcc_Ni_ptr->basis_sites(),

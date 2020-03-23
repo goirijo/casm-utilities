@@ -73,7 +73,7 @@ Structure Structure::from_poscar(const fs::path& poscar_path)
         throw except::BadPath(poscar_path);
     }
     std::ifstream infile(poscar_path);
-    CASM::xtal::BasicStructure pos=CASM::xtal::BasicStructure::from_poscar_stream(infile);
+    CASM::xtal::BasicStructure pos = CASM::xtal::BasicStructure::from_poscar_stream(infile);
     return casmutils::xtal::Structure(pos);
 }
 

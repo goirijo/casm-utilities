@@ -1,5 +1,5 @@
-#include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/misc.hpp>
+#include <casmutils/xtal/coordinate.hpp>
 #include <fstream>
 #include <string>
 
@@ -28,8 +28,8 @@ std::string __str__(const xtal::Coordinate& printable)
 /*     return casmutils::is_equal<xtal::CoordinateEquals_f>(lhs,rhs,tol); */
 /* } */
 
-//TODO: Could have different comparison functions, e.g. periodic compare, and that takes a Lattice
-//and a tolerance
+// TODO: Could have different comparison functions, e.g. periodic compare, and that takes a Lattice
+// and a tolerance
 
 } // namespace Coordinate
 } // namespace wrappy

@@ -1,7 +1,7 @@
 #include <algorithm>
+#include <casm/crystallography/BasicStructure.hh>
 #include <casm/crystallography/BasicStructureTools.hh>
 #include <casm/crystallography/LatticeMap.hh>
-#include <casm/crystallography/BasicStructure.hh>
 #include <casm/crystallography/Niggli.hh>
 #include <casm/crystallography/SuperlatticeEnumerator.hh>
 #include <casm/crystallography/SymTools.hh>
@@ -82,7 +82,8 @@ void write_poscar(const Structure& printable, const fs::path& filename)
 
 Structure make_superstructure(const Structure& struc, const Eigen::Matrix3i& col_transf_mat)
 {
-    CASM::xtal::BasicStructure superstructure(CASM::xtal::make_superstructure(struc.__get<CASM::xtal::BasicStructure>(),col_transf_mat));
+    CASM::xtal::BasicStructure superstructure(
+        CASM::xtal::make_superstructure(struc.__get<CASM::xtal::BasicStructure>(), col_transf_mat));
     return Structure(superstructure);
     /* auto lattice_mat = struc.lattice().column_vector_matrix(); */
     /* // had to cast the transformation matrix to double as Eigen does not allow mixing matrix types */
@@ -109,10 +110,10 @@ void apply_strain(Structure* struc_ptr, const Eigen::VectorXd& unrolled_strain, 
     std::set<std::string> allowed_strain_metrics = {"GL", "B", "H", "EA"};
     if (allowed_strain_metrics.count(mode))
     {
-        //TODO: You can only use crystallography/strain.hh now
-        //There's a small amount you need that's not in there right now, grab it
-        //and shove it in the CASM namespace, but in a local file, then push it
-        //into actual CASMcode repo
+        // TODO: You can only use crystallography/strain.hh now
+        // There's a small amount you need that's not in there right now, grab it
+        // and shove it in the CASM namespace, but in a local file, then push it
+        // into actual CASMcode repo
         throw except::NotImplemented();
         /* CASM::StrainConverter converter(mode); */
         /* auto strain_tensor = converter.rollup_E(unrolled_strain); */
