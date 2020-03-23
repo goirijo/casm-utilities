@@ -3,7 +3,6 @@
 #include "casmutils/misc.hpp"
 #include "casmutils/xtal/coordinate.hpp"
 #include "casmutils/xtal/lattice.hpp"
-#include <boost/filesystem.hpp>
 
 namespace extend
 {

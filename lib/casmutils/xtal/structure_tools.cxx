@@ -1,13 +1,11 @@
 #include <algorithm>
-#include <casm/clex/ConfigMapping.hh>
-#include <casm/clex/PrimClex.hh>
-#include <casm/crystallography/BasicStructureTools.hh>
 #include <casm/crystallography/LatticeMap.hh>
+#include <casm/crystallography/BasicStructureTools.hh>
+#include <casm/crystallography/BasicStructure.hh>
 #include <casm/crystallography/Niggli.hh>
 #include <casm/crystallography/SuperlatticeEnumerator.hh>
 #include <casm/crystallography/SymTools.hh>
 #include <casm/crystallography/io/VaspIO.hh>
-#include <casm/strain/StrainConverter.hh>
 #include <casmutils/exceptions.hpp>
 #include <casmutils/misc.hpp>
 #include <casmutils/stage.hpp>
@@ -82,12 +80,14 @@ void write_poscar(const Structure& printable, const fs::path& filename)
     return;
 }
 
-Structure make_super_structure(const Structure& struc, const Eigen::Matrix3i& col_transf_mat)
+Structure make_superstructure(const Structure& struc, const Eigen::Matrix3i& col_transf_mat)
 {
-    auto lattice_mat = struc.lattice().column_vector_matrix();
-    // had to cast the transformation matrix to double as Eigen does not allow mixing matrix types
-    CASM::xtal::Lattice suplat(lattice_mat * col_transf_mat.cast<double>());
-    return Structure(struc.__get<CASM::xtal::BasicStructure>().create_superstruc(suplat));
+    CASM::xtal::BasicStructure superstructure(CASM::xtal::make_superstructure(struc.__get<CASM::xtal::BasicStructure>(),col_transf_mat));
+    return Structure(superstructure);
+    /* auto lattice_mat = struc.lattice().column_vector_matrix(); */
+    /* // had to cast the transformation matrix to double as Eigen does not allow mixing matrix types */
+    /* CASM::xtal::Lattice suplat(lattice_mat * col_transf_mat.cast<double>()); */
+    /* return Structure(struc.__get<CASM::xtal::BasicStructure>().create_superstruc(suplat)); */
 }
 
 void apply_deformation(Structure* struc_ptr, const Eigen::Matrix3d& deformation_tensor)
@@ -109,10 +109,15 @@ void apply_strain(Structure* struc_ptr, const Eigen::VectorXd& unrolled_strain, 
     std::set<std::string> allowed_strain_metrics = {"GL", "B", "H", "EA"};
     if (allowed_strain_metrics.count(mode))
     {
-        CASM::StrainConverter converter(mode);
-        auto strain_tensor = converter.rollup_E(unrolled_strain);
-        auto deformation_tensor = converter.strain_metric_to_F(strain_tensor);
-        apply_deformation(struc_ptr, deformation_tensor);
+        //TODO: You can only use crystallography/strain.hh now
+        //There's a small amount you need that's not in there right now, grab it
+        //and shove it in the CASM namespace, but in a local file, then push it
+        //into actual CASMcode repo
+        throw except::NotImplemented();
+        /* CASM::StrainConverter converter(mode); */
+        /* auto strain_tensor = converter.rollup_E(unrolled_strain); */
+        /* auto deformation_tensor = converter.strain_metric_to_F(strain_tensor); */
+        /* apply_deformation(struc_ptr, deformation_tensor); */
     }
     else
     {

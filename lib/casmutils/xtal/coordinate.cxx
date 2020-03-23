@@ -25,6 +25,13 @@ void Coordinate::bring_within(const Lattice& lat)
     return;
 }
 
+    Coordinate Coordinate::bring_within(const Lattice& lat) const
+{
+    Coordinate copy_coord(*this);
+    copy_coord.bring_within(lat);
+    return copy_coord;
+}
+
 Eigen::Vector3d Coordinate::cart() const { return this->casm_coord.cart(); }
 
 Eigen::Vector3d Coordinate::frac(const Lattice& ref_lattice) const

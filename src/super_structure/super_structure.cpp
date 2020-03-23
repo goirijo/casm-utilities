@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
     throw except::NotImplemented();
 
     auto struc = casmutils::xtal::Structure::from_poscar(structure_path);
-    auto super_struc = casmutils::xtal::make_super_structure(struc, transf_mat);
+    auto super_struc = casmutils::xtal::make_superstructure(struc, transf_mat);
 
     // checks the output type and writes the super structure to a output stream
     if (superstructure_launch.vm().count("output"))
