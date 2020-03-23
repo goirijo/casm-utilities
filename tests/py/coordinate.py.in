@@ -9,7 +9,7 @@ class CoordinateTest(unittest.TestCase):
         self.lattice_matrix = np.array([[2,0,0],[0,2,0],[0,0,2]])
         self.raw_coord = np.array([0.1,0.2,0.3])
         self.start_coord = cu.xtal.Coordinate(self.raw_coord)
-        self.lat = cu.xtal.Lattice(self.lattice_matrix)
+        self.lat = cu.xtal.Lattice(*self.lattice_matrix)
 
     def test_cart_retrieve(self):
         self.assertTrue(np.array_equal(self.start_coord.cart(),self.raw_coord))
@@ -17,11 +17,16 @@ class CoordinateTest(unittest.TestCase):
     def test_within(self):
         lat_translation = cu.xtal.Coordinate.from_fractional(np.array([2,3,4]),self.lat)
         translated_coord = self.start_coord+lat_translation
-        withined_coord = translated_coord.bring_within_const(self.lat)
-        self.assertFalse(cu.xtal.Coordinate.is_equal(translated_coord,self.start_coord,1e-5))
-        self.assertTrue(cu.xtal.Coordinate.is_equal(withined_coord,self.start_coord,1e-5))
+        withined_coord = translated_coord._bring_within_const(self.lat)
+
+        self.start_coord.set_compare_method(cu.xtal.coordinate.Equals,1e-5)
+        # self.assertFalse(cu.xtal.Coordinate.is_equal(translated_coord,self.start_coord,1e-5))
+        self.assertFalse(self.start_coord==translated_coord)
+        # self.assertTrue(cu.xtal.Coordinate.is_equal(withined_coord,self.start_coord,1e-5))
+        self.assertTrue(self.start_coord==withined_coord)
         translated_coord._bring_within(self.lat)
-        self.assertTrue(cu.xtal.Coordinate.is_equal(translated_coord,self.start_coord,1e-5))
+        # self.assertTrue(cu.xtal.Coordinate.is_equal(translated_coord,self.start_coord,1e-5))
+        self.assertTrue(self.start_coord==translated_coord)
 
 if __name__ == '__main__':
     unittest.main()
