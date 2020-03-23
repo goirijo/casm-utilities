@@ -4,7 +4,6 @@
 #include <casm/crystallography/Niggli.hh>
 #include <casm/crystallography/SuperlatticeEnumerator.hh>
 #include <casm/crystallography/io/VaspIO.hh>
-#include <casm/strain/StrainConverter.hh>
 #include <casmutils/exceptions.hpp>
 #include <casmutils/misc.hpp>
 #include <casmutils/xtal/lattice.hpp>
@@ -113,10 +112,12 @@ void apply_strain(Structure* struc_ptr, const Eigen::VectorXd& unrolled_strain, 
     std::set<std::string> allowed_strain_metrics = {"GL", "B", "H", "EA"};
     if (allowed_strain_metrics.count(mode))
     {
-        CASM::StrainConverter converter(mode);
-        auto strain_tensor = converter.rollup_E(unrolled_strain);
-        auto deformation_tensor = converter.strain_metric_to_F(strain_tensor);
-        apply_deformation(struc_ptr, deformation_tensor);
+        //You can only use crystallography/strain.hh now
+        throw except::NotImplemented();
+        /* CASM::StrainConverter converter(mode); */
+        /* auto strain_tensor = converter.rollup_E(unrolled_strain); */
+        /* auto deformation_tensor = converter.strain_metric_to_F(strain_tensor); */
+        /* apply_deformation(struc_ptr, deformation_tensor); */
     }
     else
     {
