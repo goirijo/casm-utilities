@@ -130,7 +130,9 @@ Structure apply_strain(const Structure& struc_ptr, const Eigen::VectorXd& unroll
 
 mapping::MappingNode structure_map(const Structure& map_reference_struc, const Structure& mappable_struc)
 {
-    throw except::NotImplemented();
+    mapping::MappingInput input(map_reference_struc);
+    mapping::StructureMapper mapper(input);
+    return mapper.map(mappable_struc);
 }
 
 std::pair<double, double> structure_score(const mapping::MappingNode& mapping_data)
@@ -141,25 +143,6 @@ std::pair<double, double> structure_score(const mapping::MappingNode& mapping_da
     double basis_score = (mapping_data.stretch.inverse() * mapping_data.displacement).squaredNorm() /
                          double(std::max(int(mapping_data.permutation.size()), 1));
     return std::make_pair(lattice_score, basis_score);
-}
-
-mapping::MappingNode structure_map(const mapping::MappingInput& input, const Structure& mappable_struc)
-{
-    std::vector<std::unordered_set<std::string>> allowed_at_sites(input.parent.basis_sites().size(),
-                                                                  input.allowed_species);
-    CASM::xtal::SimpleStrucMapCalculator calc_interface(input.parent.__get<CASM::xtal::SimpleStructure>(),
-                                                        input.point_group, input.mode, allowed_at_sites);
-    CASM::xtal::StrucMapper mapper(calc_interface, input.strain_weight, input.max_volume_change, input.options,
-                                   input.tol, input.min_va_frac, input.max_va_frac);
-    if (input.is_ideal)
-    {
-        return mapper.map_ideal_struc(mappable_struc.__get<CASM::xtal::SimpleStructure>(), input.num_best_maps);
-    }
-
-    return *(mapper
-                 .map_deformed_struc(mappable_struc.__get<CASM::xtal::SimpleStructure>(), input.num_best_maps,
-                                     input.max_cost, input.min_cost, input.keep_invalid_mapping_nodes)
-                 .begin());
 }
 
 std::vector<Structure> make_superstructures_of_volume(const Structure& structure, const int volume)

@@ -60,11 +60,8 @@ std::vector<Structure> make_superstructures_of_volume(const Structure& structure
 /// Returns scores for lattice (first) and basis (second) as a pair.
 std::pair<double, double> structure_score(const mapping::MappingNode& mapping_data);
 
-/// Map a single structure onto a reference structure with settings specified in the
-/// mapping input structure.
-/// Returns Ideal Superlattice as a matrix, Left Stretch tensor, and displacement matrix that
-/// represents the distortion field of the mapping
-mapping::MappingNode structure_map(const mapping::MappingInput& input, const Structure& mappable_struc);
+/// Map a single structure onto a reference structure with default settings
+mapping::MappingNode structure_map(const Structure& map_reference_struc, const Structure& mappable_struc);
 
 } // namespace xtal
 } // namespace casmutils

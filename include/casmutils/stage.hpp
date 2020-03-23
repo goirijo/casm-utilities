@@ -1,6 +1,7 @@
 #ifndef UTILS_STAGE_HH
 #define UTILS_STAGE_HH
 #include "casm/crystallography/BasicStructureTools.hh"
+#include "casm/crystallography/SimpleStrucMapCalculator.hh"
 #include "casm/crystallography/StrucMapping.hh"
 #include "casmutils/exceptions.hpp"
 #include "casmutils/xtal/lattice.hpp"
@@ -78,17 +79,16 @@ struct MappingInput
         point_group = CASM::xtal::make_factor_group(parent.__get<CASM::xtal::BasicStructure>());
         for (const auto& site : parent.basis_sites())
         {
-            allowed_species.insert(site.label());
+            std::unordered_set<std::string> at_site_occs;
+            at_site_occs.insert(site.label());
+            allowed_species.push_back(at_site_occs);
         }
     }
 
     casmutils::xtal::Structure parent;
     std::vector<SymOp> point_group;
     SpecMode mode;
-    // This data structure will have to change if there
-    // are different occupants allowed at each site
-    // will have to use std::vector<std::unordered_set<std::string>>
-    std::unordered_set<std::string> allowed_species;
+    std::vector<std::unordered_set<std::string>> allowed_species;
     double strain_weight;
     double max_volume_change;
     int options;
@@ -103,7 +103,19 @@ struct MappingInput
     bool imposing_lattice;
     casmutils::xtal::Lattice lattice_to_impose;
 };
+/// Can map a structure to its internal reference can be used for mapping many
+/// different test structures to the same reference.
+class StructureMapper
+{
+public:
+    StructureMapper(const MappingInput& input);
 
+    mapping::MappingNode map(const xtal::Structure& mappable_struc) const;
+    mapping::MappingNode ideal_map(const xtal::Structure& mappable_struc) const;
+
+private:
+    CASM::xtal::StrucMapper mapper;
+};
 } // namespace mapping
 } // namespace casmutils
 #endif
