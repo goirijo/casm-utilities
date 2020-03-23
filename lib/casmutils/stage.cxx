@@ -27,7 +27,10 @@ MappingNode StructureMapper::ideal_map(const xtal::Structure& mappable_struc) co
 {
 
     // This call populates default values for number of maps to 1
-    return mapper.map_ideal_struc(mappable_struc.__get<CASM::xtal::SimpleStructure>(), 1);
+    // maximum mapping cost to 1e9
+    // minimum mapping cost to 0
+    // and it keeps invalid mapping nodes so we can check later
+    return *(mapper.map_ideal_struc(mappable_struc.__get<CASM::xtal::SimpleStructure>(), 1, 1e9, 0, true).begin());
 }
 } // namespace mapping
 } // namespace casmutils

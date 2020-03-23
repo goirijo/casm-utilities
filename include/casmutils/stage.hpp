@@ -23,11 +23,11 @@ struct MappingNode
         : isometry(casm_mapping_node.isometry()),
           stretch(casm_mapping_node.stretch()),
           translation(casm_mapping_node.translation()),
-          displacement(casm_mapping_node.displacement),
+          displacement(casm_mapping_node.atom_displacement),
           parent(casm_mapping_node.lat_node.parent.superlattice()),
           child(casm_mapping_node.lat_node.child.superlattice())
     {
-        std::vector<int> p(casm_mapping_node.permutation.begin(), casm_mapping_node.permutation.end());
+        std::vector<int> p(casm_mapping_node.atom_permutation.begin(), casm_mapping_node.atom_permutation.end());
         permutation = p;
         if (!casm_mapping_node.is_valid)
         {
@@ -58,6 +58,7 @@ struct MappingInput
 {
     typedef CASM::xtal::SymOp SymOp;
     typedef CASM::xtal::SimpleStructure::SpeciesMode SpecMode;
+    typedef CASM::xtal::StrucMapping::AllowedSpecies AllowedSpeciesType;
 
     MappingInput(const casmutils::xtal::Structure& parent)
         : parent(parent),
@@ -79,8 +80,8 @@ struct MappingInput
         point_group = CASM::xtal::make_factor_group(parent.__get<CASM::xtal::BasicStructure>());
         for (const auto& site : parent.basis_sites())
         {
-            std::unordered_set<std::string> at_site_occs;
-            at_site_occs.insert(site.label());
+            std::vector<std::string> at_site_occs;
+            at_site_occs.push_back(site.label());
             allowed_species.push_back(at_site_occs);
         }
     }
@@ -88,7 +89,7 @@ struct MappingInput
     casmutils::xtal::Structure parent;
     std::vector<SymOp> point_group;
     SpecMode mode;
-    std::vector<std::unordered_set<std::string>> allowed_species;
+    AllowedSpeciesType allowed_species;
     double strain_weight;
     double max_volume_change;
     int options;

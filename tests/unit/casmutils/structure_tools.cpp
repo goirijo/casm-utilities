@@ -177,10 +177,6 @@ TEST_F(StructureToolsTest, MakeSuperstructure)
                                                                       constructed_superstructure.lattice(), tol));
     const auto& constructed_basis = constructed_superstructure.basis_sites();
 
-    casmutils::xtal::print_poscar(*conventional_fcc_Ni_ptr, std::cout);
-    std::cout << "------------" << std::endl;
-    casmutils::xtal::print_poscar(constructed_superstructure, std::cout);
-
     // need to compare basis differently here because it may be permuted
     EXPECT_TRUE(cartesian_basis_is_equal_with_permutation(conventional_fcc_Ni_ptr->basis_sites(),
                                                           constructed_superstructure.basis_sites()));
@@ -258,15 +254,15 @@ TEST_F(StructureToolsTest, MakeSuperstructuresofVol)
     vol3_var2 << -1, 0, 2, 0, 1, -2, 1, 0, 1;
     // create structures
     Structure struc_vol2_0 =
-        casmutils::xtal::make_niggli(casmutils::xtal::make_super_structure(*primitive_fcc_Ni_ptr, vol2_var0));
+        casmutils::xtal::make_niggli(casmutils::xtal::make_superstructure(*primitive_fcc_Ni_ptr, vol2_var0));
     Structure struc_vol2_1 =
-        casmutils::xtal::make_niggli(casmutils::xtal::make_super_structure(*primitive_fcc_Ni_ptr, vol2_var1));
+        casmutils::xtal::make_niggli(casmutils::xtal::make_superstructure(*primitive_fcc_Ni_ptr, vol2_var1));
     Structure struc_vol3_0 =
-        casmutils::xtal::make_niggli(casmutils::xtal::make_super_structure(*primitive_fcc_Ni_ptr, vol3_var0));
+        casmutils::xtal::make_niggli(casmutils::xtal::make_superstructure(*primitive_fcc_Ni_ptr, vol3_var0));
     Structure struc_vol3_1 =
-        casmutils::xtal::make_niggli(casmutils::xtal::make_super_structure(*primitive_fcc_Ni_ptr, vol3_var1));
+        casmutils::xtal::make_niggli(casmutils::xtal::make_superstructure(*primitive_fcc_Ni_ptr, vol3_var1));
     Structure struc_vol3_2 =
-        casmutils::xtal::make_niggli(casmutils::xtal::make_super_structure(*primitive_fcc_Ni_ptr, vol3_var2));
+        casmutils::xtal::make_niggli(casmutils::xtal::make_superstructure(*primitive_fcc_Ni_ptr, vol3_var2));
     // create vol2 and vol3 all at same time
     std::vector<Structure> vol2_superstrucs = casmutils::xtal::make_superstructures_of_volume(*primitive_fcc_Ni_ptr, 2);
     std::vector<Structure> vol3_superstrucs = casmutils::xtal::make_superstructures_of_volume(*primitive_fcc_Ni_ptr, 3);

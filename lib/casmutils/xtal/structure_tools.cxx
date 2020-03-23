@@ -3,6 +3,7 @@
 #include <casm/crystallography/BasicStructureTools.hh>
 #include <casm/crystallography/LatticeMap.hh>
 #include <casm/crystallography/Niggli.hh>
+#include <casm/crystallography/Strain.hh>
 #include <casm/crystallography/SuperlatticeEnumerator.hh>
 #include <casm/crystallography/SymTools.hh>
 #include <casm/crystallography/io/VaspIO.hh>
@@ -114,11 +115,10 @@ void apply_strain(Structure* struc_ptr, const Eigen::VectorXd& unrolled_strain, 
         // There's a small amount you need that's not in there right now, grab it
         // and shove it in the CASM namespace, but in a local file, then push it
         // into actual CASMcode repo
-        throw except::NotImplemented();
-        /* CASM::StrainConverter converter(mode); */
-        /* auto strain_tensor = converter.rollup_E(unrolled_strain); */
-        /* auto deformation_tensor = converter.strain_metric_to_F(strain_tensor); */
-        /* apply_deformation(struc_ptr, deformation_tensor); */
+        auto strain_tensor = CASM::strain::rollup_strain_metric(unrolled_strain);
+        auto deformation_tensor =
+            CASM::strain::metric_to_deformation_tensor<CASM::strain::METRIC::GREEN_LAGRANGE>(strain_tensor);
+        apply_deformation(struc_ptr, deformation_tensor);
     }
     else
     {
@@ -160,7 +160,9 @@ std::vector<Structure> make_superstructures_of_volume(const Structure& structure
 
     for (const auto& lat : lat_enumerator)
     {
-        Structure super = structure.__get<CASM::xtal::BasicStructure>().create_superstruc(lat);
+        Eigen::Matrix3i transfmat =
+            (structure.lattice().column_vector_matrix().inverse() * lat.lat_column_mat()).cast<int>();
+        Structure super = CASM::xtal::make_superstructure(structure.__get<CASM::xtal::BasicStructure>(), transfmat);
         make_niggli(&super);
 
         all_superstructures.emplace_back(std::move(super));
