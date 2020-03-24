@@ -44,9 +44,9 @@ PYBIND11_MODULE(_xtal, m)
         class_<xtal::Lattice>(m, "Lattice")
             .def(init<const Eigen::Vector3d&, const Eigen::Vector3d&, const Eigen::Vector3d&>())
             .def("__str__", __str__)
-            .def("a",&xtal::Lattice::a)
-            .def("b",&xtal::Lattice::b)
-            .def("c",&xtal::Lattice::c);
+            .def("a", &xtal::Lattice::a)
+            .def("b", &xtal::Lattice::b)
+            .def("c", &xtal::Lattice::c);
     }
 
     {
@@ -108,9 +108,8 @@ PYBIND11_MODULE(_xtal, m)
     m.def("make_niggli", (xtal::Structure(*)(const xtal::Structure&))casmutils::xtal::make_niggli);
     m.def("apply_strain", (xtal::Structure(*)(const xtal::Structure&, const Eigen::VectorXd&, const std::string&))casmutils::xtal::apply_strain);
     m.def("apply_deformation", (xtal::Structure(*)(const xtal::Structure&, const Eigen::Matrix3d&))casmutils::xtal::apply_deformation);
-    m.def("structure_score", (std::vector<std::pair<double, double>>(*)(const xtal::Structure&, const std::vector<xtal::Structure>&))casmutils::xtal::structure_score);
+    //m.def("structure_score", (std::vector<std::pair<double, double>>(*)(const rewrap::Structure&, const std::vector<rewrap::Structure>&))casmutils::xtal::structure_score);
     m.def("make_superstructures_of_volume", (std::vector<xtal::Structure>(*)(const xtal::Structure&, const int))casmutils::xtal::make_superstructures_of_volume);
-    m.def("make_boxiest_superstructure_of_volume", (xtal::Structure(*)(const xtal::Structure&, const int))casmutils::xtal::make_boxiest_superstructure_of_volume);
-    // clang-format om
+    // clang-format on
 }
 } // namespace wrappy

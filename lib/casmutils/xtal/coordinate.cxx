@@ -25,7 +25,7 @@ void Coordinate::bring_within(const Lattice& lat)
     return;
 }
 
-    Coordinate Coordinate::bring_within(const Lattice& lat) const
+Coordinate Coordinate::bring_within(const Lattice& lat) const
 {
     Coordinate copy_coord(*this);
     copy_coord.bring_within(lat);

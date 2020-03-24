@@ -15,8 +15,8 @@ public:
     Lattice(const CASM::xtal::Lattice& init_lat);
     Lattice(const Eigen::Matrix3d& column_lat_mat);
 
-    ///Construct lattice by specifying each individual vector
-    Lattice(const Eigen::Vector3d &a, const Eigen::Vector3d &b, const Eigen::Vector3d &c);
+    /// Construct lattice by specifying each individual vector
+    Lattice(const Eigen::Vector3d& a, const Eigen::Vector3d& b, const Eigen::Vector3d& c);
 
     // TODO: Read up on Eigen::Matrix3d::ColXpr and decide if you prefer this. CASM does it this way.
     /// Return the ith vector of the lattice
@@ -43,8 +43,8 @@ public:
     const CASM::xtal::Lattice& __get() const { return this->casm_lattice; }
 
 private:
-
-    static Eigen::Matrix3d stack_column_vectors(const Eigen::Vector3d &a, const Eigen::Vector3d &b, const Eigen::Vector3d &c);
+    static Eigen::Matrix3d stack_column_vectors(const Eigen::Vector3d& a, const Eigen::Vector3d& b,
+                                                const Eigen::Vector3d& c);
     CASM::xtal::Lattice casm_lattice;
 };
 

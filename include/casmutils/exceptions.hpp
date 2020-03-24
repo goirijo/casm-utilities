@@ -26,7 +26,13 @@ public:
 
 private:
 };
+class InvalidMap : public std::runtime_error
+{
+public:
+    InvalidMap() : std::runtime_error("The structure map failed resulting in an invalid Mapping Node.") {}
 
+private:
+};
 class BadCoordMode : public std::runtime_error
 {
 public:

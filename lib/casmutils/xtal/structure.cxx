@@ -73,7 +73,7 @@ Structure Structure::from_poscar(const fs::path& poscar_path)
         throw except::BadPath(poscar_path);
     }
     std::ifstream infile(poscar_path);
-    CASM::xtal::BasicStructure pos=CASM::xtal::BasicStructure::from_poscar_stream(infile);
+    CASM::xtal::BasicStructure pos = CASM::xtal::BasicStructure::from_poscar_stream(infile);
     return casmutils::xtal::Structure(pos);
 }
 
@@ -92,6 +92,14 @@ void Structure::set_lattice(const Lattice& new_lattice, COORD_TYPE mode)
     new_struc.set_lattice(new_lattice, mode);
     return new_struc;
 }
+
+void Structure::within()
+{
+    this->casm_basicstructure.within();
+    _update_using<CASM::xtal::BasicStructure>();
+    return;
+}
+
 const std::vector<Site>& Structure::basis_sites() const { return this->basis; }
 
 void Structure::_update_simple_from_basic()

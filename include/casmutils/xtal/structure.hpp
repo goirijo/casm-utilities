@@ -26,7 +26,7 @@ class Structure
 public:
     Structure() = delete;
 
-    //TODO: Take a stream, not a file. Extract from class?
+    // TODO: Take a stream, not a file. Extract from class?
     /// Construct by providing a path to a POSCAR like file
     static Structure from_poscar(const fs::path& poscar_path);
 
@@ -45,6 +45,9 @@ public:
 
     /// Give the structure a new lattice, and either keep the Cartesian, or fractional coordinates of the basis
     [[nodiscard]] Structure set_lattice(const Lattice& new_lattice, COORD_TYPE mode) const;
+
+    /// Moves the basis sites within the lattice cell
+    void within();
 
     /// Return a copy of all the basis sites
     const std::vector<Site>& basis_sites() const;

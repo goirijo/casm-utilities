@@ -95,6 +95,17 @@ TEST_F(StructureTest, ConstSetLatticeCart)
     EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>((*basis0_ptr)[0], new_struc.basis_sites()[0], tol));
     EXPECT_FALSE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(*cubic_lat_ptr, new_struc.lattice(), tol));
 }
+TEST_F(StructureTest, Within)
+{
+    // checks to see if all basis sites can be moved within the bounding box of the lattice
+    casmutils::xtal::Site outside_site(casmutils::xtal::Coordinate(0, 0, -1), "Ni");
+    casmutils::xtal::Structure outside_structure(*cubic_lat_ptr, {outside_site});
+    outside_structure.within();
+    EXPECT_TRUE(
+        casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(*cubic_lat_ptr, outside_structure.lattice(), tol));
+    EXPECT_TRUE(
+        casmutils::is_equal<casmutils::xtal::SiteEquals_f>((*basis0_ptr)[0], outside_structure.basis_sites()[0], tol));
+}
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);

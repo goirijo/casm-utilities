@@ -85,45 +85,45 @@ int main(int argc, char* argv[])
         mappable_strucs.push_back(xtal::Structure::from_poscar(path));
         max_path_length = std::max(max_path_length, path.string().size());
     }
+    throw except::NotImplemented();
+    // o all_scores = casmutils::xtal::structure_score(map_reference_struc, mappable_strucs);
 
-    auto all_scores = casmutils::xtal::structure_score(map_reference_struc, mappable_strucs);
+    // std::ostream* out_stream_ptr = &std::cout;
+    // std::ofstream specified_out_stream;
+    // if (struc_score_launch.count("output"))
+    //{
+    //    auto out_path = struc_score_launch.fetch<fs::path>("output");
+    //    specified_out_stream.open(out_path.c_str());
+    //    out_stream_ptr = &specified_out_stream;
+    //}
+    // auto& out_stream = *out_stream_ptr;
 
-    std::ostream* out_stream_ptr = &std::cout;
-    std::ofstream specified_out_stream;
-    if (struc_score_launch.count("output"))
-    {
-        auto out_path = struc_score_launch.fetch<fs::path>("output");
-        specified_out_stream.open(out_path.c_str());
-        out_stream_ptr = &specified_out_stream;
-    }
-    auto& out_stream = *out_stream_ptr;
+    // out_stream << std::left << std::setw(max_path_length + 4) << "Structure";
+    // out_stream << std::left << std::setw(16) << "Lattice";
+    // out_stream << std::left << std::setw(16) << "Basis";
+    // out_stream << std::left << std::setw(16) << "Weighted" << std::endl;
 
-    out_stream << std::left << std::setw(max_path_length + 4) << "Structure";
-    out_stream << std::left << std::setw(16) << "Lattice";
-    out_stream << std::left << std::setw(16) << "Basis";
-    out_stream << std::left << std::setw(16) << "Weighted" << std::endl;
+    // assert(all_scores.size() == mappable_paths.size());
+    // int path_ix = 0;
+    // for (const auto& lat_basis_score : all_scores)
+    //{
+    //    auto lat_score = lat_basis_score.first;
+    //    auto basis_score = lat_basis_score.second;
+    //    auto weighted_score = weight * lat_score + (1 - weight) * basis_score;
 
-    assert(all_scores.size() == mappable_paths.size());
-    int path_ix = 0;
-    for (const auto& lat_basis_score : all_scores)
-    {
-        auto lat_score = lat_basis_score.first;
-        auto basis_score = lat_basis_score.second;
-        auto weighted_score = weight * lat_score + (1 - weight) * basis_score;
+    //    out_stream << std::left << std::setw(max_path_length + 4) << mappable_paths[path_ix].string();
+    //    out_stream << std::left << std::setw(16) << std::setprecision(8) << lat_score;
+    //    out_stream << std::left << std::setw(16) << std::setprecision(8) << basis_score;
+    //    out_stream << std::left << std::setw(16) << std::setprecision(8) << weighted_score << std::endl;
 
-        out_stream << std::left << std::setw(max_path_length + 4) << mappable_paths[path_ix].string();
-        out_stream << std::left << std::setw(16) << std::setprecision(8) << lat_score;
-        out_stream << std::left << std::setw(16) << std::setprecision(8) << basis_score;
-        out_stream << std::left << std::setw(16) << std::setprecision(8) << weighted_score << std::endl;
+    //    ++path_ix;
+    //}
 
-        ++path_ix;
-    }
-
-    // why though
-    if (struc_score_launch.count("output"))
-    {
-        specified_out_stream.close();
-    }
+    //// why though
+    // if (struc_score_launch.count("output"))
+    //{
+    //    specified_out_stream.close();
+    //}
 
     return 0;
 }

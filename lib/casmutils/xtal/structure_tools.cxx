@@ -1,14 +1,18 @@
-#include <casm/crystallography/BasicStructureTools.hh>
+#include <algorithm>
 #include <casm/crystallography/BasicStructure.hh>
+#include <casm/crystallography/BasicStructureTools.hh>
+#include <casm/crystallography/LatticeMap.hh>
 #include <casm/crystallography/Niggli.hh>
+#include <casm/crystallography/Strain.hh>
 #include <casm/crystallography/SuperlatticeEnumerator.hh>
+#include <casm/crystallography/SymTools.hh>
 #include <casm/crystallography/io/VaspIO.hh>
 #include <casmutils/exceptions.hpp>
 #include <casmutils/misc.hpp>
+#include <casmutils/stage.hpp>
 #include <casmutils/xtal/lattice.hpp>
 #include <casmutils/xtal/structure_tools.hpp>
 #include <fstream>
-
 namespace
 {
 // surface area of a given lattice
@@ -57,6 +61,7 @@ void make_niggli(Structure* non_niggli)
     Lattice lat_niggli =
         CASM::xtal::niggli(CASM::xtal::Lattice(non_niggli->lattice().column_vector_matrix()), CASM::TOL);
     non_niggli->set_lattice(lat_niggli, CART);
+    non_niggli->within();
     return;
 }
 
@@ -78,12 +83,9 @@ void write_poscar(const Structure& printable, const fs::path& filename)
 
 Structure make_superstructure(const Structure& struc, const Eigen::Matrix3i& col_transf_mat)
 {
-    CASM::xtal::BasicStructure superstructure(CASM::xtal::make_superstructure(struc.__get<CASM::xtal::BasicStructure>(),col_transf_mat));
+    CASM::xtal::BasicStructure superstructure(
+        CASM::xtal::make_superstructure(struc.__get<CASM::xtal::BasicStructure>(), col_transf_mat));
     return Structure(superstructure);
-    /* auto lattice_mat = struc.lattice().column_vector_matrix(); */
-    /* // had to cast the transformation matrix to double as Eigen does not allow mixing matrix types */
-    /* CASM::xtal::Lattice suplat(lattice_mat * col_transf_mat.cast<double>()); */
-    /* return Structure(struc.__get<CASM::xtal::BasicStructure>().create_superstruc(suplat)); */
 }
 
 void apply_deformation(Structure* struc_ptr, const Eigen::Matrix3d& deformation_tensor)
@@ -100,20 +102,30 @@ Structure apply_deformation(const Structure& struc_ptr, const Eigen::Matrix3d& d
     return copy_struc;
 }
 
+Eigen::Matrix3d rollup_strain_metric(const Eigen::Ref<const Eigen::VectorXd>& unrolled_strain)
+{
+    Eigen::Matrix3d rolled_up_strain = Eigen::Matrix3d::Zero();
+    rolled_up_strain(0, 0) = unrolled_strain(0);
+    rolled_up_strain(1, 1) = unrolled_strain(1);
+    rolled_up_strain(2, 2) = unrolled_strain(2);
+    rolled_up_strain(1, 2) = unrolled_strain(3) / sqrt(2);
+    rolled_up_strain(0, 2) = unrolled_strain(4) / sqrt(2);
+    rolled_up_strain(0, 1) = unrolled_strain(5) / sqrt(2);
+    rolled_up_strain(2, 1) = unrolled_strain(3) / sqrt(2);
+    rolled_up_strain(2, 0) = unrolled_strain(4) / sqrt(2);
+    rolled_up_strain(1, 0) = unrolled_strain(5) / sqrt(2);
+    return rolled_up_strain;
+}
+
 void apply_strain(Structure* struc_ptr, const Eigen::VectorXd& unrolled_strain, const std::string& mode)
 {
     std::set<std::string> allowed_strain_metrics = {"GL", "B", "H", "EA"};
     if (allowed_strain_metrics.count(mode))
     {
-        //TODO: You can only use crystallography/strain.hh now
-        //There's a small amount you need that's not in there right now, grab it
-        //and shove it in the CASM namespace, but in a local file, then push it
-        //into actual CASMcode repo
-        throw except::NotImplemented();
-        /* CASM::StrainConverter converter(mode); */
-        /* auto strain_tensor = converter.rollup_E(unrolled_strain); */
-        /* auto deformation_tensor = converter.strain_metric_to_F(strain_tensor); */
-        /* apply_deformation(struc_ptr, deformation_tensor); */
+        auto strain_tensor = rollup_strain_metric(unrolled_strain);
+        auto deformation_tensor =
+            CASM::strain::metric_to_deformation_tensor<CASM::strain::METRIC::GREEN_LAGRANGE>(strain_tensor);
+        apply_deformation(struc_ptr, deformation_tensor);
     }
     else
     {
@@ -129,97 +141,39 @@ Structure apply_strain(const Structure& struc_ptr, const Eigen::VectorXd& unroll
     return copy_struc;
 }
 
-std::vector<std::pair<double, double>> structure_score(const Structure& map_reference_struc,
-                                                       const std::vector<Structure>& mappable_struc_vec)
+mapping::MappingNode structure_map(const Structure& map_reference_struc, const Structure& mappable_struc)
 {
-    throw except::NotImplemented();
-    /* for (const auto& struc : mappable_struc_vec) */
-    /* { */
-    /*     if (struc.basis.size() != map_reference_struc.basis.size()) */
-    /*     { */
-    /*         throw except::BasisMismatch(); */
-    /*     } */
-    /* } */
-
-    /* // get prim and make PrimClex */
-    /* auto ref_prim = CASM::Structure(make_primitive(map_reference_struc)); */
-    /* auto pclex = extend::quiet_primclex(ref_prim); */
-
-    /* // mapping setup */
-    /* int options = 2;      // robust mapping */
-    /* double vol_tol = 0.5; // not used */
-    /* double weight = 0.5;  // not used */
-    /* CASM::ConfigMapper configmapper(pclex, weight, vol_tol, options, CASM::TOL); */
-
-    /* CASM::jsonParser out;          // mapping output */
-    /* std::string name;              // not used */
-    /* std::vector<CASM::Index> best; // not used */
-    /* Eigen::Matrix3d cart_op;       // not used */
-    /* bool update = false; */
-
-    /* std::vector<std::pair<double, double>> all_scores; */
-    /* for (const auto& struc : mappable_struc_vec) */
-    /* { */
-    /*     // map it */
-    /*     Structure mappable_copy(struc); // can't be const, make copy */
-    /*     configmapper.import_structure_occupation(mappable_copy, name, out, best, cart_op, update); */
-    /*     double basis = out["best_mapping"]["basis_deformation"].get<double>(); */
-    /*     double lattice = out["best_mapping"]["lattice_deformation"].get<double>(); */
-    /*     all_scores.emplace_back(lattice, basis); */
-    /* } */
-
-    /* return all_scores; */
+    mapping::MappingInput input(map_reference_struc);
+    mapping::StructureMapper mapper(input);
+    return mapper.map(mappable_struc);
 }
 
-std::pair<double, double> structure_score(const Structure& map_reference_struc, const Structure& mappable_struc)
+std::pair<double, double> structure_score(const mapping::MappingNode& mapping_data)
 {
-    std::vector<Structure> one = {mappable_struc};
-    // just calls vector version of function
-    return structure_score(map_reference_struc, one).back();
-}
-
-// Finds the superstructure with the highest volume/surface_area
-// Assuming that the input has structures of same volume
-std::vector<Structure>::size_type boxiest_structure_index(const std::vector<Structure>& candidate_structures)
-{
-    // TODO: throw exception on empty vector
-    double running_score = 0;
-    std::vector<Structure>::size_type ix = 0;
-    std::vector<Structure>::size_type best_ix = ix;
-    for (const auto& scel : candidate_structures)
-    {
-        double candidate_score = boxy_score(scel.lattice());
-        if (candidate_score > running_score)
-        {
-            running_score = candidate_score;
-            best_ix = ix;
-        }
-        ++ix;
-    }
-    return best_ix;
-}
-
-// Find the boxiest superstructure per volume for range of volumes
-Structure make_boxiest_superstructure_of_volume(const Structure& structure, const int volume)
-{
-    std::vector<Structure> same_vol_scels = make_superstructures_of_volume(structure, volume);
-    return same_vol_scels[boxiest_structure_index(same_vol_scels)];
+    double lattice_score = CASM::xtal::StrainCostCalculator::iso_strain_cost(
+        mapping_data.stretch,
+        mapping_data.child.column_vector_matrix().determinant() / std::max(int(mapping_data.permutation.size()), 1));
+    double basis_score = (mapping_data.stretch.inverse() * mapping_data.displacement).squaredNorm() /
+                         double(std::max(int(mapping_data.permutation.size()), 1));
+    return std::make_pair(lattice_score, basis_score);
 }
 
 std::vector<Structure> make_superstructures_of_volume(const Structure& structure, const int volume)
 {
     std::vector<Structure> all_superstructures;
-    /* CASM::xtal::ScelEnumProps enum_props(volume, volume+1); */
-    /* CASM::xtal::SuperlatticeEnumerator lat_enumerator(structure.lattice(), enum_props, CASM::TOL); */
+    CASM::xtal::ScelEnumProps enum_props(volume, volume + 1);
+    std::vector<CASM::xtal::SymOp> pg = CASM::xtal::make_point_group(structure.lattice().__get());
+    CASM::xtal::SuperlatticeEnumerator lat_enumerator(structure.lattice().__get(), pg, enum_props);
 
-    /* for (const auto& lat : lat_enumerator) */
-    /* { */
-    /*     Structure super = structure.create_superstruc(lat); */
-    /*     simplicity::make_niggli(&super); */
-    /*     all_superstructures.emplace_back(std::move(super)); */
-    /* } */
+    for (const auto& lat : lat_enumerator)
+    {
+        Eigen::Matrix3i transfmat =
+            (structure.lattice().column_vector_matrix().inverse() * lat.lat_column_mat()).cast<int>();
+        Structure super = CASM::xtal::make_superstructure(structure.__get<CASM::xtal::BasicStructure>(), transfmat);
+        make_niggli(&super);
 
-    throw except::NotImplemented();
+        all_superstructures.emplace_back(std::move(super));
+    }
 
     return all_superstructures;
 }

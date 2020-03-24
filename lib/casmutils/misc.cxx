@@ -3,7 +3,7 @@
 
 namespace extend
 {
-//CASM::PrimClex quiet_primclex(CASM::Structure& prim)
+// CASM::PrimClex quiet_primclex(CASM::Structure& prim)
 //{
 //    throw except::NotImplemented();
 //    /* CASM::Log log(std::cout, 0); */
@@ -11,7 +11,7 @@ namespace extend
 //    /* return CASM::PrimClex(prim, logging); */
 //}
 //
-//CASM::xtal::Site atomic_site(const CASM::xtal::Coordinate& coord, const std::vector<std::string>& allowed_species)
+// CASM::xtal::Site atomic_site(const CASM::xtal::Coordinate& coord, const std::vector<std::string>& allowed_species)
 //{
 //    throw except::NotImplemented(); // PS: This is already a static method of Molecule
 //    /* CASM::Array<CASM::Molecule> allowed_molecules; */

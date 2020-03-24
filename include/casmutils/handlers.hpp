@@ -5,7 +5,7 @@
 ///* #include "casmutils/handlers.hpp" */
 ///* #include "casmutils/rules.hpp" */
 //
-//namespace utilities
+// namespace utilities
 //{
 ///**
 // * Container class for parsing command line
@@ -13,9 +13,9 @@
 // * variables needed
 // */
 //
-//class Handler
+// class Handler
 //{
-//public:
+// public:
 //    Handler(int argc, char* argv[], const std::function<void(po::options_description&)>& init_initializer);
 //
 //    /// Check to see if the given string was parsed into the variables map
@@ -33,7 +33,7 @@
 //
 //    const po::options_description& desc() const;
 //
-//private:
+// private:
 //    /// Keep info about raw command line input (number of arguments)
 //    int m_argc;
 //
@@ -46,7 +46,7 @@
 //
 ////************************************************************************************//
 //
-//template <typename T> T Handler::fetch(const std::string& prog_option) const { return vm()[prog_option].as<T>(); }
+// template <typename T> T Handler::fetch(const std::string& prog_option) const { return vm()[prog_option].as<T>(); }
 //
 ////************************************************************************************//
 //
@@ -55,16 +55,16 @@
 // * across different UtilityHandler objects
 // */
 //
-//namespace utilities
+// namespace utilities
 //{
 ///// \brief Lame help message with each available option
-//void add_help_suboption(po::options_description& handler_desc);
+// void add_help_suboption(po::options_description& handler_desc);
 //
 ///// \brief Lame help message with each available option
-//void add_desc_suboption(po::options_description& handler_desc);
+// void add_desc_suboption(po::options_description& handler_desc);
 //
 ///// \brief Store a fs::path to which whatever you're going to output should be saved
-//void add_output_suboption(po::options_description& handler_desc);
+// void add_output_suboption(po::options_description& handler_desc);
 //} // namespace utilities
 //
 //} // namespace utilities
