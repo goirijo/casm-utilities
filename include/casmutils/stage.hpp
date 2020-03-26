@@ -25,7 +25,9 @@ struct MappingNode
           translation(casm_mapping_node.translation()),
           displacement(casm_mapping_node.atom_displacement),
           parent(casm_mapping_node.lat_node.parent.superlattice()),
-          child(casm_mapping_node.lat_node.child.superlattice())
+          child(casm_mapping_node.lat_node.child.superlattice()),
+          lattice_cost(casm_mapping_node.lat_node.cost),
+          basis_cost(casm_mapping_node.basis_node.cost)
     {
         std::vector<int> p(casm_mapping_node.atom_permutation.begin(), casm_mapping_node.atom_permutation.end());
         permutation = p;
@@ -39,6 +41,8 @@ struct MappingNode
     Eigen::Vector3d translation;
     Eigen::MatrixXd displacement;
     std::vector<int> permutation;
+    double lattice_cost;
+    double basis_cost;
     // This is potentially a superlattice of the originally passed in parent structure
     xtal::Lattice parent;
     xtal::Lattice child;
@@ -111,11 +115,12 @@ class StructureMapper
 public:
     StructureMapper(const MappingInput& input);
 
-    mapping::MappingNode map(const xtal::Structure& mappable_struc) const;
-    mapping::MappingNode ideal_map(const xtal::Structure& mappable_struc) const;
+    std::vector<mapping::MappingNode> map(const xtal::Structure& mappable_struc) const;
+    std::vector<mapping::MappingNode> ideal_map(const xtal::Structure& mappable_struc) const;
 
 private:
     CASM::xtal::StrucMapper mapper;
+    MappingInput settings;
 };
 } // namespace mapping
 } // namespace casmutils

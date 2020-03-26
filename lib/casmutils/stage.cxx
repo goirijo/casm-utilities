@@ -8,29 +8,28 @@ StructureMapper::StructureMapper(const MappingInput& input)
     : mapper(CASM::xtal::SimpleStrucMapCalculator(input.parent.__get<CASM::xtal::SimpleStructure>(), input.point_group,
                                                   input.mode, input.allowed_species),
              input.strain_weight, input.max_volume_change, input.options, input.tol, input.min_va_frac,
-             input.max_va_frac)
+             input.max_va_frac),
+      settings(input)
 {
     // Apologies for the ugly constructor we need to unpack input into
     // its individual values and do some layered inline construction
 }
 
-MappingNode StructureMapper::map(const xtal::Structure& mappable_struc) const
+std::vector<MappingNode> StructureMapper::map(const xtal::Structure& mappable_struc) const
 {
 
-    // This call populates default values for number of maps to 1
-    // maximum mapping cost to 1e9
-    // minimum mapping cost to 0
-    // and it keeps invalid mapping nodes so we can check later
-    return *(mapper.map_deformed_struc(mappable_struc.__get<CASM::xtal::SimpleStructure>(), 1, 1e9, 0, true).begin());
+    auto casmnodes =
+        mapper.map_deformed_struc(mappable_struc.__get<CASM::xtal::SimpleStructure>(), settings.num_best_maps,
+                                  settings.max_cost, settings.min_cost, settings.keep_invalid_mapping_nodes);
+    std::vector<MappingNode> casted_set(casmnodes.begin(), casmnodes.end());
+    return casted_set;
 }
-MappingNode StructureMapper::ideal_map(const xtal::Structure& mappable_struc) const
+std::vector<MappingNode> StructureMapper::ideal_map(const xtal::Structure& mappable_struc) const
 {
-
-    // This call populates default values for number of maps to 1
-    // maximum mapping cost to 1e9
-    // minimum mapping cost to 0
-    // and it keeps invalid mapping nodes so we can check later
-    return *(mapper.map_ideal_struc(mappable_struc.__get<CASM::xtal::SimpleStructure>(), 1, 1e9, 0, true).begin());
+    auto casmnodes = mapper.map_ideal_struc(mappable_struc.__get<CASM::xtal::SimpleStructure>(), settings.num_best_maps,
+                                            settings.max_cost, settings.min_cost, settings.keep_invalid_mapping_nodes);
+    std::vector<MappingNode> casted_set(casmnodes.begin(), casmnodes.end());
+    return casted_set;
 }
 } // namespace mapping
 } // namespace casmutils

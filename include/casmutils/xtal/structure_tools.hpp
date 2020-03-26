@@ -65,7 +65,7 @@ std::vector<Structure> make_superstructures_of_volume(const Structure& structure
 std::pair<double, double> structure_score(const mapping::MappingNode& mapping_data);
 
 /// Map a single structure onto a reference structure with default settings
-mapping::MappingNode structure_map(const Structure& map_reference_struc, const Structure& mappable_struc);
+std::vector<mapping::MappingNode> structure_map(const Structure& map_reference_struc, const Structure& mappable_struc);
 
 } // namespace xtal
 } // namespace casmutils

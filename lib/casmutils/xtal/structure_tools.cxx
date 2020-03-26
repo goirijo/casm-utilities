@@ -149,7 +149,7 @@ Structure apply_strain(const Structure& struc_ptr, const Eigen::VectorXd& unroll
     return copy_struc;
 }
 
-mapping::MappingNode structure_map(const Structure& map_reference_struc, const Structure& mappable_struc)
+std::vector<mapping::MappingNode> structure_map(const Structure& map_reference_struc, const Structure& mappable_struc)
 {
     mapping::MappingInput input(map_reference_struc);
     mapping::StructureMapper mapper(input);
