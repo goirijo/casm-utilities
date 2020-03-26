@@ -296,11 +296,11 @@ TEST_F(StructureMapTest, StructureMap)
 {
     // map with fcc as reference and bcc,fully bained fcc and partially bained fcc as test structures
     casmutils::mapping::MappingNode full_bain =
-        casmutils::xtal::structure_map(*primitive_fcc_Ni_ptr, *primitive_bcc_Ni_ptr);
+        casmutils::xtal::structure_map(*primitive_fcc_Ni_ptr, *primitive_bcc_Ni_ptr)[0];
     casmutils::mapping::MappingNode perfect_bain =
-        casmutils::xtal::structure_map(*primitive_fcc_Ni_ptr, *perfect_bain_Ni_ptr);
+        casmutils::xtal::structure_map(*primitive_fcc_Ni_ptr, *perfect_bain_Ni_ptr)[0];
     casmutils::mapping::MappingNode partial_bain =
-        casmutils::xtal::structure_map(*primitive_fcc_Ni_ptr, *partial_bain_Ni_ptr);
+        casmutils::xtal::structure_map(*primitive_fcc_Ni_ptr, *partial_bain_Ni_ptr)[0];
     auto [full_bain_lattice_score, full_bain_basis_score] = casmutils::xtal::structure_score(full_bain);
     auto [partial_bain_lattice_score, partial_bain_basis_score] = casmutils::xtal::structure_score(partial_bain);
     auto [perfect_bain_lattice_score, perfect_bain_basis_score] = casmutils::xtal::structure_score(perfect_bain);
@@ -315,7 +315,7 @@ TEST_F(StructureMapTest, StructureMap)
 
     // map with fcc as reference and displaced fcc as test structure
     casmutils::mapping::MappingNode displaced =
-        casmutils::xtal::structure_map(*primitive_fcc_Ni_ptr, *displaced_fcc_Ni_ptr);
+        casmutils::xtal::structure_map(*primitive_fcc_Ni_ptr, *displaced_fcc_Ni_ptr)[0];
     auto [lattice_score, basis_score] = casmutils::xtal::structure_score(displaced);
     EXPECT_TRUE(std::abs(lattice_score) < 1e-10);
     EXPECT_TRUE(std::abs(basis_score - 0.08) < 1e-10);
