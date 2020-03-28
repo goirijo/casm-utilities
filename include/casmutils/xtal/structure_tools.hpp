@@ -8,7 +8,7 @@ namespace casmutils
 
 namespace mapping
 {
-struct MappingNode;
+struct MappingReport;
 struct MappingInput;
 } // namespace mapping
 
@@ -62,10 +62,10 @@ std::vector<Structure> make_superstructures_of_volume(const Structure& structure
 
 /// Calculates lattice and basis score from ideal lattice, stretch tensor and displacement matrix
 /// Returns scores for lattice (first) and basis (second) as a pair.
-std::pair<double, double> structure_score(const mapping::MappingNode& mapping_data);
+std::pair<double, double> structure_score(const mapping::MappingReport& mapping_data);
 
 /// Map a single structure onto a reference structure with default settings
-std::vector<mapping::MappingNode> structure_map(const Structure& map_reference_struc, const Structure& mappable_struc);
+std::vector<mapping::MappingReport> map_structure(const Structure& map_reference_struc, const Structure& mappable_struc);
 
 } // namespace xtal
 } // namespace casmutils

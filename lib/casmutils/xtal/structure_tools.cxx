@@ -141,18 +141,18 @@ Structure apply_strain(const Structure& struc_ptr, const Eigen::VectorXd& unroll
     return copy_struc;
 }
 
-std::vector<mapping::MappingNode> structure_map(const Structure& map_reference_struc, const Structure& mappable_struc)
+std::vector<mapping::MappingReport> map_structure(const Structure& map_reference_struc, const Structure& mappable_struc)
 {
     mapping::MappingInput input(map_reference_struc);
-    mapping::StructureMapper mapper(input);
-    return mapper.map(mappable_struc);
+    mapping::StructureMapper_f mapper(input);
+    return mapper(mappable_struc);
 }
 
-std::pair<double, double> structure_score(const mapping::MappingNode& mapping_data)
+std::pair<double, double> structure_score(const mapping::MappingReport& mapping_data)
 {
     double lattice_score = CASM::xtal::StrainCostCalculator::iso_strain_cost(
         mapping_data.stretch,
-        mapping_data.child.column_vector_matrix().determinant() / std::max(int(mapping_data.permutation.size()), 1));
+        mapping_data.mapped_lattice.column_vector_matrix().determinant() / std::max(int(mapping_data.permutation.size()), 1));
     double basis_score = (mapping_data.stretch.inverse() * mapping_data.displacement).squaredNorm() /
                          double(std::max(int(mapping_data.permutation.size()), 1));
     return std::make_pair(lattice_score, basis_score);
