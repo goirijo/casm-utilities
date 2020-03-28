@@ -1,5 +1,5 @@
 // These are classes that structure_tools depends on
-#include "../../autotools.hh"
+#include "../../../autotools.hh"
 #include <casmutils/definitions.hpp>
 #include <casmutils/misc.hpp>
 #include <casmutils/stage.hpp>
@@ -299,36 +299,6 @@ TEST_F(StructureToolsTest, MakeSuperstructuresofVol)
         cartesian_basis_is_equal_with_permutation(struc_vol3_1.basis_sites(), vol3_superstrucs[1].basis_sites()));
     EXPECT_TRUE(
         cartesian_basis_is_equal_with_permutation(struc_vol3_2.basis_sites(), vol3_superstrucs[2].basis_sites()));
-}
-
-TEST_F(StructureMapTest, StructureMap)
-{
-    // map with fcc as reference and bcc,fully bained fcc and partially bained fcc as test structures
-    casmutils::mapping::MappingReport full_bain =
-        casmutils::xtal::map_structure(*primitive_fcc_Ni_ptr, *primitive_bcc_Ni_ptr)[0];
-    casmutils::mapping::MappingReport perfect_bain =
-        casmutils::xtal::map_structure(*primitive_fcc_Ni_ptr, *perfect_bain_Ni_ptr)[0];
-    casmutils::mapping::MappingReport partial_bain =
-        casmutils::xtal::map_structure(*primitive_fcc_Ni_ptr, *partial_bain_Ni_ptr)[0];
-
-    auto [full_bain_lattice_score, full_bain_basis_score] = casmutils::xtal::structure_score(full_bain);
-    auto [partial_bain_lattice_score, partial_bain_basis_score] = casmutils::xtal::structure_score(partial_bain);
-    auto [perfect_bain_lattice_score, perfect_bain_basis_score] = casmutils::xtal::structure_score(perfect_bain);
-    // lattice score should be finite and identical for bcc and fully bained no matter the volume
-    EXPECT_TRUE(std::abs(full_bain_lattice_score - perfect_bain_lattice_score) < 1e-10);
-    // partially bained fcc should have a lower score than bcc
-    EXPECT_TRUE(full_bain_lattice_score > partial_bain_lattice_score);
-    // basis scores should be 0
-    EXPECT_TRUE(std::abs(full_bain_basis_score - partial_bain_basis_score) < 1e-10);
-    EXPECT_TRUE(std::abs(perfect_bain_basis_score - partial_bain_basis_score) < 1e-10);
-    EXPECT_TRUE(std::abs(perfect_bain_basis_score) < 1e-10);
-
-    // map with fcc as reference and displaced fcc as test structure
-    casmutils::mapping::MappingReport displaced =
-        casmutils::xtal::map_structure(*primitive_fcc_Ni_ptr, *displaced_fcc_Ni_ptr)[0];
-    auto [lattice_score, basis_score] = casmutils::xtal::structure_score(displaced);
-    EXPECT_TRUE(std::abs(lattice_score) < 1e-10);
-    EXPECT_TRUE(std::abs(basis_score - 0.08) < 1e-10);
 }
 
 int main(int argc, char** argv)

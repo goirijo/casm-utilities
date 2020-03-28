@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <casm/crystallography/BasicStructure.hh>
 #include <casm/crystallography/BasicStructureTools.hh>
-#include <casm/crystallography/LatticeMap.hh>
 #include <casm/crystallography/Niggli.hh>
 #include <casm/crystallography/Strain.hh>
 #include <casm/crystallography/SuperlatticeEnumerator.hh>
@@ -9,7 +8,6 @@
 #include <casm/crystallography/io/VaspIO.hh>
 #include <casmutils/exceptions.hpp>
 #include <casmutils/misc.hpp>
-#include <casmutils/stage.hpp>
 #include <casmutils/xtal/lattice.hpp>
 #include <casmutils/xtal/structure_tools.hpp>
 #include <fstream>
@@ -141,27 +139,11 @@ Structure apply_strain(const Structure& struc_ptr, const Eigen::VectorXd& unroll
     return copy_struc;
 }
 
-std::vector<mapping::MappingReport> map_structure(const Structure& map_reference_struc, const Structure& mappable_struc)
-{
-    mapping::MappingInput input(map_reference_struc);
-    mapping::StructureMapper_f mapper(input);
-    return mapper(mappable_struc);
-}
-
-std::pair<double, double> structure_score(const mapping::MappingReport& mapping_data)
-{
-    double lattice_score = CASM::xtal::StrainCostCalculator::iso_strain_cost(
-        mapping_data.stretch,
-        mapping_data.mapped_lattice.column_vector_matrix().determinant() / std::max(int(mapping_data.permutation.size()), 1));
-    double basis_score = (mapping_data.stretch.inverse() * mapping_data.displacement).squaredNorm() /
-                         double(std::max(int(mapping_data.permutation.size()), 1));
-    return std::make_pair(lattice_score, basis_score);
-}
-
 std::vector<Structure> make_superstructures_of_volume(const Structure& structure, const int volume)
 {
     std::vector<Structure> all_superstructures;
     CASM::xtal::ScelEnumProps enum_props(volume, volume + 1);
+    //TODO: Bring crystal group operations into casmutils
     std::vector<CASM::xtal::SymOp> pg = CASM::xtal::make_point_group(structure.lattice().__get());
     CASM::xtal::SuperlatticeEnumerator lat_enumerator(structure.lattice().__get(), pg, enum_props);
 

@@ -1,5 +1,5 @@
 // These are classes that structure depends on
-#include "../../autotools.hh"
+#include "../../../autotools.hh"
 #include <casmutils/definitions.hpp>
 #include <casmutils/misc.hpp>
 #include <casmutils/xtal/coordinate.hpp>

@@ -55,18 +55,6 @@ Structure apply_strain(const Structure& struc_ptr, const Eigen::VectorXd& unroll
 /// Given a structure, find all the superstructures between volumes min_vol and max_vol
 std::vector<Structure> make_superstructures_of_volume(const Structure& structure, const int volume);
 
-///// Map a vector of structures onto a single reference structures, return a vector of score pairs
-///// for the lattice (first) and basis (second).
-// std::vector<std::pair<double, double>> structure_score(const Structure& map_reference_struc,
-//                                                       const std::vector<Structure>& mappable_struc_vec);
-
-/// Calculates lattice and basis score from ideal lattice, stretch tensor and displacement matrix
-/// Returns scores for lattice (first) and basis (second) as a pair.
-std::pair<double, double> structure_score(const mapping::MappingReport& mapping_data);
-
-/// Map a single structure onto a reference structure with default settings
-std::vector<mapping::MappingReport> map_structure(const Structure& map_reference_struc, const Structure& mappable_struc);
-
 } // namespace xtal
 } // namespace casmutils
 
