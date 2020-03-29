@@ -52,6 +52,11 @@ struct MappingReport
     // This is potentially a superlattice of the originally passed in reference structure
     xtal::Lattice reference_lattice;
     xtal::Lattice mapped_lattice;
+
+    //TODO: Consider having some tags here that mean "use the point group",
+    //so that it can get automatically generated later inside of StructureMapper_f
+    //This way you can use the same strategy (input) object for multiple
+    //reference structures
 };
 
 /// Holds the parameters that are required to conduct a structure map
@@ -67,13 +72,10 @@ struct MappingReport
 /// of the reference)
 struct MappingInput
 {
-private:
-    typedef CASM::xtal::StrucMapping::AllowedSpecies AllowedSpeciesType;
-
 public:
-    // TODO: Rename members with better variables?
-    MappingInput(const casmutils::xtal::Structure& reference)
-        : reference_structure(reference),
+    // TODO: Should this take the structure, or should that happen at the Mapper level?
+    MappingInput()
+        : 
           /* mode(SpecMode::ATOM), */
           strain_weight(0.5),
           max_volume_change(0.5),
@@ -87,19 +89,9 @@ public:
           keep_invalid_mapping_nodes(false),
           impose_reference_lattice(false),
           assume_ideal_lattice(false),
-          assume_ideal_structure(false),
-          lattice_to_impose(reference.lattice()),
-          point_group(CASM::xtal::make_factor_group(reference.__get<CASM::xtal::BasicStructure>()))
+          assume_ideal_structure(false)
     {
-        for (const auto& site : reference.basis_sites())
-        {
-            std::vector<std::string> at_site_occs;
-            at_site_occs.push_back(site.label());
-            allowed_species.push_back(at_site_occs);
-        }
     }
-
-    casmutils::xtal::Structure reference_structure;
 
     double tol;
 
@@ -115,8 +107,6 @@ public:
     double max_cost;
     double min_cost;
 
-    // TODO: Structure point group or lattice point group?
-    std::vector<sym::CartOp> point_group;
     bool impose_reference_lattice;
     /// Set to true if the mapped structure has a lattice that is a direct integer tranformation
     /// of the reference, but the basis is relaxed.
@@ -124,7 +114,6 @@ public:
     /// Set to true if you know that the mapped structure is a direct integer transformation of the reference.
     /// Implies ideal lattice.
     bool assume_ideal_structure;
-    AllowedSpeciesType allowed_species;
 
     // TODO: Unclear what this could be
     int options;
@@ -132,23 +121,42 @@ public:
 private:
     // TODO: This might eventually collapse into ATOM mode only, so it's disabled for now
     /* SpecMode mode; */
-    casmutils::xtal::Lattice lattice_to_impose;
 };
 
 /// Can map a structure to its internal reference can be used for mapping many
 /// different test structures to the same reference.
+/// Default values for the point group is the point group (factor group???) of the reference structure,
+/// and the allowed species are whatever is residing at the reference structure.
 class StructureMapper_f
 {
 public:
-    StructureMapper_f(const MappingInput& input);
+    typedef CASM::xtal::StrucMapping::AllowedSpecies AllowedSpeciesType;
+
+    StructureMapper_f(const xtal::Structure& reference, const MappingInput& input, const std::vector<sym::CartOp>& point_group={}, const AllowedSpeciesType& allowed_species={});
     std::vector<MappingReport> operator()(const xtal::Structure& mappable_struc) const;
 
 private:
-    CASM::xtal::StrucMapper mapper;
+
+    xtal::Structure reference_structure;
+    xtal::Lattice lattice_to_impose;
     MappingInput settings;
+    
+    // TODO: Structure point group or lattice point group? It's always point_group but
+    // in the casm tests it's called factor group?
+    std::vector<sym::CartOp> point_group;
+    AllowedSpeciesType allowed_species;
+
+    CASM::xtal::StrucMapper mapper;
 
     std::vector<mapping::MappingReport> map(const xtal::Structure& mappable_struc) const;
     std::vector<mapping::MappingReport> ideal_map(const xtal::Structure& mappable_struc) const;
+
+    ///Returns the factor group (TODO: should it be the point group? Why is the member called point_group?)
+    ///of the reference structure
+    std::vector<sym::CartOp> make_default_point_group() const;
+
+    ///Returns the current species of the reference structure
+    AllowedSpeciesType make_default_allowed_species() const;
 };
 
 /// Calculates lattice and basis score from ideal lattice, stretch tensor and displacement matrix

@@ -2,6 +2,8 @@
 #define UTILS_SYM_CART_HH
 
 #include <casm/crystallography/SymType.hh>
+#include <variant>
+#include <vector>
 
 namespace casmutils
 {

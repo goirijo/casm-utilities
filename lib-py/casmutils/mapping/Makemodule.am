@@ -1,0 +1,11 @@
+mappingpydir=$(pythondir)/casmutils/mapping
+
+mappingpy_PYTHON=\
+			  lib-py/casmutils/mapping/__init__.py\
+			  lib-py/casmutils/mapping/mapping.py\
+			  lib-py/casmutils/mapping/structure.py
+
+mappingpy_LTLIBRARIES=\
+				   _mapping.la
+
+include lib-py/casmutils/mapping/_mapping/Makemodule.am

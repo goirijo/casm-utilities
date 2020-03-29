@@ -153,7 +153,7 @@ TEST_F(StructureToolsTest, WritePOSCAR)
 {
     // checks to see if writing a POSCAR from a structure
     // can be read as the same structure
-    casmutils::fs::path write_path(casmutils::autotools::input_filesdir / "simple_cubic_Ni_copy.vasp");
+    casmutils::fs::path write_path(casmutils::autotools::output_filesdir / "simple_cubic_Ni_copy.vasp");
     casmutils::xtal::write_poscar(*cubic_Ni_struc_ptr, write_path);
     const Structure pos = Structure::from_poscar(write_path);
     EXPECT_TRUE(

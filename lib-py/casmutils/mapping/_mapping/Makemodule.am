@@ -1,0 +1,9 @@
+_mapping_la_SOURCES=\
+				lib-py/casmutils/mapping/_mapping/mapping-py.cxx
+
+_mapping_la_LIBADD=\
+				libcasmutils.la
+
+_mapping_la_LDFLAGS=\
+				 -module
+
