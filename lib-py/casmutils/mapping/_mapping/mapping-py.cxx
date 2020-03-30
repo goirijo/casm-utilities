@@ -26,7 +26,16 @@ PYBIND11_MODULE(_mapping, m)
                , such as crystal structures or clusters.";
 
     {
-        class_<mapping::MappingReport>(m, "MappingReport");
+        class_<mapping::MappingReport>(m, "MappingReport")
+            .def_readonly("isometry",&mapping::MappingReport::isometry)
+            .def_readonly("stretch",&mapping::MappingReport::stretch)
+            .def_readonly("translation",&mapping::MappingReport::translation)
+            .def_readonly("displacement",&mapping::MappingReport::displacement)
+            .def_readonly("permutation",&mapping::MappingReport::permutation)
+            .def_readonly("lattice_cost",&mapping::MappingReport::lattice_cost)
+            .def_readonly("basis_cost",&mapping::MappingReport::basis_cost)
+            .def_readonly("reference_lattice",&mapping::MappingReport::reference_lattice)
+            .def_readonly("mapped_lattice",&mapping::MappingReport::mapped_lattice);
     }
 
     {

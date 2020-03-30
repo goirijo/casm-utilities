@@ -30,6 +30,7 @@ public:
 
     /// Return the third vector of the lattice
     Eigen::Vector3d c() const { return this->operator[](2); }
+
     /// Return the volume of this lattice
     double volume() const { return this->__get().volume(); }
 

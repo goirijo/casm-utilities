@@ -1,0 +1,9 @@
+_sym_la_SOURCES=\
+				lib-py/casmutils/sym/_sym/sym-py.cxx
+
+_sym_la_LIBADD=\
+				libcasmutils.la
+
+_sym_la_LDFLAGS=\
+				 -module
+

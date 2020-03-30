@@ -10,7 +10,7 @@ namespace casmutils
 namespace sym
 {
 typedef CASM::xtal::SymOp CartOp;
-/* using CASM::xtal::operator*; */
+using CASM::xtal::operator*;
 }
 }
 

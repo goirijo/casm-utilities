@@ -4,3 +4,4 @@ casmutilspy_PYTHON=\
 include lib-py/casmutils/stage/Makemodule.am
 include lib-py/casmutils/xtal/Makemodule.am
 include lib-py/casmutils/mapping/Makemodule.am
+include lib-py/casmutils/sym/Makemodule.am

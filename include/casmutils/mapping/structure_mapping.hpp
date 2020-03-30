@@ -53,15 +53,9 @@ struct MappingReport
     xtal::Lattice reference_lattice;
     xtal::Lattice mapped_lattice;
 
-    //TODO: Consider having some tags here that mean "use the point group",
-    //so that it can get automatically generated later inside of StructureMapper_f
-    //This way you can use the same strategy (input) object for multiple
-    //reference structures
 };
 
-/// Holds the parameters that are required to conduct a structure map
-/// This includes: the reference structure, a point group that determines
-/// equivalence,the allowed species on each site of the reference structure,
+/// Holds the parameters that are required to conduct a structure map, including
 /// the lattice vs. basis weighting, the maximum allowed volume change from
 /// the reference structure, options to the algorithm (sym_basis,sym_strain,robust,strict), tolerance
 /// for comparisons, the minimum allowed vacancy concentration, the
@@ -79,7 +73,7 @@ public:
           /* mode(SpecMode::ATOM), */
           strain_weight(0.5),
           max_volume_change(0.5),
-          options(1u << 1), //?????
+          options(1u << 1), //TODO: What is this????? Completely opaque 
           tol(CASM::TOL),
           min_va_frac(0.0),
           max_va_frac(0.5),
@@ -117,6 +111,11 @@ public:
 
     // TODO: Unclear what this could be
     int options;
+    
+    //TODO: Consider having some tags here that mean "use the point group",
+    //so that it can get automatically generated later inside of StructureMapper_f
+    //This way you can use the same strategy (input) object for multiple
+    //reference structures
 
 private:
     // TODO: This might eventually collapse into ATOM mode only, so it's disabled for now
