@@ -27,9 +27,9 @@ class CoordinateTest(unittest.TestCase):
        self.assertTrue(np.allclose(self.frac_coords,self.coord2.frac(lat)))
 
     def test_within(self):
-        for i in range(-2,2):
-            for j in range(-2,2):
-                for l in range(-2,2):
+        for i in range(-2,3):
+            for j in range(-2,3):
+                for l in range(-2,3):
                     lattice_translation = cu.xtal.Coordinate.from_fractional(i,j,l,self.lat)
                     translated_coordinate = self.coord0 + lattice_translation;
                     translated_coordinate._bring_within_const(self.lat)
