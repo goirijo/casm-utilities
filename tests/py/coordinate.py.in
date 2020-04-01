@@ -59,7 +59,6 @@ class CoordinateTest(unittest.TestCase):
         lat_translation = cu.xtal.Coordinate.from_fractional(np.array([2,3,4]),self.lat)
         translated_coord = self.coord0+lat_translation
         withined_coord = translated_coord.bring_within(self.lat)
-
         self.assertFalse(self.coord0==translated_coord)
         self.assertTrue(self.coord0==withined_coord)
 

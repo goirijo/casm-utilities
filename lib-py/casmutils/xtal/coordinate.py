@@ -80,6 +80,19 @@ class _Coordinate(_xtal.Coordinate):
         """
         return cls(super().from_fractional(coords, lat)._cart_const())
 
+    def __add__(self, other):
+        """Adds the "other" value to the Coordinate instance
+
+        Parameters
+        ----------
+        other : Coordinate
+
+        Returns
+        -------
+        Coordinate
+
+        """
+        return self.__class__(super().__add__(other)._cart_const())
 
     def __eq__(self, other):
         """Passes the "other" value to the current comparator
@@ -148,20 +161,6 @@ class Coordinate(_Coordinate):
 
         """
         return self._bring_within_const(lat)
-
-    def __add__(self, other):
-        """Adds the "other" value to the Coordinate instance
-
-        Parameters
-        ----------
-        other : Coordinate
-
-        Returns
-        -------
-        Coordinate
-
-        """
-        return Coordinate(super().__add__(other)._cart_const())
 
     def __iadd__(self, other):
         """Overloading the += operator defined the parent
