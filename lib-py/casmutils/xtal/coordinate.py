@@ -48,6 +48,24 @@ class _Coordinate(_xtal.Coordinate):
         """
         self._equals=method(self, *args)
 
+    @classmethod
+    def from_fractional(cls, coords, lat):
+        """Constructs a Coordinate from
+        fractional coordinates
+
+        Parameters
+        ----------
+        coords : np.array
+        lat : Lattice
+
+        Returns
+        -------
+        Coordinate
+
+        """
+        return cls(_xtal.Coordinate.from_fractional(coords, lat)._cart_const())
+
+
     def __eq__(self, other):
         """Passes the "other" value to the current comparator
         stored in the Coordinate instance and returns the evaluation
@@ -101,6 +119,36 @@ class Coordinate(_Coordinate):
         """
         return self._bring_within_const(lat)
 
+    def __add__(self, other):
+        """Adds the "other" value to the Coordinate instance
+
+        Parameters
+        ----------
+        other : Coordinate
+
+        Returns
+        -------
+        Coordinate
+
+        """
+        return Coordinate(_xtal.Coordinate.__add__(self,other)._cart_const())
+
+    def __iadd__(self, other):
+        """Overloading the += operator defined the parent
+        class to do nothing
+
+        Parameters
+        ----------
+        other : Coordinate
+
+        Returns
+        -------
+        TODO
+
+        """
+        pass
+
+
 class MutableCoordinate(_Coordinate):
 
     """Mutable Coordinate class. Defined as the Cartesian
@@ -108,7 +156,7 @@ class MutableCoordinate(_Coordinate):
     periodicity."""
 
     def bring_within(self, lat):
-        """Apply lattice translations to self 
+        """Apply lattice translations to self
         that bring it within the unit cell of the
         given lattice
 
@@ -124,3 +172,32 @@ class MutableCoordinate(_Coordinate):
         self._bring_within(lat)
         return
 
+    def __add__(self, other):
+        """Adds the "other" value to the
+        MutableCoordinate instance
+
+        Parameters
+        ----------
+        other : MutableCoordinate
+
+        Returns
+        -------
+        MutableCoordinate
+
+        """
+        return MutableCoordinate(_xtal.Coordinate.__add__(self,other)._cart_const())
+
+    def __iadd__(self, other):
+        """Adds the "other" value to the current MutableCoordinate
+        instance and makes it the cuurent instance
+
+        Parameters
+        ----------
+        other : MutableCoordinate
+
+        Returns
+        -------
+        MutableCoordinate
+
+        """
+        return MutableCoordinate(_xtal.Coordinate.__iadd__(self,other)._cart_const())
