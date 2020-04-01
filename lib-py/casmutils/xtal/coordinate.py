@@ -78,7 +78,7 @@ class _Coordinate(_xtal.Coordinate):
         Coordinate
 
         """
-        return cls(_xtal.Coordinate.from_fractional(coords, lat)._cart_const())
+        return cls(super().from_fractional(coords, lat)._cart_const())
 
 
     def __eq__(self, other):
