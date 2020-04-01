@@ -217,21 +217,6 @@ class MutableCoordinate(_Coordinate):
         self._bring_within(lat)
         return
 
-    def __add__(self, other):
-        """Adds the "other" value to the
-        MutableCoordinate instance
-
-        Parameters
-        ----------
-        other : MutableCoordinate
-
-        Returns
-        -------
-        MutableCoordinate
-
-        """
-        return MutableCoordinate(super().__add__(other)._cart_const())
-
     def __iadd__(self, other):
         """Adds the "other" value to the current MutableCoordinate
         instance and makes it the cuurent instance
