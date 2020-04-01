@@ -8,22 +8,22 @@ class CoordinateTest(unittest.TestCase):
     def setUp(self):
         self.lattice_matrix = np.array([[0,0.5,0.5],[0.5,0,0.5],[0.5,0.5,0]])
         self.raw_coord = np.array([0.1,0.2,0.3])
-        self.frac_coords = np.linalg.inv(self.lattice_matrix)*self.raw_coord
-
-        self.lat = cu.xtal.Lattice(self.lattice_matrix)
+        self.frac_coords = np.dot(np.linalg.inv(self.lattice_matrix),self.raw_coord)
+        self.lat = cu.xtal.Lattice(*self.lattice_matrix)
         self.coord0 = cu.xtal.Coordinate(self.raw_coord)
-        self.coord1 = cu.xtal.Coordinate(self.raw_coord[0], self.raw_coord[1], self.raw_coord[2])
+        self.coord1 = cu.xtal.Coordinate(self.raw_coord)
         self.coord2 = cu.xtal.Coordinate.from_fractional(self.frac_coords,self.lat)
         self.coord0.set_compare_method(cu.xtal.coordinate.Equals,1e-5)
 
     def test_construct(self):
+        print(self.coord2.cart())
         self.assertTrue(self.coord0==self.coord1)
         self.assertTrue(self.coord0==self.coord2)
 
     def test_cart_retrieve(self):
         self.assertTrue(np.array_equal(self.coord0.cart(),self.raw_coord))
 
-   def test_frac_retrieve(self):
+    def test_frac_retrieve(self):
        self.assertTrue(np.allclose(self.frac_coords,self.coord2.frac(lat)))
 
     def test_within(self):
