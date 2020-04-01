@@ -7,6 +7,21 @@ class _Coordinate(_xtal.Coordinate):
     """Base class for both mutable and immutable Coordinate classes.
     Defines the functions that should be common for both."""
 
+    def __init__(self, coord):
+        """constructor that inherits from the
+        parent _xtal.Coordinate
+
+        parameters
+        ----------
+        coord : np.array
+
+        returns
+        -------
+        TODO
+
+        """
+        super().__init__(coord)
+
     def cart(self):
         """Return the Cartesian values of the coordinate
         Returns
@@ -103,6 +118,21 @@ class Coordinate(_Coordinate):
     coodrinates, can handle opperations related to lattice
     periodicity."""
 
+    def __init__(self, coord):
+        """constructor that inherits from the
+        parent _Coordinate
+
+        parameters
+        ----------
+        coord : np.array
+
+        returns
+        -------
+        TODO
+
+        """
+        super().__init__(coord)
+
     def bring_within(self, lat):
         """Returns the coordinate after applying lattice
         translations that bring it within the unit cell of the
@@ -131,7 +161,7 @@ class Coordinate(_Coordinate):
         Coordinate
 
         """
-        return Coordinate(_xtal.Coordinate.__add__(self,other)._cart_const())
+        return Coordinate(super().__add__(other)._cart_const())
 
     def __iadd__(self, other):
         """Overloading the += operator defined the parent
@@ -154,6 +184,22 @@ class MutableCoordinate(_Coordinate):
     """Mutable Coordinate class. Defined as the Cartesian
     coodrinates, can handle opperations related to lattice
     periodicity."""
+
+    def __init__(self, coord):
+        """constructor that inherits from the
+        parent _Coordinate
+
+        parameters
+        ----------
+        coord : np.array
+
+        returns
+        -------
+        TODO
+
+        """
+        super().__init__(coord)
+
 
     def bring_within(self, lat):
         """Apply lattice translations to self
@@ -185,7 +231,7 @@ class MutableCoordinate(_Coordinate):
         MutableCoordinate
 
         """
-        return MutableCoordinate(_xtal.Coordinate.__add__(self,other)._cart_const())
+        return MutableCoordinate(super().__add__(other)._cart_const())
 
     def __iadd__(self, other):
         """Adds the "other" value to the current MutableCoordinate
@@ -200,4 +246,5 @@ class MutableCoordinate(_Coordinate):
         MutableCoordinate
 
         """
-        return MutableCoordinate(_xtal.Coordinate.__iadd__(self,other)._cart_const())
+        return MutableCoordinate(super().__iadd__(other)._cart_const())
+
