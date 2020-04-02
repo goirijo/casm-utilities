@@ -8,8 +8,10 @@ class _Coordinate:
     Defines the functions that should be common for both."""
 
     def __init__(self, coord):
-        """constructor that inherits from the
-        parent _xtal.Coordinate
+        """create an instance of _xtal.Coordinate
+        as a container (_Coordinate object) which
+        can be used to access the member functions
+        of _xtal.Coordinate
 
         parameters
         ----------
@@ -24,6 +26,7 @@ class _Coordinate:
 
     def cart(self):
         """Return the Cartesian values of the coordinate
+
         Returns
         -------
         np.array
@@ -46,23 +49,6 @@ class _Coordinate:
         """
         return self._xtalCoordinate._frac_const(lat)
 
-    def set_compare_method(self, method, *args):
-        """Determines what strategy should be used for comparison methods
-        of Coordinates (e.g. compare Cartesian values within tolerance, or
-        compare after bringing Coordinate within a unit cell).
-
-        Parameters
-        ----------
-        method : Functor class that performs the evaluation
-        *args : Arguments needed to construct method
-
-        Returns
-        -------
-        TODO
-
-        """
-        self._equals=method(self._xtalCoordinate, *args)
-
     @classmethod
     def from_fractional(cls, coords, lat):
         """Constructs a Coordinate from
@@ -80,19 +66,22 @@ class _Coordinate:
         """
         return cls(_xtal.Coordinate.from_fractional(coords,lat)._cart_const())
 
-    def __add__(self, other):
-        """Adds the "other" value to the Coordinate instance
+    def set_compare_method(self, method, *args):
+        """Determines what strategy should be used for comparison methods
+        of Coordinates (e.g. compare Cartesian values within tolerance, or
+        compare after bringing Coordinate within a unit cell).
 
         Parameters
         ----------
-        other : Coordinate
+        method : Functor class that performs the evaluation
+        *args : Arguments needed to construct method
 
         Returns
         -------
-        Coordinate
+        TODO
 
         """
-        return self.__class__(self._xtalCoordinate.__add__(_xtal.Coordinate(other.cart()))._cart_const())
+        self._equals=method(self._xtalCoordinate, *args)
 
     def __eq__(self, other):
         """Passes the "other" value to the current comparator
@@ -125,6 +114,20 @@ class _Coordinate:
         """
         return not self==other
 
+    def __add__(self, other):
+        """Adds the "other" value to the Coordinate instance
+
+        Parameters
+        ----------
+        other : Coordinate
+
+        Returns
+        -------
+        Coordinate
+
+        """
+        return self.__class__(self._xtalCoordinate.__add__(_xtal.Coordinate(other.cart()))._cart_const())
+
 class Coordinate(_Coordinate):
 
     """Immutable Coordinate class. Defined as the Cartesian
@@ -132,7 +135,7 @@ class Coordinate(_Coordinate):
     periodicity."""
 
     def __init__(self, coord):
-        """constructor that inherits from the
+        """Constructor inheriting from the
         parent _Coordinate
 
         parameters
@@ -182,7 +185,6 @@ class MutableCoordinate(_Coordinate):
 
         """
         super().__init__(coord)
-
 
     def bring_within(self, lat):
         """Apply lattice translations to self
