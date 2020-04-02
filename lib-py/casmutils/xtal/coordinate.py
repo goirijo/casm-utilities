@@ -2,7 +2,7 @@ from . import _xtal
 
 Equals=_xtal.CoordinateEquals_f
 
-class _Coordinate(_xtal.Coordinate):
+class _Coordinate:
 
     """Base class for both mutable and immutable Coordinate classes.
     Defines the functions that should be common for both."""
@@ -20,7 +20,7 @@ class _Coordinate(_xtal.Coordinate):
         TODO
 
         """
-        super().__init__(coord)
+        self._xtalCoordinate = _xtal.Coordinate(coord)
 
     def cart(self):
         """Return the Cartesian values of the coordinate
@@ -29,7 +29,7 @@ class _Coordinate(_xtal.Coordinate):
         np.array
 
         """
-        return self._cart_const()
+        return self._xtalCoordinate._cart_const()
 
     def frac(self, lat):
         """Returns the fractional values of the coordinate
@@ -44,7 +44,7 @@ class _Coordinate(_xtal.Coordinate):
         np.array
 
         """
-        return self._frac_const(lat)
+        return self._xtalCoordinate._frac_const(lat)
 
     def set_compare_method(self, method, *args):
         """Determines what strategy should be used for comparison methods
@@ -61,7 +61,7 @@ class _Coordinate(_xtal.Coordinate):
         TODO
 
         """
-        self._equals=method(self, *args)
+        self._equals=method(self._xtalCoordinate, *args)
 
     @classmethod
     def from_fractional(cls, coords, lat):
@@ -78,7 +78,7 @@ class _Coordinate(_xtal.Coordinate):
         Coordinate
 
         """
-        return cls(super().from_fractional(coords, lat)._cart_const())
+        return cls(_xtal.Coordinate.from_fractional(coords,lat)._cart_const())
 
     def __add__(self, other):
         """Adds the "other" value to the Coordinate instance
@@ -92,7 +92,7 @@ class _Coordinate(_xtal.Coordinate):
         Coordinate
 
         """
-        return self.__class__(super().__add__(other)._cart_const())
+        return self.__class__(self._xtalCoordinate.__add__(_xtal.Coordinate(other.cart()))._cart_const())
 
     def __eq__(self, other):
         """Passes the "other" value to the current comparator
@@ -107,7 +107,7 @@ class _Coordinate(_xtal.Coordinate):
         bool
 
         """
-        return self._equals(other)
+        return self._equals(_xtal.Coordinate(other.cart()))
 
     def __ne__(self, other):
         """Passes the "other" value to the current comparator
@@ -160,23 +160,7 @@ class Coordinate(_Coordinate):
         Coordinate
 
         """
-        return self._bring_within_const(lat)
-
-    def __iadd__(self, other):
-        """Overloading the += operator defined the parent
-        class to do nothing
-
-        Parameters
-        ----------
-        other : Coordinate
-
-        Returns
-        -------
-        TODO
-
-        """
-        pass
-
+        return self.__class__(self._xtalCoordinate._bring_within_const(lat)._cart_const())
 
 class MutableCoordinate(_Coordinate):
 
@@ -214,7 +198,7 @@ class MutableCoordinate(_Coordinate):
         None
 
         """
-        self._bring_within(lat)
+        self._xtalCoordinate._bring_within(lat)
         return
 
     def __iadd__(self, other):
@@ -230,5 +214,5 @@ class MutableCoordinate(_Coordinate):
         MutableCoordinate
 
         """
-        return MutableCoordinate(super().__iadd__(other)._cart_const())
+        return self.__class__(self._xtalCoordinate.__iadd__(_xtal.Coordinate(other.cart()))._cart_const())
 
