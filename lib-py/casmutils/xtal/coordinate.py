@@ -7,6 +7,9 @@ class _Coordinate:
     """Base class for both mutable and immutable Coordinate classes.
     Defines the functions that should be common for both."""
 
+    """Tolerance"""
+    tol = 1e-5
+
     def __init__(self, coord):
         """create an instance of _xtal.Coordinate
         as a container (_Coordinate object) which
@@ -16,10 +19,6 @@ class _Coordinate:
         Parameters
         ----------
         coord : np.array
-
-        Returns
-        -------
-        TODO
 
         """
         if coord is _xtal.Coordinate:
@@ -83,7 +82,7 @@ class _Coordinate:
 
         Returns
         -------
-        Coordinate
+        cls
 
         """
         py_binded = _xtal.Coordinate.from_fractional(coords,lat)
@@ -98,10 +97,6 @@ class _Coordinate:
         ----------
         method : Functor class that performs the evaluation
         *args : Arguments needed to construct method
-
-        Returns
-        -------
-        TODO
 
         """
         self._equals=method(self._pybind_value, *args)
@@ -120,7 +115,7 @@ class _Coordinate:
 
         """
         if hasattr(self,'_equals') is False:
-            self._equals=Equals(self._pybind_value,1e-5)
+            self._equals=Equals(self._pybind_value,self.tol)
 
         return self._equals(other._pybind_value)
 
@@ -149,7 +144,7 @@ class _Coordinate:
 
         Returns
         -------
-        Coordinate
+        _Coordinate
 
         """
         py_binded = self._pybind_value + other._pybind_value
@@ -168,10 +163,6 @@ class Coordinate(_Coordinate):
         Parameters
         ----------
         coord : np.array
-
-        Returns
-        -------
-        TODO
 
         """
         super().__init__(coord)
@@ -206,10 +197,6 @@ class MutableCoordinate(_Coordinate):
         Parameters
         ----------
         coord : np.array
-
-        Returns
-        -------
-        TODO
 
         """
         super().__init__(coord)
