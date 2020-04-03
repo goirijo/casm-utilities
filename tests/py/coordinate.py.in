@@ -71,7 +71,6 @@ class CoordinateTest(unittest.TestCase):
     def test_pe_operator(self):
         sum_cart = np.array([0.3,0.6,0.9])
         sum_coord = cu.xtal.MutableCoordinate(sum_cart)
-        sum_coord.set_compare_method(cu.xtal.coordinate.Equals,1e-5)
         self.coord0m += self.coord1m
         self.assertTrue(sum_coord==self.coord0m)
 

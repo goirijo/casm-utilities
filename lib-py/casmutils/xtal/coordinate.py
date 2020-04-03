@@ -119,6 +119,9 @@ class _Coordinate:
         bool
 
         """
+        if hasattr(self,'_equals') is False:
+            self._equals=Equals(self._pybind_value,1e-5)
+
         return self._equals(other._pybind_value)
 
     def __ne__(self, other):
