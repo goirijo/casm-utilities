@@ -77,9 +77,16 @@ PYBIND11_MODULE(_xtal, m)
             .def(init<const xtal::Coordinate&, const std::string&>())
             .def("__str__", __str__)
             .def("cart", &xtal::Site::cart)
-            .def("frac", &xtal::Site::frac);
+            .def("frac", &xtal::Site::frac)
+            .def("label", &xtal::Site::label);
     }
-
+    
+    {
+        class_<xtal::SiteEquals_f>(m, "SiteEquals_f")
+            .def(init<xtal::Site, double())
+            .def("__call__", &xtal::SiteEquals_f::operator());
+    }
+    
     {
         using namespace wrappy::RockSaltToggler;
         typedef enumeration::RockSaltOctahedraToggler RSOT;

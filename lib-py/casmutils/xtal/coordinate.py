@@ -17,7 +17,7 @@ class _Coordinate:
         ----------
         coord : np.array
 
-        returns
+        Returns
         -------
         TODO
 
