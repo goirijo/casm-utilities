@@ -7,19 +7,18 @@ class _Coordinate:
     """Base class for both mutable and immutable Coordinate classes.
     Defines the functions that should be common for both."""
 
+    """Tolerance"""
+    tol = 1e-5
+
     def __init__(self, coord):
         """create an instance of _xtal.Coordinate
         as a container (_Coordinate object) which
         can be used to access the member functions
         of _xtal.Coordinate
 
-        Paremeters
+        Parameters
         ----------
         coord : np.array
-
-        Returns
-        -------
-        TODO
 
         """
         if coord is _xtal.Coordinate:
@@ -42,7 +41,7 @@ class _Coordinate:
         """Returns the fractional values of the coordinate
         relative to the given lattice
 
-        Paremeters
+        Parameters
         ----------
         lat : Lattice
 
@@ -76,14 +75,14 @@ class _Coordinate:
         """Constructs a Coordinate from
         fractional coordinates
 
-        Paremeters
+        Parameters
         ----------
         coords : np.array
         lat : Lattice
 
         Returns
         -------
-        Coordinate
+        cls
 
         """
         py_binded = _xtal.Coordinate.from_fractional(coords,lat)
@@ -94,14 +93,10 @@ class _Coordinate:
         of Coordinates (e.g. compare Cartesian values within tolerance, or
         compare after bringing Coordinate within a unit cell).
 
-        Paremeters
+        Parameters
         ----------
         method : Functor class that performs the evaluation
         *args : Arguments needed to construct method
-
-        Returns
-        -------
-        TODO
 
         """
         self._equals=method(self._pybind_value, *args)
@@ -110,7 +105,7 @@ class _Coordinate:
         """Passes the "other" value to the current comparator
         stored in the Coordinate instance and returns the evaluation
 
-        Paremeters
+        Parameters
         ----------
         other : Coordinate
 
@@ -120,7 +115,7 @@ class _Coordinate:
 
         """
         if hasattr(self,'_equals') is False:
-            self._equals=Equals(self._pybind_value,1e-5)
+            self._equals=Equals(self._pybind_value,self.tol)
 
         return self._equals(other._pybind_value)
 
@@ -129,7 +124,7 @@ class _Coordinate:
         stored in the Coordinate instance and returns the
         opposite of the evaluation
 
-        Paremeters
+        Parameters
         ----------
         other : Coordinate
 
@@ -143,7 +138,7 @@ class _Coordinate:
     def __add__(self, other):
         """Adds the "other" value to the Coordinate instance
 
-        Paremeters
+        Parameters
         ----------
         other : Coordinate
 
@@ -165,13 +160,9 @@ class Coordinate(_Coordinate):
         """Constructor inheriting from the
         parent _Coordinate
 
-        Paremeters
+        Parameters
         ----------
         coord : np.array
-
-        Returns
-        -------
-        TODO
 
         """
         super().__init__(coord)
@@ -181,7 +172,7 @@ class Coordinate(_Coordinate):
         translations that bring it within the unit cell of the
         given lattice
 
-        Paremeters
+        Parameters
         ----------
         lat : Lattice
 
@@ -203,13 +194,9 @@ class MutableCoordinate(_Coordinate):
         """constructor that inherits from the
         parent _Coordinate
 
-        Paremeters
+        Parameters
         ----------
         coord : np.array
-
-        Returns
-        -------
-        TODO
 
         """
         super().__init__(coord)
@@ -219,7 +206,7 @@ class MutableCoordinate(_Coordinate):
         that bring it within the unit cell of the
         given lattice
 
-        Paremeters
+        Parameters
         ----------
         lat : Lattice
 
@@ -235,7 +222,7 @@ class MutableCoordinate(_Coordinate):
         """Adds the "other" value to the current MutableCoordinate
         instance and makes it the cuurent instance
 
-        Paremeters
+        Parameters
         ----------
         other : MutableCoordinate
 
