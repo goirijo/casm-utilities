@@ -22,7 +22,11 @@ class _Coordinate:
         TODO
 
         """
-        self._xtalCoordinate = _xtal.Coordinate(coord)
+        if coord is _xtal.Coordinate:
+            self._pybind_value = None
+
+        else:
+            self._pybind_value = _xtal.Coordinate(coord)
 
     def cart(self):
         """Return the Cartesian values of the coordinate
@@ -32,7 +36,7 @@ class _Coordinate:
         np.array
 
         """
-        return self._xtalCoordinate._cart_const()
+        return self._pybind_value._cart_const()
 
     def frac(self, lat):
         """Returns the fractional values of the coordinate
@@ -47,7 +51,25 @@ class _Coordinate:
         np.array
 
         """
-        return self._xtalCoordinate._frac_const(lat)
+        return self._pybind_value._frac_const(lat)
+
+    @classmethod
+    def _from_pybind(cls, py_bind_value):
+        """Returns a constructed _Coordinate from
+        a given _xtal.Coorindate value
+
+        Paremeters
+        ----------
+        py_bind_value = _xtal.Coordinate
+
+        Returns
+        -------
+        _Coordinate
+
+        """
+        value = cls(_xtal.Coordinate)
+        value._pybind_value = py_bind_value
+        return value
 
     @classmethod
     def from_fractional(cls, coords, lat):
@@ -64,7 +86,8 @@ class _Coordinate:
         Coordinate
 
         """
-        return cls(_xtal.Coordinate.from_fractional(coords,lat)._cart_const())
+        py_binded = _xtal.Coordinate.from_fractional(coords,lat)
+        return cls._from_pybind(py_binded)
 
     def set_compare_method(self, method, *args):
         """Determines what strategy should be used for comparison methods
@@ -81,7 +104,7 @@ class _Coordinate:
         TODO
 
         """
-        self._equals=method(self._xtalCoordinate, *args)
+        self._equals=method(self._pybind_value, *args)
 
     def __eq__(self, other):
         """Passes the "other" value to the current comparator
@@ -96,7 +119,7 @@ class _Coordinate:
         bool
 
         """
-        return self._equals(_xtal.Coordinate(other.cart()))
+        return self._equals(other._pybind_value)
 
     def __ne__(self, other):
         """Passes the "other" value to the current comparator
@@ -126,7 +149,8 @@ class _Coordinate:
         Coordinate
 
         """
-        return self.__class__(self._xtalCoordinate.__add__(_xtal.Coordinate(other.cart()))._cart_const())
+        py_binded = self._pybind_value + other._pybind_value
+        return self._from_pybind(py_binded)
 
 class Coordinate(_Coordinate):
 
@@ -163,7 +187,8 @@ class Coordinate(_Coordinate):
         Coordinate
 
         """
-        return self.__class__(self._xtalCoordinate._bring_within_const(lat)._cart_const())
+        py_binded = self._pybind_value._bring_within_const(lat)
+        return self._from_pybind(py_binded)
 
 class MutableCoordinate(_Coordinate):
 
@@ -200,7 +225,7 @@ class MutableCoordinate(_Coordinate):
         None
 
         """
-        self._xtalCoordinate._bring_within(lat)
+        self._pybind_value._bring_within(lat)
         return
 
     def __iadd__(self, other):
@@ -216,5 +241,5 @@ class MutableCoordinate(_Coordinate):
         MutableCoordinate
 
         """
-        return self.__class__(self._xtalCoordinate.__iadd__(_xtal.Coordinate(other.cart()))._cart_const())
-
+        self._pybind_value += other._pybind_value
+        return self
