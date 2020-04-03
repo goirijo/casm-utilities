@@ -144,7 +144,7 @@ class _Coordinate:
 
         Returns
         -------
-        _Coordinate
+        Coordinate
 
         """
         py_binded = self._pybind_value + other._pybind_value
