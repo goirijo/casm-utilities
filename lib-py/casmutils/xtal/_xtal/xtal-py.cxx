@@ -83,7 +83,7 @@ PYBIND11_MODULE(_xtal, m)
     
     {
         class_<xtal::SiteEquals_f>(m, "SiteEquals_f")
-            .def(init<xtal::Site, double())
+            .def(init<xtal::Site, double>())
             .def("__call__", &xtal::SiteEquals_f::operator());
     }
     

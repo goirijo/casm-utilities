@@ -1,0 +1,43 @@
+#!@PYTHON@
+
+import unittest
+import casmutils as cu
+import numpy as np
+
+class SiteTest(unittest.TestCase):
+    def setUp(self):
+        """Setting up numpy arrays and labels for atoms"""
+        self.lattice_matrix = np.array([[0,0.5,0.5],[0.5,0,0.5],[0.5,0.5,0]])
+        self.raw_coord0 = np.array([0.1,0.2,0.3])
+        self.raw_coord1 = np.array([0.2,0.4,0.6])
+        self.atom0 = "O"
+        self.atom1 = "P"
+
+        """Computing fractional coordinates manually"""
+        self.frac_coords0 = np.dot(np.linalg.inv(self.lattice_matrix),self.raw_coord0)
+
+        """Constructing required classes"""
+        self.lat = cu.xtal.Lattice(*self.lattice_matrix)
+        self.site0 = cu.xtal.Site(self.raw_coord0,self.atom0)
+        self.site1 = cu.xtal.Site(self.raw_coord1,self.atom1)
+        self.site2 = cu.xtal.Site(self.raw_coord0,self.atom1)
+
+    def test_construct(self):
+        self.assertFalse(self.site0==self.site1)
+        self.assertTrue(self.site0!=self.site1)
+        self.assertFalse(self.site2==self.site0)
+        self.assertFalse(self.site2==self.site1)
+
+    def test_cart(self):
+        self.assertTrue(np.array_equal(self.site0.cart(),self.raw_coord0))
+
+    def test_frac(self):
+        self.assertTrue(np.array_equal(self.site0.frac(self.lat),self.frac_coords0))
+
+    def test_label(self):
+        self.assertTrue(self.site0.label() == self.atom0)
+        self.assertTrue(self.site1.label() == self.atom1)
+        self.assertFalse(self.site1.label() == self.atom0)
+
+if __name__ == '__main__':
+    unittest.main()
