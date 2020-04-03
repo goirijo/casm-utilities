@@ -13,7 +13,7 @@ class _Coordinate:
         can be used to access the member functions
         of _xtal.Coordinate
 
-        parameters
+        Parameters
         ----------
         coord : np.array
 
@@ -165,11 +165,11 @@ class Coordinate(_Coordinate):
         """Constructor inheriting from the
         parent _Coordinate
 
-        parameters
+        Parameters
         ----------
         coord : np.array
 
-        returns
+        Returns
         -------
         TODO
 
@@ -203,11 +203,11 @@ class MutableCoordinate(_Coordinate):
         """constructor that inherits from the
         parent _Coordinate
 
-        parameters
+        Parameters
         ----------
         coord : np.array
 
-        returns
+        Returns
         -------
         TODO
 
