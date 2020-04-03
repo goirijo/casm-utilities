@@ -13,7 +13,7 @@ class _Coordinate:
         can be used to access the member functions
         of _xtal.Coordinate
 
-        parameters
+        Paremeters
         ----------
         coord : np.array
 
@@ -42,7 +42,7 @@ class _Coordinate:
         """Returns the fractional values of the coordinate
         relative to the given lattice
 
-        Parameters
+        Paremeters
         ----------
         lat : Lattice
 
@@ -76,7 +76,7 @@ class _Coordinate:
         """Constructs a Coordinate from
         fractional coordinates
 
-        Parameters
+        Paremeters
         ----------
         coords : np.array
         lat : Lattice
@@ -94,7 +94,7 @@ class _Coordinate:
         of Coordinates (e.g. compare Cartesian values within tolerance, or
         compare after bringing Coordinate within a unit cell).
 
-        Parameters
+        Paremeters
         ----------
         method : Functor class that performs the evaluation
         *args : Arguments needed to construct method
@@ -110,7 +110,7 @@ class _Coordinate:
         """Passes the "other" value to the current comparator
         stored in the Coordinate instance and returns the evaluation
 
-        Parameters
+        Paremeters
         ----------
         other : Coordinate
 
@@ -129,7 +129,7 @@ class _Coordinate:
         stored in the Coordinate instance and returns the
         opposite of the evaluation
 
-        Parameters
+        Paremeters
         ----------
         other : Coordinate
 
@@ -143,7 +143,7 @@ class _Coordinate:
     def __add__(self, other):
         """Adds the "other" value to the Coordinate instance
 
-        Parameters
+        Paremeters
         ----------
         other : Coordinate
 
@@ -165,11 +165,11 @@ class Coordinate(_Coordinate):
         """Constructor inheriting from the
         parent _Coordinate
 
-        parameters
+        Paremeters
         ----------
         coord : np.array
 
-        returns
+        Returns
         -------
         TODO
 
@@ -181,7 +181,7 @@ class Coordinate(_Coordinate):
         translations that bring it within the unit cell of the
         given lattice
 
-        Parameters
+        Paremeters
         ----------
         lat : Lattice
 
@@ -203,11 +203,11 @@ class MutableCoordinate(_Coordinate):
         """constructor that inherits from the
         parent _Coordinate
 
-        parameters
+        Paremeters
         ----------
         coord : np.array
 
-        returns
+        Returns
         -------
         TODO
 
@@ -219,7 +219,7 @@ class MutableCoordinate(_Coordinate):
         that bring it within the unit cell of the
         given lattice
 
-        Parameters
+        Paremeters
         ----------
         lat : Lattice
 
@@ -235,7 +235,7 @@ class MutableCoordinate(_Coordinate):
         """Adds the "other" value to the current MutableCoordinate
         instance and makes it the cuurent instance
 
-        Parameters
+        Paremeters
         ----------
         other : MutableCoordinate
 

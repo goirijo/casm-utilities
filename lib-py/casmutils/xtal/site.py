@@ -12,7 +12,7 @@ class _Site:
         as a container to access it's member
         functions
 
-        paremeters
+        Parameters
         ----------
         coord : np.array
         label : string
@@ -37,7 +37,7 @@ class _Site:
     def frac(self, lat):
         """Returns fractional coordinates of the Site
 
-        parameters
+        Parameters
         ----------
         lat : Lattice
 
@@ -97,7 +97,7 @@ class _Site:
         and compares it to the self and returns opposite of the
         evaluation
 
-        Paremeters
+        Parameters
         ----------
         other : _Site
 
@@ -116,7 +116,7 @@ class Site(_Site):
         """Constructor inheriting from
         parent's constructor
 
-        Paremeters
+        Parameters
         ----------
         coord : np.array
         label : string
@@ -136,7 +136,7 @@ class MutableSite(_Site):
         """Constructor inheriting from
         parent's constructor
 
-        Paremeters
+        Parameters
         ----------
         coord : np.array
         label : string
