@@ -1,5 +1,7 @@
+#include "casmutils/sym/cartesian.hpp"
 #include <casm/crystallography/LatticeMap.hh>
 #include <casmutils/mapping/structure_mapping.hpp>
+#include <vector>
 
 namespace casmutils
 {
@@ -7,7 +9,12 @@ namespace mapping
 {
 std::vector<sym::CartOp> StructureMapper_f::make_default_point_group() const
 {
-    return CASM::xtal::make_factor_group(this->reference_structure.__get<CASM::xtal::BasicStructure>());
+    if(this->settings.use_crystal_symmetry)
+    {
+        return CASM::xtal::make_factor_group(this->reference_structure.__get<CASM::xtal::BasicStructure>());
+    }
+
+    return std::vector<sym::CartOp>{sym::CartOp::identity()};
 }
 
 StructureMapper_f::AllowedSpeciesType StructureMapper_f::make_default_allowed_species() const
@@ -88,6 +95,7 @@ std::vector<mapping::MappingReport> map_structure(const xtal::Structure& map_ref
                                                   const xtal::Structure& mappable_struc)
 {
     mapping::MappingInput input;
+    input.use_crystal_symmetry=true;
     mapping::StructureMapper_f mapper(map_reference_struc, input);
     return mapper(mappable_struc);
 }

@@ -83,7 +83,8 @@ public:
           keep_invalid_mapping_nodes(false),
           impose_reference_lattice(false),
           assume_ideal_lattice(false),
-          assume_ideal_structure(false)
+          assume_ideal_structure(false),
+          use_crystal_symmetry(false)
     {
     }
 
@@ -112,10 +113,9 @@ public:
     // TODO: Unclear what this could be
     int options;
     
-    //TODO: Consider having some tags here that mean "use the point group",
-    //so that it can get automatically generated later inside of StructureMapper_f
-    //This way you can use the same strategy (input) object for multiple
-    //reference structures
+    /// When true, the point group of the reference structure is applied to the mapped structure
+    /// when performing the mapping (TODO: ask JCT if this is correct)
+    bool use_crystal_symmetry;
 
 private:
     // TODO: This might eventually collapse into ATOM mode only, so it's disabled for now
