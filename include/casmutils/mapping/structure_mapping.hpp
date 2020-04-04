@@ -132,6 +132,10 @@ public:
     typedef CASM::xtal::StrucMapping::AllowedSpecies AllowedSpeciesType;
 
     StructureMapper_f(const xtal::Structure& reference, const MappingInput& input, const std::vector<sym::CartOp>& point_group={}, const AllowedSpeciesType& allowed_species={});
+
+    //Having this allows passing either point_group OR allowed_species, both, or neither
+    StructureMapper_f(const xtal::Structure& reference, const MappingInput& input, const AllowedSpeciesType& allowed_species): StructureMapper_f(reference,input,{},allowed_species){}
+
     std::vector<MappingReport> operator()(const xtal::Structure& mappable_struc) const;
 
 private:

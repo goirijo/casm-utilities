@@ -16,7 +16,7 @@ namespace casmutils
 
 namespace wrappy
 {
-    void test(){}
+
 using namespace casmutils;
 PYBIND11_MODULE(_mapping, m)
 {
@@ -57,7 +57,8 @@ PYBIND11_MODULE(_mapping, m)
     }
 
     // clang-format off
-    m.def("test", wrappy::test);
+    m.def("structure_score", &mapping::structure_score);
+    m.def("map_structure", &mapping::map_structure);
     // clang-format on
 }
 } // namespace wrappy
