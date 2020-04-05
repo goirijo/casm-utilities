@@ -76,9 +76,9 @@ PYBIND11_MODULE(_xtal, m)
             .def(init<const Eigen::Vector3d&, const std::string&>())
             .def(init<const xtal::Coordinate&, const std::string&>())
             .def("__str__", __str__)
-            .def("cart", &xtal::Site::cart)
-            .def("frac", &xtal::Site::frac)
-            .def("label", &xtal::Site::label);
+            .def("_cart_const", &xtal::Site::cart)
+            .def("_frac_const", &xtal::Site::frac)
+            .def("_label_const", &xtal::Site::label);
     }
     
     {

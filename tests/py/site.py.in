@@ -4,6 +4,41 @@ import unittest
 import casmutils as cu
 import numpy as np
 
+class SiteEquals_f:
+    """A custom Site compare method
+        which compares only the
+        coordinates and returns true
+        if they are the same."""
+
+    def __init__(self, ref_site, tol):
+        """Constructs the functor with
+        Site
+
+        Parameters
+        ----------
+        site : cu.xtal._xtal.Site
+
+        """
+        self.ref_site = ref_site
+        self.tol = tol
+
+    def __call__(self, other):
+        """Overloading the () operator
+
+        Parameters
+        ----------
+        other : cu.xtal._xtal.Site
+
+        Returns
+        -------
+        bool
+
+        """
+        if np.allclose(self.ref_site._cart_const(),other._cart_const(),self.tol,self.tol) is True:
+            return True
+        else:
+            return False
+
 class SiteTest(unittest.TestCase):
     def setUp(self):
         """Setting up numpy arrays and labels for atoms"""
@@ -12,6 +47,7 @@ class SiteTest(unittest.TestCase):
         self.raw_coord1 = np.array([0.2,0.4,0.6])
         self.atom0 = "O"
         self.atom1 = "P"
+        self.tol = cu.xtal.globalvar.tol
 
         """Computing fractional coordinates manually"""
         self.frac_coords0 = np.dot(np.linalg.inv(self.lattice_matrix),self.raw_coord0)
@@ -40,16 +76,21 @@ class SiteTest(unittest.TestCase):
         self.assertTrue(np.array_equal(self.site0m.cart(),self.raw_coord0))
 
     def test_frac(self):
-        self.assertTrue(np.array_equal(self.site0.frac(self.lat),self.frac_coords0))
-        self.assertTrue(np.array_equal(self.site0m.frac(self.lat),self.frac_coords0))
+        self.assertTrue(np.allclose(self.site0.frac(self.lat),self.frac_coords0,self.tol,self.tol))
+        self.assertTrue(np.allclose(self.site0m.frac(self.lat),self.frac_coords0,self.tol,self.tol))
 
     def test_label(self):
-        self.assertTrue(self.site0.label() == self.atom0)
-        self.assertTrue(self.site0m.label() == self.atom0)
-        self.assertTrue(self.site1.label() == self.atom1)
-        self.assertTrue(self.site1m.label() == self.atom1)
-        self.assertFalse(self.site1.label() == self.atom0)
-        self.assertFalse(self.site1m.label() == self.atom0)
+        self.assertTrue(self.site0.label()==self.atom0)
+        self.assertTrue(self.site0m.label()==self.atom0)
+        self.assertTrue(self.site1.label()==self.atom1)
+        self.assertTrue(self.site1m.label()==self.atom1)
+        self.assertFalse(self.site1.label()==self.atom0)
+        self.assertFalse(self.site1m.label()==self.atom0)
+
+    def test_set_compare_method(self):
+        self.assertFalse(self.site2m==self.site0m)
+        self.site2m.set_compare_method(SiteEquals_f, self.tol)
+        self.assertTrue(self.site2m==self.site0m)
 
 if __name__ == '__main__':
     unittest.main()

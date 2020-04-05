@@ -1,4 +1,5 @@
 from . import _xtal
+from . import globalvar
 
 Equals = _xtal.SiteEquals_f
 
@@ -17,10 +18,6 @@ class _Site:
         coord : np.array
         label : string
 
-        Returns
-        -------
-        TODO
-
         """
         self._pybind_value = _xtal.Site(coord,label)
 
@@ -32,7 +29,7 @@ class _Site:
         np.array
 
         """
-        return self._pybind_value.cart()
+        return self._pybind_value._cart_const()
 
     def frac(self, lat):
         """Returns fractional coordinates of the Site
@@ -46,7 +43,7 @@ class _Site:
         np.array
 
         """
-        return self._pybind_value.frac(lat)
+        return self._pybind_value._frac_const(lat)
 
     def label(self):
         """Returns label of atom at the Site
@@ -56,7 +53,7 @@ class _Site:
         string
 
         """
-        return self._pybind_value.label()
+        return self._pybind_value._label_const()
 
     def set_compare_method(self, method, *args):
         """Determines what strategy to use for comparing
@@ -66,10 +63,6 @@ class _Site:
         ----------
         method : Functor class that performs the comparision
         *args : Arguments needed to construct the Functor
-
-        Returns
-        -------
-        TODO
 
         """
         self._equals = method(self._pybind_value, *args)
@@ -88,7 +81,7 @@ class _Site:
 
         """
         if hasattr(self, '_equals') is False:
-            self._equals = Equals(self._pybind_value, 1e-5)
+            self._equals = Equals(self._pybind_value, globalvar.tol)
 
         return self._equals(other._pybind_value)
 
@@ -121,10 +114,6 @@ class Site(_Site):
         coord : np.array
         label : string
 
-        Returns
-        -------
-        TODO
-
         """
         super().__init__(coord, label)
 
@@ -140,10 +129,6 @@ class MutableSite(_Site):
         ----------
         coord : np.array
         label : string
-
-        Returns
-        -------
-        TODO
 
         """
         super().__init__(coord, label)

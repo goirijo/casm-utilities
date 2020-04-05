@@ -1,4 +1,5 @@
 from . import _xtal
+from . import globalvar
 
 Equals=_xtal.CoordinateEquals_f
 
@@ -6,9 +7,6 @@ class _Coordinate:
 
     """Base class for both mutable and immutable Coordinate classes.
     Defines the functions that should be common for both."""
-
-    """Tolerance"""
-    tol = 1e-5
 
     def __init__(self, coord):
         """create an instance of _xtal.Coordinate
@@ -115,7 +113,7 @@ class _Coordinate:
 
         """
         if hasattr(self,'_equals') is False:
-            self._equals=Equals(self._pybind_value,self.tol)
+            self._equals=Equals(self._pybind_value,globalvar.tol)
 
         return self._equals(other._pybind_value)
 
