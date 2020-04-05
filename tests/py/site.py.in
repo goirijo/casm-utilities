@@ -34,7 +34,7 @@ class SiteEquals_f:
         bool
 
         """
-        if np.allclose(self.ref_site._cart_const(),other._cart_const(),self.tol,self.tol) is True:
+        if np.allclose(self.ref_site.cart(),other.cart(),self.tol,self.tol) is True:
             return True
         else:
             return False
@@ -47,7 +47,7 @@ class SiteTest(unittest.TestCase):
         self.raw_coord1 = np.array([0.2,0.4,0.6])
         self.atom0 = "O"
         self.atom1 = "P"
-        self.tol = cu.xtal.globalvar.tol
+        self.tol = cu.xtal.globaldef.tol
 
         """Computing fractional coordinates manually"""
         self.frac_coords0 = np.dot(np.linalg.inv(self.lattice_matrix),self.raw_coord0)

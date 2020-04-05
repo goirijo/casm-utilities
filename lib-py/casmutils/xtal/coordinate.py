@@ -1,5 +1,5 @@
 from . import _xtal
-from . import globalvar
+from . import globaldef
 
 Equals=_xtal.CoordinateEquals_f
 
@@ -113,7 +113,7 @@ class _Coordinate:
 
         """
         if hasattr(self,'_equals') is False:
-            self._equals=Equals(self._pybind_value,globalvar.tol)
+            self._equals=Equals(self._pybind_value,globaldef.tol)
 
         return self._equals(other._pybind_value)
 

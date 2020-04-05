@@ -1,5 +1,5 @@
 from . import _xtal
-from . import globalvar
+from . import globaldef
 
 Equals = _xtal.SiteEquals_f
 
@@ -65,7 +65,11 @@ class _Site:
         *args : Arguments needed to construct the Functor
 
         """
-        self._equals = method(self._pybind_value, *args)
+        try:
+            self._equals = method(self, *args)
+
+        except TypeError:
+            self._equals = method(self._pybind_value, *args)
 
     def __eq__(self, other):
         """Passes the "other" to the cuurent compare functor
@@ -81,9 +85,13 @@ class _Site:
 
         """
         if hasattr(self, '_equals') is False:
-            self._equals = Equals(self._pybind_value, globalvar.tol)
+            self.set_compare_method(Equals, globaldef.tol)
 
-        return self._equals(other._pybind_value)
+        try:
+            return self._equals(other)
+
+        except TypeError:
+            return self._equals(other._pybind_value)
 
     def __ne__(self, other):
         """Passes the "other" to the current compare functor
