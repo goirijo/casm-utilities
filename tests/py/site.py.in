@@ -16,7 +16,7 @@ class SiteEquals_f:
 
         Parameters
         ----------
-        site : cu.xtal._xtal.Site
+        ref_site : cu.xtal._xtal.Site
 
         """
         self.ref_site = ref_site
