@@ -18,10 +18,7 @@ def _is_pybind_value(value):
     bool
 
     """
-    if type(value).__name__ =="Site" and hasattr(value,"_cart_const"):
-        return True
-
-    elif type(value).__name__=="Coordinate" and hasattr(value,"_cart_const"):
+    if ("_xtal" in type(value).__module__) is True:
         return True
 
     else:

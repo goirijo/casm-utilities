@@ -28,9 +28,7 @@ class CoordinateTest(unittest.TestCase):
         self.coord0.set_compare_method(cu.xtal.coordinate.Equals,1e-5)
         self.coord1.set_compare_method(cu.xtal.coordinate.Equals,1e-5)
         self.coord0f.set_compare_method(cu.xtal.coordinate.Equals,1e-5)
-        self.coord1f.set_compare_method(cu.xtal.coordinate.Equals,1e-5)
         self.coord0m.set_compare_method(cu.xtal.coordinate.Equals,1e-5)
-        self.coord1m.set_compare_method(cu.xtal.coordinate.Equals,1e-5)
 
     def test_construct(self):
         self.assertFalse(self.coord0==self.coord1)

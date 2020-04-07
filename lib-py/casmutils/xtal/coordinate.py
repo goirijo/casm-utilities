@@ -1,7 +1,37 @@
 from . import _xtal
 from . import globaldef
 
-Equals=_xtal.CoordinateEquals_f
+class Equals:
+
+    """A wrapper class for _xtal.CoordinateEquals_f"""
+
+    def __init__(self, ref_coordinate, tol):
+        """Construct Equals from Coordinate
+        or MutableCoordinate & a given tolerance
+
+        Parameters
+        ----------
+        ref_coordinate : Coordinate or MutableCoordinate
+        tol : double
+
+        """
+        self.ref_coordinate = ref_coordinate
+        self.tol = tol
+
+    def __call__(self, other):
+        """Overloading () operator
+
+        Parameters
+        ----------
+        other : Coordinate or MutableCoordinate
+
+        Returns
+        -------
+        bool
+
+        """
+        self.CoordinateEquals_f = _xtal.CoordinateEquals_f(self.ref_coordinate._pybind_value, self.tol)
+        return self.CoordinateEquals_f(other._pybind_value)
 
 class _Coordinate:
 
@@ -97,7 +127,7 @@ class _Coordinate:
         *args : Arguments needed to construct method
 
         """
-        self._equals=method(self._pybind_value, *args)
+        self._equals=method(self, *args)
 
     def __eq__(self, other):
         """Passes the "other" value to the current comparator
@@ -113,9 +143,9 @@ class _Coordinate:
 
         """
         if hasattr(self,'_equals') is False:
-            self._equals=Equals(self._pybind_value,globaldef.tol)
+            self.set_compare_method(Equals, globaldef.tol)
 
-        return self._equals(other._pybind_value)
+        return self._equals(other)
 
     def __ne__(self, other):
         """Passes the "other" value to the current comparator

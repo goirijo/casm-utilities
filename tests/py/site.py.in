@@ -4,7 +4,7 @@ import unittest
 import casmutils as cu
 import numpy as np
 
-class SiteEquals_f:
+class SiteCoordinateEquals:
     """A custom Site compare method
         which compares only the
         coordinates and returns true
@@ -16,7 +16,8 @@ class SiteEquals_f:
 
         Parameters
         ----------
-        ref_site : Site
+        ref_site : Site or MutableSite
+        tol : double
 
         """
         self.ref_site = ref_site
@@ -89,7 +90,7 @@ class SiteTest(unittest.TestCase):
 
     def test_set_compare_method(self):
         self.assertFalse(self.site2m==self.site0m)
-        self.site2m.set_compare_method(SiteEquals_f, self.tol)
+        self.site2m.set_compare_method(SiteCoordinateEquals, self.tol)
         self.assertTrue(self.site2m==self.site0m)
 
 if __name__ == '__main__':

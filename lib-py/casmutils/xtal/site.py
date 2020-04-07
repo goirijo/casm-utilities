@@ -1,7 +1,37 @@
 from . import _xtal
 from . import globaldef
 
-Equals = _xtal.SiteEquals_f
+class Equals:
+
+    """A wrapper class for _xtal.SiteEquals_f"""
+
+    def __init__(self, ref_site, tol):
+        """Construct Equals from Site
+        or MutableSite and a given tolerance
+
+        Parameters
+        ----------
+        ref_site : Site or MutableSite
+        tol : double
+
+        """
+        self.ref_site = ref_site
+        self.tol = tol
+
+    def __call__(self, other):
+        """Overloading () operator
+
+        Parameters
+        ----------
+        other : Site or MutableSite
+
+        Returns
+        -------
+        bool
+
+        """
+        self.SiteEquals_f = _xtal.SiteEquals_f(self.ref_site._pybind_value, self.tol)
+        return self.SiteEquals_f(other._pybind_value)
 
 class _Site:
 
@@ -65,11 +95,7 @@ class _Site:
         *args : Arguments needed to construct the Functor
 
         """
-        try:
-            self._equals = method(self, *args)
-
-        except TypeError:
-            self._equals = method(self._pybind_value, *args)
+        self._equals = method(self, *args)
 
     def __eq__(self, other):
         """Passes the "other" to the cuurent compare functor
@@ -87,11 +113,7 @@ class _Site:
         if hasattr(self, '_equals') is False:
             self.set_compare_method(Equals, globaldef.tol)
 
-        try:
-            return self._equals(other)
-
-        except TypeError:
-            return self._equals(other._pybind_value)
+        return self._equals(other)
 
     def __ne__(self, other):
         """Passes the "other" to the current compare functor
