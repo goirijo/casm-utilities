@@ -20,8 +20,8 @@ class SiteCoordinateEquals:
         tol : double
 
         """
-        self.ref_site = ref_site
-        self.tol = tol
+        self._ref_site = ref_site
+        self._tol = tol
 
     def __call__(self, other):
         """Overloading the () operator
@@ -35,7 +35,7 @@ class SiteCoordinateEquals:
         bool
 
         """
-        if np.allclose(self.ref_site.cart(),other.cart(),self.tol,self.tol) is True:
+        if np.allclose(self._ref_site.cart(),other.cart(),self._tol,self._tol) is True:
             return True
         else:
             return False
