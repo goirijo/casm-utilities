@@ -5,6 +5,8 @@ xtalpy_PYTHON=\
 			  lib-py/casmutils/xtal/single_block_wadsley_roth.py\
 			  lib-py/casmutils/xtal/coordinate.py\
 			  lib-py/casmutils/xtal/lattice.py\
+			  lib-py/casmutils/xtal/site.py\
+			  lib-py/casmutils/xtal/globaldef.py\
 			  lib-py/casmutils/xtal/xtal.py
 
 xtalpy_LTLIBRARIES=\
