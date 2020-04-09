@@ -43,12 +43,15 @@ class _Site:
 
         Parameters
         ----------
-        coord : np.array
+        coord : Coordinate
         label : string
 
         """
         if coord is _xtal.Site and label is None:
             self._pybind_value = None
+
+        elif type(coord).__name__ is "Coordinate" or type(coord).__name__ is "MutableCoordinate":
+            self._pybind_value = _xtal.Site(coord._pybind_value, label)
 
         else:
             self._pybind_value = _xtal.Site(coord,label)
@@ -171,7 +174,7 @@ class Site(_Site):
 
         Parameters
         ----------
-        coord : np.array
+        coord : Coordinate
         label : string
 
         """
@@ -187,7 +190,7 @@ class MutableSite(_Site):
 
         Parameters
         ----------
-        coord : np.array
+        coord : MutableCoordinate
         label : string
 
         """

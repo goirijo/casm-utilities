@@ -130,14 +130,6 @@ class Structure(_Structure):
         basis : list
 
         """
-        if "Mutable" in type(lattice).__name__:
-            raise TypeError("Hear your Master's voice: Don't construct Structure with MutableLattice. Use MutableStructure!!")
-
-        if basis is not None:
-            for site in basis:
-                if "Mutable" in type(site).__name__:
-                    raise TypeError("Hear your Master's voice: Don't construct Structure with MutableSites. Use MutableStructure!!")
-
         super().__init__(lattice, basis)
 
     def set_lattice(self, new_lattice, coord_type):

@@ -55,12 +55,17 @@ class SiteTest(unittest.TestCase):
 
         """Constructing required classes"""
         self.lat = cu.xtal.Lattice(*self.lattice_matrix)
+        self.coord0 = cu.xtal.Coordinate(self.raw_coord0)
+        self.coord1 = cu.xtal.Coordinate(self.raw_coord1)
+
         self.site0 = cu.xtal.Site(self.raw_coord0,self.atom0)
         self.site0m = cu.xtal.MutableSite(self.raw_coord0,self.atom0)
         self.site1 = cu.xtal.Site(self.raw_coord1,self.atom1)
         self.site1m = cu.xtal.MutableSite(self.raw_coord1,self.atom1)
         self.site2 = cu.xtal.Site(self.raw_coord0,self.atom1)
         self.site2m = cu.xtal.MutableSite(self.raw_coord0,self.atom1)
+        self.site3 = cu.xtal.Site(self.coord0, self.atom0)
+        self.site4 = cu.xtal.Site(self.coord1, self.atom1)
 
     def test_construct(self):
         self.assertFalse(self.site0==self.site1)
@@ -71,6 +76,8 @@ class SiteTest(unittest.TestCase):
         self.assertFalse(self.site2m==self.site0)
         self.assertFalse(self.site2==self.site1)
         self.assertFalse(self.site2m==self.site1m)
+        self.assertTrue(self.site3==self.site0)
+        self.assertTrue(self.site4==self.site1)
 
     def test_cart(self):
         self.assertTrue(np.array_equal(self.site0.cart(),self.raw_coord0))
