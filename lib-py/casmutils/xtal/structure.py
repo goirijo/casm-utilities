@@ -69,7 +69,7 @@ class _Structure():
 
         Returns
         -------
-        Lattice or MutableLattice
+        Lattice
 
         """
         return Lattice._from_pybind(self._pybind_value._lattice_const())
@@ -152,7 +152,7 @@ class MutableStructure(_Structure):
 
         Paremeters
         ----------
-        lattice : Lattice or MutableLattice
+        lattice : Lattice
         basis : list
 
         """
