@@ -72,10 +72,7 @@ class _Structure():
         Lattice or MutableLattice
 
         """
-        if "Mutable" in type(self).__name__:
-            return MutableLattice._from_pybind(self._pybind_value._lattice_const())
-        else:
-            return Lattice._from_pybind(self._pybind_value._lattice_const())
+        return Lattice._from_pybind(self._pybind_value._lattice_const())
 
     def to_poscar(self, filename):
         """Prints out the structure to a file
@@ -100,10 +97,7 @@ class _Structure():
         basis = []
 
         for py_bind_site in py_bind_basis:
-            if "Mutable" in type(self).__name__:
-                basis.append(MutableSite._from_pybind(py_bind_site))
-            else:
-                basis.append(Site._from_pybind(py_bind_site))
+            basis.append(Site._from_pybind(py_bind_site))
 
         return basis
 
