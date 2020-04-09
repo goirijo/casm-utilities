@@ -25,6 +25,8 @@ std::string __str__(const xtal::Structure& printable);
 
 void set_lattice(xtal::Structure* self, const xtal::Lattice& new_lattice, std::string mode);
 
+xtal::Structure set_lattice_const(xtal::Structure* self, const xtal::Lattice& new_lattice, std::string mode);
+
 } // namespace Structure
 
 } // namespace wrappy

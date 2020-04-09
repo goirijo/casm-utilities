@@ -1,0 +1,94 @@
+#!@PYTHON!
+
+import unittest
+import casmutils as cu
+import numpy as np
+
+class StructureTest(unittest.TestCase):
+    def setUp(self):
+        """Setting up numpy arrays"""
+        self.coord0 = np.array([1.2,0.5,0.8])
+        self.coord1 = np.array([0.6,0.3,0.1])
+        self.lat_matrix = np.array([[0,0.5,0.5],[0.5,0,0.5],[0.5,0.5,0]])
+        self.new_lat_matrix = np.array([[1,0,0],[0,1,0],[0,0,1]])
+
+        """Setting up Structure"""
+        self.lat = cu.xtal.Lattice(*self.lat_matrix)
+        self.latm = cu.xtal.MutableLattice(*self.lat_matrix)
+        self.new_lat = cu.xtal.Lattice(*self.new_lat_matrix)
+
+        self.site0 = cu.xtal.Site(self.coord0, "F")
+        self.site1 = cu.xtal.Site(self.coord1, "U")
+        self.site0m = cu.xtal.MutableSite(self.coord0, "F")
+        self.site1m = cu.xtal.MutableSite(self.coord1, "U")
+        self.basis = [self.site0, self.site1]
+        self.basism = [self.site0m, self.site1m]
+
+        self.struc0 = cu.xtal.Structure(self.lat,self.basis)
+        self.struc0m = cu.xtal.MutableStructure(self.latm, self.basism)
+
+    def test_construct_lat_access(self):
+        self.assertTrue(self.lat == self.struc0.lattice())
+        self.assertTrue(self.latm == self.struc0m.lattice())
+
+    def test_basis_access(self):
+        for i in range(0,len(self.basis)):
+            self.assertTrue(self.struc0.basis_sites()[i] == self.basis[i])
+            self.assertTrue(self.struc0m.basis_sites()[i] == self.basism[i])
+
+    def test_from_poscar(self):
+        struc = cu.xtal.Structure.from_poscar("../input_files/hypothetical_cell.vasp")
+        self.assertTrue(struc.lattice() == self.lat)
+        for i in range(0,len(self.basis)):
+            self.assertTrue(struc.basis_sites()[i]==self.basis[i])
+
+    def test_to_poscar(self):
+        self.struc0.to_poscar("test_struc.vasp")
+        struc = cu.xtal.Structure.from_poscar("test_struc.vasp")
+        self.assertTrue(struc.lattice()==self.struc0.lattice())
+        for i in range(0,len(self.basis)):
+            self.assertTrue(struc.basis_sites()[i]==self.struc0.basis_sites()[i])
+
+    def test_set_lattice_const(self):
+        new_struc_frac_call = self.struc0.set_lattice(self.new_lat, "frac")
+        self.assertTrue(self.lat==self.struc0.lattice())
+        self.assertTrue(self.new_lat==new_struc_frac_call.lattice())
+        for i in range(0,len(self.basis)):
+            self.assertFalse(new_struc_frac_call.basis_sites()[i]==self.struc0.basis_sites()[i])
+
+        new_struc_cart_call = self.struc0.set_lattice(self.new_lat, "Cart")
+        self.assertTrue(self.lat==self.struc0.lattice())
+        self.assertTrue(self.new_lat==new_struc_cart_call.lattice())
+        for i in range(0,len(self.basis)):
+            self.assertTrue(new_struc_cart_call.basis_sites()[i]==self.struc0.basis_sites()[i])
+
+    def test_set_lattice(self):
+        self.struc0m.set_lattice(self.new_lat, "frac")
+        self.assertFalse(self.lat==self.struc0m.lattice())
+        self.assertTrue(self.new_lat==self.struc0m.lattice())
+        for i in range(0,len(self.basis)):
+            self.assertFalse(self.struc0m.basis_sites()[i]==self.basis[i])
+
+    def test_within(self):
+        self.struc0m.within()
+        coord0 = cu.xtal.MutableCoordinate(self.coord0)
+        coord1 = cu.xtal.MutableCoordinate(self.coord1)
+        coord0.bring_within(self.lat)
+        coord1.bring_within(self.lat)
+        self.assertTrue(np.allclose(self.struc0m.basis_sites()[0].cart(),coord0.cart(),cu.xtal.globaldef.tol,cu.xtal.globaldef.tol))
+        self.assertTrue(np.allclose(self.struc0m.basis_sites()[1].cart(),coord1.cart(),cu.xtal.globaldef.tol,cu.xtal.globaldef.tol))
+
+
+if __name__ == '__main__':
+    unittest.main()
+
+
+
+
+
+
+
+
+
+
+

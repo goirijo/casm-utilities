@@ -47,7 +47,7 @@ struct MappingNode
     xtal::Lattice parent;
     xtal::Lattice child;
 };
-    
+
 /// Holds the parameters that are required to conduct a structure map
 /// This includes: the parent structure, a point group that determines
 /// equivalence,the allowed species on each site of the parent structure,
@@ -65,7 +65,7 @@ struct MappingInput
     typedef CASM::xtal::SimpleStructure::SpeciesMode SpecMode;
     typedef CASM::xtal::StrucMapping::AllowedSpecies AllowedSpeciesType;
 
-    //TODO: Rename members with better variables
+    // TODO: Rename members with better variables
     MappingInput(const casmutils::xtal::Structure& parent)
         : parent(parent),
           mode(SpecMode::ATOM),
