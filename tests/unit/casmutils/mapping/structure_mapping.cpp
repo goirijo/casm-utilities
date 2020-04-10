@@ -9,6 +9,7 @@
 
 // This file tests the functions in:
 #include <casmutils/mapping/structure_mapping.hpp>
+#include <limits>
 #include <string>
 #include <utility>
 #include <vector>
@@ -43,6 +44,7 @@ protected:
     std::unique_ptr<cu::xtal::Structure> displaced_fcc_Ni_ptr;
 };
 
+/*
 TEST_F(StructureMapTest, StructureMap)
 {
     // map with fcc as reference and bcc,fully bained fcc and partially bained fcc as test structures
@@ -70,6 +72,7 @@ TEST_F(StructureMapTest, StructureMap)
     EXPECT_TRUE(std::abs(lattice_score) < 1e-10);
     EXPECT_TRUE(std::abs(basis_score - 0.08) < 1e-10);
 }
+*/
 
 //**********************************************************************************************
 
@@ -92,7 +95,8 @@ protected:
     using Structure = casmutils::xtal::Structure;
     void SetUp() override
     {
-        root = cu::autotools::input_filesdir / "Mg-mush";
+        root = cu::autotools::input_filesdir / "Mg-mush/basal";
+        /* root = cu::autotools::input_filesdir / "Li-mush/111"; */
         auto zero_cleave_dirs = this->directories_zero_cleave();
 
         auto cmp_by_coord = [](const cu::fs::path& lhs, const cu::fs::path& rhs) {
@@ -152,7 +156,42 @@ private:
     }
 };
 
+#include <casm/crystallography/SymTools.hh>
+
 TEST_F(GammaSurfaceMapTest, MapAllShifts) {
+    //Gamma surface of basal plane has mirror symmetry, so expect
+    //half of the structures to be equivalent to the other half
+    cu::mapping::MappingInput map_strategy;
+    /* map_strategy.use_crystal_symmetry=true; */
+    map_strategy.k_best_maps=0;
+    map_strategy.min_cost=1e-5;
+
+    cu::xtal::Structure reference=shifted_structures[0];
+
+    for(int i=0; i<shifted_structures.size(); ++i)
+    {
+        std::cout<<i<<" "<<shifted_coordinates[i].first<<" "<<shifted_coordinates[i].second<<" ";
+
+
+
+        cu::mapping::StructureMapper_f map_to_ith_struc(shifted_structures[i],map_strategy);
+
+        for(int j=0; j<shifted_structures.size(); ++j)
+        {
+            auto reports=map_to_ith_struc(shifted_structures[j]);
+            if(reports.size())
+            {
+                std::cout<<j<<" ";
+                /* std::cout<<"\n"<<reports[0].cost<<" "<<reports[0].lattice_cost<<" "<<reports[0].cost<<"\n"; */
+            }
+            /* auto [l,b]=cu::mapping::structure_score(reports[0]); */
+            /* std::cout<<l<<","<<b<<std::endl; */
+        }
+        std::cout<<std::endl;
+    }
+
+    //For every map, make sure that all structures in the map agree that they're the same
+    //
 }
 
 int main(int argc, char** argv)

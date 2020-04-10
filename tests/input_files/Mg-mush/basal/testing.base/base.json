@@ -1,6 +1,0 @@
-{
-  "millers" : [ 0, 0, 1 ],
-  "prim" : "./mg.vasp",
-  "slab_floor_index" : 0,
-  "stacks" : 3
-}

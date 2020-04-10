@@ -28,7 +28,8 @@ struct MappingReport
           reference_lattice(casm_mapping_node.lat_node.parent.superlattice()),
           mapped_lattice(casm_mapping_node.lat_node.child.superlattice()),
           lattice_cost(casm_mapping_node.lat_node.cost),
-          basis_cost(casm_mapping_node.basis_node.cost)
+          basis_cost(casm_mapping_node.basis_node.cost),
+          cost(casm_mapping_node.cost)
     {
         std::vector<int> p(casm_mapping_node.atom_permutation.begin(), casm_mapping_node.atom_permutation.end());
         permutation = p;
@@ -48,6 +49,7 @@ struct MappingReport
 
     double lattice_cost;
     double basis_cost;
+    double cost;
 
     // This is potentially a superlattice of the originally passed in reference structure
     xtal::Lattice reference_lattice;
@@ -73,10 +75,10 @@ public:
           /* mode(SpecMode::ATOM), */
           strain_weight(0.5),
           max_volume_change(0.5),
-          options(1u << 1), //TODO: What is this????? Completely opaque 
+          options(CASM::xtal::StrucMapper::Options::robust),
           tol(CASM::TOL),
-          min_va_frac(0.0),
-          max_va_frac(0.5),
+          min_vacancy_fraction(0.0),
+          max_vacancy_fraction(0.5),
           k_best_maps(1),
           max_cost(1e20),
           min_cost(-tol),
@@ -84,6 +86,7 @@ public:
           impose_reference_lattice(false),
           assume_ideal_lattice(false),
           assume_ideal_structure(false),
+          /* assume_deformed_structure(false), */
           use_crystal_symmetry(false)
     {
     }
@@ -96,8 +99,8 @@ public:
     double strain_weight;
 
     double max_volume_change;
-    double min_va_frac;
-    double max_va_frac;
+    double min_vacancy_fraction;
+    double max_vacancy_fraction;
 
     double max_cost;
     double min_cost;
@@ -109,6 +112,8 @@ public:
     /// Set to true if you know that the mapped structure is a direct integer transformation of the reference.
     /// Implies ideal lattice.
     bool assume_ideal_structure;
+    /// TODO: More docs
+    /* bool assume_deformed_structure; */
 
     // TODO: Unclear what this could be
     int options;

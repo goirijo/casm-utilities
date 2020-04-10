@@ -46,8 +46,8 @@ StructureMapper_f::StructureMapper_f(const xtal::Structure& reference,
           settings.max_volume_change,
           settings.options,
           settings.tol,
-          settings.min_va_frac,
-          settings.max_va_frac)
+          settings.min_vacancy_fraction,
+          settings.max_vacancy_fraction)
 {
     // Apologies for the ugly constructor we need to unpack input into
     // its individual values and do some layered inline construction
@@ -84,7 +84,6 @@ std::vector<MappingReport> StructureMapper_f::ideal_map(const xtal::Structure& m
                                             settings.max_cost,
                                             settings.min_cost,
                                             settings.keep_invalid_mapping_nodes);
-
     std::vector<MappingReport> casted_set(casmnodes.begin(), casmnodes.end());
     return casted_set;
 }
