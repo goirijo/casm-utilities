@@ -2,6 +2,52 @@ from . import _mapping
 
 MappingReport = _mapping.MappingReport
 
+class MappingReport:
+
+    """Describes the results of mapping one structure onto another, including
+    a description of the tensors required to match the lattices, permutations
+    and displacements required to map the basis, and both individual costs associated
+    with each part of the mapping, as well as a combined lattice and basis mapping score"""
+
+    def __init__(self, pybind_value):
+        self._pybind_value=pybind_value
+
+    def __str__(self):
+        as_str=""
+
+        as_str+="isometry:\n"
+        as_str+=self._pybind_value.isometry.__str__()
+
+        as_str+="stretch:\n"
+        as_str+=self._pybind_value.stretch.__str__()
+
+        as_str+="translation:\n"
+        as_str+=self._pybind_value.translation.__str__()
+
+        as_str+="displacement:\n"
+        as_str+=self._pybind_value.displacement.__str__()
+
+        as_str+="permutation:\n"
+        as_str+=self._pybind_value.permutation.__str__()
+
+        as_str+="lattice cost:\n"
+        as_str+=str(self._pybind_value.lattice_cost)
+
+        as_str+="basis cost:\n"
+        as_str+=str(self._pybind_value.basis_cost)
+
+        as_str+="cost:\n"
+        as_str+=str(self._pybind_value.cost)
+
+        # as_str+="reference lattice:\n"
+        # as_str+=self._pybind_value.reference_lattice.__str__()
+
+        # as_str+="mapped lattice:\n"
+        # as_str+=self._pybind_value.mapped_lattice.__str__()
+
+        return as_str
+        
+
 class MappingInput(_mapping.MappingInput):
     """Specifies all possible mapping specifications except for the reference
     structure itself, and the symmetry operations that should be considered."""
@@ -144,4 +190,7 @@ class StructureMapper(_mapping.StructureMapper_f):
 
         self._mapping_input=mapping_input
         super().__init__(reference_structure, mapping_input, point_group, allowed_species)
+
+        def __call__(self, structure):
+            return [ MappingReport(m) for m in super().__call__(structure) ]
 

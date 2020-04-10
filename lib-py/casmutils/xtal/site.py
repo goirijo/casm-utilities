@@ -43,11 +43,36 @@ class _Site:
 
         Parameters
         ----------
-        coord : np.array
+        coord : Coordinate
         label : string
 
         """
-        self._pybind_value = _xtal.Site(coord,label)
+        if coord is _xtal.Site and label is None:
+            self._pybind_value = None
+
+        elif type(coord).__name__ is "Coordinate" or type(coord).__name__ is "MutableCoordinate":
+            self._pybind_value = _xtal.Site(coord._pybind_value, label)
+
+        else:
+            self._pybind_value = _xtal.Site(coord,label)
+
+    @classmethod
+    def _from_pybind(cls, py_bind_value):
+        """Returns a constructed _Site from
+        a given _xtal.Site value
+
+        Parameters
+        ----------
+        py_bind_value : _xtal.Site
+
+        Returns
+        -------
+        _Site
+
+        """
+        value = cls(_xtal.Site, None)
+        value._pybind_value = py_bind_value
+        return value
 
     def cart(self):
         """Returns cartesian coordinates of the Site
@@ -71,7 +96,7 @@ class _Site:
         np.array
 
         """
-        return self._pybind_value._frac_const(lat)
+        return self._pybind_value._frac_const(lat._pybind_value)
 
     def label(self):
         """Returns label of atom at the Site
@@ -101,7 +126,7 @@ class _Site:
 
         Parameters
         ----------
-        other : _Site
+        other : Site or MutableSite
 
         Returns
         -------
@@ -120,7 +145,7 @@ class _Site:
 
         Parameters
         ----------
-        other : _Site
+        other : Site or MutableSite
 
         Returns
         -------
@@ -128,6 +153,16 @@ class _Site:
 
         """
         return not self==other
+
+    def __str__(self):
+        """Returns the string to print
+
+        Returns
+        -------
+        string
+
+        """
+        return self._pybind_value.__str__()
 
 class Site(_Site):
 
@@ -139,7 +174,7 @@ class Site(_Site):
 
         Parameters
         ----------
-        coord : np.array
+        coord : Coordinate
         label : string
 
         """
@@ -155,7 +190,7 @@ class MutableSite(_Site):
 
         Parameters
         ----------
-        coord : np.array
+        coord : MutableCoordinate
         label : string
 
         """

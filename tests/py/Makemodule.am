@@ -3,4 +3,9 @@ TESTS += \
 		 tests/py/stage-import.py\
 		 tests/py/cu-import.py\
 		 tests/py/stage.py\
-		 tests/py/coordinate.py
+		 tests/py/coordinate.py\
+		 tests/py/structure.py\
+		 tests/py/site.py\
+		 tests/py/lattice.py
+
+

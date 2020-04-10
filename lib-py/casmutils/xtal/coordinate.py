@@ -76,7 +76,7 @@ class _Coordinate:
         np.array
 
         """
-        return self._pybind_value._frac_const(lat)
+        return self._pybind_value._frac_const(lat._pybind_value)
 
     @classmethod
     def _from_pybind(cls, py_bind_value):
@@ -85,7 +85,7 @@ class _Coordinate:
 
         Paremeters
         ----------
-        py_bind_value = _xtal.Coordinate
+        py_bind_value : _xtal.Coordinate
 
         Returns
         -------
@@ -111,7 +111,7 @@ class _Coordinate:
         cls
 
         """
-        py_binded = _xtal.Coordinate.from_fractional(coords,lat)
+        py_binded = _xtal.Coordinate.from_fractional(coords,lat._pybind_value)
         return cls._from_pybind(py_binded)
 
     def set_compare_method(self, method, *args):
@@ -133,7 +133,7 @@ class _Coordinate:
 
         Parameters
         ----------
-        other : Coordinate
+        other : Coordinate or MutableCoordinate
 
         Returns
         -------
@@ -152,7 +152,7 @@ class _Coordinate:
 
         Parameters
         ----------
-        other : Coordinate
+        other : Coordinate or MutablelCoordinate
 
         Returns
         -------
@@ -166,15 +166,25 @@ class _Coordinate:
 
         Parameters
         ----------
-        other : Coordinate
+        other : Coordinate or MutableCoordinate
 
         Returns
         -------
-        Coordinate
+        Coordinate or MutableCoordinate
 
         """
         py_binded = self._pybind_value + other._pybind_value
         return self._from_pybind(py_binded)
+
+    def __str__(self):
+        """Returns string to print
+
+        Returns
+        -------
+        string
+
+        """
+        return self._pybind_value.__str__()
 
 class Coordinate(_Coordinate):
 
@@ -207,7 +217,7 @@ class Coordinate(_Coordinate):
         Coordinate
 
         """
-        py_binded = self._pybind_value._bring_within_const(lat)
+        py_binded = self._pybind_value._bring_within_const(lat._pybind_value)
         return self._from_pybind(py_binded)
 
 class MutableCoordinate(_Coordinate):
@@ -241,7 +251,7 @@ class MutableCoordinate(_Coordinate):
         None
 
         """
-        self._pybind_value._bring_within(lat)
+        self._pybind_value._bring_within(lat._pybind_value)
         return
 
     def __iadd__(self, other):
