@@ -18,7 +18,7 @@ namespace Site
 std::string __str__(const xtal::Site& printable)
 {
     std::ostringstream sstream;
-    throw except::NotImplemented();
+    sstream << printable.cart() << printable.label();
     return sstream.str();
 }
 } // namespace Site
