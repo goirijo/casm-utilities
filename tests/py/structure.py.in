@@ -37,7 +37,7 @@ class StructureTest(unittest.TestCase):
             self.assertTrue(self.struc0m.basis_sites()[i] == self.basism[i])
 
     def test_from_poscar(self):
-        struc = cu.xtal.Structure.from_poscar("../tests/input_files/hypothetical_cell.vasp")
+        struc = cu.xtal.Structure.from_poscar("@abs_top_srcdir@/tests/input_files/hypothetical_cell.vasp")
         self.assertTrue(struc.lattice() == self.lat)
         for i in range(0,len(self.basis)):
             self.assertTrue(struc.basis_sites()[i]==self.basis[i])

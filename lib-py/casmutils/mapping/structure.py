@@ -150,7 +150,7 @@ class MappingInput(_mapping.MappingInput):
 
         return as_str
 
-class StructureMapper(_mapping.StructureMapper_f):
+class StructureMapper:
 
     """Once constructed with a reference structure and the relevant mapping parameters,
     use the call operator to map other structures onto the initial reference structure.
@@ -189,8 +189,8 @@ class StructureMapper(_mapping.StructureMapper_f):
             mapping_input=MappingInput(**kwargs)
 
         self._mapping_input=mapping_input
-        super().__init__(reference_structure, mapping_input, point_group, allowed_species)
+        self._pybind_value=_mapping.StructureMapper_f(reference_structure._pybind_value, mapping_input, point_group, allowed_species)
 
-        def __call__(self, structure):
-            return [ MappingReport(m) for m in super().__call__(structure) ]
+    def __call__(self, structure):
+        return [ MappingReport(m) for m in self._pybind_value(structure._pybind_value) ]
 
