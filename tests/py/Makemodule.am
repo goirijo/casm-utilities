@@ -8,4 +8,4 @@ TESTS += \
 		 tests/py/site.py\
 		 tests/py/lattice.py
 
-
+include tests/py/casmutils/Makemodule.am

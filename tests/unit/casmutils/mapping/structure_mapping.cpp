@@ -44,19 +44,23 @@ protected:
     std::unique_ptr<cu::xtal::Structure> displaced_fcc_Ni_ptr;
 };
 
-/*
-TEST_F(StructureMapTest, StructureMap)
+TEST_F(StructureMapTest, BainMappingScore)
 {
     // map with fcc as reference and bcc,fully bained fcc and partially bained fcc as test structures
-    cu::mapping::MappingReport full_bain = cu::mapping::map_structure(*primitive_fcc_Ni_ptr, *primitive_bcc_Ni_ptr)[0];
-    cu::mapping::MappingReport perfect_bain =
-        cu::mapping::map_structure(*primitive_fcc_Ni_ptr, *perfect_bain_Ni_ptr)[0];
-    cu::mapping::MappingReport partial_bain =
-        cu::mapping::map_structure(*primitive_fcc_Ni_ptr, *partial_bain_Ni_ptr)[0];
+    cu::mapping::MappingReport full_bain_report = cu::mapping::map_structure(
+        *primitive_fcc_Ni_ptr, *primitive_bcc_Ni_ptr)[0];
+    cu::mapping::MappingReport perfect_bain_report = cu::mapping::map_structure(
+        *primitive_fcc_Ni_ptr, *perfect_bain_Ni_ptr)[0];
+    cu::mapping::MappingReport partial_bain_report = cu::mapping::map_structure(
+        *primitive_fcc_Ni_ptr, *partial_bain_Ni_ptr)[0];
 
-    auto [full_bain_lattice_score, full_bain_basis_score] = cu::mapping::structure_score(full_bain);
-    auto [partial_bain_lattice_score, partial_bain_basis_score] = cu::mapping::structure_score(partial_bain);
-    auto [perfect_bain_lattice_score, perfect_bain_basis_score] = cu::mapping::structure_score(perfect_bain);
+    auto [full_bain_lattice_score, full_bain_basis_score] =
+        cu::mapping::structure_score(full_bain_report);
+    auto [partial_bain_lattice_score, partial_bain_basis_score] =
+        cu::mapping::structure_score(partial_bain_report);
+    auto [perfect_bain_lattice_score, perfect_bain_basis_score] =
+        cu::mapping::structure_score(perfect_bain_report);
+
     // lattice score should be finite and identical for bcc and fully bained no matter the volume
     EXPECT_TRUE(std::abs(full_bain_lattice_score - perfect_bain_lattice_score) < 1e-10);
     // partially bained fcc should have a lower score than bcc
@@ -66,13 +70,18 @@ TEST_F(StructureMapTest, StructureMap)
     EXPECT_TRUE(std::abs(perfect_bain_basis_score - partial_bain_basis_score) < 1e-10);
     EXPECT_TRUE(std::abs(perfect_bain_basis_score) < 1e-10);
 
+}
+
+TEST_F(StructureMapTest, DisplacementMappingScore)
+{
     // map with fcc as reference and displaced fcc as test structure
-    cu::mapping::MappingReport displaced = cu::mapping::map_structure(*primitive_fcc_Ni_ptr, *displaced_fcc_Ni_ptr)[0];
-    auto [lattice_score, basis_score] = cu::mapping::structure_score(displaced);
+    cu::mapping::MappingReport displacement_report = cu::mapping::map_structure(
+        *primitive_fcc_Ni_ptr, *displaced_fcc_Ni_ptr)[0];
+    auto [lattice_score, basis_score] =
+        cu::mapping::structure_score(displacement_report);
     EXPECT_TRUE(std::abs(lattice_score) < 1e-10);
     EXPECT_TRUE(std::abs(basis_score - 0.08) < 1e-10);
 }
-*/
 
 //**********************************************************************************************
 
@@ -155,8 +164,6 @@ private:
         return std::make_pair(x, y);
     }
 };
-
-#include <casm/crystallography/SymTools.hh>
 
 TEST_F(GammaSurfaceMapTest, MapAllShifts) {
     //Gamma surface of basal plane has mirror symmetry, so expect

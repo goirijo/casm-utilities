@@ -3,10 +3,42 @@
 import unittest
 import casmutils as cu
 import numpy as np
+import os
 
-class MappingTest(unittest.TestCase):
+input_filedir="@abs_top_srcdir@/tests/input_files"
+
+class StructureMapTest(unittest.TestCase):
     def setUp(self):
-        pass
+        self.primitive_fcc_Ni=cu.xtal.Structure.from_poscar(os.path.join(input_filedir,"primitive_fcc_Ni.vasp"))
+        self.primitive_bcc_Ni=cu.xtal.Structure.from_poscar(os.path.join(input_filedir,"primitive_bcc_Ni.vasp"))
+        self.partial_bain_Ni=cu.xtal.Structure.from_poscar(os.path.join(input_filedir,"partial_bain_Ni.vasp"))
+        self.perfect_bain_Ni=cu.xtal.Structure.from_poscar(os.path.join(input_filedir,"perfectly_bained_Ni.vasp"))
+        self.displaced_fcc_Ni=cu.xtal.Structure.from_poscar(os.path.join(input_filedir,"displaced_fcc_Ni.vasp"))
+
+    def test_mapping_score(self):
+        full_bain_report = cu.mapping.map_structure(self.primitive_fcc_Ni, self.primitive_bcc_Ni)[0]
+        perfect_bain_report = cu.mapping.map_structure(self.primitive_fcc_Ni, self.perfect_bain_Ni)[0]
+        partial_bain_report = cu.mapping.map_structure(self.primitive_fcc_Ni, self.partial_bain_Ni)[0]
+
+        full_bain_lattice_score,full_bain_basis_score=cu.mapping.structure_score(full_bain_report)
+        partial_bain_lattice_score,partial_bain_basis_score=cu.mapping.structure_score(partial_bain_report)
+        perfect_bain_lattice_score,perfect_bain_basis_score=cu.mapping.structure_score(perfect_bain_report)
+        
+        self.assertAlmostEqual(full_bain_lattice_score, perfect_bain_lattice_score, delta=1e-10)
+        self.assertTrue(full_bain_lattice_score>partial_bain_lattice_score)
+
+        self.assertAlmostEqual(full_bain_basis_score, partial_bain_basis_score, delta=1e-10)
+        self.assertAlmostEqual(perfect_bain_basis_score, partial_bain_basis_score, delta=1e-10)
+
+        self.assertAlmostEqual(perfect_bain_basis_score,0,delta=1e-10)
+
+    def test_displacement_mapping_score(self):
+        displacement_report=cu.mapping.map_structure(self.primitive_fcc_Ni, self.displaced_fcc_Ni)[0]
+        lattice_score,basis_score=cu.mapping.structure_score(displacement_report)
+        
+        self.assertAlmostEqual(lattice_score,0,delta=1e-10)
+        self.assertAlmostEqual(basis_score, 0.08, delta=1e-10)
+
 
 if __name__ == '__main__':
     unittest.main()

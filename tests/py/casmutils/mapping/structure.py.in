@@ -1,0 +1,13 @@
+#!@PYTHON@
+
+import unittest
+import casmutils as cu
+import numpy as np
+
+class StructureMapperTest(unittest.TestCase):
+    def setUp(self):
+        pass
+
+if __name__ == '__main__':
+    unittest.main()
+
