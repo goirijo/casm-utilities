@@ -1,52 +1,70 @@
 from . import _mapping
 
-MappingReport = _mapping.MappingReport
-
-class MappingReport:
-
+class MappingReport():
     """Describes the results of mapping one structure onto another, including
     a description of the tensors required to match the lattices, permutations
     and displacements required to map the basis, and both individual costs associated
     with each part of the mapping, as well as a combined lattice and basis mapping score"""
 
     def __init__(self, pybind_value):
-        self._pybind_value=pybind_value
+        self._pybind_value = pybind_value
+
+        self.isometry = self._pybind_value.isometry
+        self.stretch = self._pybind_value.stretch
+        self.translation = self._pybind_value.translation
+        self.displacement = self._pybind_value.displacement
+        self.permutation = self._pybind_value.permutation
+        self.lattice_cost = self._pybind_value.lattice_cost
+        self.basis_cost = self._pybind_value.basis_cost
+        self.cost = self._pybind_value.cost
+        self.reference_lattice = self._pybind_value.reference_lattice
+        self.mapped_lattice = self._pybind_value.mapped_lattice
 
     def __str__(self):
-        as_str=""
+        as_str = ""
 
-        as_str+="isometry:\n"
-        as_str+=self._pybind_value.isometry.__str__()
+        as_str += "isometry:\n"
+        as_str += self.isometry.__str__()
+        as_str += "\n\n"
 
-        as_str+="stretch:\n"
-        as_str+=self._pybind_value.stretch.__str__()
+        as_str += "stretch:\n"
+        as_str += self.stretch.__str__()
+        as_str += "\n\n"
 
-        as_str+="translation:\n"
-        as_str+=self._pybind_value.translation.__str__()
+        as_str += "translation:\n"
+        as_str += self.translation.__str__()
+        as_str += "\n\n"
 
-        as_str+="displacement:\n"
-        as_str+=self._pybind_value.displacement.__str__()
+        as_str += "displacement:\n"
+        as_str += self.displacement.__str__()
+        as_str += "\n\n"
 
-        as_str+="permutation:\n"
-        as_str+=self._pybind_value.permutation.__str__()
+        as_str += "permutation:\n"
+        as_str += self.permutation.__str__()
+        as_str += "\n\n"
 
-        as_str+="lattice cost:\n"
-        as_str+=str(self._pybind_value.lattice_cost)
+        as_str += "lattice cost:\n"
+        as_str += str(self.lattice_cost)
+        as_str += "\n\n"
 
-        as_str+="basis cost:\n"
-        as_str+=str(self._pybind_value.basis_cost)
+        as_str += "basis cost:\n"
+        as_str += str(self.basis_cost)
+        as_str += "\n\n"
 
-        as_str+="cost:\n"
-        as_str+=str(self._pybind_value.cost)
+        as_str += "cost:\n"
+        as_str += str(self.cost)
+        as_str += "\n\n"
 
-        # as_str+="reference lattice:\n"
-        # as_str+=self._pybind_value.reference_lattice.__str__()
+        as_str += "reference lattice:\n"
+        as_str += self.reference_lattice.__str__()
+        as_str += "\n\n"
 
-        # as_str+="mapped lattice:\n"
-        # as_str+=self._pybind_value.mapped_lattice.__str__()
+        as_str += "mapped lattice:\n"
+        as_str += self.mapped_lattice.__str__()
+        as_str += "\n\n"
 
         return as_str
-        
+
 
 class MappingInput(_mapping.MappingInput):
     """Specifies all possible mapping specifications except for the reference
@@ -132,34 +150,45 @@ class MappingInput(_mapping.MappingInput):
             self.assume_ideal_lattice = assume_ideal_lattice
 
     def __str__(self):
-        as_str=""
+        as_str = ""
 
-        as_str+="strain_weight:\n"+str(self.strain_weight)+"\n\n"
-        as_str+="max_volume_change:\n"+str(self.max_volume_change)+"\n\n"
-        as_str+="options:\n"+str(self.options)+"\n\n"
-        as_str+="tol:\n"+str(self.tol)+"\n\n"
-        as_str+="min_vacancy_fraction:\n"+str(self.min_vacancy_fraction)+"\n\n"
-        as_str+="max_vacancy_fraction:\n"+str(self.max_vacancy_fraction)+"\n\n"
-        as_str+="k_best_maps:\n"+str(self.k_best_maps)+"\n\n"
-        as_str+="max_cost:\n"+str(self.max_cost)+"\n\n"
-        as_str+="min_cost:\n"+str(self.min_cost)+"\n\n"
-        as_str+="keep_invalid_mapping_nodes:\n"+str(self.keep_invalid_mapping_nodes)+"\n\n"
-        as_str+="impose_reference_lattice:\n"+str(self.impose_reference_lattice)+"\n\n"
-        as_str+="assume_ideal_structure:\n"+str(self.assume_ideal_structure)+"\n\n"
-        as_str+="assume_ideal_lattice:\n"+str(self.assume_ideal_lattice)
+        as_str += "strain_weight:\n" + str(self.strain_weight) + "\n\n"
+        as_str += "max_volume_change:\n" + str(self.max_volume_change) + "\n\n"
+        as_str += "options:\n" + str(self.options) + "\n\n"
+        as_str += "tol:\n" + str(self.tol) + "\n\n"
+        as_str += "min_vacancy_fraction:\n" + str(
+            self.min_vacancy_fraction) + "\n\n"
+        as_str += "max_vacancy_fraction:\n" + str(
+            self.max_vacancy_fraction) + "\n\n"
+        as_str += "k_best_maps:\n" + str(self.k_best_maps) + "\n\n"
+        as_str += "max_cost:\n" + str(self.max_cost) + "\n\n"
+        as_str += "min_cost:\n" + str(self.min_cost) + "\n\n"
+        as_str += "keep_invalid_mapping_nodes:\n" + str(
+            self.keep_invalid_mapping_nodes) + "\n\n"
+        as_str += "impose_reference_lattice:\n" + str(
+            self.impose_reference_lattice) + "\n\n"
+        as_str += "assume_ideal_structure:\n" + str(
+            self.assume_ideal_structure) + "\n\n"
+        as_str += "assume_ideal_lattice:\n" + str(self.assume_ideal_lattice)
 
         return as_str
 
-class StructureMapper:
 
+class StructureMapper:
     """Once constructed with a reference structure and the relevant mapping parameters,
     use the call operator to map other structures onto the initial reference structure.
     See the MappingInput class for the possible parameters that can be set when mapping
-    structures. 
-    
-    TODO: Add more info"""
+    structures.
+    """
 
-    def __init__(self,reference_structure, mapping_input=None, point_group=[], allowed_species=[], **kwargs):
+    # TODO: Add more info
+
+    def __init__(self,
+                 reference_structure,
+                 mapping_input=None,
+                 point_group=[],
+                 allowed_species=[],
+                 **kwargs):
         """The reference structure is always required. If no other values are given,
         then default values will be created for the MappingInput. A custom symmetry
         group (which would usually be the point group of the reference structure) can
@@ -183,14 +212,18 @@ class StructureMapper:
         if mapping_input is None:
 
             if "k" in kwargs:
-                kwargs["k_best_maps"]=kwargs["k"]
+                kwargs["k_best_maps"] = kwargs["k"]
                 del kwargs["k"]
 
-            mapping_input=MappingInput(**kwargs)
+            mapping_input = MappingInput(**kwargs)
 
-        self._mapping_input=mapping_input
-        self._pybind_value=_mapping.StructureMapper_f(reference_structure._pybind_value, mapping_input, point_group, allowed_species)
+        self._mapping_input = mapping_input
+        self._pybind_value = _mapping.StructureMapper_f(
+            reference_structure._pybind_value, mapping_input, point_group,
+            allowed_species)
 
     def __call__(self, structure):
-        return [ MappingReport(m) for m in self._pybind_value(structure._pybind_value) ]
-
+        return [
+            MappingReport(r)
+            for r in self._pybind_value(structure._pybind_value)
+        ]
