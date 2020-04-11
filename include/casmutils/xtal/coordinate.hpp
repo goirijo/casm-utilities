@@ -44,6 +44,12 @@ public:
     /// Bring *this within the given lattice
     [[nodiscard]] Coordinate bring_within(const Lattice& lat) const;
 
+    /// Bring *this within the given lattice
+    void bring_within_wigner_seitz(const Lattice& lat);
+
+    /// Bring *this within the Wigner-Seitz cell of the given lattice
+    [[nodiscard]] Coordinate bring_within_wigner_seitz(const Lattice& lat) const;
+
     /// Access  the CASM implementation within.
     const CASM::xtal::Coordinate& __get() const { return casm_coord; };
 

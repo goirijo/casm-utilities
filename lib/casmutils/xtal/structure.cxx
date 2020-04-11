@@ -18,6 +18,13 @@ namespace xtal
 
 {
 
+    //TODO: Does it work to just have the _update_using calls be used during __get?
+    //Then always have the rewrap representation be the state of the structure, and
+    //whenever you need a CASM implementation, just get it via __get, which would automatically
+    //update it to the correct state. This might allow us to have the basis
+    //as a public member, so that you could easily add, remove or edit sites without doing
+    //an entire reset.
+
 template <> void Structure::_update_using<CASM::xtal::BasicStructure>()
 {
     _update_simple_from_basic();

@@ -1,5 +1,6 @@
 from . import _mapping
 
+
 class MappingReport():
     """Describes the results of mapping one structure onto another, including
     a description of the tensors required to match the lattices, permutations
@@ -83,7 +84,8 @@ class MappingInput(_mapping.MappingInput):
                  keep_invalid_mapping_nodes=None,
                  impose_reference_lattice=None,
                  assume_ideal_structure=None,
-                 assume_ideal_lattice=None):
+                 assume_ideal_lattice=None,
+                 use_crystal_symmetry=None):
         """Specify only values for which you don't want to keep the defaults.
 
         Parameters
@@ -149,6 +151,9 @@ class MappingInput(_mapping.MappingInput):
         if assume_ideal_lattice is not None:
             self.assume_ideal_lattice = assume_ideal_lattice
 
+        if use_crystal_symmetry is not None:
+            self.use_crystal_symmetry = use_crystal_symmetry
+
     def __str__(self):
         as_str = ""
 
@@ -169,7 +174,9 @@ class MappingInput(_mapping.MappingInput):
             self.impose_reference_lattice) + "\n\n"
         as_str += "assume_ideal_structure:\n" + str(
             self.assume_ideal_structure) + "\n\n"
-        as_str += "assume_ideal_lattice:\n" + str(self.assume_ideal_lattice)
+        as_str += "assume_ideal_lattice:\n" + str(
+            self.assume_ideal_lattice) + "\n\n"
+        as_str += "use_crystal_symmetry:\n" + str(self.use_crystal_symmetry)
 
         return as_str
 

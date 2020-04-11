@@ -47,19 +47,16 @@ protected:
 TEST_F(StructureMapTest, BainMappingScore)
 {
     // map with fcc as reference and bcc,fully bained fcc and partially bained fcc as test structures
-    cu::mapping::MappingReport full_bain_report = cu::mapping::map_structure(
-        *primitive_fcc_Ni_ptr, *primitive_bcc_Ni_ptr)[0];
-    cu::mapping::MappingReport perfect_bain_report = cu::mapping::map_structure(
-        *primitive_fcc_Ni_ptr, *perfect_bain_Ni_ptr)[0];
-    cu::mapping::MappingReport partial_bain_report = cu::mapping::map_structure(
-        *primitive_fcc_Ni_ptr, *partial_bain_Ni_ptr)[0];
+    cu::mapping::MappingReport full_bain_report =
+        cu::mapping::map_structure(*primitive_fcc_Ni_ptr, *primitive_bcc_Ni_ptr)[0];
+    cu::mapping::MappingReport perfect_bain_report =
+        cu::mapping::map_structure(*primitive_fcc_Ni_ptr, *perfect_bain_Ni_ptr)[0];
+    cu::mapping::MappingReport partial_bain_report =
+        cu::mapping::map_structure(*primitive_fcc_Ni_ptr, *partial_bain_Ni_ptr)[0];
 
-    auto [full_bain_lattice_score, full_bain_basis_score] =
-        cu::mapping::structure_score(full_bain_report);
-    auto [partial_bain_lattice_score, partial_bain_basis_score] =
-        cu::mapping::structure_score(partial_bain_report);
-    auto [perfect_bain_lattice_score, perfect_bain_basis_score] =
-        cu::mapping::structure_score(perfect_bain_report);
+    auto [full_bain_lattice_score, full_bain_basis_score] = cu::mapping::structure_score(full_bain_report);
+    auto [partial_bain_lattice_score, partial_bain_basis_score] = cu::mapping::structure_score(partial_bain_report);
+    auto [perfect_bain_lattice_score, perfect_bain_basis_score] = cu::mapping::structure_score(perfect_bain_report);
 
     // lattice score should be finite and identical for bcc and fully bained no matter the volume
     EXPECT_TRUE(std::abs(full_bain_lattice_score - perfect_bain_lattice_score) < 1e-10);
@@ -69,16 +66,14 @@ TEST_F(StructureMapTest, BainMappingScore)
     EXPECT_TRUE(std::abs(full_bain_basis_score - partial_bain_basis_score) < 1e-10);
     EXPECT_TRUE(std::abs(perfect_bain_basis_score - partial_bain_basis_score) < 1e-10);
     EXPECT_TRUE(std::abs(perfect_bain_basis_score) < 1e-10);
-
 }
 
 TEST_F(StructureMapTest, DisplacementMappingScore)
 {
     // map with fcc as reference and displaced fcc as test structure
-    cu::mapping::MappingReport displacement_report = cu::mapping::map_structure(
-        *primitive_fcc_Ni_ptr, *displaced_fcc_Ni_ptr)[0];
-    auto [lattice_score, basis_score] =
-        cu::mapping::structure_score(displacement_report);
+    cu::mapping::MappingReport displacement_report =
+        cu::mapping::map_structure(*primitive_fcc_Ni_ptr, *displaced_fcc_Ni_ptr)[0];
+    auto [lattice_score, basis_score] = cu::mapping::structure_score(displacement_report);
     EXPECT_TRUE(std::abs(lattice_score) < 1e-10);
     EXPECT_TRUE(std::abs(basis_score - 0.08) < 1e-10);
 }
@@ -98,7 +93,7 @@ std::vector<std::string> split(const std::string& s, char delimiter)
     return tokens;
 }
 
-class GammaSurfaceMapTest : public testing::Test
+class MgGammaSurfaceMapTest : public testing::Test
 {
 protected:
     using Structure = casmutils::xtal::Structure;
@@ -113,19 +108,30 @@ protected:
         };
         std::sort(zero_cleave_dirs.begin(), zero_cleave_dirs.end(), cmp_by_coord);
 
+        a_shifts = b_shifts = 0;
         for (const auto& cleave_dir : zero_cleave_dirs)
         {
             shifted_coordinates.emplace_back(coordinate_from_directory(cleave_dir));
             shifted_structures.emplace_back(cu::xtal::Structure::from_poscar(cleave_dir / "POSCAR"));
-        }
 
+            a_shifts = std::max(a_shifts, shifted_coordinates.back().first + 1);
+            b_shifts = std::max(b_shifts, shifted_coordinates.back().second + 1);
+        }
+        assert(a_shifts == b_shifts);
+
+        this->fill_equivalence_grid();
         return;
     }
 
     std::vector<cu::xtal::Structure> shifted_structures;
     std::vector<std::pair<int, int>> shifted_coordinates;
 
+    int a_shifts, b_shifts;
+
     cu::fs::path root;
+
+    // Store the indexes of the equivalent structures on the shift grid
+    std::vector<std::vector<std::vector<int>>> equivalence_grid;
 
 private:
     std::vector<cu::fs::path> directories_zero_cleave() const
@@ -150,6 +156,34 @@ private:
         return no_cleave_dirs;
     }
 
+    void fill_equivalence_grid()
+    {
+        cu::mapping::MappingInput map_strategy;
+        map_strategy.use_crystal_symmetry = true;
+        map_strategy.k_best_maps = 0;
+        map_strategy.min_cost = 1e-10;
+
+        cu::xtal::Structure reference = shifted_structures[0];
+
+        equivalence_grid =
+            std::vector<std::vector<std::vector<int>>>(a_shifts, std::vector<std::vector<int>>(b_shifts));
+
+        for (int i = 0; i < shifted_structures.size(); ++i)
+        {
+            cu::mapping::StructureMapper_f map_to_ith_struc(shifted_structures[i], map_strategy);
+
+            auto [a, b] = shifted_coordinates[i];
+            for (int j = 0; j < shifted_structures.size(); ++j)
+            {
+                auto reports = map_to_ith_struc(shifted_structures[j]);
+                if (reports.size())
+                {
+                    equivalence_grid[a][b].push_back(j);
+                }
+            }
+        }
+    }
+
     static std::pair<int, int> coordinate_from_directory(const cu::fs::path cleave_dir)
     {
         int x, y;
@@ -165,41 +199,55 @@ private:
     }
 };
 
-TEST_F(GammaSurfaceMapTest, MapAllShifts) {
-    //Gamma surface of basal plane has mirror symmetry, so expect
-    //half of the structures to be equivalent to the other half
-    cu::mapping::MappingInput map_strategy;
-    /* map_strategy.use_crystal_symmetry=true; */
-    map_strategy.k_best_maps=0;
-    map_strategy.min_cost=1e-5;
+TEST_F(MgGammaSurfaceMapTest, MirrorMappingSymmetry)
+{
+    // Gamma surface of basal plane has mirror symmetry, so expect
+    // half of the structures to be equivalent to the other half
 
-    cu::xtal::Structure reference=shifted_structures[0];
-
-    for(int i=0; i<shifted_structures.size(); ++i)
+    // Expect at least mirror symmetry, since for HCP, shifting along a is the same as
+    // shifting along b, provided the increments are the same, AND the vectors aren't obtuse
+    for (int i = 0; i < equivalence_grid.size(); ++i)
     {
-        std::cout<<i<<" "<<shifted_coordinates[i].first<<" "<<shifted_coordinates[i].second<<" ";
-
-
-
-        cu::mapping::StructureMapper_f map_to_ith_struc(shifted_structures[i],map_strategy);
-
-        for(int j=0; j<shifted_structures.size(); ++j)
+        for (int j = 0; j < equivalence_grid[i].size(); ++j)
         {
-            auto reports=map_to_ith_struc(shifted_structures[j]);
-            if(reports.size())
-            {
-                std::cout<<j<<" ";
-                /* std::cout<<"\n"<<reports[0].cost<<" "<<reports[0].lattice_cost<<" "<<reports[0].cost<<"\n"; */
-            }
-            /* auto [l,b]=cu::mapping::structure_score(reports[0]); */
-            /* std::cout<<l<<","<<b<<std::endl; */
+            EXPECT_EQ(equivalence_grid[i][j], equivalence_grid[j][i]);
         }
-        std::cout<<std::endl;
+    }
+}
+
+TEST_F(MgGammaSurfaceMapTest, FactorGroupFactorMapping)
+{
+    //The number of equivalent structures should be a factor of the factor group size (24)
+    for (int i = 0; i < equivalence_grid.size(); ++i)
+    {
+        for (int j = 0; j < equivalence_grid[i].size(); ++j)
+        {
+            int maps=equivalence_grid[i][j].size();
+            EXPECT_TRUE(maps==1 || maps==2 || maps==3 || maps==4 || maps==6);
+        }
+    }
+}
+
+TEST_F(MgGammaSurfaceMapTest, AtLeastSomeSymmetry)
+{
+    //Make sure it's not just all structures mapping only onto themselves
+    bool mapped_6=false;
+    for (int i = 0; i < equivalence_grid.size(); ++i)
+    {
+        for (int j = 0; j < equivalence_grid[i].size(); ++j)
+        {
+            if(equivalence_grid[i][j].size()==6)
+            {
+                mapped_6=true;
+            }
+        }
     }
 
-    //For every map, make sure that all structures in the map agree that they're the same
-    //
+    EXPECT_TRUE(mapped_6);
 }
+
+// TODO: Test that when you don't pass symmetry you get the size of the factor group
+// and that when you do, you get the size of the superstructure
 
 int main(int argc, char** argv)
 {

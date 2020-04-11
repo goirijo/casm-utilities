@@ -58,3 +58,4 @@ include/casmutils/rules.hpp
 lib/casmutils/rules.cxx
 *.bak
 *.bak.*
+bak
