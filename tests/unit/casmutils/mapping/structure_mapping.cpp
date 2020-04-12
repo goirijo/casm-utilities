@@ -163,8 +163,6 @@ private:
         map_strategy.k_best_maps = 0;
         map_strategy.min_cost = 1e-10;
 
-        cu::xtal::Structure reference = shifted_structures[0];
-
         equivalence_grid =
             std::vector<std::vector<std::vector<int>>>(a_shifts, std::vector<std::vector<int>>(b_shifts));
 
