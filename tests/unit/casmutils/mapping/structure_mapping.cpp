@@ -1,7 +1,8 @@
 // These are classes that structure_tools depends on
 #include "../../../autotools.hh"
-#include "casmutils/xtal/structure.hpp"
-#include "casmutils/xtal/structure_tools.hpp"
+#include <casmutils/xtal/symmetry.hpp>
+#include <casmutils/xtal/structure.hpp>
+#include <casmutils/xtal/structure_tools.hpp>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -215,28 +216,28 @@ TEST_F(MgGammaSurfaceMapTest, MirrorMappingSymmetry)
 
 TEST_F(MgGammaSurfaceMapTest, FactorGroupFactorMapping)
 {
-    //The number of equivalent structures should be a factor of the factor group size (24)
+    // The number of equivalent structures should be a factor of the factor group size (24)
     for (int i = 0; i < equivalence_grid.size(); ++i)
     {
         for (int j = 0; j < equivalence_grid[i].size(); ++j)
         {
-            int maps=equivalence_grid[i][j].size();
-            EXPECT_TRUE(maps==1 || maps==2 || maps==3 || maps==4 || maps==6);
+            int maps = equivalence_grid[i][j].size();
+            EXPECT_TRUE(maps == 1 || maps == 2 || maps == 3 || maps == 4 || maps == 6);
         }
     }
 }
 
 TEST_F(MgGammaSurfaceMapTest, AtLeastSomeSymmetry)
 {
-    //Make sure it's not just all structures mapping only onto themselves
-    bool mapped_6=false;
+    // Make sure it's not just all structures mapping only onto themselves
+    bool mapped_6 = false;
     for (int i = 0; i < equivalence_grid.size(); ++i)
     {
         for (int j = 0; j < equivalence_grid[i].size(); ++j)
         {
-            if(equivalence_grid[i][j].size()==6)
+            if (equivalence_grid[i][j].size() == 6)
             {
-                mapped_6=true;
+                mapped_6 = true;
             }
         }
     }
@@ -244,8 +245,22 @@ TEST_F(MgGammaSurfaceMapTest, AtLeastSomeSymmetry)
     EXPECT_TRUE(mapped_6);
 }
 
-// TODO: Test that when you don't pass symmetry you get the size of the factor group
-// and that when you do, you get the size of the superstructure
+TEST_F(MgGammaSurfaceMapTest, MappingResultsSize)
+{
+  cu::xtal::Structure hcp_triple = shifted_structures[0];
+  auto factor_group = cu::xtal::make_factor_group(hcp_triple, 1e-5);
+  // If you don't use symmetry in the mapper, expect to get as many
+  // mappings as there are factor group operations
+  cu::mapping::MappingInput map_strategy;
+  map_strategy.k_best_maps = 0;
+  map_strategy.min_cost = 1e-10;
+
+  cu::mapping::StructureMapper_f blind_mapper(hcp_triple, map_strategy);
+  EXPECT_EQ(blind_mapper(hcp_triple).size(),factor_group.size());
+
+  cu::mapping::StructureMapper_f sym_aware_mapper(hcp_triple, map_strategy, factor_group);
+  EXPECT_EQ(sym_aware_mapper(hcp_triple).size(),3);
+}
 
 int main(int argc, char** argv)
 {

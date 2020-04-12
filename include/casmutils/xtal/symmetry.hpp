@@ -2,13 +2,10 @@
 #define XTAL_SYMMETRY_HH
 
 #include <vector>
+#include <casmutils/sym/cartesian.hpp>
 
 namespace casmutils
 {
-    namespace sym
-    {
-        class CartOp;
-    }
 
     namespace xtal
     {
