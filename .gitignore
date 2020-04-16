@@ -47,7 +47,6 @@ configure
 config.h*
 *.m4
 *.cache
-tests/output_files/
 
 #linked external libraries
 include/Eigen
