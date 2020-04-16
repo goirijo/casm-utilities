@@ -69,7 +69,6 @@ struct MappingReport
 struct MappingInput
 {
 public:
-    // TODO: Should this take the structure, or should that happen at the Mapper level?
     MappingInput()
         : 
           /* mode(SpecMode::ATOM), */
@@ -119,7 +118,8 @@ public:
     int options;
     
     /// When true, the point group of the reference structure is applied to the mapped structure
-    /// when performing the mapping (TODO: ask JCT if this is correct)
+    /// when performing the mapping 
+    //(TODO: ask JCT if this is correct)
     bool use_crystal_symmetry;
 
 private:
@@ -136,9 +136,9 @@ class StructureMapper_f
 public:
     typedef CASM::xtal::StrucMapping::AllowedSpecies AllowedSpeciesType;
 
-    StructureMapper_f(const xtal::Structure& reference, const MappingInput& input, const std::vector<sym::CartOp>& point_group={}, const AllowedSpeciesType& allowed_species={});
+    StructureMapper_f(const xtal::Structure& reference, const MappingInput& input, const std::vector<sym::CartOp>& factor_group={}, const AllowedSpeciesType& allowed_species={});
 
-    //Having this allows passing either point_group OR allowed_species, both, or neither
+    //Having this allows passing either factor_group OR allowed_species, both, or neither
     StructureMapper_f(const xtal::Structure& reference, const MappingInput& input, const AllowedSpeciesType& allowed_species): StructureMapper_f(reference,input,{},allowed_species){}
 
     std::vector<MappingReport> operator()(const xtal::Structure& mappable_struc) const;
@@ -149,9 +149,9 @@ private:
     xtal::Lattice lattice_to_impose;
     MappingInput settings;
     
-    // TODO: Structure point group or lattice point group? It's always point_group but
+    // TODO: Structure point group or lattice point group? It's always factor_group but
     // in the casm tests it's called factor group?
-    std::vector<sym::CartOp> point_group;
+    std::vector<sym::CartOp> factor_group;
     AllowedSpeciesType allowed_species;
 
     CASM::xtal::StrucMapper mapper;
@@ -159,9 +159,9 @@ private:
     std::vector<mapping::MappingReport> map(const xtal::Structure& mappable_struc) const;
     std::vector<mapping::MappingReport> ideal_map(const xtal::Structure& mappable_struc) const;
 
-    ///Returns the factor group (TODO: should it be the point group? Why is the member called point_group?)
+    ///Returns the factor group (TODO: should it be the point group? Why is the member called factor_group?)
     ///of the reference structure
-    std::vector<sym::CartOp> make_default_point_group() const;
+    std::vector<sym::CartOp> make_default_factor_group() const;
 
     ///Returns the current species of the reference structure
     AllowedSpeciesType make_default_allowed_species() const;

@@ -7,7 +7,7 @@ namespace casmutils
 {
 namespace mapping
 {
-std::vector<sym::CartOp> StructureMapper_f::make_default_point_group() const
+std::vector<sym::CartOp> StructureMapper_f::make_default_factor_group() const
 {
     if(this->settings.use_crystal_symmetry)
     {
@@ -32,16 +32,16 @@ StructureMapper_f::AllowedSpeciesType StructureMapper_f::make_default_allowed_sp
 typedef CASM::xtal::SimpleStructure::SpeciesMode SpecMode;
 StructureMapper_f::StructureMapper_f(const xtal::Structure& reference,
                                      const MappingInput& input,
-                                     const std::vector<sym::CartOp>& init_point_group,
+                                     const std::vector<sym::CartOp>& init_factor_group,
                                      const AllowedSpeciesType& init_allowed_species)
     : reference_structure(reference),
       lattice_to_impose(reference_structure.lattice()),
       settings(input),
-      point_group(init_point_group.empty() ? make_default_point_group() : init_point_group),
+      factor_group(init_factor_group.empty() ? make_default_factor_group() : init_factor_group),
       allowed_species(init_allowed_species.empty() ? make_default_allowed_species() : init_allowed_species),
       mapper(
           CASM::xtal::SimpleStrucMapCalculator(
-              reference_structure.__get<CASM::xtal::SimpleStructure>(), point_group, SpecMode::ATOM, allowed_species),
+              reference_structure.__get<CASM::xtal::SimpleStructure>(), factor_group, SpecMode::ATOM, allowed_species),
           settings.strain_weight,
           settings.max_volume_change,
           settings.options,
