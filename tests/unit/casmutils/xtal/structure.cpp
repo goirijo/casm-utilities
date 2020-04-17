@@ -53,8 +53,8 @@ TEST_F(StructureTest, ConstBasisAccess)
 {
     //  checks the const accessor method to
     // the basis of the structure
-    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>((*basis0_ptr)[0],
-                                                                   cubic_Ni_struc_ptr->basis_sites()[0], tol));
+    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(
+        (*basis0_ptr)[0], cubic_Ni_struc_ptr->basis_sites()[0], tol));
 }
 TEST_F(StructureTest, ReadfromPOSCAR)
 {
@@ -71,8 +71,8 @@ TEST_F(StructureTest, SetLatticeFrac)
     // FRACTIONAL CALL SHOULD CHANGE BASIS
     cubic_Ni_struc_ptr->set_lattice(*big_cubic_lat_ptr, casmutils::xtal::FRAC);
     // Basis should now be different (site0 transforms to site1 from test frame)
-    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>((*basis1_ptr)[0],
-                                                                   cubic_Ni_struc_ptr->basis_sites()[0], tol));
+    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::SiteEquals_f>(
+        (*basis1_ptr)[0], cubic_Ni_struc_ptr->basis_sites()[0], tol));
     // Lattice should be different
     EXPECT_FALSE(
         casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(*cubic_lat_ptr, cubic_Ni_struc_ptr->lattice(), tol));

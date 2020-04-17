@@ -9,7 +9,7 @@ namespace mapping
 {
 std::vector<sym::CartOp> StructureMapper_f::make_default_point_group() const
 {
-    if(this->settings.use_crystal_symmetry)
+    if (this->settings.use_crystal_symmetry)
     {
         return CASM::xtal::make_factor_group(this->reference_structure.__get<CASM::xtal::BasicStructure>());
     }
@@ -94,7 +94,7 @@ std::vector<mapping::MappingReport> map_structure(const xtal::Structure& map_ref
                                                   const xtal::Structure& mappable_struc)
 {
     mapping::MappingInput input;
-    input.use_crystal_symmetry=true;
+    input.use_crystal_symmetry = true;
     mapping::StructureMapper_f mapper(map_reference_struc, input);
     return mapper(mappable_struc);
 }

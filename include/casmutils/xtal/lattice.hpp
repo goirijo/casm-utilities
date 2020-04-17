@@ -44,8 +44,8 @@ public:
     const CASM::xtal::Lattice& __get() const { return this->casm_lattice; }
 
 private:
-    static Eigen::Matrix3d stack_column_vectors(const Eigen::Vector3d& a, const Eigen::Vector3d& b,
-                                                const Eigen::Vector3d& c);
+    static Eigen::Matrix3d
+    stack_column_vectors(const Eigen::Vector3d& a, const Eigen::Vector3d& b, const Eigen::Vector3d& c);
     CASM::xtal::Lattice casm_lattice;
 };
 
@@ -64,7 +64,7 @@ private:
     double tol;
 };
 
-void make_niggli(Lattice * lattice_ptr); 
+void make_niggli(Lattice* lattice_ptr);
 Lattice make_niggli(const Lattice& non_niggli_lattice);
 
 } // namespace xtal

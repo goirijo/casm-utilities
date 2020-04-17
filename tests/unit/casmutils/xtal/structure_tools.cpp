@@ -260,8 +260,8 @@ TEST_F(StructureToolsTest, ConstApplyStrain)
 
 TEST_F(StructureToolsTest, MakeSuperstructuresofVol)
 {
-    //TODO: Refactor into a member function that takes the matrix, structure, etc.
-    //This is all copy-paste
+    // TODO: Refactor into a member function that takes the matrix, structure, etc.
+    // This is all copy-paste
     using namespace casmutils::xtal;
 
     // create transformation matrices for volume 2 and 3

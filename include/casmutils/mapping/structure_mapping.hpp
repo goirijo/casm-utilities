@@ -4,9 +4,9 @@
 #include <casm/crystallography/SimpleStrucMapCalculator.hh>
 #include <casm/crystallography/StrucMapping.hh>
 #include <casmutils/exceptions.hpp>
+#include <casmutils/sym/cartesian.hpp>
 #include <casmutils/xtal/lattice.hpp>
 #include <casmutils/xtal/structure.hpp>
-#include <casmutils/sym/cartesian.hpp>
 
 namespace casmutils
 {
@@ -54,7 +54,6 @@ struct MappingReport
     // This is potentially a superlattice of the originally passed in reference structure
     xtal::Lattice reference_lattice;
     xtal::Lattice mapped_lattice;
-
 };
 
 /// Holds the parameters that are required to conduct a structure map, including
@@ -71,8 +70,7 @@ struct MappingInput
 public:
     // TODO: Should this take the structure, or should that happen at the Mapper level?
     MappingInput()
-        : 
-          /* mode(SpecMode::ATOM), */
+        : /* mode(SpecMode::ATOM), */
           strain_weight(0.5),
           max_volume_change(0.5),
           options(CASM::xtal::StrucMapper::Options::robust),
@@ -117,7 +115,7 @@ public:
 
     // TODO: Unclear what this could be
     int options;
-    
+
     /// When true, the point group of the reference structure is applied to the mapped structure
     /// when performing the mapping (TODO: ask JCT if this is correct)
     bool use_crystal_symmetry;
@@ -136,19 +134,26 @@ class StructureMapper_f
 public:
     typedef CASM::xtal::StrucMapping::AllowedSpecies AllowedSpeciesType;
 
-    StructureMapper_f(const xtal::Structure& reference, const MappingInput& input, const std::vector<sym::CartOp>& point_group={}, const AllowedSpeciesType& allowed_species={});
+    StructureMapper_f(const xtal::Structure& reference,
+                      const MappingInput& input,
+                      const std::vector<sym::CartOp>& point_group = {},
+                      const AllowedSpeciesType& allowed_species = {});
 
-    //Having this allows passing either point_group OR allowed_species, both, or neither
-    StructureMapper_f(const xtal::Structure& reference, const MappingInput& input, const AllowedSpeciesType& allowed_species): StructureMapper_f(reference,input,{},allowed_species){}
+    // Having this allows passing either point_group OR allowed_species, both, or neither
+    StructureMapper_f(const xtal::Structure& reference,
+                      const MappingInput& input,
+                      const AllowedSpeciesType& allowed_species)
+        : StructureMapper_f(reference, input, {}, allowed_species)
+    {
+    }
 
     std::vector<MappingReport> operator()(const xtal::Structure& mappable_struc) const;
 
 private:
-
     xtal::Structure reference_structure;
     xtal::Lattice lattice_to_impose;
     MappingInput settings;
-    
+
     // TODO: Structure point group or lattice point group? It's always point_group but
     // in the casm tests it's called factor group?
     std::vector<sym::CartOp> point_group;
@@ -159,11 +164,11 @@ private:
     std::vector<mapping::MappingReport> map(const xtal::Structure& mappable_struc) const;
     std::vector<mapping::MappingReport> ideal_map(const xtal::Structure& mappable_struc) const;
 
-    ///Returns the factor group (TODO: should it be the point group? Why is the member called point_group?)
-    ///of the reference structure
+    /// Returns the factor group (TODO: should it be the point group? Why is the member called point_group?)
+    /// of the reference structure
     std::vector<sym::CartOp> make_default_point_group() const;
 
-    ///Returns the current species of the reference structure
+    /// Returns the current species of the reference structure
     AllowedSpeciesType make_default_allowed_species() const;
 };
 
@@ -172,7 +177,8 @@ private:
 std::pair<double, double> structure_score(const mapping::MappingReport& mapping_data);
 
 /// Map a single structure onto a reference structure with default settings
-std::vector<mapping::MappingReport> map_structure(const xtal::Structure& map_reference_struc, const xtal::Structure& mappable_struc);
+std::vector<mapping::MappingReport> map_structure(const xtal::Structure& map_reference_struc,
+                                                  const xtal::Structure& mappable_struc);
 
 } // namespace mapping
 } // namespace casmutils

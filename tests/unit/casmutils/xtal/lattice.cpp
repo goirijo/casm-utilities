@@ -1,5 +1,5 @@
-#include <casmutils/xtal/lattice.hpp>
 #include <casmutils/misc.hpp>
+#include <casmutils/xtal/lattice.hpp>
 #include <gtest/gtest.h>
 #include <memory>
 
@@ -16,13 +16,13 @@ protected:
 
         Eigen::Matrix3d conventional_fcc_matrix;
         conventional_fcc_matrix << 3.0, 0.0, 0.0, 0.0, 3.0, 0.0, 0.0, 0.0, 3.0;
-        
-		conventional_fcc_ptr.reset(new Lattice(conventional_fcc_matrix));
+
+        conventional_fcc_ptr.reset(new Lattice(conventional_fcc_matrix));
 
         Eigen::Matrix3d non_niggli_conventional_fcc_matrix;
         non_niggli_conventional_fcc_matrix << 3.0, 0.0, 0.0, 0.0, 3.0, 0.0, 3.0, 3.0, 3.0;
 
-		non_niggli_conventional_fcc_ptr.reset(new Lattice(non_niggli_conventional_fcc_matrix));
+        non_niggli_conventional_fcc_ptr.reset(new Lattice(non_niggli_conventional_fcc_matrix));
         Eigen::Matrix3d bcc_matrix;
         bcc_matrix << -1.5, 1.5, 1.5, 1.5, -1.5, 1.5, 1.5, 1.5, -1.5;
         bcc_ptr.reset(new Lattice(bcc_matrix));
@@ -38,8 +38,8 @@ protected:
     std::unique_ptr<Lattice> fcc_ptr;
     std::unique_ptr<Lattice> fcc_copy_ptr;
 
-	std::unique_ptr<Lattice> conventional_fcc_ptr;
-	std::unique_ptr<Lattice> non_niggli_conventional_fcc_ptr;
+    std::unique_ptr<Lattice> conventional_fcc_ptr;
+    std::unique_ptr<Lattice> non_niggli_conventional_fcc_ptr;
 
     std::unique_ptr<Lattice> bcc_ptr;
     std::unique_ptr<Lattice> hcp_ptr;
@@ -124,10 +124,8 @@ TEST_F(LatticeTest, ConstMakeNiggli)
 {
     // checks to see if you can make a skewed cell as niggli
     const Lattice niggli = casmutils::xtal::make_niggli(*non_niggli_conventional_fcc_ptr);
-    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(
-        *conventional_fcc_ptr, niggli, tol));
+    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(*conventional_fcc_ptr, niggli, tol));
 }
-
 
 int main(int argc, char** argv)
 {

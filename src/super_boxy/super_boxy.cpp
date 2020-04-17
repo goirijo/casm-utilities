@@ -14,10 +14,11 @@ void super_boxy_initializer(po::options_description& super_boxy_desc)
 {
     utilities::add_help_suboption(super_boxy_desc);
     utilities::add_output_suboption(super_boxy_desc);
-    super_boxy_desc.add_options()("structure,s", po::value<fs::path>()->required(),
+    super_boxy_desc.add_options()("structure,s",
+                                  po::value<fs::path>()->required(),
                                   "POS.vasp like file that you want to get the boxy supercell for.");
-    super_boxy_desc.add_options()("volume,v", po::value<int>()->required(),
-                                  "Volume of the boxy superstructure, relative to the input structure");
+    super_boxy_desc.add_options()(
+        "volume,v", po::value<int>()->required(), "Volume of the boxy superstructure, relative to the input structure");
 
     return;
 }

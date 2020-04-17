@@ -46,7 +46,7 @@ public:
     /// Give the structure a new lattice, and either keep the Cartesian, or fractional coordinates of the basis
     [[nodiscard]] Structure set_lattice(const Lattice& new_lattice, COORD_TYPE mode) const;
 
-    //TODO: Needs a better name, bring_basis_within?
+    // TODO: Needs a better name, bring_basis_within?
     /// Moves the basis sites within the lattice cell
     void within();
 

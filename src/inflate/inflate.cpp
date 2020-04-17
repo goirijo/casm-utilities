@@ -15,10 +15,12 @@ void inflate_initializer(po::options_description& inflate_desc)
     utilities::add_help_suboption(inflate_desc);
     utilities::add_desc_suboption(inflate_desc);
     utilities::add_output_suboption(inflate_desc);
-    inflate_desc.add_options()("structure,s", po::value<fs::path>()->required(),
+    inflate_desc.add_options()("structure,s",
+                               po::value<fs::path>()->required(),
                                "POS.vasp like file you want to "
                                "increase the boundaries of");
-    inflate_desc.add_options()("length,l", po::value<std::vector<double>>()->multitoken()->required(),
+    inflate_desc.add_options()("length,l",
+                               po::value<std::vector<double>>()->multitoken()->required(),
                                "amount that each lattice vector will grow (three values "
                                "corresponding to a, b, and c)");
     return;

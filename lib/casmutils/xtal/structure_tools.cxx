@@ -142,7 +142,7 @@ std::vector<Structure> make_superstructures_of_volume(const Structure& structure
 {
     std::vector<Structure> all_superstructures;
     CASM::xtal::ScelEnumProps enum_props(volume, volume + 1);
-    //TODO: Bring crystal group operations into casmutils
+    // TODO: Bring crystal group operations into casmutils
     std::vector<CASM::xtal::SymOp> pg = CASM::xtal::make_point_group(structure.lattice().__get());
     CASM::xtal::SuperlatticeEnumerator lat_enumerator(structure.lattice().__get(), pg, enum_props);
 

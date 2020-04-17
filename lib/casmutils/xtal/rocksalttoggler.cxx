@@ -161,8 +161,8 @@ void RockSaltOctahedraToggler::turn_central_ion_off(index ix) { central_ion_is_o
 std::array<RockSaltOctahedraToggler::Coordinate, 6>
 RockSaltOctahedraToggler::nearest_neighbor_site_coordinates(const Coordinate& central_coord) const
 {
-    std::array<Coordinate, 6> nearest_coords{central_coord, central_coord, central_coord,
-                                             central_coord, central_coord, central_coord};
+    std::array<Coordinate, 6> nearest_coords{
+        central_coord, central_coord, central_coord, central_coord, central_coord, central_coord};
     for (int i = 0; i < 6; ++i)
     {
         nearest_coords[i] += nearest_neighbor_deltas[i];
@@ -281,8 +281,8 @@ RockSaltOctahedraToggler::index RockSaltOctahedraToggler::coordinate_to_index(Co
     auto basis = this->rocksalt_struc.basis_sites();
     for (int ix = 0; ix < basis.size(); ++ix)
     {
-        if (casmutils::is_equal<casmutils::xtal::CoordinateEquals_f>(static_cast<Coordinate>(basis[ix]), coordinate,
-                                                                     1e-5))
+        if (casmutils::is_equal<casmutils::xtal::CoordinateEquals_f>(
+                static_cast<Coordinate>(basis[ix]), coordinate, 1e-5))
         {
             return ix;
         }
@@ -332,7 +332,8 @@ RockSaltOctahedraToggler::primitive_structure(std::pair<std::string, std::string
 }
 
 RockSaltOctahedraToggler::Structure conventional_structure(std::pair<std::string, std::string> species_names,
-                                                           std::string central_specie, double init_nn_distance)
+                                                           std::string central_specie,
+                                                           double init_nn_distance)
 {
     throw except::NotImplemented();
     // get the primitive,
@@ -342,7 +343,8 @@ RockSaltOctahedraToggler::Structure conventional_structure(std::pair<std::string
 RockSaltOctahedraToggler
 RockSaltOctahedraToggler::relative_to_primitive(const Eigen::Matrix3i trans_mat,
                                                 std::pair<std::string, std::string> species_names,
-                                                bool central_is_second, double init_nn_distance)
+                                                bool central_is_second,
+                                                double init_nn_distance)
 {
     if (central_is_second)
     {
@@ -352,7 +354,9 @@ RockSaltOctahedraToggler::relative_to_primitive(const Eigen::Matrix3i trans_mat,
     auto prim_struc = primitive_structure(species_names, init_nn_distance);
     auto super_struc = casmutils::xtal::make_superstructure(prim_struc, trans_mat);
 
-    return RockSaltOctahedraToggler(std::move(super_struc), species_names.first, species_names.second,
+    return RockSaltOctahedraToggler(std::move(super_struc),
+                                    species_names.first,
+                                    species_names.second,
                                     initialized_nearest_neighbor_deltas(init_nn_distance),
                                     initialized_central_ion_is_on(super_struc, species_names.first),
                                     initialized_leashed_vertex_ions(super_struc, species_names.second),
@@ -362,12 +366,14 @@ RockSaltOctahedraToggler::relative_to_primitive(const Eigen::Matrix3i trans_mat,
 RockSaltOctahedraToggler
 RockSaltOctahedraToggler::relative_to_conventional(const Eigen::Matrix3i trans_mat,
                                                    std::pair<std::string, std::string> species_names,
-                                                   bool central_is_second, double init_nn_distance)
+                                                   bool central_is_second,
+                                                   double init_nn_distance)
 {
     throw except::NotImplemented();
 }
 
-RockSaltOctahedraToggler::RockSaltOctahedraToggler(Structure&& init_struc, std::string init_central_name,
+RockSaltOctahedraToggler::RockSaltOctahedraToggler(Structure&& init_struc,
+                                                   std::string init_central_name,
                                                    std::string init_vertex_name,
                                                    std::array<Coordinate, 6>&& init_nn_deltas,
                                                    std::unordered_map<index, bool>&& init_central_is_on,
@@ -391,9 +397,12 @@ RockSaltOctahedraToggler::initialized_nearest_neighbor_deltas(double init_nn_dis
     auto d = init_nn_distance;
     // need a lattice for the coordinate type
     // need to CART type for coordinate, but this syntax is giving compiling errors...
-    std::array<RockSaltOctahedraToggler::Coordinate, 6> deltas = {
-        Coordinate(d, 0.0, 0.0),      Coordinate(0.0, d, 0.0),      Coordinate(0.0, 0.0, d),
-        Coordinate(-1 * d, 0.0, 0.0), Coordinate(0.0, -1 * d, 0.0), Coordinate(0.0, 0.0, -1 * d)};
+    std::array<RockSaltOctahedraToggler::Coordinate, 6> deltas = {Coordinate(d, 0.0, 0.0),
+                                                                  Coordinate(0.0, d, 0.0),
+                                                                  Coordinate(0.0, 0.0, d),
+                                                                  Coordinate(-1 * d, 0.0, 0.0),
+                                                                  Coordinate(0.0, -1 * d, 0.0),
+                                                                  Coordinate(0.0, 0.0, -1 * d)};
 
     return deltas;
 }

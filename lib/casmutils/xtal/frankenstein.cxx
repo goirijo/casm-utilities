@@ -89,8 +89,8 @@ std::pair<xtal::Structure, xtal::Structure> slice(const xtal::Structure& big_str
     /* return bottom_top; */
 }
 
-std::vector<xtal::Structure> _multi_slice(const xtal::Structure& big_struc, const Eigen::VectorXd& slice_locs,
-                                          double tol)
+std::vector<xtal::Structure>
+_multi_slice(const xtal::Structure& big_struc, const Eigen::VectorXd& slice_locs, double tol)
 {
     // Begin by performing the first slice
     auto struc_pair = slice(big_struc, slice_locs(0), tol);
@@ -117,8 +117,8 @@ std::vector<xtal::Structure> _multi_slice(const xtal::Structure& big_struc, cons
     return slices;
 }
 
-std::vector<xtal::Structure> multi_slice(const xtal::Structure& big_struc, const std::set<double>& slice_locs,
-                                         double tol)
+std::vector<xtal::Structure>
+multi_slice(const xtal::Structure& big_struc, const std::set<double>& slice_locs, double tol)
 {
     Eigen::VectorXd sanitized_slice_locs(slice_locs.size());
 
