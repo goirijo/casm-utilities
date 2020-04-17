@@ -56,8 +56,7 @@ Structure make_niggli(const Structure& non_niggli)
 
 void make_niggli(Structure* non_niggli)
 {
-    Lattice lat_niggli =
-        CASM::xtal::niggli(CASM::xtal::Lattice(non_niggli->lattice().column_vector_matrix()), CASM::TOL);
+    Lattice lat_niggli = make_niggli(non_niggli->lattice());
     non_niggli->set_lattice(lat_niggli, CART);
     non_niggli->within();
     return;
