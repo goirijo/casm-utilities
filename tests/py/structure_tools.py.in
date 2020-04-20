@@ -1,0 +1,11 @@
+#!@PYTHON@
+
+import unittest
+import casmutils as cu
+import numpy as np
+
+class StructureToolsTest(unittest.TestCase):
+    def setUp(self):
+        
+if __name__ == '__main__':
+    unittest.main()
