@@ -31,7 +31,7 @@ bool LatticeEquals_f::operator()(const Lattice& other)
 
 void make_niggli(Lattice* lattice_ptr)
 {
-    CASM::xtal::niggli(CASM::xtal::Lattice(lattice_ptr->lattice().column_vector_matrix()), CASM::TOL);
+	*lattice_ptr= CASM::xtal::niggli(CASM::xtal::Lattice(lattice_ptr->column_vector_matrix()), CASM::TOL);
     return;
 }
 Lattice make_niggli(const Lattice& non_niggli_lattice)
