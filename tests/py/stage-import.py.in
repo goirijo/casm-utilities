@@ -1,9 +1,0 @@
-#!@PYTHON@
-
-import casmutils.stage
-
-def main():
-    print("Successfully imported stage")
-
-if __name__=="__main__":
-    main()

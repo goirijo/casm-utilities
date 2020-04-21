@@ -71,21 +71,37 @@ class MappingInput(_mapping.MappingInput):
     """Specifies all possible mapping specifications except for the reference
     structure itself, and the symmetry operations that should be considered."""
 
-    def __init__(self,
-                 strain_weight=None,
-                 max_volume_change=None,
-                 options=None,
-                 tol=None,
-                 min_vacancy_fraction=None,
-                 max_vacancy_fraction=None,
-                 k_best_maps=None,
-                 max_cost=None,
-                 min_cost=None,
-                 keep_invalid_mapping_nodes=None,
-                 impose_reference_lattice=None,
-                 assume_ideal_structure=None,
-                 assume_ideal_lattice=None,
-                 use_crystal_symmetry=None):
+    @classmethod
+    def _sanitize_kwargs(cls, kwargs):
+        """Some options will have more than one way to be specified,
+        this function will translate shorthands to the most explicit
+        keyword available.
+
+        Parameters
+        ----------
+        kwargs : dict or MappingInput input parameters
+
+        Returns
+        -------
+        dict
+
+        """
+        if "k" in kwargs:
+            kwargs["k_best_maps"] = kwargs["k"]
+            del kwargs["k"]
+
+        #TODO: You could potentially set defaults here too? Probably
+        #better to leave that in the c++ implementatiton though
+        return kwargs
+
+    def __setattr__(self,name,value):
+        if not hasattr(self,name):
+            raise AttributeError("{} is not a valid keyword for MappingInput".format(name))
+        super().__setattr__(name,value)
+
+    def __init__(self, **kwargs):
+        #TODO: list what the default values are here?
+
         """Specify only values for which you don't want to keep the defaults.
 
         Parameters
@@ -103,56 +119,14 @@ class MappingInput(_mapping.MappingInput):
         impose_reference_lattice : bool, optional
         assume_ideal_structure : bool, optional
         assume_ideal_lattice : bool, optional
+        use_crystal_symmetry : bool, optional
 
         """
         _mapping.MappingInput.__init__(self)
+        kwargs=MappingInput._sanitize_kwargs(kwargs)
 
-        if strain_weight is not None:
-            self.strain_weight = strain_weight
-
-        if max_volume_change is not None:
-            self.max_volume_change = max_volume_change
-
-        #TODO: Implement as string
-        if options is not None:
-            raise NotImplemented(
-                "Specifiying options as string not yet implemented,\
-                    you can override the value manually post construction with the appropriate\
-                    integer value post construction (sorry)")
-            self.options = options
-
-        if tol is not None:
-            self.tol = tol
-
-        if min_vacancy_fraction is not None:
-            self.min_vacancy_fraction = min_vacancy_fraction
-
-        if max_vacancy_fraction is not None:
-            self.max_vacancy_fraction = max_vacancy_fraction
-
-        if k_best_maps is not None:
-            self.k_best_maps = k_best_maps
-
-        if max_cost is not None:
-            self.max_cost = max_cost
-
-        if min_cost is not None:
-            self.min_cost = min_cost
-
-        if keep_invalid_mapping_nodes is not None:
-            self.keep_invalid_mapping_nodes = keep_invalid_mapping_nodes
-
-        if impose_reference_lattice is not None:
-            self.impose_reference_lattice = impose_reference_lattice
-
-        if assume_ideal_structure is not None:
-            self.assume_ideal_structure = assume_ideal_structure
-
-        if assume_ideal_lattice is not None:
-            self.assume_ideal_lattice = assume_ideal_lattice
-
-        if use_crystal_symmetry is not None:
-            self.use_crystal_symmetry = use_crystal_symmetry
+        for k in kwargs:
+            self.__setattr__(k,kwargs[k])
 
     def __str__(self):
         as_str = ""
@@ -193,7 +167,7 @@ class StructureMapper:
     def __init__(self,
                  reference_structure,
                  mapping_input=None,
-                 point_group=[],
+                 factor_group=[],
                  allowed_species=[],
                  **kwargs):
         """The reference structure is always required. If no other values are given,
@@ -207,7 +181,7 @@ class StructureMapper:
         ----------
         reference_structure : xtal.Structure
         mapping_input : MappingInput
-        point_group : List[sym.CartOp]
+        factor_group : List[sym.CartOp]
         allowed_species : List[List[str]]
         kwargs : values to specify for the MappingInput, ignored if mapping_input is provided
 
@@ -218,15 +192,11 @@ class StructureMapper:
         #TODO: Ideally you can pass both MappingInput and kwargs, which override field by field?
         if mapping_input is None:
 
-            if "k" in kwargs:
-                kwargs["k_best_maps"] = kwargs["k"]
-                del kwargs["k"]
-
             mapping_input = MappingInput(**kwargs)
 
         self._mapping_input = mapping_input
         self._pybind_value = _mapping.StructureMapper_f(
-            reference_structure._pybind_value, mapping_input, point_group,
+            reference_structure._pybind_value, mapping_input, factor_group,
             allowed_species)
 
     def __call__(self, structure):

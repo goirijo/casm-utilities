@@ -57,6 +57,7 @@ PYBIND11_MODULE(_mapping, m)
             .def_readwrite("impose_reference_lattice", &mapping::MappingInput::impose_reference_lattice)
             .def_readwrite("assume_ideal_lattice", &mapping::MappingInput::assume_ideal_lattice)
             .def_readwrite("assume_ideal_structure", &mapping::MappingInput::assume_ideal_structure)
+            .def_readwrite("use_crystal_symmetry", &mapping::MappingInput::use_crystal_symmetry)
             .def_readwrite("options", &mapping::MappingInput::options);
     }
 
