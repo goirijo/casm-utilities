@@ -49,13 +49,13 @@ PYBIND11_MODULE(_xtal, m)
             .def(init<const Eigen::Vector3d&, const Eigen::Vector3d&, const Eigen::Vector3d&>())
             .def(init<const Eigen::Matrix3d&>())
             .def("__str__", __str__)
-            .def("_a_const", &xtal::Lattice::a)
-            .def("_b_const", &xtal::Lattice::b)
-            .def("_c_const", &xtal::Lattice::c)
+            .def("a", &xtal::Lattice::a)
+            .def("b", &xtal::Lattice::b)
+            .def("c", &xtal::Lattice::c)
             .def("__getitem__", &xtal::Lattice::operator[])
-            .def("_volume_const", &xtal::Lattice::volume)
-            .def("_col_vec_mat_const", &xtal::Lattice::column_vector_matrix)
-            .def("_row_vec_mat_const", &xtal::Lattice::row_vector_matrix);
+            .def("volume", &xtal::Lattice::volume)
+            .def("column_vector_matrix", &xtal::Lattice::column_vector_matrix)
+            .def("row_vector_matrix", &xtal::Lattice::row_vector_matrix);
     }
 
     {

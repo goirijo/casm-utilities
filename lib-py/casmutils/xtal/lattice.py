@@ -63,7 +63,7 @@ class Lattice(_xtal.Lattice):
         Lattice
 
         """
-        value = cls(pybind_value._a_const(), pybind_value._b_const(), pybind_value._c_const())
+        value = cls(pybind_value.a(), pybind_value.b(), pybind_value.c())
         return value
 
     def a(self):
@@ -74,7 +74,7 @@ class Lattice(_xtal.Lattice):
         np.array
 
         """
-        return self._a_const()
+        return super().a()
 
     def b(self):
         """Returns 2nd lattice vector
@@ -84,7 +84,7 @@ class Lattice(_xtal.Lattice):
         np.array
 
         """
-        return self._b_const()
+        return super().b()
 
     def c(self):
         """Returns 3rd lattice vector
@@ -94,7 +94,7 @@ class Lattice(_xtal.Lattice):
         np.array
 
         """
-        return self._c_const()
+        return super().c()
 
     def volume(self):
         """Returns volume of the lattice
@@ -104,7 +104,7 @@ class Lattice(_xtal.Lattice):
         double
 
         """
-        return self._volume_const()
+        return super().volume()
 
     def column_vector_matrix(self):
         """Returns the lattice in column vector
@@ -115,7 +115,7 @@ class Lattice(_xtal.Lattice):
         np.array
 
         """
-        return self._col_vec_mat_const()
+        return super().column_vector_matrix()
 
     def row_vector_matrix(self):
         """Returns the lattice in row vector
@@ -126,7 +126,7 @@ class Lattice(_xtal.Lattice):
         np.array
 
         """
-        return self._row_vec_mat_const()
+        return super().row_vector_matrix()
 
     def set_compare_method(self, method, *args):
         """Determines what strategy to use for comparing
