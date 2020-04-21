@@ -155,7 +155,7 @@ private:
     xtal::Lattice lattice_to_impose;
     MappingInput settings;
 
-   std::vector<sym::CartOp> factor_group;
+    std::vector<sym::CartOp> factor_group;
     AllowedSpeciesType allowed_species;
 
     CASM::xtal::StrucMapper mapper;
@@ -163,7 +163,7 @@ private:
     std::vector<mapping::MappingReport> map(const xtal::Structure& mappable_struc) const;
     std::vector<mapping::MappingReport> ideal_map(const xtal::Structure& mappable_struc) const;
 
-   /// Returns the factor group of the reference structure
+    /// Returns the factor group of the reference structure
     std::vector<sym::CartOp> make_default_factor_group() const;
 
     /// Returns the current species of the reference structure
