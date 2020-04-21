@@ -3,9 +3,23 @@
 import unittest
 import casmutils as cu
 import numpy as np
+import os
+
+input_filedir = "@abs_top_srcdir@/tests/input_files"
 
 class StructureToolsTest(unittest.TestCase):
     def setUp(self):
-        
+        self.conventional_fcc_Ni = cu.xtal.Structure.from_poscar(
+            os.path.join(input_filedir, "conventional_fcc_Ni.vasp"))
+        self.nonniggli_conventional_fcc_Ni = cu.xtal.Structure.from_poscar(
+            os.path.join(input_filedir, "nonniggli_conventional_fcc_Ni.vasp"))
+
+    def test_make_niggli(self):
+       niggli_struc=cu.xtal.make_niggli(self.nonniggli_conventional_fcc_Ni)
+       self.assertTrue(niggli_struc.lattice() == conventional_fcc_Ni.lattice())
+       for i in range(0,len(conventional_fcc_Ni.basis_sites())):
+           self.assertTrue(niggli_struc.basis_sites()[i] in conventional_fcc_Ni.basis_sites())
+       self.assertTrue(len(niggli_struc.basis_sites())==len(conventional_fcc_Ni.basis_sites()))
+       
 if __name__ == '__main__':
     unittest.main()

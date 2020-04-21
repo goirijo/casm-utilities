@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-# from ._xtal import *
+from ._xtal import make_niggli
 from . import coordinate
 from .coordinate import Coordinate
 from .coordinate import MutableCoordinate
