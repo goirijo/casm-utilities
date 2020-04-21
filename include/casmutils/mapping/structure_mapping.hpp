@@ -65,7 +65,7 @@ struct MappingReport
 /// invalid mappings, whether the structure being mapped is ideal, the
 /// potential to impose a lattice to map the test structure onto (must be a superlattice
 /// of the reference)
-//TODO: Explain each parameter in detail
+// TODO: Explain each parameter in detail
 struct MappingInput
 {
 public:
@@ -129,7 +129,7 @@ private:
 /// different test structures to the same reference.
 /// Default values for the point group is the factor group of the reference structure,
 /// and the allowed species are whatever is residing at the reference structure.
-//TODO: Explain each constructor argument in detail
+// TODO: Explain each constructor argument in detail
 class StructureMapper_f
 {
 public:
