@@ -32,6 +32,20 @@ Coordinate Coordinate::bring_within(const Lattice& lat) const
     return copy_coord;
 }
 
+void Coordinate::bring_within_wigner_seitz(const Lattice& lat)
+{
+    this->casm_coord.set_lattice(lat.__get(), CASM::CART);
+    this->casm_coord.voronoi_within();
+    return;
+}
+
+Coordinate Coordinate::bring_within_wigner_seitz(const Lattice& lat) const
+{
+    Coordinate copy_coord(*this);
+    copy_coord.bring_within_wigner_seitz(lat);
+    return copy_coord;
+}
+
 Eigen::Vector3d Coordinate::cart() const { return this->casm_coord.cart(); }
 
 Eigen::Vector3d Coordinate::frac(const Lattice& ref_lattice) const

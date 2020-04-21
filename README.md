@@ -54,6 +54,11 @@ Once you're set on what flags you need, put it all together to run the configure
 ```
 ../configure --prefix=$HOME/.local CXXFLAGS='-Any-flags -You -Might-want'    
 ```
+Note that the python modules have been written for `python3`. If your default python version is still lagging, you'll have to specify `PYTHON_VERSION` during the configure step above. An example of what the configure step could look like:
+```
+CXX=g++-8 PYTHON_VERSION=3.6 ../configure --prefix=$HOME/.local CXXFLAGS='-O3 -DNDEBUG'    
+```
+
 
 For more information on the configure step, see the documentation by calling `../configure -h`.
 

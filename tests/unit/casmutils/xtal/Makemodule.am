@@ -1,0 +1,38 @@
+TESTS+=check_xtal_coordinate
+check_PROGRAMS += check_xtal_coordinate
+check_xtal_coordinate_SOURCES = tests/unit/casmutils/xtal/coordinate.cpp
+check_xtal_coordinate_LDADD=\
+					libgtest.la\
+					libcasmutils.la
+
+
+TESTS+=check_xtal_site
+check_PROGRAMS += check_xtal_site
+check_xtal_site_SOURCES = tests/unit/casmutils/xtal/site.cpp
+check_xtal_site_LDADD=\
+					libgtest.la\
+					libcasmutils.la
+
+
+TESTS+=check_xtal_lattice
+check_PROGRAMS += check_xtal_lattice
+check_xtal_lattice_SOURCES = tests/unit/casmutils/xtal/lattice.cpp
+check_xtal_lattice_LDADD=\
+					libgtest.la\
+					libcasmutils.la
+
+
+TESTS+=check_xtal_structure
+check_PROGRAMS += check_xtal_structure
+check_xtal_structure_SOURCES = tests/unit/casmutils/xtal/structure.cpp
+check_xtal_structure_LDADD=\
+					libgtest.la\
+					libcasmutils.la
+
+TESTS+=check_xtal_structure_tools
+check_PROGRAMS += check_xtal_structure_tools
+check_xtal_structure_tools_SOURCES = tests/unit/casmutils/xtal/structure_tools.cpp
+check_xtal_structure_tools_LDADD=\
+					libgtest.la\
+					libcasmutils.la
+

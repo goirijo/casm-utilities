@@ -30,6 +30,7 @@ public:
 
     /// Return the third vector of the lattice
     Eigen::Vector3d c() const { return this->operator[](2); }
+
     /// Return the volume of this lattice
     double volume() const { return this->__get().volume(); }
 
@@ -43,8 +44,8 @@ public:
     const CASM::xtal::Lattice& __get() const { return this->casm_lattice; }
 
 private:
-    static Eigen::Matrix3d stack_column_vectors(const Eigen::Vector3d& a, const Eigen::Vector3d& b,
-                                                const Eigen::Vector3d& c);
+    static Eigen::Matrix3d
+    stack_column_vectors(const Eigen::Vector3d& a, const Eigen::Vector3d& b, const Eigen::Vector3d& c);
     CASM::xtal::Lattice casm_lattice;
 };
 

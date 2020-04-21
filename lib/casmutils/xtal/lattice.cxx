@@ -12,8 +12,8 @@ Lattice::Lattice(const Eigen::Vector3d& a, const Eigen::Vector3d& b, const Eigen
 {
 }
 
-Eigen::Matrix3d Lattice::stack_column_vectors(const Eigen::Vector3d& a, const Eigen::Vector3d& b,
-                                              const Eigen::Vector3d& c)
+Eigen::Matrix3d
+Lattice::stack_column_vectors(const Eigen::Vector3d& a, const Eigen::Vector3d& b, const Eigen::Vector3d& c)
 {
     Eigen::Matrix3d column_matrix;
     column_matrix.col(0) = a;

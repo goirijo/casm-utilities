@@ -35,10 +35,7 @@ class SiteCoordinateEquals:
         bool
 
         """
-        if np.allclose(self._ref_site.cart(),other.cart(),self._tol,self._tol) is True:
-            return True
-        else:
-            return False
+        return np.allclose(self._ref_site.cart(),other.cart(),self._tol,self._tol)
 
 class SiteTest(unittest.TestCase):
     def setUp(self):

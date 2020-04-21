@@ -30,7 +30,8 @@ int main(int argc, char* argv[])
     CLI::Option* out_path_opt = utilities::add_output_suboption(&app, &out_path);
 
     casmutils::fs::path super_path;
-    CLI::Option* super_path_opt = app.add_option("-s,--superstructure", super_path,
+    CLI::Option* super_path_opt = app.add_option("-s,--superstructure",
+                                                 super_path,
                                                  "POS.vasp like file that you want to get the primitive structure for.")
                                       ->required();
     super_path_opt->check(CLI::ExistingFile);

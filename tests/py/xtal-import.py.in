@@ -1,9 +1,0 @@
-#!@PYTHON@
-
-import casmutils.xtal
-
-def main():
-    print("Successfully imported xtal")
-
-if __name__=="__main__":
-    main()

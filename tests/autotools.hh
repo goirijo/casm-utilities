@@ -22,8 +22,10 @@ static const fs::path abs_srcdir=ABS_SRCDIR;
 ///Absolute path to the build directory, i.e. wherever you ran the configure script
 static const fs::path abs_top_builddir=ABS_TOP_BUILDDIR;
 
-///Absolute path the the input files for tests
+///Absolute path to the input files for tests
 static const fs::path input_filesdir=abs_srcdir/"tests/input_files";
+///Absolute path to whatever files get generated during tests
+static const fs::path output_filesdir=abs_srcdir/"tests/output_files";
     
 }
 }

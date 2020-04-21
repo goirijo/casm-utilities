@@ -22,11 +22,11 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/crystallography/DoFDecl.hh\
     CASMcode/include/casm/crystallography/DoFSet.hh\
     CASMcode/include/casm/crystallography/HermiteCounter.hh\
+    CASMcode/include/casm/crystallography/IntegralCoordinateWithin.hh\
     CASMcode/include/casm/crystallography/Lattice.hh\
-    CASMcode/include/casm/crystallography/Lattice_impl.hh\
     CASMcode/include/casm/crystallography/LatticeIsEquivalent.hh\
     CASMcode/include/casm/crystallography/LatticeMap.hh\
-    CASMcode/include/casm/crystallography/LatticePointWithin.hh\
+    CASMcode/include/casm/crystallography/Lattice_impl.hh\
     CASMcode/include/casm/crystallography/LinearIndexConverter.hh\
     CASMcode/include/casm/crystallography/Molecule.hh\
     CASMcode/include/casm/crystallography/Niggli.hh\
@@ -38,11 +38,12 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/crystallography/Strain.hh\
     CASMcode/include/casm/crystallography/StrucMapCalculatorInterface.hh\
     CASMcode/include/casm/crystallography/StrucMapping.hh\
+    CASMcode/include/casm/crystallography/Superlattice.hh\
     CASMcode/include/casm/crystallography/SuperlatticeEnumerator.hh\
     CASMcode/include/casm/crystallography/SymRepBuilder.hh\
     CASMcode/include/casm/crystallography/SymTools.hh\
-    CASMcode/include/casm/crystallography/SymTypeComparator.hh\
     CASMcode/include/casm/crystallography/SymType.hh\
+    CASMcode/include/casm/crystallography/SymTypeComparator.hh\
     CASMcode/include/casm/crystallography/UnitCellCoord.hh\
     CASMcode/include/casm/crystallography/UnitCellCoordTraits.hh\
     CASMcode/include/casm/external/Eigen/Array\
@@ -405,10 +406,10 @@ libcasmblob_la_SOURCES=\
     CASMcode/src/casm/crystallography/CoordinateSystems.cc\
     CASMcode/src/casm/crystallography/DoFSet.cc\
     CASMcode/src/casm/crystallography/HermiteCounter.cc\
+    CASMcode/src/casm/crystallography/IntegralCoordinateWithin.cc\
     CASMcode/src/casm/crystallography/Lattice.cc\
     CASMcode/src/casm/crystallography/LatticeIsEquivalent.cc\
     CASMcode/src/casm/crystallography/LatticeMap.cc\
-    CASMcode/src/casm/crystallography/LatticePointWithin.cc\
     CASMcode/src/casm/crystallography/LinearIndexConverter.cc\
     CASMcode/src/casm/crystallography/Molecule.cc\
     CASMcode/src/casm/crystallography/Niggli.cc\
@@ -419,6 +420,7 @@ libcasmblob_la_SOURCES=\
     CASMcode/src/casm/crystallography/SpeciesAttribute.cc\
     CASMcode/src/casm/crystallography/Strain.cc\
     CASMcode/src/casm/crystallography/StrucMapping.cc\
+    CASMcode/src/casm/crystallography/Superlattice.cc\
     CASMcode/src/casm/crystallography/SuperlatticeEnumerator.cc\
     CASMcode/src/casm/crystallography/SymTools.cc\
     CASMcode/src/casm/crystallography/SymType.cc\

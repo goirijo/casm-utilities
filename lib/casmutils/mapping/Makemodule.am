@@ -1,0 +1,6 @@
+noinst_LTLIBRARIES += libcasmutils-mapping.la
+
+libcasmutils_mapping_la_SOURCES=
+libcasmutils_mapping_la_SOURCES+=\
+						 lib/casmutils/mapping/structure_mapping.cxx\
+						 include/casmutils/mapping/structure_mapping.hpp
