@@ -1,5 +1,5 @@
 from . import _xtal
-from .lattice import Lattice, MutableLattice
+from .lattice import Lattice
 from .site import Site, MutableSite
 
 class _Structure():
@@ -9,24 +9,19 @@ class _Structure():
     common to both"""
 
     def __init__(self, lattice, basis):
-        """creates an instance of _xtal.Structure
-        as a container to access it's member functions
-
+        """
         Parameters
         ----------
         lattice : Lattice or MutableLattice
-        basis : list
+        basis : list[Sites]
 
         """
         if lattice is _xtal.Structure and basis is None:
             self._pybind_value = None
 
         else:
-            py_bind_basis = []
-            for site in basis:
-                py_bind_basis.append(site._pybind_value)
-
-            self._pybind_value = _xtal.Structure(lattice._pybind_value, py_bind_basis)
+            py_bind_basis = [site._pybind_value for site in basis]
+            self._pybind_value = _xtal.Structure(lattice, py_bind_basis)
 
     @classmethod
     def _from_pybind(cls, py_bind_value):
@@ -90,19 +85,17 @@ class _Structure():
 
         Returns
         -------
-        list
+        list[Sites]
 
         """
         py_bind_basis = self._pybind_value._basis_sites_const()
-        basis = []
-
-        for py_bind_site in py_bind_basis:
-            basis.append(Site._from_pybind(py_bind_site))
+        basis = [Site._from_pybind(py_bind_site) for py_bind_site in py_bind_basis]
 
         return basis
 
     def __str__(self):
-        """Prints the current structure instance
+        """Returns lattice and the list of basis sites as
+        a printable string
 
         Returns
         -------
@@ -113,22 +106,23 @@ class _Structure():
 
 class Structure(_Structure):
 
-    """Immutable structure defined by a Lattice and a list of basis sites"""
+    """Immutable structure defined by a Lattice and a list of basis sites.
+    Handles all the operations in a const way"""
 
     def __init__(self, lattice, basis):
-        """Inheriting the constructor from _Structure
-
+        """
         Paremeters
         ----------
         lattice : Lattice
-        basis : list
+        basis : list[Sites]
 
         """
         super().__init__(lattice, basis)
 
     def set_lattice(self, new_lattice, coord_type):
         """Changes the lattice to the provided new lattice
-        and updates the basis sites and returns a copy of
+        and updates the basis sites based on the coord_type provided
+        (Fractional or Cartesian) and returns a copy of
         the new structure
 
         Parameters
@@ -141,19 +135,20 @@ class Structure(_Structure):
         Structure
 
         """
-        return self._from_pybind(self._pybind_value._set_lattice_const(new_lattice._pybind_value, coord_type))
+        return self._from_pybind(self._pybind_value._set_lattice_const(new_lattice, coord_type))
 
 class MutableStructure(_Structure):
 
-    """Mutable structure defined by a Lattice and a list of basis sites"""
+    """Mutable structure defined by a Lattice and a list of basis sites.
+    can handle non const operations. use only when you want to mutate
+    the class itself."""
 
     def __init__(self, lattice, basis):
-        """Inheriting the constructor from _Structure
-
+        """
         Paremeters
         ----------
         lattice : Lattice
-        basis : list
+        basis : list[Sites]
 
         """
         super().__init__(lattice, basis)
@@ -171,7 +166,8 @@ class MutableStructure(_Structure):
 
     def set_lattice(self, new_lattice, coord_type):
         """Changes the lattice to the provided new lattice
-        and updates the basis sites
+        and updates the basis sites based on the coord_type
+        (Fractional or Cartesian) provided
 
         Parameters
         ----------
@@ -183,6 +179,6 @@ class MutableStructure(_Structure):
         TODO
 
         """
-        self._pybind_value._set_lattice(new_lattice._pybind_value,coord_type)
+        self._pybind_value._set_lattice(new_lattice,coord_type)
         return
 

@@ -30,34 +30,32 @@ PYBIND11_MODULE(_xtal, m)
 
     {
         using namespace wrappy::Structure;
-        typedef xtal::Structure xStructure;
         class_<xtal::Structure>(m, "Structure")
             .def(init<const xtal::Lattice&, const std::vector<xtal::Site>&>())
             .def("__str__", __str__)
             .def_static("_from_poscar", from_poscar)
             .def("_to_poscar", to_poscar)
-            .def("_lattice_const", &xStructure::lattice)
+            .def("_lattice_const", &xtal::Structure::lattice)
             .def("_set_lattice_const", set_lattice_const)
             .def("_set_lattice", set_lattice)
-            .def("_within", &xStructure::within)
-            .def("_basis_sites_const", &xStructure::basis_sites)
+            .def("_within", &xtal::Structure::within)
+            .def("_basis_sites_const", &xtal::Structure::basis_sites)
             .def("make_niggli", pybind11::overload_cast<const xtal::Structure&>(casmutils::xtal::make_niggli));
     }
 
     {
         using namespace wrappy::Lattice;
-        typedef xtal::Lattice xLattice;
         class_<xtal::Lattice>(m, "Lattice")
             .def(init<const Eigen::Vector3d&, const Eigen::Vector3d&, const Eigen::Vector3d&>())
             .def(init<const Eigen::Matrix3d&>())
             .def("__str__", __str__)
-            .def("_a_const", &xLattice::a)
-            .def("_b_const", &xLattice::b)
-            .def("_c_const", &xLattice::c)
-            .def("__getitem__", &xLattice::operator[])
-            .def("_volume_const", &xLattice::volume)
-            .def("_col_vec_mat_const", &xLattice::column_vector_matrix)
-            .def("_row_vec_mat_const", &xLattice::row_vector_matrix);
+            .def("a", &xtal::Lattice::a)
+            .def("b", &xtal::Lattice::b)
+            .def("c", &xtal::Lattice::c)
+            .def("__getitem__", &xtal::Lattice::operator[])
+            .def("volume", &xtal::Lattice::volume)
+            .def("column_vector_matrix", &xtal::Lattice::column_vector_matrix)
+            .def("row_vector_matrix", &xtal::Lattice::row_vector_matrix);
     }
 
     {
@@ -68,19 +66,18 @@ PYBIND11_MODULE(_xtal, m)
 
     {
         using namespace wrappy::Coordinate;
-        typedef xtal::Coordinate xCoord;
         class_<xtal::Coordinate>(m, "Coordinate")
             .def(init<const Eigen::Vector3d&&>())
             .def_static("from_fractional",
-                        pybind11::overload_cast<const Eigen::Vector3d&, const xtal::Lattice&>(&xCoord::from_fractional))
+                        pybind11::overload_cast<const Eigen::Vector3d&, const xtal::Lattice&>(&xtal::Coordinate::from_fractional))
             .def("__str__", __str__)
-            .def("__add__", &xCoord::operator+, pybind11::is_operator())
-            .def("__iadd__", &xCoord::operator+=)
+            .def("__add__", &xtal::Coordinate::operator+, pybind11::is_operator())
+            .def("__iadd__", &xtal::Coordinate::operator+=)
             .def("_bring_within_const",
-                 pybind11::overload_cast<const xtal::Lattice&>(&xCoord::bring_within, pybind11::const_))
-            .def("_bring_within", pybind11::overload_cast<const xtal::Lattice&>(&xCoord::bring_within))
-            .def("_cart_const", &xCoord::cart)
-            .def("_frac_const", &xCoord::frac);
+                 pybind11::overload_cast<const xtal::Lattice&>(&xtal::Coordinate::bring_within, pybind11::const_))
+            .def("_bring_within", pybind11::overload_cast<const xtal::Lattice&>(&xtal::Coordinate::bring_within))
+            .def("_cart_const", &xtal::Coordinate::cart)
+            .def("_frac_const", &xtal::Coordinate::frac);
     }
 
     {
@@ -91,14 +88,13 @@ PYBIND11_MODULE(_xtal, m)
 
     {
         using namespace wrappy::Site;
-        typedef xtal::Site xSite;
         class_<xtal::Site>(m, "Site")
             .def(init<const Eigen::Vector3d&, const std::string&>())
             .def(init<const xtal::Coordinate&, const std::string&>())
             .def("__str__", __str__)
-            .def("_cart_const", &xSite::cart)
-            .def("_frac_const", &xSite::frac)
-            .def("_label_const", &xSite::label);
+            .def("_cart_const", &xtal::Site::cart)
+            .def("_frac_const", &xtal::Site::frac)
+            .def("_label_const", &xtal::Site::label);
     }
 
     {

@@ -1,8 +1,11 @@
 #!@PYTHON@
 
 import unittest
+import os
 import casmutils as cu
 import numpy as np
+
+input_file_dir = "@abs_top_srcdir@/tests/input_files"
 
 class StructureTest(unittest.TestCase):
     def setUp(self):
@@ -14,37 +17,32 @@ class StructureTest(unittest.TestCase):
 
         """Setting up Structure"""
         self.lat = cu.xtal.Lattice(*self.lat_matrix)
-        self.latm = cu.xtal.MutableLattice(*self.lat_matrix)
         self.new_lat = cu.xtal.Lattice(*self.new_lat_matrix)
 
         self.site0 = cu.xtal.Site(self.raw_coord0, "F")
         self.site1 = cu.xtal.Site(self.raw_coord1, "U")
-        self.site0m = cu.xtal.MutableSite(self.raw_coord0, "F")
-        self.site1m = cu.xtal.MutableSite(self.raw_coord1, "U")
         self.basis = [self.site0, self.site1]
-        self.basism = [self.site0m, self.site1m]
 
-        self.struc0 = cu.xtal.Structure(self.lat,self.basis)
-        self.struc0m = cu.xtal.MutableStructure(self.latm, self.basism)
+        self.struc0 = cu.xtal.Structure(self.lat, self.basis)
+        self.struc0m = cu.xtal.MutableStructure(self.lat, self.basis)
 
     def test_construct_lat_access(self):
         self.assertTrue(self.lat == self.struc0.lattice())
-        self.assertTrue(self.latm == self.struc0m.lattice())
 
     def test_basis_access(self):
         for i in range(0,len(self.basis)):
             self.assertTrue(self.struc0.basis_sites()[i] == self.basis[i])
-            self.assertTrue(self.struc0m.basis_sites()[i] == self.basism[i])
+            self.assertTrue(self.struc0m.basis_sites()[i] == self.basis[i])
 
     def test_from_poscar(self):
-        struc = cu.xtal.Structure.from_poscar("@abs_top_srcdir@/tests/input_files/hypothetical_cell.vasp")
+        struc = cu.xtal.Structure.from_poscar(os.path.join(input_file_dir,"FCC_sites_not_within.vasp"))
         self.assertTrue(struc.lattice() == self.lat)
         for i in range(0,len(self.basis)):
             self.assertTrue(struc.basis_sites()[i]==self.basis[i])
 
     def test_to_poscar(self):
-        self.struc0.to_poscar("test_struc.vasp")
-        struc = cu.xtal.Structure.from_poscar("test_struc.vasp")
+        self.struc0.to_poscar("test_to_poscar.vasp")
+        struc = cu.xtal.Structure.from_poscar("test_to_poscar.vasp")
         self.assertTrue(struc.lattice()==self.struc0.lattice())
         for i in range(0,len(self.basis)):
             self.assertTrue(struc.basis_sites()[i]==self.struc0.basis_sites()[i])

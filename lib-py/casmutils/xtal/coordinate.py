@@ -3,7 +3,10 @@ from . import globaldef
 
 class Equals:
 
-    """A wrapper class for _xtal.CoordinateEquals_f"""
+    """A Coordinate compare method which returns true if
+    each of the x,y,z values of the "reference" Coordinate
+    are within a specified tolerance of x,y,z values
+    of the "other" Coordinate or MutableCoordinate"""
 
     def __init__(self, ref_coordinate, tol):
         """Construct Equals from Coordinate
@@ -18,8 +21,7 @@ class Equals:
         self._CoordinateEquals_f = _xtal.CoordinateEquals_f(ref_coordinate._pybind_value, tol)
 
     def __call__(self, other):
-        """Overloading () operator
-
+        """
         Parameters
         ----------
         other : Coordinate or MutableCoordinate
@@ -37,11 +39,7 @@ class _Coordinate:
     Defines the functions that should be common for both."""
 
     def __init__(self, coord):
-        """create an instance of _xtal.Coordinate
-        as a container (_Coordinate object) which
-        can be used to access the member functions
-        of _xtal.Coordinate
-
+        """
         Parameters
         ----------
         coord : np.array
@@ -54,7 +52,7 @@ class _Coordinate:
             self._pybind_value = _xtal.Coordinate(coord)
 
     def cart(self):
-        """Return the Cartesian values of the coordinate
+        """Returns the Cartesian values of the coordinate
 
         Returns
         -------
@@ -76,7 +74,7 @@ class _Coordinate:
         np.array
 
         """
-        return self._pybind_value._frac_const(lat._pybind_value)
+        return self._pybind_value._frac_const(lat)
 
     @classmethod
     def _from_pybind(cls, py_bind_value):
@@ -111,7 +109,7 @@ class _Coordinate:
         cls
 
         """
-        py_binded = _xtal.Coordinate.from_fractional(coords,lat._pybind_value)
+        py_binded = _xtal.Coordinate.from_fractional(coords,lat)
         return cls._from_pybind(py_binded)
 
     def set_compare_method(self, method, *args):
@@ -177,7 +175,8 @@ class _Coordinate:
         return self._from_pybind(py_binded)
 
     def __str__(self):
-        """Returns string to print
+        """Returns x,y,z values of the Coordinate as a printabe
+        string
 
         Returns
         -------
@@ -193,9 +192,7 @@ class Coordinate(_Coordinate):
     periodicity."""
 
     def __init__(self, coord):
-        """Constructor inheriting from the
-        parent _Coordinate
-
+        """
         Parameters
         ----------
         coord : np.array
@@ -217,7 +214,7 @@ class Coordinate(_Coordinate):
         Coordinate
 
         """
-        py_binded = self._pybind_value._bring_within_const(lat._pybind_value)
+        py_binded = self._pybind_value._bring_within_const(lat)
         return self._from_pybind(py_binded)
 
 class MutableCoordinate(_Coordinate):
@@ -227,9 +224,7 @@ class MutableCoordinate(_Coordinate):
     periodicity."""
 
     def __init__(self, coord):
-        """constructor that inherits from the
-        parent _Coordinate
-
+        """
         Parameters
         ----------
         coord : np.array
@@ -251,7 +246,7 @@ class MutableCoordinate(_Coordinate):
         None
 
         """
-        self._pybind_value._bring_within(lat._pybind_value)
+        self._pybind_value._bring_within(lat)
         return
 
     def __iadd__(self, other):

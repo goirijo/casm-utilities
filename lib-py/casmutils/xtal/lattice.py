@@ -3,7 +3,10 @@ from . import globaldef
 
 class Equals:
 
-    """A wrapper class for _xtal.LatticeEquals_f"""
+    """A Lattice compare method which returns true
+    if all the lattice vectors of "reference" lattice
+    are within a specified tolerance of the lattice vectors
+    of "other" lattice"""
 
     def __init__(self, ref_lattice, tol):
         """Construct Equals from Lattice or MutableLattice &
@@ -11,35 +14,32 @@ class Equals:
 
         Parameters
         ----------
-        ref_site : Lattice or MutableLattice
+        ref_site : Lattice
         tol : double
 
         """
-        self._LatticeEquals_f = _xtal.LatticeEquals_f(ref_lattice._pybind_value, tol)
+        self._LatticeEquals_f = _xtal.LatticeEquals_f(ref_lattice, tol)
 
     def __call__(self, other):
-        """Overloading () operator
-
+        """
         Parameters
         ----------
-        other : Lattice or MutableLattice
+        other : Lattice
 
         Returns
         -------
         bool
 
         """
-        return self._LatticeEquals_f(other._pybind_value)
+        return self._LatticeEquals_f(other)
 
-class _Lattice():
+class Lattice(_xtal.Lattice):
 
-    """Base class for both mutable and immutable Lattice classes.
-    Defines the functions that should be common for both."""
+    """A Lattice class. Defined as the unit cells that
+    define the unit cell"""
 
     def __init__(self, a, b, c):
-        """create an instance of _xtal.Lattice as a container
-        to access it's member function
-
+        """
         Parameters
         ----------
         a : np.array
@@ -47,15 +47,11 @@ class _Lattice():
         c : np.array
 
         """
-        if a is _xtal.Lattice and b is None and c is None:
-            self._pybind_value = None
-
-        else:
-            self._pybind_value = _xtal.Lattice(a,b,c)
+        super().__init__(a,b,c)
 
     @classmethod
-    def _from_pybind(cls, py_bind_value):
-        """Returns a constructed _Lattice from
+    def _from_pybind(cls, pybind_value):
+        """Returns a constructed Lattice from
         a given _xtal.Lattice value
 
         Parameters
@@ -64,11 +60,10 @@ class _Lattice():
 
         Returns
         -------
-        _Lattice
+        Lattice
 
         """
-        value = cls(_xtal.Lattice,None,None)
-        value._pybind_value = py_bind_value
+        value = cls(pybind_value.a(), pybind_value.b(), pybind_value.c())
         return value
 
     def a(self):
@@ -79,7 +74,7 @@ class _Lattice():
         np.array
 
         """
-        return self._pybind_value._a_const()
+        return super().a()
 
     def b(self):
         """Returns 2nd lattice vector
@@ -89,7 +84,7 @@ class _Lattice():
         np.array
 
         """
-        return self._pybind_value._b_const()
+        return super().b()
 
     def c(self):
         """Returns 3rd lattice vector
@@ -99,7 +94,7 @@ class _Lattice():
         np.array
 
         """
-        return self._pybind_value._c_const()
+        return super().c()
 
     def volume(self):
         """Returns volume of the lattice
@@ -109,7 +104,7 @@ class _Lattice():
         double
 
         """
-        return self._pybind_value._volume_const()
+        return super().volume()
 
     def column_vector_matrix(self):
         """Returns the lattice in column vector
@@ -120,7 +115,7 @@ class _Lattice():
         np.array
 
         """
-        return self._pybind_value._col_vec_mat_const()
+        return super().column_vector_matrix()
 
     def row_vector_matrix(self):
         """Returns the lattice in row vector
@@ -131,7 +126,7 @@ class _Lattice():
         np.array
 
         """
-        return self._pybind_value._row_vec_mat_const()
+        return super().row_vector_matrix()
 
     def set_compare_method(self, method, *args):
         """Determines what strategy to use for comparing
@@ -179,64 +174,14 @@ class _Lattice():
         """
         return not self == other
 
-    def __getitem__(self, index):
-        """Returns the lattice vector at the given
-        index accessed through []
-
-        Paremeters
-        ----------
-        index : int
-
-        Returns
-        -------
-        np.array
-
-        """
-        return self._pybind_value[index]
-
     def __str__(self):
-        """Returns the string to print
+        """Returns column vector matrix as a printable
+        string
 
         Returns
         -------
         string
 
         """
-        return self._pybind_value.__str__()
-
-class Lattice(_Lattice):
-
-    """Immutable Lattice class. Defined as three
-    vectors that define the unit cell."""
-
-    def __init__(self, a, b, c):
-        """Constructor inheriting from
-        _Lattice
-
-        Paremeters
-        ----------
-        a : np.array
-        b : np.array
-        c : np.array
-
-        """
-        super().__init__(a, b, c)
-
-class MutableLattice(_Lattice):
-
-    """Mutable Lattice class. Defined as three
-    vectors that define the unit cell"""
-
-    def __init__(self, a, b, c):
-        """Constructor inheriting from
-        _Lattice
-
-        Parameters
-        ----------
-        a : np.array
-        b : np.array
-        c : np.array
-
-        """
-        super().__init__(a, b, c)
+        return self.__str__()
 
