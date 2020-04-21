@@ -3,7 +3,9 @@ from . import globaldef
 
 class Equals:
 
-    """A wrapper class for _xtal.SiteEquals_f"""
+    """Definition of a site compare method which returns true if
+    the coordinate and the atom type of the "reference" site matches
+    with the coordinate and the atom type of the "other" site"""
 
     def __init__(self, ref_site, tol):
         """Construct Equals from Site
@@ -18,8 +20,7 @@ class Equals:
         self._SiteEquals_f = _xtal.SiteEquals_f(ref_site._pybind_value, tol)
 
     def __call__(self, other):
-        """Overloading () operator
-
+        """
         Parameters
         ----------
         other : Site or MutableSite
@@ -37,10 +38,7 @@ class _Site:
     Defines the functions that should be common to both"""
 
     def __init__(self,coord,label):
-        """create an instance of _xtal.Site
-        as a container to access it's member
-        functions
-
+        """
         Parameters
         ----------
         coord : Coordinate
@@ -96,7 +94,7 @@ class _Site:
         np.array
 
         """
-        return self._pybind_value._frac_const(lat._pybind_value)
+        return self._pybind_value._frac_const(lat)
 
     def label(self):
         """Returns label of atom at the Site
@@ -155,7 +153,8 @@ class _Site:
         return not self==other
 
     def __str__(self):
-        """Returns the string to print
+        """Returns the coordinate values along with the
+        along with the atom type as a printable string
 
         Returns
         -------
@@ -166,12 +165,11 @@ class _Site:
 
 class Site(_Site):
 
-    """Immutable Site Class"""
+    """Immutable Site Class. Defined as cartesian coordinates
+    along with atom type. Handles all const site operations"""
 
     def __init__(self, coord, label):
-        """Constructor inheriting from
-        parent's constructor
-
+        """
         Parameters
         ----------
         coord : Coordinate
@@ -182,12 +180,11 @@ class Site(_Site):
 
 class MutableSite(_Site):
 
-    """Mutable Site Class"""
+    """Mutable Site Class. Defined as cartesian coordinates along
+    with atom type. Handles all non const site operations"""
 
     def __init__(self, coord, label):
-        """Constructor inheriting from
-        parent's constructor
-
+        """
         Parameters
         ----------
         coord : MutableCoordinate

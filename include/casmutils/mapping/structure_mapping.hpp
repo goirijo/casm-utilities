@@ -65,6 +65,7 @@ struct MappingReport
 /// invalid mappings, whether the structure being mapped is ideal, the
 /// potential to impose a lattice to map the test structure onto (must be a superlattice
 /// of the reference)
+//TODO: Explain each parameter in detail
 struct MappingInput
 {
 public:
@@ -115,9 +116,8 @@ public:
     // TODO: Unclear what this could be
     int options;
 
-    /// When true, the point group of the reference structure is applied to the mapped structure
+    /// When true, the factor group of the reference structure is applied to the mapped structure
     /// when performing the mapping
-    //(TODO: ask JCT if this is correct)
     bool use_crystal_symmetry;
 
 private:
@@ -127,8 +127,9 @@ private:
 
 /// Can map a structure to its internal reference can be used for mapping many
 /// different test structures to the same reference.
-/// Default values for the point group is the point group (factor group???) of the reference structure,
+/// Default values for the point group is the factor group of the reference structure,
 /// and the allowed species are whatever is residing at the reference structure.
+//TODO: Explain each constructor argument in detail
 class StructureMapper_f
 {
 public:
@@ -154,8 +155,11 @@ private:
     xtal::Lattice lattice_to_impose;
     MappingInput settings;
 
+<<<<<<< HEAD
     // TODO: Structure point group or lattice point group? It's always factor_group but
     // in the casm tests it's called factor group?
+=======
+>>>>>>> 19e9855a1dfaec2dfe54608612bca2ed70ae76ce
     std::vector<sym::CartOp> factor_group;
     AllowedSpeciesType allowed_species;
 
@@ -164,8 +168,12 @@ private:
     std::vector<mapping::MappingReport> map(const xtal::Structure& mappable_struc) const;
     std::vector<mapping::MappingReport> ideal_map(const xtal::Structure& mappable_struc) const;
 
+<<<<<<< HEAD
     /// Returns the factor group (TODO: should it be the point group? Why is the member called factor_group?)
     /// of the reference structure
+=======
+    /// Returns the factor group of the reference structure
+>>>>>>> 19e9855a1dfaec2dfe54608612bca2ed70ae76ce
     std::vector<sym::CartOp> make_default_factor_group() const;
 
     /// Returns the current species of the reference structure
