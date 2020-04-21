@@ -15,10 +15,12 @@ void coord_shift_initializer(po::options_description& coord_shift_desc)
     utilities::add_help_suboption(coord_shift_desc);
     utilities::add_desc_suboption(coord_shift_desc);
     utilities::add_output_suboption(coord_shift_desc);
-    coord_shift_desc.add_options()("structure", po::value<fs::path>()->required(),
+    coord_shift_desc.add_options()("structure",
+                                   po::value<fs::path>()->required(),
                                    "POS.vasp like file you want to "
                                    "shift all the coordinates of");
-    coord_shift_desc.add_options()("shift", po::value<std::vector<double>>()->multitoken()->required(),
+    coord_shift_desc.add_options()("shift",
+                                   po::value<std::vector<double>>()->multitoken()->required(),
                                    "shift value that will be added to all coordinates (negative "
                                    "origin shift) units are fractional");
     return;

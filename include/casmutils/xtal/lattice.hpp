@@ -44,8 +44,8 @@ public:
     const CASM::xtal::Lattice& __get() const { return this->casm_lattice; }
 
 private:
-    static Eigen::Matrix3d stack_column_vectors(const Eigen::Vector3d& a, const Eigen::Vector3d& b,
-                                                const Eigen::Vector3d& c);
+    static Eigen::Matrix3d
+    stack_column_vectors(const Eigen::Vector3d& a, const Eigen::Vector3d& b, const Eigen::Vector3d& c);
     CASM::xtal::Lattice casm_lattice;
 };
 

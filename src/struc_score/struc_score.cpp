@@ -16,13 +16,15 @@ void struc_score_initializer(po::options_description& struc_score_desc)
     utilities::add_help_suboption(struc_score_desc);
     utilities::add_output_suboption(struc_score_desc);
 
-    struc_score_desc.add_options()("reference,r", po::value<fs::path>()->required(),
-                                   "POS.vasp like file to use as reference structure.");
-    struc_score_desc.add_options()("mappable,m", po::value<std::vector<fs::path>>()->multitoken(),
+    struc_score_desc.add_options()(
+        "reference,r", po::value<fs::path>()->required(), "POS.vasp like file to use as reference structure.");
+    struc_score_desc.add_options()("mappable,m",
+                                   po::value<std::vector<fs::path>>()->multitoken(),
                                    "POS.vasp like file(s) to map, get structure score for.");
-    struc_score_desc.add_options()("batch,b", po::value<fs::path>(),
-                                   "Batch file containing list of structures files to get structure score for.");
-    struc_score_desc.add_options()("weight,w", po::value<double>()->default_value(0.5),
+    struc_score_desc.add_options()(
+        "batch,b", po::value<fs::path>(), "Batch file containing list of structures files to get structure score for.");
+    struc_score_desc.add_options()("weight,w",
+                                   po::value<double>()->default_value(0.5),
                                    "Weight w in structure score: w*lattice_score + (1-w)*basis_score.");
     return;
 }

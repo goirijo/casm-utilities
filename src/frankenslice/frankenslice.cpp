@@ -16,10 +16,12 @@ void frankenslice_initializer(po::options_description& frankenslice_desc)
     utilities::add_help_suboption(frankenslice_desc);
     utilities::add_desc_suboption(frankenslice_desc);
     utilities::add_output_suboption(frankenslice_desc);
-    frankenslice_desc.add_options()("superstructure,s", po::value<fs::path>()->required(),
+    frankenslice_desc.add_options()("superstructure,s",
+                                    po::value<fs::path>()->required(),
                                     "POS.vasp like file that you want to "
                                     "get the primitive structure for.");
-    frankenslice_desc.add_options()("slice-locations,x", po::value<std::vector<double>>()->multitoken(),
+    frankenslice_desc.add_options()("slice-locations,x",
+                                    po::value<std::vector<double>>()->multitoken(),
                                     "a set of locations to cut the superstructure along, units are "
                                     "in fractional lengths of the c-axis");
     frankenslice_desc.add_options()("number,n", po::value<int>(), "number of equally sized pieces along c-axis");

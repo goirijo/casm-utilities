@@ -16,13 +16,16 @@ void vacuumpack_initializer(po::options_description& vacuumpack_desc)
     utilities::add_help_suboption(vacuumpack_desc);
     utilities::add_desc_suboption(vacuumpack_desc);
     utilities::add_output_suboption(vacuumpack_desc);
-    vacuumpack_desc.add_options()("structure,s", po::value<fs::path>()->required(),
+    vacuumpack_desc.add_options()("structure,s",
+                                  po::value<fs::path>()->required(),
                                   "POS.vasp like file you want to "
                                   "shrink the boundaries of");
-    vacuumpack_desc.add_options()("dirs,d", po::value<std::string>()->required(),
+    vacuumpack_desc.add_options()("dirs,d",
+                                  po::value<std::string>()->required(),
                                   "directions that shrinkage is allowed to happen in. any "
                                   "combination of a, b, and c");
-    vacuumpack_desc.add_options()("padding,p", po::value<double>()->required(),
+    vacuumpack_desc.add_options()("padding,p",
+                                  po::value<double>()->required(),
                                   "Add an amount of extra space around the border of the atom enclosure");
     return;
 }

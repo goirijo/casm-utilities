@@ -69,7 +69,8 @@ PYBIND11_MODULE(_xtal, m)
         class_<xtal::Coordinate>(m, "Coordinate")
             .def(init<const Eigen::Vector3d&&>())
             .def_static("from_fractional",
-                        pybind11::overload_cast<const Eigen::Vector3d&, const xtal::Lattice&>(&xtal::Coordinate::from_fractional))
+                        pybind11::overload_cast<const Eigen::Vector3d&, const xtal::Lattice&>(
+                            &xtal::Coordinate::from_fractional))
             .def("__str__", __str__)
             .def("__add__", &xtal::Coordinate::operator+, pybind11::is_operator())
             .def("__iadd__", &xtal::Coordinate::operator+=)

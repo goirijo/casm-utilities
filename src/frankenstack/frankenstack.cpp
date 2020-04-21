@@ -15,10 +15,12 @@ void frankenstack_initializer(po::options_description& frankenstack_desc)
     utilities::add_help_suboption(frankenstack_desc);
     utilities::add_desc_suboption(frankenstack_desc);
     utilities::add_output_suboption(frankenstack_desc);
-    frankenstack_desc.add_options()("substructures,s", po::value<std::vector<fs::path>>()->multitoken()->required(),
+    frankenstack_desc.add_options()("substructures,s",
+                                    po::value<std::vector<fs::path>>()->multitoken()->required(),
                                     "POS.vasp like files you want to "
                                     "stack on top of each other.");
-    frankenstack_desc.add_options()("number,n", po::value<int>(),
+    frankenstack_desc.add_options()("number,n",
+                                    po::value<int>(),
                                     "number of times to repeat the "
                                     "stacking if only one unit is given");
     return;

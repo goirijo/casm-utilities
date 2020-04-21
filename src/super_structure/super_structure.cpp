@@ -15,10 +15,11 @@ void superstructure_initializer(po::options_description& superstructure_desc)
     utilities::add_help_suboption(superstructure_desc);
     utilities::add_output_suboption(superstructure_desc);
 
-    superstructure_desc.add_options()("structure,s", po::value<fs::path>()->required(),
+    superstructure_desc.add_options()("structure,s",
+                                      po::value<fs::path>()->required(),
                                       "POS.vasp like file that you want to get the super structure for.");
-    superstructure_desc.add_options()("transf-matrix,t", po::value<fs::path>()->required(),
-                                      "path to a file with transformation matrix.");
+    superstructure_desc.add_options()(
+        "transf-matrix,t", po::value<fs::path>()->required(), "path to a file with transformation matrix.");
 
     return;
 }

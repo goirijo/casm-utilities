@@ -16,13 +16,15 @@ void applystrain_initializer(po::options_description& applystrain_desc)
     utilities::add_help_suboption(applystrain_desc);
     utilities::add_output_suboption(applystrain_desc);
 
-    applystrain_desc.add_options()("structure,s", po::value<fs::path>()->required(),
-                                   "POS.vasp like file that you want to apply strain to.");
-    applystrain_desc.add_options()("mode,m", po::value<std::string>()->default_value("GL"),
+    applystrain_desc.add_options()(
+        "structure,s", po::value<fs::path>()->required(), "POS.vasp like file that you want to apply strain to.");
+    applystrain_desc.add_options()("mode,m",
+                                   po::value<std::string>()->default_value("GL"),
                                    "Accepts strain convention as mode ('GL' [Green-Lagrange, default], 'EA' "
                                    "[Euler-Almansi], 'B' [Biot], or 'H' [Hencky])."
                                    " Also accepts 'F' [Deformation] as an argument to apply a deformation tensor");
-    applystrain_desc.add_options()("tensor,t", po::value<fs::path>()->required(),
+    applystrain_desc.add_options()("tensor,t",
+                                   po::value<fs::path>()->required(),
                                    "Path to a file with strain tensor."
                                    " Unrolled strain should be provided for GL, B, H, EA modes."
                                    " Ordered as E(0,0) E(1,1) E(2,2) E(1,2) E(0,2) E(0,1)."
