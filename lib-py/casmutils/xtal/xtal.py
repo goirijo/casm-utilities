@@ -9,6 +9,7 @@ from .structure import *
 from .globaldef import *
 from ._xtal import make_niggli as _make_niggli
 from ._xtal import make_superstructure as _make_superstructure
+from ._xtal import make_primitive as _make_primitive
 # from .single_block_wadsley_roth import *
 
 def extra_function(self):
@@ -39,5 +40,14 @@ def make_superstructure(structure,transformation_matrix):
 
     """
     return Structure._from_pybind(_make_superstructure(structure._pybind_value,transformation_matrix))
+
+def make_primitive(structure):
+    """Returns the primitive version of the given structure.
+
+    :structure: casmutils.xtal.structure.Structure
+    :returns: casmutils.xtal.structure.Structure
+
+    """
+    return Structure._from_pybind(_make_primitive(structure._pybind_value))
 
 Coordinate.extra_function=extra_function
