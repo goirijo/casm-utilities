@@ -31,37 +31,53 @@ PYBIND11_MODULE(_xtal, m)
     {
         using namespace wrappy::Structure;
         class_<xtal::Structure>(m, "Structure")
+            .def(init<const xtal::Lattice&, const std::vector<xtal::Site>&>())
             .def("__str__", __str__)
-            //.def("is_primitive", &xtal::Structure::is_primitive)
-            .def("make_niggli", (xtal::Structure(*)(const xtal::Structure&))casmutils::xtal::make_niggli)
-            .def("set_lattice", set_lattice)
-            .def_static("from_poscar", from_poscar)
-            .def("to_poscar", to_poscar);
+            .def_static("_from_poscar", from_poscar)
+            .def("_to_poscar", to_poscar)
+            .def("_lattice_const", &xtal::Structure::lattice)
+            .def("_set_lattice_const", set_lattice_const)
+            .def("_set_lattice", set_lattice)
+            .def("_within", &xtal::Structure::within)
+            .def("_basis_sites_const", &xtal::Structure::basis_sites)
+            .def("make_niggli", pybind11::overload_cast<const xtal::Structure&>(casmutils::xtal::make_niggli));
     }
 
     {
         using namespace wrappy::Lattice;
         class_<xtal::Lattice>(m, "Lattice")
             .def(init<const Eigen::Vector3d&, const Eigen::Vector3d&, const Eigen::Vector3d&>())
+            .def(init<const Eigen::Matrix3d&>())
             .def("__str__", __str__)
             .def("a", &xtal::Lattice::a)
             .def("b", &xtal::Lattice::b)
-            .def("c", &xtal::Lattice::c);
+            .def("c", &xtal::Lattice::c)
+            .def("__getitem__", &xtal::Lattice::operator[])
+            .def("volume", &xtal::Lattice::volume)
+            .def("column_vector_matrix", &xtal::Lattice::column_vector_matrix)
+            .def("row_vector_matrix", &xtal::Lattice::row_vector_matrix);
     }
 
     {
-        typedef xtal::Coordinate xCoord;
+        class_<xtal::LatticeEquals_f>(m, "LatticeEquals_f")
+            .def(init<xtal::Lattice, double>())
+            .def("__call__", &xtal::LatticeEquals_f::operator());
+    }
+
+    {
+        using namespace wrappy::Coordinate;
         class_<xtal::Coordinate>(m, "Coordinate")
             .def(init<const Eigen::Vector3d&&>())
             .def_static("from_fractional",
-                        (xCoord(*)(const Eigen::Vector3d&, const xtal::Lattice&)) & xCoord::from_fractional)
-            .def("__str__", wrappy::Coordinate::__str__)
-            .def("__add__", &xCoord::operator+, pybind11::is_operator())
-            .def("__iadd__", &xCoord::operator+=)
-            .def("_bring_within_const", (xCoord(xCoord::*)(const xtal::Lattice&) const) & xCoord::bring_within)
-            .def("_bring_within", (void (xCoord::*)(const xtal::Lattice&)) & xCoord::bring_within)
-            .def("_cart_const", &xCoord::cart)
-            .def("_frac_const", &xCoord::frac);
+                        pybind11::overload_cast<const Eigen::Vector3d&, const xtal::Lattice&>(&xtal::Coordinate::from_fractional))
+            .def("__str__", __str__)
+            .def("__add__", &xtal::Coordinate::operator+, pybind11::is_operator())
+            .def("__iadd__", &xtal::Coordinate::operator+=)
+            .def("_bring_within_const",
+                 pybind11::overload_cast<const xtal::Lattice&>(&xtal::Coordinate::bring_within, pybind11::const_))
+            .def("_bring_within", pybind11::overload_cast<const xtal::Lattice&>(&xtal::Coordinate::bring_within))
+            .def("_cart_const", &xtal::Coordinate::cart)
+            .def("_frac_const", &xtal::Coordinate::frac);
     }
 
     {
@@ -80,13 +96,13 @@ PYBIND11_MODULE(_xtal, m)
             .def("_frac_const", &xtal::Site::frac)
             .def("_label_const", &xtal::Site::label);
     }
-    
+
     {
         class_<xtal::SiteEquals_f>(m, "SiteEquals_f")
             .def(init<xtal::Site, double>())
             .def("__call__", &xtal::SiteEquals_f::operator());
     }
-    
+
     {
         using namespace wrappy::RockSaltToggler;
         typedef enumeration::RockSaltOctahedraToggler RSOT;

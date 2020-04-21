@@ -32,7 +32,7 @@ void to_poscar(const xtal::Structure& writeable, const std::string& filename)
     return;
 }
 
-void set_lattice(xtal::Structure* self, const xtal::Lattice& new_lattice, std::string mode)
+xtal::COORD_TYPE string_to_coord_mode(std::string mode)
 {
     if (mode.size() == 0)
     {
@@ -40,23 +40,32 @@ void set_lattice(xtal::Structure* self, const xtal::Lattice& new_lattice, std::s
     }
 
     char m = std::tolower(mode[0]);
+
     switch (m)
     {
+
     case 'f':
-        self->set_lattice(new_lattice, xtal::COORD_TYPE::FRAC);
-        break;
+        return xtal::COORD_TYPE::FRAC;
 
     case 'c':
-        self->set_lattice(new_lattice, xtal::COORD_TYPE::CART);
-        break;
+        return xtal::COORD_TYPE::CART;
 
     default:
         throw except::BadCoordMode();
     }
+}
 
+void set_lattice(xtal::Structure* self, const xtal::Lattice& new_lattice, std::string mode)
+{
+    self->set_lattice(new_lattice, string_to_coord_mode(mode));
     return;
 }
 
+xtal::Structure set_lattice_const(xtal::Structure* self, const xtal::Lattice& new_lattice, std::string mode)
+{
+    const xtal::Structure self_structure = *self;
+    return self_structure.set_lattice(new_lattice, string_to_coord_mode(mode));
+}
 } // namespace Structure
 
 } // namespace wrappy

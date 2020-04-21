@@ -73,7 +73,7 @@ TEST_F(LatticeTest, BracketOperator)
 {
     //  uses the bracket operator to check that the
     // third vector of z oriented hcp is along the z direction
-    auto unitvec = (*hcp_ptr)[2] / (*hcp_ptr)[2].norm();
+    Eigen::Vector3d unitvec = (*hcp_ptr)[2] / (*hcp_ptr)[2].norm();
     EXPECT_EQ(unitvec, Eigen::Vector3d(0, 0, 1));
 }
 

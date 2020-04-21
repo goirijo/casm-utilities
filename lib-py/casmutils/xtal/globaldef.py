@@ -1,5 +1,3 @@
-#!@PYTHON@
-
 """ All the global definitions are declared here """
 
 """Tolerance"""
