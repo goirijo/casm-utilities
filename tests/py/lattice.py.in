@@ -45,6 +45,7 @@ class LatticeTest(unittest.TestCase):
 
     def test_make_niggli(self):
         self.assertTrue(cu.xtal.make_niggli(self.non_niggli_lat) == self.niggli_lat)
+        self.assertFalse(self.non_niggli_lat == self.niggli_lat)
 
 if __name__=='__main__':
     unittest.main()
