@@ -155,12 +155,7 @@ private:
     xtal::Lattice lattice_to_impose;
     MappingInput settings;
 
-<<<<<<< HEAD
-    // TODO: Structure point group or lattice point group? It's always factor_group but
-    // in the casm tests it's called factor group?
-=======
->>>>>>> 19e9855a1dfaec2dfe54608612bca2ed70ae76ce
-    std::vector<sym::CartOp> factor_group;
+   std::vector<sym::CartOp> factor_group;
     AllowedSpeciesType allowed_species;
 
     CASM::xtal::StrucMapper mapper;
@@ -168,12 +163,7 @@ private:
     std::vector<mapping::MappingReport> map(const xtal::Structure& mappable_struc) const;
     std::vector<mapping::MappingReport> ideal_map(const xtal::Structure& mappable_struc) const;
 
-<<<<<<< HEAD
-    /// Returns the factor group (TODO: should it be the point group? Why is the member called factor_group?)
-    /// of the reference structure
-=======
-    /// Returns the factor group of the reference structure
->>>>>>> 19e9855a1dfaec2dfe54608612bca2ed70ae76ce
+   /// Returns the factor group of the reference structure
     std::vector<sym::CartOp> make_default_factor_group() const;
 
     /// Returns the current species of the reference structure
