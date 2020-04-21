@@ -88,14 +88,13 @@ PYBIND11_MODULE(_xtal, m)
 
     {
         using namespace wrappy::Site;
-        typedef xtal::Site xSite;
         class_<xtal::Site>(m, "Site")
             .def(init<const Eigen::Vector3d&, const std::string&>())
             .def(init<const xtal::Coordinate&, const std::string&>())
             .def("__str__", __str__)
-            .def("_cart_const", &xSite::cart)
-            .def("_frac_const", &xSite::frac)
-            .def("_label_const", &xSite::label);
+            .def("_cart_const", &xtal::Site::cart)
+            .def("_frac_const", &xtal::Site::frac)
+            .def("_label_const", &xtal::Site::label);
     }
 
     {
