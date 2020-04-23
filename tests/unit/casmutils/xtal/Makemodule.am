@@ -36,3 +36,10 @@ check_xtal_structure_tools_LDADD=\
 					libgtest.la\
 					libcasmutils.la
 
+TESTS+=check_xtal_symmetry
+check_PROGRAMS += check_xtal_symmetry
+check_xtal_symmetry_SOURCES = tests/unit/casmutils/xtal/symmetry.cpp
+check_xtal_symmetry_LDADD=\
+					libgtest.la\
+					libcasmutils.la
+

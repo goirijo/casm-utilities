@@ -7,6 +7,7 @@ from .coordinate import MutableCoordinate
 from .lattice import *
 from .site import *
 from .structure import *
+from .symmetry import *
 from .globaldef import *
 
 # from .single_block_wadsley_roth import *

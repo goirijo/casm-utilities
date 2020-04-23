@@ -24,10 +24,9 @@ PYBIND11_MODULE(_sym, m)
                , such as crystal structures or clusters.";
 
     {
-        // TODO: Have a copy of this class with only def_read and then make this one MutableCartOp?
-        // or should we just stick to that distinction for classes that have non-const functions?
         class_<sym::CartOp>(m, "CartOp")
             .def(init<const Eigen::Matrix3d&, const Eigen::Vector3d&, bool>())
+            .def(init<const sym::CartOp&>())
             .def_static("identity", &sym::CartOp::identity)
             .def_static("time_reversal", &sym::CartOp::time_reversal)
             .def_static("translation_operation", &sym::CartOp::translation_operation)

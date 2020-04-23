@@ -38,6 +38,8 @@ public:
     /// Translate *this by the given coordinate
     Coordinate& operator+=(const Coordinate& coord_to_add);
 
+    // TODO: These are annoying as member functions. Make them standalone.
+    // and let them accept Eigen::Vector3d as well. Same with the wigner-seitz
     /// Bring *this within the given lattice
     void bring_within(const Lattice& lat);
 
@@ -58,6 +60,7 @@ private:
     CASM::xtal::Coordinate casm_coord;
 };
 
+// TODO: make this binary, not unary (same with all other comparators)
 struct CoordinateEquals_f
 {
     /// for casmutils::xtal::Coordinate

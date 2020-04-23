@@ -1,0 +1,2 @@
+TESTS += \
+		 tests/py/casmutils/sym/cart.py
