@@ -23,12 +23,12 @@ def make_niggli(input_value):
     :returns: casmutils.xtal.lattice.Lattice or casmutils.xtal.structure.Structure 
 
     """
-    if str(type(input_value))=="<class 'casmutils.xtal.structure.Structure'>": 
+    if isinstance(input_value,Structure): 
         return Structure._from_pybind(_make_niggli(input_value._pybind_value))
-    elif str(type(input_value))=="<class 'casmutils.xtal.lattice.Lattice'>": 
+    elif isinstance(input_value,Lattice): 
         return Lattice._from_pybind(_make_niggli(input_value))
     else:
-        return None
+        raise ValueError
 
 def make_superstructure(structure,transformation_matrix):
     """Returns the superstructure of the given structure,
