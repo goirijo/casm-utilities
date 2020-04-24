@@ -1,3 +1,4 @@
+#include <casmutils/misc.hpp>
 #include <casmutils/xtal/lattice.hpp>
 #include <gtest/gtest.h>
 #include <memory>
@@ -13,6 +14,15 @@ protected:
         fcc_ptr.reset(new Lattice(fcc_matrix));
         fcc_copy_ptr.reset(new Lattice(fcc_matrix));
 
+        Eigen::Matrix3d conventional_fcc_matrix;
+        conventional_fcc_matrix << 3.0, 0.0, 0.0, 0.0, 3.0, 0.0, 0.0, 0.0, 3.0;
+
+        conventional_fcc_ptr.reset(new Lattice(conventional_fcc_matrix));
+
+        Eigen::Matrix3d non_niggli_conventional_fcc_matrix;
+        non_niggli_conventional_fcc_matrix << 3.0, 0.0, 0.0, 0.0, 3.0, 0.0, 3.0, 3.0, 3.0;
+
+        non_niggli_conventional_fcc_ptr.reset(new Lattice(non_niggli_conventional_fcc_matrix));
         Eigen::Matrix3d bcc_matrix;
         bcc_matrix << -1.5, 1.5, 1.5, 1.5, -1.5, 1.5, 1.5, 1.5, -1.5;
         bcc_ptr.reset(new Lattice(bcc_matrix));
@@ -28,6 +38,9 @@ protected:
     std::unique_ptr<Lattice> fcc_ptr;
     std::unique_ptr<Lattice> fcc_copy_ptr;
 
+    std::unique_ptr<Lattice> conventional_fcc_ptr;
+    std::unique_ptr<Lattice> non_niggli_conventional_fcc_ptr;
+
     std::unique_ptr<Lattice> bcc_ptr;
     std::unique_ptr<Lattice> hcp_ptr;
 
@@ -35,6 +48,7 @@ protected:
     Eigen::Vector3d b = Eigen::Vector3d(2, 2, 2);
     Eigen::Vector3d c = Eigen::Vector3d(3, 3, 3);
     std::unique_ptr<Lattice> lat_by_vector;
+    double tol = 1e-5;
 };
 
 TEST_F(LatticeTest, ContructByVector)
@@ -93,10 +107,24 @@ TEST_F(LatticeTest, LatticeEquals)
     casmutils::xtal::Lattice fcc_with_distortion_lat(fcc_with_distortion_matrix);
     //  checks the ability to determine if two lattices
     // are equivalent within numerical tolerance
-    double tol = 1e-5;
     casmutils::xtal::LatticeEquals_f is_equal_to_fcc_lattice(*fcc_ptr, tol);
     EXPECT_TRUE(is_equal_to_fcc_lattice(*fcc_copy_ptr));
     EXPECT_FALSE(is_equal_to_fcc_lattice(fcc_with_distortion_lat));
+}
+
+TEST_F(LatticeTest, MakeNiggli)
+{
+    // checks to see if you can make a skewed cell as niggli
+    casmutils::xtal::make_niggli(non_niggli_conventional_fcc_ptr.get());
+    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(
+        *conventional_fcc_ptr, *non_niggli_conventional_fcc_ptr, tol));
+}
+
+TEST_F(LatticeTest, ConstMakeNiggli)
+{
+    // checks to see if you can make a skewed cell as niggli
+    const Lattice niggli = casmutils::xtal::make_niggli(*non_niggli_conventional_fcc_ptr);
+    EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(*conventional_fcc_ptr, niggli, tol));
 }
 
 int main(int argc, char** argv)

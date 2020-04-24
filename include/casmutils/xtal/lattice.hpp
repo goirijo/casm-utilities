@@ -64,6 +64,9 @@ private:
     double tol;
 };
 
+void make_niggli(Lattice* lattice_ptr);
+Lattice make_niggli(const Lattice& non_niggli_lattice);
+
 } // namespace xtal
 } // namespace casmutils
 

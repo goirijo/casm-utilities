@@ -1,0 +1,44 @@
+#!@PYTHON@
+
+import unittest
+import casmutils as cu
+import numpy as np
+import os
+
+input_filedir = "@abs_top_srcdir@/tests/input_files"
+
+class StructureToolsTest(unittest.TestCase):
+    def setUp(self):
+        self.primitive_fcc_Ni = cu.xtal.Structure.from_poscar(
+            os.path.join(input_filedir, "primitive_fcc_Ni.vasp"))
+        self.conventional_fcc_Ni = cu.xtal.Structure.from_poscar(
+            os.path.join(input_filedir, "conventional_fcc_Ni.vasp"))
+        self.nonniggli_conventional_fcc_Ni = cu.xtal.Structure.from_poscar(
+            os.path.join(input_filedir, "nonniggli_conventional_fcc_Ni.vasp"))
+
+    def test_make_niggli(self):
+       niggli_struc=cu.xtal.make_niggli(self.nonniggli_conventional_fcc_Ni)
+       self.assertTrue(niggli_struc.lattice() == self.conventional_fcc_Ni.lattice())
+       self.assertFalse(self.nonniggli_conventional_fcc_Ni.lattice() == self.conventional_fcc_Ni.lattice())
+       self.assertTrue(len(niggli_struc.basis_sites()),len(self.conventional_fcc_Ni.basis_sites()))
+       for i in range(0,len(self.conventional_fcc_Ni.basis_sites())):
+           self.assertTrue(niggli_struc.basis_sites()[i] in self.conventional_fcc_Ni.basis_sites())
+       self.assertTrue(len(niggli_struc.basis_sites())==len(self.conventional_fcc_Ni.basis_sites()))
+
+    def test_make_superstructure(self):
+        primitive_to_conventional = np.array([[-1,1,1],[1,-1,1],[1,1,-1]])
+        superstruc=cu.xtal.make_superstructure(self.primitive_fcc_Ni,primitive_to_conventional)
+        self.assertTrue(superstruc.lattice() == self.conventional_fcc_Ni.lattice())
+        self.assertTrue(len(superstruc.basis_sites()),len(self.conventional_fcc_Ni.basis_sites()))
+        for i in range(0,len(self.conventional_fcc_Ni.basis_sites())):
+            self.assertTrue(superstruc.basis_sites()[i] in self.conventional_fcc_Ni.basis_sites())
+
+    def test_make_primitive(self):
+        primitive_struc= cu.xtal.make_primitive(self.conventional_fcc_Ni)
+        self.assertTrue(primitive_struc.lattice() == self.primitive_fcc_Ni.lattice())
+        self.assertTrue(len(primitive_struc.basis_sites()),len(self.primitive_fcc_Ni.basis_sites()))
+        for i in range(0,len(self.primitive_fcc_Ni.basis_sites())):
+            self.assertTrue(primitive_struc.basis_sites()[i] in self.primitive_fcc_Ni.basis_sites())
+       
+if __name__ == '__main__':
+    unittest.main()

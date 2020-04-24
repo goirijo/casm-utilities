@@ -11,9 +11,13 @@ class LatticeTest(unittest.TestCase):
         self.b0 = np.array([1.5,0,0.5])
         self.c0 = np.array([0.5,0.5,0])
         self.lat_matrix = np.array([[0,1.5,0.5],[1,0,0.5],[0.5,0.5,0]])
+        self.non_niggli_lat_matrix = np.array([[1,0,0],[0,1,0],[1,1,1]])
+        self.niggli_lat_matrix = np.array([[1,0,0],[0,1,0],[0,0,1]])
 
         """Setting up Lattice"""
         self.lat0 = cu.xtal.Lattice(self.a0, self.b0, self.c0)
+        self.non_niggli_lat = cu.xtal.Lattice(*self.non_niggli_lat_matrix)
+        self.niggli_lat = cu.xtal.Lattice(*self.niggli_lat_matrix)
 
     def test_construct(self):
         lat = cu.xtal.Lattice(*self.lat_matrix)
@@ -38,6 +42,10 @@ class LatticeTest(unittest.TestCase):
 
     def test_row_vec_mat_retrieve(self):
         self.assertTrue(np.array_equal(self.lat0.row_vector_matrix(),np.transpose(self.lat_matrix)))
+
+    def test_make_niggli(self):
+        self.assertTrue(cu.xtal.make_niggli(self.non_niggli_lat) == self.niggli_lat)
+        self.assertFalse(self.non_niggli_lat == self.niggli_lat)
 
 if __name__=='__main__':
     unittest.main()

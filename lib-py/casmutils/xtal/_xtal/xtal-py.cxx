@@ -55,7 +55,8 @@ PYBIND11_MODULE(_xtal, m)
             .def("__getitem__", &xtal::Lattice::operator[])
             .def("volume", &xtal::Lattice::volume)
             .def("column_vector_matrix", &xtal::Lattice::column_vector_matrix)
-            .def("row_vector_matrix", &xtal::Lattice::row_vector_matrix);
+            .def("row_vector_matrix", &xtal::Lattice::row_vector_matrix)
+            .def("make_niggli", pybind11::overload_cast<const xtal::Lattice&>(casmutils::xtal::make_niggli));
     }
 
     {
@@ -130,6 +131,7 @@ PYBIND11_MODULE(_xtal, m)
     m.def("make_superstructure", casmutils::xtal::make_superstructure);
     m.def("make_primitive", casmutils::xtal::make_primitive);
     m.def("make_niggli", (xtal::Structure(*)(const xtal::Structure&))casmutils::xtal::make_niggli);
+    m.def("make_niggli", (xtal::Lattice(*)(const xtal::Lattice&))casmutils::xtal::make_niggli);
     m.def("apply_strain", (xtal::Structure(*)(const xtal::Structure&, const Eigen::VectorXd&, const std::string&))casmutils::xtal::apply_strain);
     m.def("apply_deformation", (xtal::Structure(*)(const xtal::Structure&, const Eigen::Matrix3d&))casmutils::xtal::apply_deformation);
     //m.def("structure_score", (std::vector<std::pair<double, double>>(*)(const rewrap::Structure&, const std::vector<rewrap::Structure>&))casmutils::xtal::structure_score);

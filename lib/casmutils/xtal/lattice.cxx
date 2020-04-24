@@ -1,3 +1,4 @@
+#include <casm/crystallography/Niggli.hh>
 #include <casmutils/xtal/lattice.hpp>
 
 namespace casmutils
@@ -27,5 +28,18 @@ bool LatticeEquals_f::operator()(const Lattice& other)
 {
     return ref_lat.column_vector_matrix().isApprox(other.column_vector_matrix(), tol);
 }
+
+void make_niggli(Lattice* lattice_ptr)
+{
+    *lattice_ptr = CASM::xtal::niggli(CASM::xtal::Lattice(lattice_ptr->column_vector_matrix()), CASM::TOL);
+    return;
+}
+Lattice make_niggli(const Lattice& non_niggli_lattice)
+{
+    Lattice niggli_lattice = non_niggli_lattice;
+    make_niggli(&niggli_lattice);
+    return niggli_lattice;
+}
+
 } // namespace xtal
 } // namespace casmutils
