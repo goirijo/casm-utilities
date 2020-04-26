@@ -9,6 +9,7 @@
 #include <casmutils/xtal/rocksalttoggler.hpp>
 #include <casmutils/xtal/structure.hpp>
 #include <casmutils/xtal/structure_tools.hpp>
+#include <casmutils/xtal/symmetry.hpp>
 #include <fstream>
 #include <string>
 
@@ -136,6 +137,9 @@ PYBIND11_MODULE(_xtal, m)
     m.def("apply_deformation", (xtal::Structure(*)(const xtal::Structure&, const Eigen::Matrix3d&))casmutils::xtal::apply_deformation);
     //m.def("structure_score", (std::vector<std::pair<double, double>>(*)(const rewrap::Structure&, const std::vector<rewrap::Structure>&))casmutils::xtal::structure_score);
     m.def("make_superstructures_of_volume", (std::vector<xtal::Structure>(*)(const xtal::Structure&, const int))casmutils::xtal::make_superstructures_of_volume);
+
+    m.def("make_point_group", casmutils::xtal::make_point_group);
+    m.def("make_factor_group", casmutils::xtal::make_factor_group);
     // clang-format on
 }
 } // namespace wrappy

@@ -5,11 +5,8 @@ from . import _sym
 
 class CartOp(_sym.CartOp):
     """Basic symmetry operation that deals with Cartesian representations.
-    Conains a matrix, translation, and time reversal boolean."""
-
-    # def __init__(self):
-    #     """Initialize with the matrix, translation, and time reversal bool """
-    #     _sym.CartOp.__init__(self)
+    Conains a matrix, translation, and time reversal boolean.
+    Construct with a 3x3 matrix, 3x1 vector, boolean."""
 
     def __str__(self):
         """Concatenates __str__ of each member (matrix, vector, bool)
@@ -42,8 +39,7 @@ class CartOp(_sym.CartOp):
         CartOp
 
         """
-        S=super().identity()
-        return CartOp(S.matrix,S.translation,S.is_time_reversal_active)
+        return cls(super().identity())
 
     @classmethod
     def time_reversal(cls):
@@ -53,8 +49,7 @@ class CartOp(_sym.CartOp):
         CartOp
 
         """
-        S=super().time_reversal()
-        return CartOp(S.matrix,S.translation,S.is_time_reversal_active)
+        return cls(super().time_reversal())
 
     @classmethod
     def translation_operation(cls, translation):
@@ -69,8 +64,7 @@ class CartOp(_sym.CartOp):
         CartOp
 
         """
-        S=super().translation_operation(translation)
-        return CartOp(S.matrix,S.translation,S.is_time_reversal_active)
+        return cls(super().translation_operation(translation))
 
     @classmethod
     def point_operation(cls, matrix):
@@ -85,5 +79,4 @@ class CartOp(_sym.CartOp):
         CartOp
 
         """
-        S=super().point_operation(matrix)
-        return CartOp(S.matrix,S.translation,S.is_time_reversal_active)
+        return cls(super().point_operation(matrix))

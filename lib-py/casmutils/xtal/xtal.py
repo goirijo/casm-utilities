@@ -6,6 +6,7 @@ from .coordinate import MutableCoordinate
 from .lattice import *
 from .site import *
 from .structure import *
+from .symmetry import *
 from .globaldef import *
 from ._xtal import make_niggli as _make_niggli
 from ._xtal import make_superstructure as _make_superstructure

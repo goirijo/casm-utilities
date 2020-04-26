@@ -1,0 +1,2 @@
+TESTS += \
+		 tests/py/casmutils/xtal/symmetry.py

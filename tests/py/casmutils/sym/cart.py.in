@@ -1,0 +1,40 @@
+#!@PYTHON@
+
+import unittest
+import numpy as np
+import casmutils as cu
+from casmutils.sym import CartOp
+
+class CartesianSymmetryTest(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_identity(self):
+        I=CartOp.identity()
+        self.assertTrue(np.all(I.matrix==np.eye(3,3)))
+        self.assertTrue(np.all(I.translation==np.zeros(3)))
+        self.assertFalse(I.is_time_reversal_active)
+
+    def test_time_reversal(self):
+        T=CartOp.time_reversal()
+        self.assertTrue(np.all(T.matrix==np.eye(3,3)))
+        self.assertTrue(np.all(T.translation==np.zeros(3)))
+        self.assertTrue(T.is_time_reversal_active)
+
+    def test_translation_operation(self):
+        t=np.array([0.1,0.2,-0.5])
+        T=CartOp.translation_operation(t)
+        self.assertTrue(np.all(T.matrix==np.eye(3,3)))
+        self.assertTrue(np.all(T.translation==t))
+        self.assertFalse(T.is_time_reversal_active)
+
+    def test_point_operation(self):
+        m=np.array([[0.3,0.6,-0.1],[1.5,-0.0,4.4],[2.1,-3.1,-0.1]])
+        M=CartOp.point_operation(m)
+        self.assertTrue(np.all(M.matrix==m))
+        self.assertTrue(np.all(M.translation==np.zeros(3)))
+        self.assertFalse(M.is_time_reversal_active)
+
+if __name__ == '__main__':
+    unittest.main()

@@ -1,0 +1,27 @@
+#!@PYTHON@
+
+import unittest
+import numpy as np
+import casmutils as cu
+import os
+
+input_file_dir = "@abs_top_srcdir@/tests/input_files"
+
+class SymmetryGroupsTest(unittest.TestCase):
+
+    def setUp(self):
+        prim_fcc_ni_path=os.path.join(input_file_dir,"primitive_fcc_Ni.vasp")
+        self.prim_fcc_ni=cu.xtal.Structure.from_poscar(prim_fcc_ni_path)
+        self.tol=1e-10;
+
+    def test_make_point_group(self):
+        pg=cu.xtal.symmetry.make_point_group(self.prim_fcc_ni.lattice(),self.tol)
+        self.assertEqual(len(pg),48);
+
+    def test_make_factor_group(self):
+        fg=cu.xtal.symmetry.make_factor_group(self.prim_fcc_ni,self.tol)
+        self.assertEqual(len(fg),48);
+
+
+if __name__ == '__main__':
+    unittest.main()

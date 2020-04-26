@@ -70,6 +70,8 @@ AC_CONFIG_FILES([tests/py/structure.py],[chmod +x tests/py/structure.py])
 AC_CONFIG_FILES([tests/py/structure_tools.py],[chmod +x tests/py/structure_tools.py])
 AC_CONFIG_FILES([tests/py/casmutils/mapping/mapping.py],[chmod +x tests/py/casmutils/mapping/mapping.py])
 AC_CONFIG_FILES([tests/py/casmutils/mapping/structure.py],[chmod +x tests/py/casmutils/mapping/structure.py])
+AC_CONFIG_FILES([tests/py/casmutils/sym/cart.py],[chmod +x tests/py/casmutils/sym/cart.py])
+AC_CONFIG_FILES([tests/py/casmutils/xtal/symmetry.py],[chmod +x tests/py/casmutils/xtal/symmetry.py])
 
 AC_CONFIG_FILES([tests/integration/phony_module_installation.sh])
 AC_CONFIG_FILES([tests/integration/cu-import.py],[chmod +x tests/integration/cu-import.py])

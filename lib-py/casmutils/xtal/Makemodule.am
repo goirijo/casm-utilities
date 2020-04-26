@@ -8,6 +8,7 @@ xtalpy_PYTHON=\
 			  lib-py/casmutils/xtal/site.py\
 			  lib-py/casmutils/xtal/structure.py\
 			  lib-py/casmutils/xtal/globaldef.py\
+			  lib-py/casmutils/xtal/symmetry.py\
 			  lib-py/casmutils/xtal/xtal.py
 
 xtalpy_LTLIBRARIES=\
