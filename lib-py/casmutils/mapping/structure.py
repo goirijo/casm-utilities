@@ -110,8 +110,8 @@ class MappingInput(_mapping.MappingInput):
         max_volume_change : float, optional
         options : str, optional
         tol : float, optional
-        min_va_fraction : float, optional
-        max_va_fraction : float, optional
+        min_vacancy_fraction : float, optional
+        max_vacancy_fraction : float, optional
         k_best_maps : int, optional
         max_cost : float, optional
         min_cost : float, optional
