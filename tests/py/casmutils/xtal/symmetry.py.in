@@ -12,6 +12,8 @@ class SymmetryGroupsTest(unittest.TestCase):
     def setUp(self):
         prim_fcc_ni_path=os.path.join(input_file_dir,"primitive_fcc_Ni.vasp")
         self.prim_fcc_ni=cu.xtal.Structure.from_poscar(prim_fcc_ni_path)
+        self.cubic_lat=cu.xtal.Lattice([3,0,0],[0,3,0],[0,0,3])
+        self.tet_lat=cu.xtal.Lattice([3,0,0],[0,3,0],[0,0,4])
         self.tol=1e-10;
 
     def test_make_point_group(self):
@@ -21,6 +23,11 @@ class SymmetryGroupsTest(unittest.TestCase):
     def test_make_factor_group(self):
         fg=cu.xtal.symmetry.make_factor_group(self.prim_fcc_ni,self.tol)
         self.assertEqual(len(fg),48);
+
+    def test_lattice_symmetrize(self):
+       self.assertEqual(len(cu.xtal.symmetry.make_point_group(self.tet_lat,self.tol)),16)
+       sym_cube_lat=cu.xtal.symmetry.symmetrize(self.tet_lat, cu.xtal.symmetry.make_point_group(self.cubic_lat,self.tol)) 
+       self.assertEqual(len(cu.xtal.symmetry.make_point_group(sym_cube_lat,self.tol)),48)
 
 
 if __name__ == '__main__':

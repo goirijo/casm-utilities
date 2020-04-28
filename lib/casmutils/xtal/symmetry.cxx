@@ -17,5 +17,11 @@ std::vector<sym::CartOp> make_factor_group(const Structure& struc, double tol)
 {
     return CASM::xtal::make_factor_group(struc.__get<CASM::xtal::BasicStructure>(), tol);
 }
+
+
+Lattice symmetrize(const Lattice& noisy_lattice, const std::vector<sym::CartOp>& enforced_point_group){
+	return CASM::xtal::symmetrize(noisy_lattice.__get(),enforced_point_group);	
+}
+
 } // namespace xtal
 } // namespace casmutils

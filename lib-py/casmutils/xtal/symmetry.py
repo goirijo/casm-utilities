@@ -32,3 +32,14 @@ def make_factor_group(structure, tol):
 
     """
     return [CartOp(op) for op in _xtal.make_factor_group(structure._pybind_value,tol)]
+
+def symmetrize(lattice, point_group):
+    """Gives a symmetrized version of the input lattice such 
+    that it obeys the given point group
+
+    :lattice: Lattice
+    :point_group: list(cu.sym.CartOp)
+    :returns: Lattice
+
+    """
+    return _xtal.symmetrize(lattice, point_group)
