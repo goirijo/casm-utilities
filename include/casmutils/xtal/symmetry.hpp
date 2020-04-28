@@ -23,7 +23,7 @@ std::vector<sym::CartOp> make_factor_group(const Structure& struc, double tol);
 // TODO: Commented out until someone shows that this actually works
 /// Modify the given Lattice such that it perfectly obeys the provided
 /// symmetry group. Useful for reducing noise in lattice vectors.
-Lattice symmetrize(const Lattice& noisy_lattice, const std::vector<sym::CartOp>& enforced_point_group); 
+Lattice symmetrize(const Lattice& noisy_lattice, const std::vector<sym::CartOp>& enforced_point_group);
 
 // TODO: Does this even make sense?
 /// Modify the given Structure such that it perfectly obeys the provided
