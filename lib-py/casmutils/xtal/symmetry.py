@@ -1,5 +1,7 @@
 from . import _xtal
 from ..sym.cart import CartOp
+from .lattice import *
+from .structure import *
 
 def make_point_group(lattice, tol):
     """Calculate all symmetry operations that map the given
@@ -23,7 +25,7 @@ def make_factor_group(structure, tol):
 
     Parameters
     ----------
-    lattice : Structure
+    structure : Structure
     tol : float
 
     Returns
@@ -33,13 +35,19 @@ def make_factor_group(structure, tol):
     """
     return [CartOp(op) for op in _xtal.make_factor_group(structure._pybind_value,tol)]
 
-def symmetrize(lattice, point_group):
-    """Gives a symmetrized version of the input lattice such 
-    that it obeys the given point group
+def symmetrize(lattice_or_structure, enforced_group):
+    """Gives a symmetrized version of the input lattice/structure such 
+    that it obeys the given enforced symmetry group
 
-    :lattice: Lattice
-    :point_group: list(cu.sym.CartOp)
-    :returns: Lattice
+    :lattice_or_structure: Lattice or Structure
+    :enforced_group: list(cu.sym.CartOp)
+    :returns: Lattice or Structure
 
     """
-    return _xtal.symmetrize(lattice, point_group)
+    if isinstance(lattice_or_structure,Lattice):
+        return _xtal._symmetrize_lattice(lattice_or_structure,enforced_group)
+    elif isinstance(lattice_or_structure,Structure):
+        return Structure._from_pybind(_xtal._symmetrize_structure(lattice_or_structure._pybind_value,enforced_group))
+    else:
+        return ValueError
+

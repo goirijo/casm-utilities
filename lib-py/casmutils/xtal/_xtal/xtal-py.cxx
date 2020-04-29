@@ -137,7 +137,8 @@ PYBIND11_MODULE(_xtal, m)
 
     m.def("make_point_group", casmutils::xtal::make_point_group);
     m.def("make_factor_group", casmutils::xtal::make_factor_group);
-	m.def("symmetrize",(xtal::Lattice(*)(const xtal::Lattice&, const std::vector<sym::CartOp>&))casmutils::xtal::symmetrize);
+	m.def("_symmetrize_lattice",(xtal::Lattice(*)(const xtal::Lattice&, const std::vector<sym::CartOp>&))casmutils::xtal::symmetrize);
+	m.def("_symmetrize_structure",(xtal::Structure(*)(const xtal::Structure&, const std::vector<sym::CartOp>&))casmutils::xtal::symmetrize);
     // clang-format on
 }
 } // namespace wrappy
