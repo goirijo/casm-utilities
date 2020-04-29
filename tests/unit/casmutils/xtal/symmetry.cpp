@@ -38,13 +38,11 @@ protected:
         cubic_lat_ptr = std::make_unique<Lattice>(cubic_lat_matrix);
         tetragonal_lat_ptr = std::make_unique<Lattice>(tetragonal_lat_matrix);
 
-
         cu::fs::path hcp_path(cu::autotools::input_filesdir / "Mg_hcp.vasp");
         hcp_Mg_ptr = std::make_unique<Structure>(Structure::from_poscar(hcp_path));
 
         cu::fs::path almost_hcp_path(cu::autotools::input_filesdir / "distorted_Mg_hcp.vasp");
         almost_hcp_Mg_ptr = std::make_unique<Structure>(Structure::from_poscar(almost_hcp_path));
-
     }
 
     std::unique_ptr<Lattice> cubic_lat_ptr;
@@ -76,11 +74,11 @@ TEST_F(SymmetrizeTest, LatticeSymmetrize)
 }
 TEST_F(SymmetrizeTest, StructureSymmetrize)
 {
-	std::vector<cu::sym::CartOp> hcp_factor_group = cu::xtal::make_factor_group(*hcp_Mg_ptr,tol);
-	EXPECT_NE(cu::xtal::make_factor_group(*almost_hcp_Mg_ptr,tol).size(),hcp_factor_group.size());
-	cu::xtal::Structure symmetrized_structure = cu::xtal::symmetrize(*almost_hcp_Mg_ptr,hcp_factor_group);
-	std::vector<cu::sym::CartOp> sym_distorted_factor_group = cu::xtal::make_factor_group(symmetrized_structure,tol);
-	EXPECT_EQ(sym_distorted_factor_group.size(),hcp_factor_group.size());
+    std::vector<cu::sym::CartOp> hcp_factor_group = cu::xtal::make_factor_group(*hcp_Mg_ptr, tol);
+    EXPECT_NE(cu::xtal::make_factor_group(*almost_hcp_Mg_ptr, tol).size(), hcp_factor_group.size());
+    cu::xtal::Structure symmetrized_structure = cu::xtal::symmetrize(*almost_hcp_Mg_ptr, hcp_factor_group);
+    std::vector<cu::sym::CartOp> sym_distorted_factor_group = cu::xtal::make_factor_group(symmetrized_structure, tol);
+    EXPECT_EQ(sym_distorted_factor_group.size(), hcp_factor_group.size());
 }
 int main(int argc, char** argv)
 {

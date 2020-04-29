@@ -23,12 +23,14 @@ Lattice symmetrize(const Lattice& noisy_lattice, const std::vector<sym::CartOp>&
     return CASM::xtal::symmetrize(noisy_lattice.__get(), enforced_point_group);
 }
 
-Structure symmetrize(const Structure& noisy_structure, const std::vector<sym::CartOp>& enforced_factor_group){
-	Lattice corrected_lattice = symmetrize(noisy_structure.lattice(), enforced_factor_group);
-	Structure structure_with_correct_lattice = noisy_structure;
-	structure_with_correct_lattice.set_lattice(corrected_lattice,FRAC);
-	std::cout << "about to use basicstructuretools::symmetrize" << std::endl;
-	return CASM::xtal::symmetrize(structure_with_correct_lattice.__get<CASM::xtal::BasicStructure>(),enforced_factor_group);
+Structure symmetrize(const Structure& noisy_structure, const std::vector<sym::CartOp>& enforced_factor_group)
+{
+    Lattice corrected_lattice = symmetrize(noisy_structure.lattice(), enforced_factor_group);
+    Structure structure_with_correct_lattice = noisy_structure;
+    structure_with_correct_lattice.set_lattice(corrected_lattice, FRAC);
+    std::cout << "about to use basicstructuretools::symmetrize" << std::endl;
+    return CASM::xtal::symmetrize(structure_with_correct_lattice.__get<CASM::xtal::BasicStructure>(),
+                                  enforced_factor_group);
 }
 } // namespace xtal
 } // namespace casmutils
