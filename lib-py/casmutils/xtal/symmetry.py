@@ -49,5 +49,5 @@ def symmetrize(lattice_or_structure, enforced_group):
     elif isinstance(lattice_or_structure,Structure):
         return Structure._from_pybind(_xtal._symmetrize_structure(lattice_or_structure._pybind_value,enforced_group))
     else:
-        return ValueError
+        return ValueError("symmetrize only works on Structure or Lattice types")
 
