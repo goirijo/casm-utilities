@@ -73,7 +73,12 @@ CoordinateEquals_f::CoordinateEquals_f(const Coordinate& ref_coordinate, double 
 }
 bool CoordinateEquals_f::operator()(const Coordinate& other)
 {
-    return ref_coordinate.cart().isApprox(other.cart(), tol);
+    if ((ref_coordinate.cart() - other.cart()).norm() < tol)
+    {
+        return true;
+    }
+
+    return false;
 }
 
 } // namespace xtal

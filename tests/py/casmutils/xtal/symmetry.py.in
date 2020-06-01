@@ -7,26 +7,35 @@ import os
 
 input_file_dir = "@abs_top_srcdir@/tests/input_files"
 
+
 class SymmetryGroupsTest(unittest.TestCase):
 
     def setUp(self):
-        prim_fcc_ni_path=os.path.join(input_file_dir,"primitive_fcc_Ni.vasp")
-        self.prim_fcc_ni=cu.xtal.Structure.from_poscar(prim_fcc_ni_path)
-        self.cubic_lat=cu.xtal.Lattice([3,0,0],[0,3,0],[0,0,3])
-        self.tet_lat=cu.xtal.Lattice([3,0,0],[0,3,0],[0,0,4])
-        self.tol=1e-10;
-        hcp_mg_path=os.path.join(input_file_dir,"Mg_hcp.vasp")
-        self.hcp_mg=cu.xtal.Structure.from_poscar(hcp_mg_path)
-        almost_hcp_mg_path=os.path.join(input_file_dir,"distorted_Mg_hcp.vasp")
-        self.almost_hcp_mg=cu.xtal.Structure.from_poscar(almost_hcp_mg_path)
+        prim_fcc_ni_path = os.path.join(
+            input_file_dir, "primitive_fcc_Ni.vasp")
+        self.prim_fcc_ni = cu.xtal.Structure.from_poscar(prim_fcc_ni_path)
+        self.cubic_lat = cu.xtal.Lattice([3, 0, 0], [0, 3, 0], [0, 0, 3])
+        self.tet_lat = cu.xtal.Lattice([3, 0, 0], [0, 3, 0], [0, 0, 4])
+        self.tol = 1e-10
+        self.c = np.array([0, 0, 0])
+        self.d = np.array([0, 0, 0.000001])
+        hcp_mg_path = os.path.join(input_file_dir, "Mg_hcp.vasp")
+        self.hcp_mg = cu.xtal.Structure.from_poscar(hcp_mg_path)
+        almost_hcp_mg_path = os.path.join(
+            input_file_dir, "distorted_Mg_hcp.vasp")
+        self.almost_hcp_mg = cu.xtal.Structure.from_poscar(almost_hcp_mg_path)
 
-    def test_make_point_group(self):
-        pg=cu.xtal.symmetry.make_point_group(self.prim_fcc_ni.lattice(),self.tol)
-        self.assertEqual(len(pg),48);
+   def test_make_point_group(self):
+       pg=cu.xtal.symmetry.make_point_group(self.prim_fcc_ni.lattice(),self.tol)
+       self.assertEqual(len(pg),48)
 
-    def test_make_factor_group(self):
-        fg=cu.xtal.symmetry.make_factor_group(self.prim_fcc_ni,self.tol)
-        self.assertEqual(len(fg),48);
+   def test_make_factor_group(self):
+       fg=cu.xtal.symmetry.make_factor_group(self.prim_fcc_ni,self.tol)
+       self.assertEqual(len(fg),48)
+
+    def test_make_perm_rep_factor_group(self):
+        prfg = cu.xtal.symmetry.make_perm_rep_factor_group(self.prim_fcc_ni, self.tol)
+        self.assertTrue(len(prfg),48)
 
 class SymmetrizeTest(unittest.TestCase):
 
@@ -41,7 +50,7 @@ class SymmetrizeTest(unittest.TestCase):
 
     def test_lattice_symmetrize(self):
         self.assertEqual(len(cu.xtal.symmetry.make_point_group(self.tet_lat,self.tol)),16)
-        sym_cube_lat=cu.xtal.symmetry.symmetrize(self.tet_lat, cu.xtal.symmetry.make_point_group(self.cubic_lat,self.tol)) 
+        sym_cube_lat=cu.xtal.symmetry.symmetrize(self.tet_lat, cu.xtal.symmetry.make_point_group(self.cubic_lat,self.tol))
         self.assertEqual(len(cu.xtal.symmetry.make_point_group(sym_cube_lat,self.tol)),48)
 
     def test_structure_symmetrize(self):

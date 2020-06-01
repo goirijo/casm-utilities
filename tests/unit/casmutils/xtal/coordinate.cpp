@@ -37,6 +37,11 @@ TEST_F(CoordinateTest, Construct)
 {
     EXPECT_TRUE(casmutils::is_equal<CoordinateEquals_f>(*coord0_ptr, *coord1_ptr, tol));
     EXPECT_TRUE(casmutils::is_equal<CoordinateEquals_f>(*coord1_ptr, *coord2_ptr, tol));
+
+    // Making sure it is working properly near (0,0,0)
+    Coordinate coord0(0, 0, 0);
+    Coordinate coord1(0, 0, 0.0000001);
+    EXPECT_TRUE(casmutils::is_equal<CoordinateEquals_f>(coord0, coord1, tol));
 }
 
 TEST_F(CoordinateTest, FracRetrieve) { EXPECT_TRUE(frac_coords.isApprox(coord2_ptr->frac(*fcc_lattice_ptr))); }
