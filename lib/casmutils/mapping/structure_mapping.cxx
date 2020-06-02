@@ -110,5 +110,31 @@ std::pair<double, double> structure_score(const mapping::MappingReport& mapping_
     return std::make_pair(lattice_score, basis_score);
 }
 
+mapping::MappingReport symmetry_preserving_mapping_report(const mapping::MappingReport & mapping_data,
+														  const std::vector<sym::CartOp> &group_as_operations,
+														  const std::vector<sym::PermRep> &group_as_permutations){
+
+		const auto disp_matrix = mapping_data.displacement;
+		auto symmetry_preserving_displacement = disp_matrix;
+		auto symmetry_preserving_stretch = mapping_data.stretch;
+		symmetry_preserving_displacement.setZero();
+		symmetry_preserving_stretch.setZero();
+		for (int i=0; i < group_as_operations.size(); ++i){
+			auto transformed_disp = group_as_operations[i].matrix * disp_matrix;
+			Eigen::MatrixXd transformed_and_permuted_disp = transformed_disp;
+			int ind=0;
+			for (const auto &j : group_as_permutations[i]){
+				transformed_and_permuted_disp.col(j)=transformed_disp.col(ind);	
+				ind++;
+			}
+			symmetry_preserving_displacement += transformed_and_permuted_disp/group_as_operations.size();
+		    Eigen::MatrixXd transformed_stretch	= group_as_operations[i].matrix.transpose() * mapping_data.stretch * group_as_operations[i].matrix;
+			symmetry_preserving_stretch += transformed_stretch/group_as_operations.size();
+		}
+		auto new_report = mapping_data;
+		new_report.stretch = symmetry_preserving_stretch;
+		new_report.displacement = symmetry_preserving_displacement;
+		return new_report;
+}
 } // namespace mapping
 } // namespace casmutils

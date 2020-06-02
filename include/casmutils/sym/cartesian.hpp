@@ -10,6 +10,7 @@ namespace casmutils
 namespace sym
 {
 typedef CASM::xtal::SymOp CartOp;
+typedef std::vector<int> PermRep;
 using CASM::xtal::operator*;
 } // namespace sym
 } // namespace casmutils
