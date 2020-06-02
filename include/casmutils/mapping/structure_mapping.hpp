@@ -178,10 +178,10 @@ std::pair<double, double> structure_score(const mapping::MappingReport& mapping_
 std::vector<mapping::MappingReport> map_structure(const xtal::Structure& map_reference_struc,
                                                   const xtal::Structure& mappable_struc);
 
-///Calculates the symmetry preserving part of the MappingReport according to the given factor group
-mapping::MappingReport symmetry_preserving_mapping_report(const mapping::MappingReport & mapping_data,
-														  const std::vector<sym::CartOp> &group_as_operations,
-														  const std::vector<sym::PermRep> &group_as_permutations);
+/// Calculates the symmetry preserving part of the MappingReport according to the given factor group
+mapping::MappingReport symmetry_preserving_mapping_report(const mapping::MappingReport& mapping_data,
+                                                          const std::vector<sym::CartOp>& group_as_operations,
+                                                          const std::vector<sym::PermRep>& group_as_permutations);
 
 } // namespace mapping
 } // namespace casmutils
