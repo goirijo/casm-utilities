@@ -127,7 +127,7 @@ mapping::MappingReport symmetry_preserving_mapping_report(const mapping::Mapping
         int ind = 0;
         for (const auto& j : group_as_permutations[i])
         {
-            transformed_and_permuted_disp.col(j) = transformed_disp.col(ind);
+            transformed_and_permuted_disp.col(j) += transformed_disp.col(ind);
             ind++;
         }
         symmetry_preserving_displacement += transformed_and_permuted_disp / group_as_operations.size();
