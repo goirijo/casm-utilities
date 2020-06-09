@@ -15,6 +15,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <math.h>
 
 namespace cu = casmutils;
 
@@ -90,12 +91,20 @@ protected:
         cu::fs::path tall_hcp_path(cu::autotools::input_filesdir / "tall_hcp.vasp");
         cu::fs::path squished_hcp_path(cu::autotools::input_filesdir / "squished_hcp.vasp");
 
+        cu::fs::path conventional_fcc_path(cu::autotools::input_filesdir / "conventional_fcc_Ni.vasp");
+        cu::fs::path partial_bain_path(cu::autotools::input_filesdir / "partial_bain_Ni.vasp");
+
         tall_hcp_ptr = std::make_unique<Structure>(Structure::from_poscar(tall_hcp_path));
         squished_hcp_ptr = std::make_unique<Structure>(Structure::from_poscar(squished_hcp_path));
+		
+		conventional_fcc_Ni_ptr = std::make_unique<Structure>(Structure::from_poscar(conventional_fcc_path));
+		partial_bain_Ni_ptr = std::make_unique<Structure>(Structure::from_poscar(partial_bain_path));
     }
 
     std::unique_ptr<Structure> tall_hcp_ptr;
     std::unique_ptr<Structure> squished_hcp_ptr;
+    std::unique_ptr<Structure> conventional_fcc_Ni_ptr;
+    std::unique_ptr<Structure> partial_bain_Ni_ptr;
     double tol = 1e-5;
 };
 
@@ -122,14 +131,40 @@ TEST_F(SymmetryPreservingMappingTest, PreservingTest)
     cu::mapping::MappingReport adjusted_report =
         cu::mapping::symmetry_preserving_mapping_report(full_report, hcp_group, perm_group);
     // because only difference is c/a ratio the mapping report should be entirely symmetry preserving
-    std::cout << "DEBUGGING: full_report.displacement" << full_report.displacement << std::endl;
-    std::cout << "DEBUGGING: adjusted_report.displacement" << adjusted_report.displacement << std::endl;
     EXPECT_TRUE(cu::is_equal(full_report.displacement, adjusted_report.displacement, 1e-5));
-    std::cout << "DEBUGGING: full_report.stretch" << full_report.stretch << std::endl;
-    std::cout << "DEBUGGING: adjusted_report.stretch" << adjusted_report.stretch << std::endl;
     EXPECT_TRUE(cu::is_equal(full_report.stretch, adjusted_report.stretch, 1e-5));
 }
 
+TEST_F(SymmetryPreservingMappingTest, NotPreservingTest)
+{
+    cu::mapping::MappingReport full_report = cu::mapping::map_structure(*conventional_fcc_Ni_ptr, *partial_bain_Ni_ptr)[0];
+    auto fcc_group = cu::xtal::make_factor_group(*conventional_fcc_Ni_ptr, tol);
+	std::cout << "DEBUGGING: full_report.stretch" << full_report.stretch << std::endl;
+    // construct the corresponding permutation representation
+    cu::sym::PermRep no_swap = {0, 1, 2, 3};
+    cu::sym::PermRep swap =  {3, 2, 1, 0};
+    std::vector<cu::sym::PermRep> perm_group;
+    for (const auto op : fcc_group)
+    {
+        bool op_swaps = false;
+        if (op_swaps)
+        {
+            perm_group.push_back(swap);
+        }
+        else
+        {
+            perm_group.push_back(no_swap);
+        }
+    }
+    cu::mapping::MappingReport adjusted_report =
+        cu::mapping::symmetry_preserving_mapping_report(full_report, fcc_group, perm_group);
+	double volume_factor = ((conventional_fcc_Ni_ptr->lattice().volume())/partial_bain_Ni_ptr->lattice().volume());
+	double scale_factor = (volume_factor-1.0)/3 + 1;
+    // because only difference is partial bain ratio the mapping report should be entirely symmetry breaking
+    EXPECT_TRUE(cu::is_equal(full_report.displacement, adjusted_report.displacement, 1e-5));
+	Eigen::Matrix3d ident = Eigen::Matrix3d::Identity()*scale_factor;
+    EXPECT_TRUE(cu::is_equal(ident, adjusted_report.stretch, 1e-5));
+}
 //**********************************************************************************************
 
 // TODO: Move this somewhere common because it's useful
