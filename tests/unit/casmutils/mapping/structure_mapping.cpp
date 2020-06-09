@@ -4,6 +4,7 @@
 #include <casmutils/xtal/structure.hpp>
 #include <casmutils/xtal/structure_tools.hpp>
 #include <casmutils/xtal/symmetry.hpp>
+#include <casmutils/misc.hpp>
 #include <filesystem>
 #include <fstream>
 #include <gtest/gtest.h>
@@ -77,6 +78,55 @@ TEST_F(StructureMapTest, DisplacementMappingScore)
     auto [lattice_score, basis_score] = cu::mapping::structure_score(displacement_report);
     EXPECT_TRUE(std::abs(lattice_score) < 1e-10);
     EXPECT_TRUE(std::abs(basis_score - 0.08) < 1e-10);
+}
+
+
+class SymmetryPreservingMappingTest : public testing::Test 
+{
+protected:
+	using Structure = casmutils::xtal::Structure;
+	void SetUp() override {
+	
+        cu::fs::path tall_hcp_path(cu::autotools::input_filesdir / "tall_hcp.vasp");
+        cu::fs::path squished_hcp_path(cu::autotools::input_filesdir / "squished_hcp.vasp");
+
+
+        tall_hcp_ptr = std::make_unique<Structure>(Structure::from_poscar(tall_hcp_path));
+        squished_hcp_ptr= std::make_unique<Structure>(Structure::from_poscar(squished_hcp_path));
+	}
+
+	std::unique_ptr<Structure> tall_hcp_ptr;	
+	std::unique_ptr<Structure> squished_hcp_ptr;	
+	double tol = 1e-5;
+};
+
+TEST_F(SymmetryPreservingMappingTest, PreservingTest){
+    cu::mapping::MappingReport full_report =
+        cu::mapping::map_structure(*tall_hcp_ptr, *squished_hcp_ptr)[0];
+	auto hcp_group = cu::xtal::make_factor_group(*tall_hcp_ptr,tol);
+	//construct the corresponding permutation representation	
+	cu::sym::PermRep no_swap={0,1};
+	cu::sym::PermRep swap={1,0};
+	std::vector<cu::sym::PermRep> perm_group;
+	for (const auto op : hcp_group){
+		bool op_swaps=false;
+		if (op_swaps){
+		   perm_group.push_back(swap);
+		}
+		else {
+			perm_group.push_back(no_swap);
+		}
+	}
+	cu::mapping::MappingReport adjusted_report = cu::mapping::symmetry_preserving_mapping_report(full_report,hcp_group,perm_group);
+	//because only difference is c/a ratio the mapping report should be entirely symmetry preserving
+	std::cout << "DEBUGGING: full_report.displacement" << full_report.displacement << std::endl;
+	std::cout << "DEBUGGING: adjusted_report.displacement" << adjusted_report.displacement << std::endl;	
+	EXPECT_TRUE(cu::is_equal(full_report.displacement,adjusted_report.displacement,1e-5));
+	std::cout << "DEBUGGING: full_report.stretch" << full_report.stretch << std::endl;
+	std::cout << "DEBUGGING: adjusted_report.stretch" << adjusted_report.stretch << std::endl;
+	EXPECT_TRUE(cu::is_equal(full_report.stretch,adjusted_report.stretch,1e-5));
+		
+
 }
 
 //**********************************************************************************************
