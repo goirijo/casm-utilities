@@ -2,9 +2,9 @@
 #define MISC_HH
 
 #include <casm/external/Eigen/Core>
+#include <casm/misc/CASM_Eigen_math.hh>
 #include <string>
 #include <vector>
-#include <casm/misc/CASM_Eigen_math.hh>
 
 namespace CASM
 {
@@ -20,7 +20,6 @@ class PrimClex;
 namespace casmutils
 {
 
-
 template <typename ComparatorType_f, typename CompareType, typename... Args>
 bool is_equal(const CompareType& reference, const CompareType& other, const Args&... functor_params)
 {
@@ -28,11 +27,10 @@ bool is_equal(const CompareType& reference, const CompareType& other, const Args
     return reference_equals(other);
 }
 
-
-
-template<typename Derived1,typename Derived2>	
-bool is_equal(const Eigen::MatrixBase<Derived1> &reference, const Eigen::MatrixBase<Derived2> &other, double tol){
-	return CASM::almost_equal(reference,other,tol);
+template <typename Derived1, typename Derived2>
+bool is_equal(const Eigen::MatrixBase<Derived1>& reference, const Eigen::MatrixBase<Derived2>& other, double tol)
+{
+    return CASM::almost_equal(reference, other, tol);
 }
 
 } // namespace casmutils
