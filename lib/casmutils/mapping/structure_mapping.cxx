@@ -124,6 +124,7 @@ mapping::MappingReport symmetry_preserving_mapping_report(const mapping::Mapping
     {
         auto transformed_disp = group_as_operations[i].matrix * disp_matrix;
         Eigen::MatrixXd transformed_and_permuted_disp = transformed_disp;
+		transformed_and_permuted_disp.setZero();
         int ind = 0;
         for (const auto& j : group_as_permutations[i])
         {
