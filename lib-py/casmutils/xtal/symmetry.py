@@ -45,9 +45,11 @@ def make_perm_rep_factor_group(structure, tol):
     """Calculates all the symmetry operations in their permutation
     representation that map the given structure onto itself
 
-    Example: Consider a structure with 3 sites, and a symmetry
-    operation that permutates site 1 with site 2, and site 3 remains
-    the same. Then this function returns a 3x1 numpy array [1,0,2]
+    Example: Consider a structure with 3 sites (named 0,1,2) and a symmetry
+    operation that permutates site 0 with site 1, and site 2 remains
+    the same. Then this function returns a list [1,0,2].
+    Interpretation of [1,0,2]: The index of the array are the actual sites.
+    And the value of the array is the site number with which the actual site permutated.
 
     Parameters
     ----------
@@ -56,7 +58,7 @@ def make_perm_rep_factor_group(structure, tol):
 
     Returns
     -------
-    list(np.array)
+    list[list[int]]
 
     """
     factor_group = make_factor_group(structure, tol)
@@ -64,7 +66,7 @@ def make_perm_rep_factor_group(structure, tol):
     perm_rep_factor_group = []
 
     for sym_op in factor_group:
-        perm_rep_sym_op = np.zeros(shape=len(basis_sites))
+        perm_rep_sym_op = [0]*len(basis_sites)
 
         transformed_sites = [Site(Coordinate(np.matmul(sym_op.matrix, site.cart(
         )) + sym_op.translation).bring_within(structure.lattice()), site.label()) for site in basis_sites]
