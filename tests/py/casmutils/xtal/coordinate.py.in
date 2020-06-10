@@ -16,33 +16,32 @@ class CoordinateTest(unittest.TestCase):
         """Computing fractional coordinates manually"""
         self.frac_coords0 = np.dot(np.linalg.inv(
             self.lattice_matrix), self.raw_coord0)
-        self.frac_coords1 = np.dot(np.linalg.inv(
-            self.lattice_matrix), self.raw_coord1)
 
         """Constructing Coordinate & MutableCoordinate classes"""
         self.lat = cu.xtal.Lattice(*self.lattice_matrix)
         self.coord0 = cu.xtal.Coordinate(self.raw_coord0)
         self.coord1 = cu.xtal.Coordinate(self.raw_coord1)
-        self.coord0f = cu.xtal.Coordinate.from_fractional(
-            self.frac_coords0, self.lat)
-        self.coord1f = cu.xtal.Coordinate.from_fractional(
-            self.frac_coords1, self.lat)
         self.coord0m = cu.xtal.MutableCoordinate(self.raw_coord0)
         self.coord1m = cu.xtal.MutableCoordinate(self.raw_coord1)
 
+        self.coord0f = cu.xtal.Coordinate.from_fractional(
+            self.frac_coords0, self.lat)
+
         """Setting compare methods for constructed classes"""
         self.coord0.set_compare_method(cu.xtal.coordinate.Equals, 1e-5)
-        self.coord1.set_compare_method(cu.xtal.coordinate.Equals, 1e-5)
-        self.coord0f.set_compare_method(cu.xtal.coordinate.Equals, 1e-5)
         self.coord0m.set_compare_method(cu.xtal.coordinate.Equals, 1e-5)
 
     def test_construct(self):
+        self.frac_coords1 = np.dot(np.linalg.inv(
+            self.lattice_matrix), self.raw_coord1)
+        coord1f = cu.xtal.Coordinate.from_fractional(frac_coords1, self.lat)
+
         self.assertFalse(self.coord0 == self.coord1)
         self.assertTrue(self.coord0 != self.coord1)
         self.assertFalse(self.coord0m == self.coord1m)
         self.assertTrue(self.coord0m != self.coord1m)
         self.assertTrue(self.coord0 == self.coord0f)
-        self.assertTrue(self.coord1 == self.coord1f)
+        self.assertTrue(self.coord1 == coord1f)
 
         coord0 = cu.xtal.Coordinate(np.array([0, 0, 0]))
         coord1 = cu.xtal.Coordinate(np.array([0, 0, 0.0000001]))

@@ -17,8 +17,6 @@ class SymmetryGroupsTest(unittest.TestCase):
         self.cubic_lat = cu.xtal.Lattice([3, 0, 0], [0, 3, 0], [0, 0, 3])
         self.tet_lat = cu.xtal.Lattice([3, 0, 0], [0, 3, 0], [0, 0, 4])
         self.tol = 1e-10
-        self.c = np.array([0, 0, 0])
-        self.d = np.array([0, 0, 0.000001])
         hcp_mg_path = os.path.join(input_file_dir, "Mg_hcp.vasp")
         self.hcp_mg = cu.xtal.Structure.from_poscar(hcp_mg_path)
         almost_hcp_mg_path = os.path.join(
@@ -35,8 +33,12 @@ class SymmetryGroupsTest(unittest.TestCase):
         self.assertEqual(len(fg), 48)
 
     def test_make_perm_rep_factor_group(self):
-        prfg = cu.xtal.symmetry.make_perm_rep_factor_group(
-            self.prim_fcc_ni, self.tol)
+        conventional_fcc_ni_path = os.path.join(
+            input_file_dir, "conventional_fcc_Ni.vasp")
+        conventional_fcc_ni_struc = cu.xtal.Structure.from_poscar(
+            conventional_fcc_ni_path)
+        prfg = cu.xtal.symmetry.make_factor_group_permutations(
+            conventional_fcc_ni_struc, self.tol)
         self.assertTrue(len(prfg), 48)
 
 
