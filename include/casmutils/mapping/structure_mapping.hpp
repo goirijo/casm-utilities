@@ -25,10 +25,10 @@ struct MappingReport
           stretch(casm_mapping_node.stretch()),
           translation(casm_mapping_node.translation()),
           displacement(casm_mapping_node.atom_displacement),
-          reference_lattice(casm_mapping_node.lat_node.parent.superlattice()),
-          mapped_lattice(casm_mapping_node.lat_node.child.superlattice()),
-          lattice_cost(casm_mapping_node.lat_node.cost),
-          basis_cost(casm_mapping_node.basis_node.cost),
+          reference_lattice(casm_mapping_node.lattice_node.parent.superlattice()),
+          mapped_lattice(casm_mapping_node.lattice_node.child.superlattice()),
+          lattice_cost(casm_mapping_node.lattice_node.cost),
+          basis_cost(casm_mapping_node.atomic_node.cost),
           cost(casm_mapping_node.cost)
     {
         std::vector<int> p(casm_mapping_node.atom_permutation.begin(), casm_mapping_node.atom_permutation.end());

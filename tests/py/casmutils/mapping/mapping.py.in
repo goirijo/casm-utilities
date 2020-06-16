@@ -57,7 +57,7 @@ class StructureMapTest(unittest.TestCase):
             displacement_report)
 
         self.assertAlmostEqual(lattice_score, 0, delta=1e-10)
-        self.assertAlmostEqual(basis_score, 0.08, delta=1e-10)
+        self.assertAlmostEqual(basis_score, 0.0327393, delta=1e-5)
 
 
 class MgGammaSurfaceMapTest(unittest.TestCase):
@@ -126,7 +126,7 @@ class MgGammaSurfaceMapTest(unittest.TestCase):
         map_to_hcp_super_with_sym = cu.mapping.structure.StructureMapper(
             hcp_super, k=0, use_crystal_symmetry=True, min_cost=1e-10)
 
-        self.assertEqual(3,len(map_to_hcp_super_with_sym(hcp_super)))
+        self.assertEqual(1,len(map_to_hcp_super_with_sym(hcp_super)))
 
         map_to_hcp_super_without_sym = cu.mapping.structure.StructureMapper(
             hcp_super, k=0, use_crystal_symmetry=False, min_cost=1e-10)
