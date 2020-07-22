@@ -62,8 +62,6 @@ TEST_F(StructureMapTest, BainMappingScore)
     auto [perfect_bain_lattice_score, perfect_bain_basis_score] = cu::mapping::structure_score(perfect_bain_report);
 
     // lattice score should be finite and identical for bcc and fully bained no matter the volume
-    std::cout << "DEBUGGING: full_bain_lattice_score " << full_bain_lattice_score << std::endl;
-    std::cout << "DEBUGGING: perfect_bain_lattice_score " << perfect_bain_lattice_score << std::endl;
     EXPECT_TRUE(std::abs(full_bain_lattice_score - perfect_bain_lattice_score) < 1e-10);
     // partially bained fcc should have a lower score than bcc
     EXPECT_TRUE(full_bain_lattice_score > partial_bain_lattice_score);
