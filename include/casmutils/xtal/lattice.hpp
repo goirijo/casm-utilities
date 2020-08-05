@@ -67,6 +67,13 @@ private:
 void make_niggli(Lattice* lattice_ptr);
 Lattice make_niggli(const Lattice& non_niggli_lattice);
 
+/// Retrun the reciprocal of the given lattice, where each reciprocal vector
+/// is perpendicular to the other two real ones
+Lattice make_reciprocal(const Lattice& real_lattice);
+
+/// For a deformation matrix F, return the polar decomposition of its rotational and
+/// strain components R (first) and U (second), where F=R*U
+std::pair<Eigen::Matrix3d, Eigen::Matrix3d> polar_decomposition(Eigen::Matrix3d const& F);
 } // namespace xtal
 } // namespace casmutils
 

@@ -41,5 +41,19 @@ Lattice make_niggli(const Lattice& non_niggli_lattice)
     return niggli_lattice;
 }
 
+Lattice make_reciprocal(const Lattice& real_lattice)
+{
+    auto casm_reciprocal = real_lattice.__get().reciprocal();
+    // TODO: Move constructor for lattice?
+    return Lattice(casm_reciprocal);
+}
+
+std::pair<Eigen::Matrix3d, Eigen::Matrix3d> polar_decomposition(Eigen::Matrix3d const& F)
+{
+    Eigen::Matrix3d U = Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d>(F * F.transpose()).operatorSqrt();
+    Eigen::Matrix3d R = U.inverse()*F;
+    return std::make_pair(R, U);
+}
+
 } // namespace xtal
 } // namespace casmutils
