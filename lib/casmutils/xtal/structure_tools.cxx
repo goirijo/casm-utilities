@@ -6,6 +6,7 @@
 #include <casm/crystallography/SuperlatticeEnumerator.hh>
 #include <casm/crystallography/SymTools.hh>
 #include <casm/crystallography/io/VaspIO.hh>
+#include <casm/crystallography/Superlattice.hh>
 #include <casmutils/exceptions.hpp>
 #include <casmutils/misc.hpp>
 #include <casmutils/xtal/lattice.hpp>
@@ -157,6 +158,21 @@ std::vector<Structure> make_superstructures_of_volume(const Structure& structure
     }
 
     return all_superstructures;
+}
+
+Structure slice_along_plane(const Structure& unit_structure, const Eigen::Vector3i& miller_indexes)
+{
+    const Lattice& unit_lattice = unit_structure.lattice();
+    Lattice sliced_lattice = slice_along_plane(unit_lattice, miller_indexes);
+
+    // TODO: Refactor out, so that it's available in casmutils
+    CASM::xtal::Superlattice slice_superlattice(unit_lattice.__get(), sliced_lattice.__get());
+    // TODO: Fix this annoying casting issue with Eigen
+    Eigen::Matrix3i slice_transf_mat = slice_superlattice.transformation_matrix().cast<int>();
+
+    Structure sliced_structure = make_superstructure(unit_structure, slice_transf_mat);
+    sliced_structure.within();
+    return sliced_structure;
 }
 } // namespace xtal
 } // namespace casmutils

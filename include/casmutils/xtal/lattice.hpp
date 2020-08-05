@@ -74,6 +74,18 @@ Lattice make_reciprocal(const Lattice& real_lattice);
 /// For a deformation matrix F, return the polar decomposition of its rotational and
 /// strain components R (first) and U (second), where F=R*U
 std::pair<Eigen::Matrix3d, Eigen::Matrix3d> polar_decomposition(Eigen::Matrix3d const& F);
+
+/// Invert the directions of the lattice vectors if necessary, such that
+/// the column vector matrix has a positive determinant
+Lattice make_right_handed(const Lattice& left_handed_lattice);
+
+/// Create a superlattice using the provided integer transformation matrix
+xtal::Lattice make_superlattice(const xtal::Lattice& tiling_unit, const Eigen::Matrix3i col_transf_mat);
+
+/// Given a lattice and a vector of integer Miller indices, return the smallest superlattice
+/// that has the a and b vectors spanning the specified plane
+xtal::Lattice slice_along_plane(const xtal::Lattice& unit_lattice, const Eigen::Vector3i& miller_indexes);
+
 } // namespace xtal
 } // namespace casmutils
 

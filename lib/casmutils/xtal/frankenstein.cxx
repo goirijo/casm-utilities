@@ -70,6 +70,17 @@ xtal::Structure stack(const std::vector<xtal::Structure>& sub_strucs)
     return xtal::Structure(stacked_lat, stacked_basis);
 }
 
+std::vector<xtal::Site> translate_basis(const std::vector<xtal::Site>& basis, const Eigen::Vector3d& shift)
+{
+    std::vector<xtal::Site> translated_basis;
+    for (const auto& site : basis)
+    {
+        translated_basis.emplace_back(xtal::Coordinate(site.cart() + shift), site.label());
+    }
+
+    return translated_basis;
+}
+
 xtal::Structure translate_basis(const xtal::Structure& struc, const Eigen::Vector3d& shift)
 {
     std::vector<xtal::Site> translated_basis;

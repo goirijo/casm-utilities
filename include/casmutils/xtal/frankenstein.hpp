@@ -61,6 +61,9 @@ void shift_coords_by(xtal::Structure* struc, const Eigen::Vector3d& shift_val);
 ///along the c axis
 xtal::Structure stack(const std::vector<xtal::Structure>& sub_strucs);
 
+/// Translate the given basis by the specified cartesian value
+std::vector<xtal::Site> translate_basis(const std::vector<xtal::Site>& basis, const Eigen::Vector3d& shift);
+
 ///Translate the entire basis of the structure by the specified amount
 xtal::Structure translate_basis(const xtal::Structure& struc, const Eigen::Vector3d& shift);
 } // namespace frankenstein
