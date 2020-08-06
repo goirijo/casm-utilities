@@ -1,6 +1,7 @@
 // These are classes that structure_tools depends on
 #include "../../../autotools.hh"
 #include <algorithm>
+#include <casmutils/misc.hpp>
 #include <casmutils/xtal/structure.hpp>
 #include <casmutils/xtal/structure_tools.hpp>
 #include <casmutils/xtal/symmetry.hpp>
@@ -11,6 +12,7 @@
 // This file tests the functions in:
 #include <casmutils/mapping/structure_mapping.hpp>
 #include <limits>
+#include <math.h>
 #include <string>
 #include <utility>
 #include <vector>
@@ -76,7 +78,7 @@ TEST_F(StructureMapTest, DisplacementMappingScore)
         cu::mapping::map_structure(*primitive_fcc_Ni_ptr, *displaced_fcc_Ni_ptr)[0];
     auto [lattice_score, basis_score] = cu::mapping::structure_score(displacement_report);
     EXPECT_TRUE(std::abs(lattice_score) < 1e-10);
-    EXPECT_TRUE(std::abs(basis_score - 0.08) < 1e-10);
+    EXPECT_TRUE(std::abs(basis_score - 0.0327393) < 1e-5);
 }
 
 //**********************************************************************************************
@@ -249,6 +251,7 @@ TEST_F(MgGammaSurfaceMapTest, MappingResultsSize)
 {
     cu::xtal::Structure hcp_triple = shifted_structures[0];
     auto factor_group = cu::xtal::make_factor_group(hcp_triple, 1e-5);
+    auto prim_factor_group = cu::xtal::make_factor_group(cu::xtal::make_primitive(hcp_triple), 1e-5);
     // If you don't use symmetry in the mapper, expect to get as many
     // mappings as there are factor group operations
     cu::mapping::MappingInput map_strategy;
@@ -259,7 +262,10 @@ TEST_F(MgGammaSurfaceMapTest, MappingResultsSize)
     EXPECT_EQ(blind_mapper(hcp_triple).size(), factor_group.size());
 
     cu::mapping::StructureMapper_f sym_aware_mapper(hcp_triple, map_strategy, factor_group);
-    EXPECT_EQ(sym_aware_mapper(hcp_triple).size(), 3);
+    EXPECT_EQ(sym_aware_mapper(hcp_triple).size(), 1);
+
+    cu::mapping::StructureMapper_f prim_sym_aware_mapper(hcp_triple, map_strategy, prim_factor_group);
+    EXPECT_EQ(prim_sym_aware_mapper(hcp_triple).size(), 3);
 }
 
 TEST_F(MgGammaSurfaceMapTest, SelfMapResultsSize)
@@ -274,7 +280,7 @@ TEST_F(MgGammaSurfaceMapTest, SelfMapResultsSize)
     cu::mapping::StructureMapper_f map_to_hcp_super_with_sym(hcp_super, map_strategy);
     // When using crystal symmetry, the mapper should only find as many mappings as primitives
     // fit in the structure
-    EXPECT_EQ(3, map_to_hcp_super_with_sym(hcp_super).size());
+    EXPECT_EQ(1, map_to_hcp_super_with_sym(hcp_super).size());
 
     map_strategy.use_crystal_symmetry = false;
     cu::mapping::StructureMapper_f map_to_hcp_super_without_sym(hcp_super, map_strategy);
