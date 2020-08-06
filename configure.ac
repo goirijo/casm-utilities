@@ -29,6 +29,15 @@ AX_PTHREAD([],AC_MSG_WARN(pthread is required to run tests!))
 AC_SEARCH_LIBS(dlopen, dl, [], AC_MSG_ERROR(dl library not found!))
 # AC_SEARCH_LIBS(std::filesystem::status_known,stdc++fs,[], AC_MSG_ERROR(stdc++fs not found!),[])
 
+# Checks for libraries.
+BOOSTV=1.52
+AX_BOOST_BASE([$BOOSTV],[],[AC_MSG_ERROR(You need Boost $BOOSTV libraries or higher.)])
+AX_BOOST_SYSTEM
+AX_BOOST_FILESYSTEM
+AX_BOOST_PROGRAM_OPTIONS
+AX_BOOST_CHRONO
+AX_BOOST_REGEX
+
 # Why is this such a pain in the butt? I just want to -lstdc++fs, I could be doing this in the
 # Makefile, but instead I'm following this example:
 # https://github.com/LibreOffice/online/blob/master/configure.ac

@@ -5,7 +5,6 @@
 #include <array>
 #include <casmutils/sym/cartesian.hpp>
 #include <casmutils/xtal/lattice.hpp>
-#include <multishift/definitions.hpp>
 #include <tuple>
 #include <unordered_map>
 #include <vector>
