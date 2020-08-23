@@ -1,0 +1,25 @@
+#!@PYTHON@
+
+import unittest
+import numpy as np
+import casmutils as cu
+import os
+
+input_file_dir = "@abs_top_srcdir@/tests/input_files"
+
+class FrankensteinTest(unittest.TestCase):
+
+    def setUp(self):
+        self.struc=os.path.join(input_file_dir,"triple_fcc.vasp")
+
+    def test_translate_basis(self):
+        frac_shift=np.array(0.1,0.2,0.3)
+        shift=cu.xtal.Coordinate.from_fractional(frac_shift,struc.lattice())
+
+        shifted=cu.xtal.frankenstein.translate_basis(self.struc,shift.cart())
+
+        for st,sh in zip(self.struc.basis(),shifted.basis()):
+            self.assertEqual(st+shift.cart(),sh)
+
+if __name__ == '__main__':
+    unittest.main()
