@@ -1,0 +1,27 @@
+TESTS+=check_mush_slab
+check_PROGRAMS += check_mush_slab
+check_mush_slab_SOURCES =\
+					   tests/unit/casmutils/mush/slab.cpp
+
+check_mush_slab_LDADD=\
+					libgtest.la\
+					libcasmutils.la
+
+
+TESTS+=check_mush_shift
+check_PROGRAMS += check_mush_shift
+check_mush_shift_SOURCES =\
+					   tests/unit/casmutils/mush/shift.cpp
+
+check_mush_shift_LDADD=\
+					libgtest.la\
+					libcasmutils.la
+
+TESTS+=check_mush_twist
+check_PROGRAMS += check_mush_twist
+check_mush_twist_SOURCES =\
+					   tests/unit/casmutils/mush/twist.cpp
+
+check_mush_twist_LDADD=\
+					libgtest.la\
+					libcasmutils.la
