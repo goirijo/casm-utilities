@@ -126,11 +126,11 @@ class MgGammaSurfaceMapTest(unittest.TestCase):
         map_to_hcp_super_with_sym = cu.mapping.structure.StructureMapper(
             hcp_super, k=0, use_crystal_symmetry=True, min_cost=1e-10)
 
-        self.assertEqual(1,len(map_to_hcp_super_with_sym(hcp_super)))
+        self.assertEqual(1, len(map_to_hcp_super_with_sym(hcp_super)))
 
         map_to_hcp_super_without_sym = cu.mapping.structure.StructureMapper(
             hcp_super, k=0, use_crystal_symmetry=False, min_cost=1e-10)
-        self.assertEqual(72,len(map_to_hcp_super_without_sym(hcp_super)))
+        self.assertEqual(72, len(map_to_hcp_super_without_sym(hcp_super)))
 
         return
 
