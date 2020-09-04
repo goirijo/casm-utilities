@@ -132,7 +132,7 @@ std::vector<mapping::MappingReport> map_structure(const xtal::Structure& map_ref
 
 std::pair<double, double> structure_score(const mapping::MappingReport& mapping_data)
 {
-    double lattice_score = CASM::xtal::StrainCostCalculator::iso_strain_cost(mapping_data.stretch);
+    double lattice_score = CASM::xtal::StrainCostCalculator::isotropic_strain_cost(mapping_data.stretch);
     double basis_score = atomic_cost(mapping_data, std::max(int(mapping_data.permutation.size()), 1));
     return std::make_pair(lattice_score, basis_score);
 }
