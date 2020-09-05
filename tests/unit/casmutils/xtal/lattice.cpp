@@ -127,6 +127,47 @@ TEST_F(LatticeTest, ConstMakeNiggli)
     EXPECT_TRUE(casmutils::is_equal<casmutils::xtal::LatticeEquals_f>(*conventional_fcc_ptr, niggli, tol));
 }
 
+class LatticeIsEquivalentTest : public testing::Test
+{
+protected:
+    void SetUp() override
+    {
+        Eigen::Matrix3d fcc_matrix;
+        fcc_matrix << 0.0, 1.5, 1.5, 1.5, 0.0, 1.5, 1.5, 1.5, 0.0;
+
+        fcc_ptr.reset(new Lattice(fcc_matrix));
+    }
+    using Lattice = casmutils::xtal::Lattice;
+
+    std::unique_ptr<Lattice> fcc_ptr;
+};
+
+TEST_F(LatticeIsEquivalentTest, Identical)
+{
+    casmutils::xtal::LatticeIsEquivalent_f exactly_equivalent(0.0);
+    EXPECT_TRUE(exactly_equivalent(*fcc_ptr, *fcc_ptr));
+}
+
+TEST_F(LatticeIsEquivalentTest, PermutedVectors)
+{
+    casmutils::xtal::Lattice permuted_fcc(fcc_ptr->b(), fcc_ptr->c(), fcc_ptr->c());
+    casmutils::xtal::LatticeIsEquivalent_f are_equivalent(1e-5);
+    EXPECT_TRUE(are_equivalent(*fcc_ptr, permuted_fcc));
+}
+
+TEST_F(LatticeIsEquivalentTest, RotatedButNotUnimodular)
+{
+    Eigen::AngleAxisd rollAngle(5, Eigen::Vector3d::UnitZ());
+    Eigen::AngleAxisd yawAngle(6, Eigen::Vector3d::UnitY());
+    Eigen::AngleAxisd pitchAngle(2, Eigen::Vector3d::UnitX());
+    Eigen::Quaternion<double> q = rollAngle * yawAngle * pitchAngle;
+    Eigen::Matrix3d rotation_matrix = q.matrix();
+
+    auto rotated_fcc=casmutils::xtal::Lattice::from_column_vector_matrix(rotation_matrix*fcc_ptr->column_vector_matrix());
+    casmutils::xtal::LatticeIsEquivalent_f are_equivalent(1e-5);
+    EXPECT_FALSE(are_equivalent(*fcc_ptr, rotated_fcc));
+}
+
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);

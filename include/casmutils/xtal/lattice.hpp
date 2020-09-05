@@ -18,6 +18,16 @@ public:
     /// Construct lattice by specifying each individual vector
     Lattice(const Eigen::Vector3d& a, const Eigen::Vector3d& b, const Eigen::Vector3d& c);
 
+    static Lattice from_column_vector_matrix(const Eigen::Matrix3d& column_vector_matrix)
+    {
+        return Lattice(column_vector_matrix);
+    }
+
+    static Lattice from_row_vector_matrix(const Eigen::Matrix3d& row_vector_matrix)
+    {
+        return Lattice(row_vector_matrix.transpose());
+    }
+
     // TODO: Read up on Eigen::Matrix3d::ColXpr and decide if you prefer this. CASM does it this way.
     /// Return the ith vector of the lattice
     Eigen::Vector3d operator[](int i) const { return this->__get()[i]; }
@@ -46,9 +56,11 @@ public:
 private:
     static Eigen::Matrix3d
     stack_column_vectors(const Eigen::Vector3d& a, const Eigen::Vector3d& b, const Eigen::Vector3d& c);
+
     CASM::xtal::Lattice casm_lattice;
 };
 
+//TODO: Make this a binary comparator, fix is_equal, and implement UnaryComparator_f
 /// This functor class provides a unary predicate equals function
 /// for casmutils::xtal::Lattice .
 class LatticeEquals_f
@@ -56,11 +68,24 @@ class LatticeEquals_f
 public:
     /// The comparator requires a tolerance
     LatticeEquals_f(const Lattice& ref_lat, double tol);
-    /// returns true is ref_lat is equal to other
+    /// returns true is ref_lat is equal to other by direct vector comparison
     bool operator()(const Lattice& other);
 
 private:
     Lattice ref_lat;
+    double tol;
+};
+
+/// True if the two lattices are related by a unimodular transformation
+class LatticeIsEquivalent_f
+{
+    public:
+    LatticeIsEquivalent_f(double tol):tol(tol){}
+    /// True if the two lattices are related by a unimodular transformation
+    /// (equivalent under point group operation)
+    bool operator()(const Lattice& reference, const Lattice& other) const;
+
+    private:
     double tol;
 };
 
@@ -95,6 +120,7 @@ Eigen::Vector3d bring_within(const Eigen::Vector3d cart_coord, const xtal::Latti
 
 /// Brings the given Cartesian coordinate inside the Wigner-Seitz cell of the given unit cell
 Eigen::Vector3d bring_within_wigner_seitz(const Eigen::Vector3d cart_coord, const xtal::Lattice& unit_cell);
+
 } // namespace xtal
 } // namespace casmutils
 

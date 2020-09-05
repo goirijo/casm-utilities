@@ -368,7 +368,7 @@ TEST(HexagonalTwistTest, BrillouinOverlapMoiresRelatedByIntegerTransform)
     }
 }
 
-class ReducedAngleGrapheneTwistTest : public testing::Test
+class GrapheneTwistTest : public testing::Test
 {
 protected:
     void SetUp()
@@ -382,6 +382,21 @@ protected:
 
     std::unique_ptr<Lattice> graphene_lat_ptr;
 };
+
+TEST_F(GrapheneTwistTest, MoireScel15DegreeTwist)
+{
+    double angle=15.19; //This angle gives a coincident sqrt(3) sqrt(3) moire superlattice
+    Eigen::Matrix3i sqrt3_transfmat;
+    sqrt3_transfmat<<-2,1,0,1,-2,0,0,0,1;
+
+    cu::xtal::Lattice sqrt3_super_moire=cu::xtal::make_superlattice(*graphene_lat_ptr,sqrt3_transfmat);
+
+    cu::mush::MoireGenerator graph_moire(*graphene_lat_ptr,angle,100);
+    cu::xtal::LatticeIsEquivalent_f equivalent(1e-5);
+    EXPECT_TRUE(equivalent(graph_moire.aligned_moire_approximant.approximate_moire_lattice,sqrt3_super_moire));
+    EXPECT_TRUE(equivalent(graph_moire.rotated_moire_approximant.approximate_moire_lattice,sqrt3_super_moire));
+}
+
 
 int main(int argc, char** argv)
 {

@@ -3,6 +3,8 @@
 #include <casmutils/xtal/lattice.hpp>
 #include <casmutils/xtal/coordinate.hpp>
 
+#include <casm/crystallography/LatticeIsEquivalent.hh>
+
 namespace
 {
 using namespace casmutils;
@@ -48,6 +50,14 @@ LatticeEquals_f::LatticeEquals_f(const Lattice& ref_lat, double tol) : ref_lat(r
 bool LatticeEquals_f::operator()(const Lattice& other)
 {
     return ref_lat.column_vector_matrix().isApprox(other.column_vector_matrix(), tol);
+}
+
+bool LatticeIsEquivalent_f::operator()(const Lattice& reference, const Lattice& other) const
+{
+    CASM::xtal::Lattice _reference(reference.__get());
+    _reference.set_tol(this->tol);
+    CASM::xtal::LatticeIsEquivalent is_equiv_to_ref(_reference);
+    return is_equiv_to_ref(other.__get());
 }
 
 void make_niggli(Lattice* lattice_ptr)

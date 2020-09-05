@@ -4,18 +4,20 @@
 #include <casmutils/mush/twist.hpp>
 #include <casmutils/xtal/structure.hpp>
 /* #include "multishift/slab.hpp" */
+#include <casm/crystallography/SuperlatticeEnumerator.hh>
 #include <casmutils/xtal/lattice.hpp>
 #include <casmutils/xtal/symmetry.hpp>
 #include <cassert>
 #include <cmath>
 #include <stdexcept>
 #include <tuple>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
 namespace
 {
-    using namespace casmutils;
+using namespace casmutils;
 
 Eigen::Matrix2d make_2d_column_matrix(const xtal::Lattice lat3d)
 {
@@ -126,6 +128,16 @@ xtal::Lattice make_twisted_lattice(const xtal::Lattice& lat, double degrees)
     return make_transformed_lattice(lat, twist_matrix);
 }
 
+std::pair<Eigen::Matrix3l, Eigen::Matrix3d> approximate_integer_transformation(const xtal::Lattice& L,
+                                                                               const xtal::Lattice& M)
+{
+    Eigen::Matrix3d Td = L.column_vector_matrix().inverse() * M.column_vector_matrix();
+    Eigen::Matrix3l T = CASM::lround(Td);
+    Eigen::Matrix3d E = Td - T.cast<double>();
+
+    return std::make_pair(T, E);
+}
+
 MoireLattice::MoireLattice(const xtal::Lattice& lat, double degrees)
     : input_lattice(lat),
       input_degrees(degrees),
@@ -177,8 +189,8 @@ Eigen::Matrix2d MoireLattice::calculate_reciprocal_difference() const
 Eigen::Matrix2d MoireLattice::bring_vectors_into_voronoi(const Eigen::Matrix2d& col_vectors, const xtal::Lattice& lat)
 {
     // You must provide a prismatic aligned lattice for this to word
-    if (!CASM::almost_equal(lat.a()(2), 0.0) && !CASM::almost_equal(lat.b()(2), 0.0) && !CASM::almost_equal(lat.c()(0), 0.0) &&
-        !CASM::almost_equal(lat.c()(1), 0.0))
+    if (!CASM::almost_equal(lat.a()(2), 0.0) && !CASM::almost_equal(lat.b()(2), 0.0) &&
+        !CASM::almost_equal(lat.c()(0), 0.0) && !CASM::almost_equal(lat.c()(1), 0.0))
     {
         throw std::runtime_error(
             "The provided lattice must be prismatic (perpendicular c vector) and aligned in the xy plane");
@@ -199,7 +211,7 @@ Eigen::Matrix2d MoireLattice::bring_vectors_into_voronoi(const Eigen::Matrix2d& 
 }
 
 xtal::Lattice MoireLattice::make_moire_lattice_from_reciprocal_difference(const Eigen::Matrix2d diff,
-                                                                    const Eigen::Vector3d& real_c_vector)
+                                                                          const Eigen::Vector3d& real_c_vector)
 {
     Eigen::Matrix3d phony_recip_mat = Eigen::Matrix3d::Identity();
     phony_recip_mat.block<2, 2>(0, 0) = diff;
@@ -212,7 +224,9 @@ xtal::Lattice MoireLattice::make_moire_lattice_from_reciprocal_difference(const 
     return xtal::Lattice(final_real_moire_mat.col(0), final_real_moire_mat.col(1), final_real_moire_mat.col(2));
 }
 
-MoireApproximant::MoireApproximant(const xtal::Lattice& moire_lat, const xtal::Lattice& aligned_lat, const xtal::Lattice& rotated_lat)
+MoireApproximant::MoireApproximant(const xtal::Lattice& moire_lat,
+                                   const xtal::Lattice& aligned_lat,
+                                   const xtal::Lattice& rotated_lat)
     : approximate_moire_lattice(this->default_lattice())
 {
     std::unordered_map<LATTICE, const xtal::Lattice*> real_lattices;
@@ -222,19 +236,18 @@ MoireApproximant::MoireApproximant(const xtal::Lattice& moire_lat, const xtal::L
     // Figure out the integer transformations
     for (LATTICE lat : {LATTICE::ALIGNED, LATTICE::ROTATED})
     {
-        const Eigen::Matrix3d& M = moire_lat.column_vector_matrix();
-        const Eigen::Matrix3d& L = real_lattices[lat]->column_vector_matrix();
+        const auto& M = moire_lat;
+        const auto& L = *real_lattices[lat];
 
-        Eigen::Matrix3d Td = L.inverse() * M;
-        matrix_type T = CASM::lround(Td);
-        approximate_moire_integer_transformations[lat] = T;
+        std::tie(approximate_moire_integer_transformations[lat], approximate_moire_integer_transformation_errors[lat]) =
+            approximate_integer_transformation(L, M);
     }
 
     // Find the approximate Moire lattice
-    auto aligned_S = xtal::make_superlattice(
-        aligned_lat, approximate_moire_integer_transformations[LATTICE::ALIGNED].cast<int>());
-    auto rotated_S = xtal::make_superlattice(
-        rotated_lat, approximate_moire_integer_transformations[LATTICE::ROTATED].cast<int>());
+    auto aligned_S =
+        xtal::make_superlattice(aligned_lat, approximate_moire_integer_transformations[LATTICE::ALIGNED].cast<int>());
+    auto rotated_S =
+        xtal::make_superlattice(rotated_lat, approximate_moire_integer_transformations[LATTICE::ROTATED].cast<int>());
     Eigen::Matrix3d S_bar = (aligned_S.column_vector_matrix() + rotated_S.column_vector_matrix()) / 2.0;
     this->approximate_moire_lattice = xtal::Lattice(S_bar);
 
@@ -260,11 +273,79 @@ xtal::Lattice make_prismatic_lattice(const xtal::Lattice& lat)
     return xtal::Lattice(lat.a(), lat.b(), new_c);
 }
 
-MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees)
+MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, long max_lattice_sites)
     : moire(input_lat, degrees),
+      transformation_matrix_to_super_aligned_moire(Eigen::Matrix3l::Identity()),
+      transformation_matrix_to_super_rotated_moire(Eigen::Matrix3l::Identity()),
       aligned_moire_approximant(moire.aligned_moire_lattice, moire.aligned_lattice, moire.rotated_lattice),
       rotated_moire_approximant(moire.rotated_moire_lattice, moire.aligned_lattice, moire.rotated_lattice)
 {
+    //Maps to make a for loop over aligned and rotated memebers
+    std::unordered_map<LATTICE, const xtal::Lattice*> moire_units;
+    moire_units.emplace(LATTICE::ALIGNED, &moire.aligned_moire_lattice);
+    moire_units.emplace(LATTICE::ROTATED, &moire.rotated_moire_lattice);
+
+    std::unordered_map<LATTICE, MoireApproximant*> best_approximants;
+    best_approximants.emplace(LATTICE::ALIGNED, &this->aligned_moire_approximant);
+    best_approximants.emplace(LATTICE::ROTATED, &this->rotated_moire_approximant);
+
+    Eigen::Matrix3l tmp;
+    std::unordered_map<LATTICE, Eigen::Matrix3l*> trans_mats_to_super_moire;
+    trans_mats_to_super_moire.emplace(LATTICE::ALIGNED, &this->transformation_matrix_to_super_aligned_moire);
+    trans_mats_to_super_moire.emplace(LATTICE::ROTATED, &this->transformation_matrix_to_super_rotated_moire);
+
+    //Repeat the steps for things generated from the aligned and rotated zones
+    for (ZONE lat : {ZONE::ALIGNED, ZONE::ROTATED})
+    {
+        const auto& moire_unit = *moire_units[lat];
+        const auto& best_approximant = *best_approximants[lat];
+
+        long min_lattice_sites =
+            best_approximant.approximate_moire_integer_transformations.at(LATTICE::ALIGNED).determinant() +
+            best_approximant.approximate_moire_integer_transformations.at(LATTICE::ROTATED).determinant();
+
+        long max_moire_scel_size = max_lattice_sites / min_lattice_sites;
+
+        //If the max allowed number of Moirons is less than two, don't bother trying to find supercells
+        if (max_moire_scel_size < 2)
+        {
+            continue;
+        }
+
+        CASM::xtal::ScelEnumProps super_moire_props(2, max_moire_scel_size, "ab");
+        CASM::xtal::SuperlatticeEnumerator super_moire_enumerator(
+            moire_unit.__get(), xtal::make_point_group(moire_unit,1e-5), super_moire_props);
+
+        const auto& aligned_unit=this->moire.aligned_lattice;
+        const auto& rotated_unit=this->moire.rotated_lattice;
+
+        double best_error=error_metric(best_approximant.approximate_moire_lattice,aligned_unit,rotated_unit);
+
+        //For each possible Moire supercell, see if it coincides better, if so, keep it.
+        for(auto super_moire_it=super_moire_enumerator.begin(); super_moire_it!=super_moire_enumerator.end(); ++super_moire_it)
+        {
+            xtal::Lattice super_moire(*super_moire_it);
+            double current_error=error_metric(super_moire,aligned_unit,rotated_unit);
+            if(current_error<best_error)
+            {
+                best_error=current_error;
+                *best_approximants[lat]=MoireApproximant(super_moire,aligned_unit,rotated_unit);
+
+                *trans_mats_to_super_moire[lat]=super_moire_it.matrix().cast<long>();
+            }
+        }
+    }
+}
+
+    double MoireGenerator::error_metric(const xtal::Lattice& moire, const xtal::Lattice& aligned, const xtal::Lattice& rotated)
+{
+    double error=0.0;
+    for(const auto& tile : {aligned,rotated})
+    {
+        auto [integer_transform,residual_error]=approximate_integer_transformation(tile,moire);
+        error+=residual_error.determinant();
+    }
+    return error;
 }
 
 MoireStructureGenerator::MoireStructureGenerator(const Structure& slab_unit, double degrees)

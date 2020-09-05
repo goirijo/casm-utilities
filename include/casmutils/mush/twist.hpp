@@ -7,6 +7,7 @@
 #include <casmutils/xtal/lattice.hpp>
 #include <tuple>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include <casm/crystallography/Superlattice.hh>
@@ -30,6 +31,11 @@ xtal::Lattice make_aligned_lattice(const xtal::Lattice& lat);
 /// Returns the same lattice, but the c vector has been modified to be orthogonal to the
 /// ab vectors. This will break periodicity, but not the thickness of the slab.
 xtal::Lattice make_prismatic_lattice(const xtal::Lattice& lat);
+
+/// Return the closest integer transformation matrix T that relates L to M such that
+/// M=L*T. The first parameter returned is the integer transformation T, and the second
+/// parameter is the error E that arises when rouding values to make T an integer matrix
+std::pair<Eigen::Matrix3l,Eigen::Matrix3d> approximate_integer_transformation(const xtal::Lattice& L, const xtal::Lattice& M);
 
 /// Constructs Moire lattice for the given angle, and keeps information of the steps made along
 /// the way. Before anything happens, the input lattice will be transformed to an aligned
@@ -135,8 +141,6 @@ struct MoireApproximant
 {
     using LATTICE = MoireLattice::LATTICE;
 
-    typedef Eigen::Matrix3l matrix_type;
-
     MoireApproximant(const xtal::Lattice& moire_lat,
                      const xtal::Lattice& aligned_lat,
                      const xtal::Lattice& rotated_lat);
@@ -149,7 +153,10 @@ struct MoireApproximant
     std::unordered_map<LATTICE, xtal::Lattice> approximate_lattices;
 
     /// Integer transformation matrices that convert the approximate lattices into the Moire lattice.
-    std::unordered_map<LATTICE, matrix_type> approximate_moire_integer_transformations;
+    std::unordered_map<LATTICE, Eigen::Matrix3l> approximate_moire_integer_transformations;
+
+    /// Error left over from forcing the true transformation matrix to be an integer matrix
+    std::unordered_map<LATTICE, Eigen::Matrix3d> approximate_moire_integer_transformation_errors;
 
     /// Deformation introduced by making the approximations to introduce complete periodicity
     std::unordered_map<LATTICE, Eigen::Matrix3d> approximation_deformations;
@@ -169,6 +176,11 @@ public:
 
     MoireLattice moire;
 
+    ///Supercell transformation of the Moire lattice
+    ///which can best accomodate the original and rotated lattices
+    Eigen::Matrix3l transformation_matrix_to_super_aligned_moire;
+    Eigen::Matrix3l transformation_matrix_to_super_rotated_moire;
+
     /// Approximations made using the Moire lattice generated using the fixed (aligned)
     /// Brillouin zone
     MoireApproximant aligned_moire_approximant;
@@ -185,15 +197,22 @@ private:
         return brillouin == ZONE::ALIGNED ? aligned_moire_approximant : rotated_moire_approximant;
     }
 
+    ///Measures how badly the moire lattice is from landing on coindicent lattice sites
+    double error_metric(const xtal::Lattice& moire, const xtal::Lattice& aligned, const xtal::Lattice& rotated);
+
 public:
-    MoireGenerator(const xtal::Lattice& input_lat, double degrees);
+    /// Give the original unrotated lattice and rotation angle. The maximum lattice sites
+    /// parameter will determine how many moirons are allowed to fit in the Moire lattice.
+    /// If the values is less than the number of lattice sites that fit in a single moiron
+    /// lattice, then the smallest possible Moire lattice is used.
+    MoireGenerator(const xtal::Lattice& input_lat, double degrees, long max_lattice_sites=0);
 
     const xtal::Lattice& approximate_lattice(ZONE brillouin, LATTICE lat) const
     {
         return requested_zone(brillouin).approximate_lattices.at(lat);
     }
 
-    const MoireApproximant::matrix_type& approximate_moire_integer_transformation(ZONE bz, LATTICE lat) const
+    const Eigen::Matrix3l& approximate_moire_integer_transformation(ZONE bz, LATTICE lat) const
     {
         return requested_zone(bz).approximate_moire_integer_transformations.at(lat);
     }

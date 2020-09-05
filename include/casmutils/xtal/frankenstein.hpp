@@ -36,10 +36,6 @@ std::vector<xtal::Structure> multi_slice(const xtal::Structure& big_struc,
 /// which is perpendicular to the ab plane.
 std::vector<xtal::Structure> uniformly_slice(const xtal::Structure& big_struc, int n_pieces);
 
-/// This function takes a vector of structures with the same ab lattice vectors
-/// and stacks them along the c direction.
-xtal::Structure stack(const std::vector<xtal::Structure>& sub_strucs);
-
 /// This function takes a structure and reduces the lattice boundaries to the
 /// closest atoms to each of the specified boundaries dictated by the vector
 /// dirs. dirs is a vector of bools that indicate whether or not to shrink
