@@ -9,6 +9,7 @@
 #include <casmutils/xtal/symmetry.hpp>
 #include <cassert>
 #include <cmath>
+#include <exception>
 #include <stdexcept>
 #include <tuple>
 #include <unordered_map>
@@ -132,6 +133,7 @@ std::pair<Eigen::Matrix3l, Eigen::Matrix3d> approximate_integer_transformation(c
                                                                                const xtal::Lattice& M)
 {
     Eigen::Matrix3d Td = L.column_vector_matrix().inverse() * M.column_vector_matrix();
+    
     Eigen::Matrix3l T = CASM::lround(Td);
     Eigen::Matrix3d E = Td - T.cast<double>();
 
@@ -273,6 +275,63 @@ xtal::Lattice make_prismatic_lattice(const xtal::Lattice& lat)
     return xtal::Lattice(lat.a(), lat.b(), new_c);
 }
 
+xtal::Lattice MoireGenerator::make_reduced_cell(const xtal::Lattice& lat)
+{
+    auto raw_reduced = lat.__get().reduced_cell2();
+
+    Eigen::Matrix3d T;
+    //turns a,b,c to b,c,a
+    Eigen::Matrix3d P;
+    P<<0,1,0,0,0,1,1,0,0;
+    //Swap a and b
+    Eigen::Matrix3d S;
+    S<<0,1,0,1,0,0,0,0,1;
+
+    if (almost_equal(lat.c(), raw_reduced[2]))
+    {
+        T=Eigen::Matrix3d::Identity();
+    }
+    else if (almost_equal(lat.c(), -raw_reduced[2]))
+    {
+        T=Eigen::Matrix3d::Identity()*S;
+    }
+
+    else if (almost_equal(lat.c(), raw_reduced[1]))
+    {
+        T=P;
+    }
+    else if (almost_equal(lat.c(), -raw_reduced[1]))
+    {
+        T=P*S;
+    }
+
+    else if (almost_equal(lat.c(), raw_reduced[0]))
+    {
+        T=P*P;
+    }
+    else if (almost_equal(lat.c(), -raw_reduced[0]))
+    {
+        T=P*P*S;
+    }
+
+    else
+    {
+        auto [V,E]=approximate_integer_transformation(lat.column_vector_matrix(),raw_reduced.lat_column_mat());
+        std::cout<<"DEBUGGING: V is \n"<<V<<std::endl;
+        std::cout<<"DEBUGGING: raw_reduced.column_lat_mat()\n is "<<raw_reduced.lat_column_mat()<<std::endl;
+        std::cout<<"DEBUGGING: lat.column_vector_matrix()\n is "<<lat.column_vector_matrix()<<std::endl;
+        
+        std::cout<<lat.c().transpose()<< " vs "<<raw_reduced[2].transpose()<<"\n";
+        std::cout<<lat.c().transpose()<< " vs "<<raw_reduced[1].transpose()<<"\n";
+        std::cout<<lat.c().transpose()<< " vs "<<raw_reduced[0].transpose()<<"\n";
+        
+        
+        throw std::runtime_error("Could not permute lattice vectors to recover C after making reduced cell");
+    }
+
+    return xtal::Lattice::from_column_vector_matrix(raw_reduced.lat_column_mat()*T);
+}
+
 MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, long max_lattice_sites)
     : moire(input_lat, degrees),
       transformation_matrix_to_super_aligned_moire(Eigen::Matrix3l::Identity()),
@@ -280,7 +339,7 @@ MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, l
       aligned_moire_approximant(moire.aligned_moire_lattice, moire.aligned_lattice, moire.rotated_lattice),
       rotated_moire_approximant(moire.rotated_moire_lattice, moire.aligned_lattice, moire.rotated_lattice)
 {
-    //Maps to make a for loop over aligned and rotated memebers
+    // Maps to make a for loop over aligned and rotated memebers
     std::unordered_map<LATTICE, const xtal::Lattice*> moire_units;
     moire_units.emplace(LATTICE::ALIGNED, &moire.aligned_moire_lattice);
     moire_units.emplace(LATTICE::ROTATED, &moire.rotated_moire_lattice);
@@ -294,7 +353,7 @@ MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, l
     trans_mats_to_super_moire.emplace(LATTICE::ALIGNED, &this->transformation_matrix_to_super_aligned_moire);
     trans_mats_to_super_moire.emplace(LATTICE::ROTATED, &this->transformation_matrix_to_super_rotated_moire);
 
-    //Repeat the steps for things generated from the aligned and rotated zones
+    // Repeat the steps for things generated from the aligned and rotated zones
     for (ZONE lat : {ZONE::ALIGNED, ZONE::ROTATED})
     {
         const auto& moire_unit = *moire_units[lat];
@@ -305,45 +364,61 @@ MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, l
             best_approximant.approximate_moire_integer_transformations.at(LATTICE::ROTATED).determinant();
 
         long max_moire_scel_size = max_lattice_sites / min_lattice_sites;
+        std::cout<<"DEBUGGING: max_lattice_sites is "<<max_lattice_sites<<std::endl;
+        std::cout<<"DEBUGGING: min_lattice_sites is "<<min_lattice_sites<<std::endl;
 
-        //If the max allowed number of Moirons is less than two, don't bother trying to find supercells
+        // If the max allowed number of Moirons is less than two, don't bother trying to find supercells
         if (max_moire_scel_size < 2)
         {
             continue;
         }
 
+        std::cout<<"DEBUGGING: max_moire_scel_size is "<<max_moire_scel_size<<std::endl;
+        
+
         CASM::xtal::ScelEnumProps super_moire_props(2, max_moire_scel_size, "ab");
         CASM::xtal::SuperlatticeEnumerator super_moire_enumerator(
-            moire_unit.__get(), xtal::make_point_group(moire_unit,1e-5), super_moire_props);
+            moire_unit.__get(), xtal::make_point_group(moire_unit, 1e-5), super_moire_props);
 
-        const auto& aligned_unit=this->moire.aligned_lattice;
-        const auto& rotated_unit=this->moire.rotated_lattice;
+        const auto& aligned_unit = this->moire.aligned_lattice;
+        const auto& rotated_unit = this->moire.rotated_lattice;
 
-        double best_error=error_metric(best_approximant.approximate_moire_lattice,aligned_unit,rotated_unit);
+        double best_error = error_metric(best_approximant.approximate_moire_lattice, aligned_unit, rotated_unit);
 
-        //For each possible Moire supercell, see if it coincides better, if so, keep it.
-        for(auto super_moire_it=super_moire_enumerator.begin(); super_moire_it!=super_moire_enumerator.end(); ++super_moire_it)
+        // For each possible Moire supercell, see if it coincides better, if so, keep it.
+        for (auto super_moire_it = super_moire_enumerator.begin(); super_moire_it != super_moire_enumerator.end();
+             ++super_moire_it)
         {
-            xtal::Lattice super_moire(*super_moire_it);
-            double current_error=error_metric(super_moire,aligned_unit,rotated_unit);
-            if(current_error<best_error)
-            {
-                best_error=current_error;
-                *best_approximants[lat]=MoireApproximant(super_moire,aligned_unit,rotated_unit);
+            xtal::Lattice super_moire=make_reduced_cell(*super_moire_it);
+            // the C vectors should't be changing
+            assert(CASM::almost_equal(super_moire.c(), super_moire_it->operator[](2).eval()));
 
-                *trans_mats_to_super_moire[lat]=super_moire_it.matrix().cast<long>();
+            double current_error = error_metric(super_moire, aligned_unit, rotated_unit);
+
+            auto [moire_to_super_trans_mat, residual] = approximate_integer_transformation(moire_unit, super_moire);
+            assert(almost_zero(residual));
+
+            if (current_error < best_error)
+            {
+                best_error = current_error;
+                *best_approximants[lat] = MoireApproximant(super_moire, aligned_unit, rotated_unit);
+                *trans_mats_to_super_moire[lat] = moire_to_super_trans_mat;
             }
         }
     }
 }
 
-    double MoireGenerator::error_metric(const xtal::Lattice& moire, const xtal::Lattice& aligned, const xtal::Lattice& rotated)
+double
+MoireGenerator::error_metric(const xtal::Lattice& moire, const xtal::Lattice& aligned, const xtal::Lattice& rotated)
 {
-    double error=0.0;
-    for(const auto& tile : {aligned,rotated})
+    double error = 0.0;
+    for (const auto& tile : {aligned, rotated})
     {
-        auto [integer_transform,residual_error]=approximate_integer_transformation(tile,moire);
-        error+=residual_error.determinant();
+        auto [integer_transform, residual_error] = approximate_integer_transformation(tile, moire);
+        for (int i : {0, 1})
+        {
+            error += residual_error.col(i).norm();
+        }
     }
     return error;
 }

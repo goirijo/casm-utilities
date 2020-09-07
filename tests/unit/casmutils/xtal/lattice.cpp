@@ -144,13 +144,13 @@ protected:
 
 TEST_F(LatticeIsEquivalentTest, Identical)
 {
-    casmutils::xtal::LatticeIsEquivalent_f exactly_equivalent(0.0);
+    casmutils::xtal::LatticeIsEquivalent_f exactly_equivalent(1e-8);
     EXPECT_TRUE(exactly_equivalent(*fcc_ptr, *fcc_ptr));
 }
 
 TEST_F(LatticeIsEquivalentTest, PermutedVectors)
 {
-    casmutils::xtal::Lattice permuted_fcc(fcc_ptr->b(), fcc_ptr->c(), fcc_ptr->c());
+    casmutils::xtal::Lattice permuted_fcc(fcc_ptr->b(), fcc_ptr->c(), fcc_ptr->a());
     casmutils::xtal::LatticeIsEquivalent_f are_equivalent(1e-5);
     EXPECT_TRUE(are_equivalent(*fcc_ptr, permuted_fcc));
 }

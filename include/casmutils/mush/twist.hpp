@@ -200,6 +200,10 @@ private:
     ///Measures how badly the moire lattice is from landing on coindicent lattice sites
     double error_metric(const xtal::Lattice& moire, const xtal::Lattice& aligned, const xtal::Lattice& rotated);
 
+    ///Creates the reduced cell, but keeps the c vector pointing the same direction.
+    ///Will only work if the c vector doesn't need to be corrected to create the reduced cell.
+    xtal::Lattice make_reduced_cell(const xtal::Lattice& lat);
+
 public:
     /// Give the original unrotated lattice and rotation angle. The maximum lattice sites
     /// parameter will determine how many moirons are allowed to fit in the Moire lattice.

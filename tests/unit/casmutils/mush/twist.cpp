@@ -370,6 +370,8 @@ TEST(HexagonalTwistTest, BrillouinOverlapMoiresRelatedByIntegerTransform)
 
 class GrapheneTwistTest : public testing::Test
 {
+    public:
+    using LAT=cu::mush::MoireGenerator::LATTICE;
 protected:
     void SetUp()
     {
@@ -385,16 +387,32 @@ protected:
 
 TEST_F(GrapheneTwistTest, MoireScel15DegreeTwist)
 {
-    double angle=15.19; //This angle gives a coincident sqrt(3) sqrt(3) moire superlattice
+    /* auto equivalent=[](const cu::xtal::Lattice& L1, const cu::xtal::Lattice& L2) */
+    /* { */
+    /*     auto [T,E]=cu::mush::approximate_integer_transformation(L1,L2); */
+    /*     return almost_zero(E) && CASM::is_unimodular(T,1e-8); */
+    /* }; */
+
+    cu::xtal::LatticeIsEquivalent_f equivalent(1e-8);
+
+    double angle=15.178178937949879; //This angle gives a coincident sqrt(3) sqrt(3) moire superlattice
     Eigen::Matrix3i sqrt3_transfmat;
-    sqrt3_transfmat<<-2,1,0,1,-2,0,0,0,1;
+    sqrt3_transfmat<<2,1,0,1,2,0,0,0,1;
 
-    cu::xtal::Lattice sqrt3_super_moire=cu::xtal::make_superlattice(*graphene_lat_ptr,sqrt3_transfmat);
+    const cu::mush::MoireGenerator mini_graph_moire(*graphene_lat_ptr,angle,0);
+    const auto& mini_moire_unit=mini_graph_moire.moire.moire(LAT::ALIGNED);
 
+    cu::xtal::Lattice sqrt3_super_moire=cu::xtal::make_superlattice(mini_moire_unit,sqrt3_transfmat);
     cu::mush::MoireGenerator graph_moire(*graphene_lat_ptr,angle,100);
-    cu::xtal::LatticeIsEquivalent_f equivalent(1e-5);
+
     EXPECT_TRUE(equivalent(graph_moire.aligned_moire_approximant.approximate_moire_lattice,sqrt3_super_moire));
     EXPECT_TRUE(equivalent(graph_moire.rotated_moire_approximant.approximate_moire_lattice,sqrt3_super_moire));
+}
+
+TEST_F(GrapheneTwistTest, MoireStructure15DegreeTwist)
+{
+    /* double angle=15.178178937949879; //This angle gives a coincident sqrt(3) sqrt(3) moire superlattice */
+    /* cu::mush::MoireStructureGenerator */
 }
 
 
