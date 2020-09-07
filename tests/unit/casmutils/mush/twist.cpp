@@ -8,8 +8,10 @@
 #include <fstream>
 #include <gtest/gtest.h>
 
+#include "../../../autotools.hh"
 #include <casmutils/definitions.hpp>
 #include <casmutils/mush/twist.hpp>
+#include <casmutils/xtal/frankenstein.hpp>
 #include <memory>
 #include <string>
 #include <tuple>
@@ -161,7 +163,8 @@ TEST_F(TwistTest, ApproximantMoireLattice)
         {
             using LATTICE = cu::mush::MoireApproximant::LATTICE;
             cu::mush::MoireLattice moire(start_lat, angle);
-            cu::mush::MoireApproximant approx_moire(moire.aligned_moire_lattice, moire.aligned_lattice, moire.rotated_lattice);
+            cu::mush::MoireApproximant approx_moire(
+                moire.aligned_moire_lattice, moire.aligned_lattice, moire.rotated_lattice);
             const auto& moire_lat = approx_moire.approximate_moire_lattice;
             const auto& aligned_lat = approx_moire.approximate_lattices.at(LATTICE::ALIGNED);
             const auto& rot_lat = approx_moire.approximate_lattices.at(LATTICE::ROTATED);
@@ -285,7 +288,8 @@ TEST_F(TwistTest, ApproximantPrismaticMoireDeformation)
         {
             using LATTICE = cu::mush::MoireLattice::LATTICE;
             cu::mush::MoireLattice moire(start_lat, angle);
-            cu::mush::MoireApproximant approx_moire(moire.aligned_moire_lattice, moire.aligned_lattice, moire.rotated_lattice);
+            cu::mush::MoireApproximant approx_moire(
+                moire.aligned_moire_lattice, moire.aligned_lattice, moire.rotated_lattice);
             const auto& moire_lat = approx_moire.approximate_moire_lattice;
             const auto& aligned_lat = approx_moire.approximate_lattices.at(LATTICE::ALIGNED);
             const auto& rot_lat = approx_moire.approximate_lattices.at(LATTICE::ROTATED);
@@ -370,19 +374,84 @@ TEST(HexagonalTwistTest, BrillouinOverlapMoiresRelatedByIntegerTransform)
 
 class GrapheneTwistTest : public testing::Test
 {
-    public:
-    using LAT=cu::mush::MoireGenerator::LATTICE;
+public:
+    using LAT = cu::mush::MoireGenerator::LATTICE;
+    using ZONE = cu::mush::MoireGenerator::ZONE;
+    using Structure = cu::xtal::Structure;
+
 protected:
     void SetUp()
     {
-        Eigen::Matrix3d row_lat_mat;
-        row_lat_mat << 2.4684159756, 0.0000000000, 0.0000000000, -1.2342079878, 2.1377109420, 0.0000000000,
-            0.0000000000, 0.0000000000, 9.9990577698;
+        graphene_ptr.reset(new Structure(Structure::from_poscar(cu::autotools::input_filesdir / "graphene.vasp")));
 
-        graphene_lat_ptr.reset(new Lattice(row_lat_mat.row(0), row_lat_mat.row(1), row_lat_mat.row(2)));
+        magic_angles.push_back(2.449977276616);
+        magic_angles.push_back(2.645908381192);
+        magic_angles.push_back(2.875894633632);
+        magic_angles.push_back(3.149657426389);
+        magic_angles.push_back(3.481006089466);
+        magic_angles.push_back(3.890238169007);
+        magic_angles.push_back(4.408455007944);
+        magic_angles.push_back(5.085847808123);
+        magic_angles.push_back(5.509040771928);
+        magic_angles.push_back(6.008983197766);
+        magic_angles.push_back(6.608610360312);
+        magic_angles.push_back(7.340993016630);
+        magic_angles.push_back(7.926469934899);
+        magic_angles.push_back(8.255620609025);
+        magic_angles.push_back(8.613238191002);
+        magic_angles.push_back(9.430007907896);
+        magic_angles.push_back(10.41743820571);
+        magic_angles.push_back(10.99273308930);
+        magic_angles.push_back(11.63505128888);
+        magic_angles.push_back(11.98510029238);
+        magic_angles.push_back(13.17355110725);
+        magic_angles.push_back(14.30767637471);
+        magic_angles.push_back(14.62222138876);
+        magic_angles.push_back(15.17817893794);
+        magic_angles.push_back(15.65414359251);
+        magic_angles.push_back(16.42642140347);
+        magic_angles.push_back(17.27824434988);
+        magic_angles.push_back(17.89655112925);
+        magic_angles.push_back(18.73399783335);
+        magic_angles.push_back(19.27480690356);
+        magic_angles.push_back(19.65285963166);
+        magic_angles.push_back(21.78678929826);
+        magic_angles.push_back(24.01660222864);
+        magic_angles.push_back(24.43269767945);
+        magic_angles.push_back(25.03965959447);
+        magic_angles.push_back(26.00782388564);
+        magic_angles.push_back(26.74565161623);
+        magic_angles.push_back(27.79577249602);
+        magic_angles.push_back(28.78320279384);
+        magic_angles.push_back(29.40931139719);
+        magic_angles.push_back(30.15827583531);
+        magic_angles.push_back(30.59068860280);
+        magic_angles.push_back(32.20422750397);
+        magic_angles.push_back(33.99217611435);
+        magic_angles.push_back(34.53894442320);
+        magic_angles.push_back(35.56730232054);
+        magic_angles.push_back(36.51693800821);
+        magic_angles.push_back(38.21321070173);
+        magic_angles.push_back(39.68334042751);
+        magic_angles.push_back(40.34714036833);
+        magic_angles.push_back(40.96932360328);
+        magic_angles.push_back(42.10344887074);
+        magic_angles.push_back(43.57357859652);
+        magic_angles.push_back(44.82182106205);
+        magic_angles.push_back(45.89464594547);
+        magic_angles.push_back(46.82644889274);
+        magic_angles.push_back(48.36494871111);
+        magic_angles.push_back(49.58256179428);
+        magic_angles.push_back(50.56999209210);
+        magic_angles.push_back(51.38676180899);
+        magic_angles.push_back(52.07353006510);
+        magic_angles.push_back(52.65900698336);
+        magic_angles.push_back(53.16403781617);
     }
 
-    std::unique_ptr<Lattice> graphene_lat_ptr;
+    std::unique_ptr<cu::xtal::Structure> graphene_ptr;
+    // Give coindicent moire superlattices, but may require supercells.
+    std::vector<double> magic_angles;
 };
 
 TEST_F(GrapheneTwistTest, MoireScel15DegreeTwist)
@@ -395,26 +464,65 @@ TEST_F(GrapheneTwistTest, MoireScel15DegreeTwist)
 
     cu::xtal::LatticeIsEquivalent_f equivalent(1e-8);
 
-    double angle=15.178178937949879; //This angle gives a coincident sqrt(3) sqrt(3) moire superlattice
+    double angle = 15.178178937949879; // This angle gives a coincident sqrt(3) sqrt(3) moire superlattice
     Eigen::Matrix3i sqrt3_transfmat;
-    sqrt3_transfmat<<2,1,0,1,2,0,0,0,1;
+    sqrt3_transfmat << 2, 1, 0, 1, 2, 0, 0, 0, 1;
 
-    const cu::mush::MoireGenerator mini_graph_moire(*graphene_lat_ptr,angle,0);
-    const auto& mini_moire_unit=mini_graph_moire.moire.moire(LAT::ALIGNED);
+    const cu::mush::MoireGenerator mini_graph_moire(graphene_ptr->lattice(), angle, 0);
+    const auto& mini_moire_unit = mini_graph_moire.moire.moire(LAT::ALIGNED);
 
-    cu::xtal::Lattice sqrt3_super_moire=cu::xtal::make_superlattice(mini_moire_unit,sqrt3_transfmat);
-    cu::mush::MoireGenerator graph_moire(*graphene_lat_ptr,angle,100);
+    cu::xtal::Lattice sqrt3_super_moire = cu::xtal::make_superlattice(mini_moire_unit, sqrt3_transfmat);
+    cu::mush::MoireGenerator graph_moire(graphene_ptr->lattice(), angle, 100);
 
-    EXPECT_TRUE(equivalent(graph_moire.aligned_moire_approximant.approximate_moire_lattice,sqrt3_super_moire));
-    EXPECT_TRUE(equivalent(graph_moire.rotated_moire_approximant.approximate_moire_lattice,sqrt3_super_moire));
+    EXPECT_TRUE(equivalent(graph_moire.aligned_moire_approximant.approximate_moire_lattice, sqrt3_super_moire));
+    EXPECT_TRUE(equivalent(graph_moire.aligned_moire_approximant.approximate_moire_lattice, sqrt3_super_moire));
 }
 
-TEST_F(GrapheneTwistTest, MoireStructure15DegreeTwist)
+TEST_F(GrapheneTwistTest, MoireScelMagicDegreeTwist)
 {
-    /* double angle=15.178178937949879; //This angle gives a coincident sqrt(3) sqrt(3) moire superlattice */
-    /* cu::mush::MoireStructureGenerator */
+    const auto I = Eigen::Matrix3d::Identity();
+    for (double angle : magic_angles)
+    {
+        cu::mush::MoireGenerator graph_moire(graphene_ptr->lattice(), angle, 1000);
+        EXPECT_TRUE(almost_zero(graph_moire.approximation_deformation(ZONE::ALIGNED, LAT::ALIGNED) - I));
+        EXPECT_TRUE(almost_zero(graph_moire.approximation_deformation(ZONE::ALIGNED, LAT::ROTATED) - I));
+        EXPECT_TRUE(almost_zero(graph_moire.approximation_deformation(ZONE::ROTATED, LAT::ALIGNED) - I));
+        EXPECT_TRUE(almost_zero(graph_moire.approximation_deformation(ZONE::ROTATED, LAT::ROTATED) - I));
+    }
 }
 
+TEST_F(GrapheneTwistTest, Debug)
+{
+    /* double angle = 15.178178937949879; // This angle gives a coincident sqrt(3) sqrt(3) moire superlattice */
+    /* cu::mush::MoireStructureGenerator mini_graph_moire(*graphene_ptr, angle); */
+    /* cu::mush::MoireStructureGenerator graph_moire(*graphene_ptr, angle, 100); */
+
+    /* const auto mini_struc_top = mini_graph_moire.layer(ZONE::ALIGNED, LAT::ROTATED); */
+    /* const auto mini_struc_bottom = mini_graph_moire.layer(ZONE::ALIGNED, LAT::ALIGNED); */
+    /* const auto mini_stack = cu::frankenstein::stack({mini_struc_bottom, mini_struc_top}); */
+
+    /* const auto struc_top = graph_moire.layer(ZONE::ALIGNED, LAT::ROTATED); */
+    /* const auto struc_bottom = graph_moire.layer(ZONE::ALIGNED, LAT::ALIGNED); */
+    /* const auto stack = cu::frankenstein::stack({struc_bottom, struc_top}); */
+
+    /* cu::xtal::write_poscar(mini_stack, "mini_stack.vasp"); */
+    /* cu::xtal::write_poscar(stack, "scel_stack.vasp"); */
+
+    /* for (double angle : magic_angles) */
+    /* { */
+    /*     cu::mush::MoireStructureGenerator graph_moire(*graphene_ptr, angle, 1000); */
+
+    /*     const auto a_top=graph_moire.layer(ZONE::ALIGNED,LAT::ROTATED); */
+    /*     const auto a_bottom=graph_moire.layer(ZONE::ALIGNED,LAT::ALIGNED); */
+    /*     const auto a_stack=cu::frankenstein::stack({a_bottom,a_top}); */
+    /*     cu::xtal::write_poscar(a_stack,std::to_string(angle)+"aligned.vasp"); */
+
+    /*     const auto r_top=graph_moire.layer(ZONE::ROTATED,LAT::ROTATED); */
+    /*     const auto r_bottom=graph_moire.layer(ZONE::ROTATED,LAT::ALIGNED); */
+    /*     const auto r_stack=cu::frankenstein::stack({a_bottom,a_top}); */
+    /*     cu::xtal::write_poscar(r_stack,std::to_string(angle)+"rotated.vasp"); */
+    /* } */
+}
 
 int main(int argc, char** argv)
 {

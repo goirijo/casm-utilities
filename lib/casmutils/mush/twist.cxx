@@ -212,6 +212,15 @@ Eigen::Matrix2d MoireLattice::bring_vectors_into_voronoi(const Eigen::Matrix2d& 
     return col_vectors_within;
 }
 
+    xtal::Lattice MoireLattice::make_right_handed_by_ab_swap(const xtal::Lattice& lat)
+{
+    if(lat.column_vector_matrix().determinant()<0)
+    {
+        return xtal::Lattice(lat.b(),lat.a(),lat.c());
+    }
+    return lat;
+}
+
 xtal::Lattice MoireLattice::make_moire_lattice_from_reciprocal_difference(const Eigen::Matrix2d diff,
                                                                           const Eigen::Vector3d& real_c_vector)
 {
@@ -223,7 +232,8 @@ xtal::Lattice MoireLattice::make_moire_lattice_from_reciprocal_difference(const 
     Eigen::Matrix3d final_real_moire_mat = phony_real_moire_lattice.column_vector_matrix();
     final_real_moire_mat.col(2) = real_c_vector;
 
-    return xtal::Lattice(final_real_moire_mat.col(0), final_real_moire_mat.col(1), final_real_moire_mat.col(2));
+    xtal::Lattice moire(final_real_moire_mat.col(0), final_real_moire_mat.col(1), final_real_moire_mat.col(2));
+    return make_right_handed_by_ab_swap(moire);
 }
 
 MoireApproximant::MoireApproximant(const xtal::Lattice& moire_lat,
@@ -317,15 +327,6 @@ xtal::Lattice MoireGenerator::make_reduced_cell(const xtal::Lattice& lat)
     else
     {
         auto [V,E]=approximate_integer_transformation(lat.column_vector_matrix(),raw_reduced.lat_column_mat());
-        std::cout<<"DEBUGGING: V is \n"<<V<<std::endl;
-        std::cout<<"DEBUGGING: raw_reduced.column_lat_mat()\n is "<<raw_reduced.lat_column_mat()<<std::endl;
-        std::cout<<"DEBUGGING: lat.column_vector_matrix()\n is "<<lat.column_vector_matrix()<<std::endl;
-        
-        std::cout<<lat.c().transpose()<< " vs "<<raw_reduced[2].transpose()<<"\n";
-        std::cout<<lat.c().transpose()<< " vs "<<raw_reduced[1].transpose()<<"\n";
-        std::cout<<lat.c().transpose()<< " vs "<<raw_reduced[0].transpose()<<"\n";
-        
-        
         throw std::runtime_error("Could not permute lattice vectors to recover C after making reduced cell");
     }
 
@@ -364,8 +365,6 @@ MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, l
             best_approximant.approximate_moire_integer_transformations.at(LATTICE::ROTATED).determinant();
 
         long max_moire_scel_size = max_lattice_sites / min_lattice_sites;
-        std::cout<<"DEBUGGING: max_lattice_sites is "<<max_lattice_sites<<std::endl;
-        std::cout<<"DEBUGGING: min_lattice_sites is "<<min_lattice_sites<<std::endl;
 
         // If the max allowed number of Moirons is less than two, don't bother trying to find supercells
         if (max_moire_scel_size < 2)
@@ -373,10 +372,7 @@ MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, l
             continue;
         }
 
-        std::cout<<"DEBUGGING: max_moire_scel_size is "<<max_moire_scel_size<<std::endl;
-        
-
-        CASM::xtal::ScelEnumProps super_moire_props(2, max_moire_scel_size, "ab");
+        CASM::xtal::ScelEnumProps super_moire_props(2, max_moire_scel_size+1, "ab");
         CASM::xtal::SuperlatticeEnumerator super_moire_enumerator(
             moire_unit.__get(), xtal::make_point_group(moire_unit, 1e-5), super_moire_props);
 
@@ -423,8 +419,8 @@ MoireGenerator::error_metric(const xtal::Lattice& moire, const xtal::Lattice& al
     return error;
 }
 
-MoireStructureGenerator::MoireStructureGenerator(const Structure& slab_unit, double degrees)
-    : MoireGenerator(slab_unit.lattice(), degrees), slab_unit(slab_unit)
+MoireStructureGenerator::MoireStructureGenerator(const Structure& slab_unit, double degrees, long max_lattice_sites)
+    : MoireGenerator(slab_unit.lattice(), degrees, max_lattice_sites), slab_unit(slab_unit)
 {
 }
 

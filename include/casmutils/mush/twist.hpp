@@ -128,6 +128,8 @@ struct MoireLattice
 private:
     Eigen::Matrix2d calculate_reciprocal_difference() const;
     bool is_within_voronoi(const Eigen::Vector2d& v, const xtal::Lattice& lat) const;
+
+    static xtal::Lattice make_right_handed_by_ab_swap(const xtal::Lattice& left_handed_lattice);
 };
 
 /// Helper struct to convert an aligned and rotated lattice to a superlattice that's as close
@@ -239,7 +241,7 @@ public:
     using Structure = xtal::Structure;
     using MoireGenerator::degrees;
 
-    MoireStructureGenerator(const Structure& slab_unit, double degrees);
+    MoireStructureGenerator(const Structure& slab_unit, double degrees, long max_lattice_sites=0);
 
     Structure layer(ZONE brillouin, LATTICE lat) const;
 
