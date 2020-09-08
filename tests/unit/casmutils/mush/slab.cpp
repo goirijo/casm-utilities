@@ -1,6 +1,8 @@
 #include "../../../autotools.hh"
+#include "casmutils/definitions.hpp"
 #include <algorithm>
 #include <casmutils/misc.hpp>
+#include <casmutils/mush/slab.hpp>
 #include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/xtal/lattice.hpp>
 #include <casmutils/xtal/site.hpp>
@@ -8,7 +10,6 @@
 #include <casmutils/xtal/structure_tools.hpp>
 #include <gtest/gtest.h>
 #include <memory>
-#include <casmutils/mush/slab.hpp>
 #include <tuple>
 
 namespace cu = casmutils;
@@ -16,7 +17,7 @@ namespace cu = casmutils;
 class SlicingTest : public testing::Test
 {
 protected:
-    using Structure=cu::xtal::Structure;
+    using Structure = cu::xtal::Structure;
     void SetUp() override
     {
         hcp_ptr.reset(new Structure(Structure::from_poscar(cu::autotools::input_filesdir / "hcp.vasp")));
@@ -103,10 +104,12 @@ TEST_F(SlicingTest, StructureSlice_b2_101)
     cu::xtal::Site site1(cu::xtal::Coordinate::from_fractional(0.5, 0.5, 0, b2_slice.lattice()), "B");
 
     cu::xtal::SiteEquals_f is_equal_site0(site0, tol);
-    EXPECT_TRUE(std::find_if(b2_slice.basis_sites().begin(), b2_slice.basis_sites().end(), is_equal_site0) != b2_slice.basis_sites().end());
+    EXPECT_TRUE(std::find_if(b2_slice.basis_sites().begin(), b2_slice.basis_sites().end(), is_equal_site0) !=
+                b2_slice.basis_sites().end());
 
     cu::xtal::SiteEquals_f is_equal_site1(site1, tol);
-    EXPECT_TRUE(std::find_if(b2_slice.basis_sites().begin(), b2_slice.basis_sites().end(), is_equal_site1) != b2_slice.basis_sites().end());
+    EXPECT_TRUE(std::find_if(b2_slice.basis_sites().begin(), b2_slice.basis_sites().end(), is_equal_site1) !=
+                b2_slice.basis_sites().end());
 }
 
 //******************************************************************************//
@@ -114,16 +117,17 @@ TEST_F(SlicingTest, StructureSlice_b2_101)
 class SlabTest : public testing::Test
 {
 protected:
-    using Structure=cu::xtal::Structure;
+    using Structure = cu::xtal::Structure;
     void SetUp() override
     {
         b2_101_ptr.reset(new Structure(Structure::from_poscar(cu::autotools::input_filesdir / "b2_101.vasp")));
-        b2_101_stack5_ptr.reset(new Structure(cu::mush::make_stacked_slab(*b2_101_ptr, 5)));
+        b2_101_stack5_ptr.reset(new Structure(cu::mush::make_stacked_slab(*b2_101_ptr, slab_size)));
 
         cu::xtal::print_poscar(*b2_101_ptr, std::cout);
         cu::xtal::print_poscar(*b2_101_stack5_ptr, std::cout);
     }
 
+    int slab_size = 5;
     std::unique_ptr<Structure> b2_101_ptr;
     std::unique_ptr<Structure> b2_101_stack5_ptr;
 };
@@ -135,11 +139,11 @@ TEST_F(SlabTest, Consistent_AB_Vectors)
     EXPECT_EQ(b2_101_ptr->lattice().b(), b2_101_stack5_ptr->lattice().b());
 }
 
-TEST_F(SlabTest, Consistent_C_Vector) { EXPECT_EQ(b2_101_ptr->lattice().c() * 5, b2_101_stack5_ptr->lattice().c()); }
-
 TEST_F(SlabTest, FlooredStructure)
 {
-    auto coord_is_origin = [](const cu::xtal::Site& s) { return s.cart().isZero(); };
+    auto coord_is_origin = [](const cu::xtal::Site& s) {
+        return s.cart().isZero();
+    };
     const auto& b2_101_basis = this->b2_101_ptr->basis_sites();
     int ix = 0;
     for (; ix < b2_101_basis.size(); ++ix)
@@ -161,10 +165,105 @@ TEST_F(SlabTest, FlooredStructure)
     }
 
     Structure floored_structure = cu::mush::make_floored_structure(*(this->b2_101_ptr), floor_ix);
-    cu::xtal::print_poscar(floored_structure,std::cout);
-    const auto& floored_basis=floored_structure.basis_sites();
+    cu::xtal::print_poscar(floored_structure, std::cout);
+    const auto& floored_basis = floored_structure.basis_sites();
     auto origin_site_it = std::find_if(floored_basis.begin(), floored_basis.end(), coord_is_origin);
     EXPECT_TRUE(origin_site_it->label() != original_origin_label);
+}
+
+TEST_F(SlabTest, Consistent_C_Vector) { EXPECT_EQ(b2_101_ptr->lattice().c() * slab_size, b2_101_stack5_ptr->lattice().c()); }
+
+TEST_F(SlabTest, OrthogonalSlab)
+{
+    Eigen::Matrix3i stack_mat;
+    stack_mat << 1, 0, 0, 0, 1, 0, 0, 0, slab_size;
+    auto simple_stack = cu::xtal::make_superstructure(*b2_101_ptr, stack_mat);
+
+    cu::xtal::LatticeIsEquivalent_f equivalent(1e-8);
+    EXPECT_TRUE(equivalent(b2_101_stack5_ptr->lattice(), simple_stack.lattice()));
+    EXPECT_TRUE(cu::almost_equal(b2_101_stack5_ptr->lattice().a(), simple_stack.lattice().a(), 1e-8));
+    EXPECT_TRUE(cu::almost_equal(b2_101_stack5_ptr->lattice().b(), simple_stack.lattice().b(), 1e-8));
+    //Only because c is orthogonal! otherwise it'd probably be false
+    EXPECT_TRUE(cu::almost_equal(b2_101_stack5_ptr->lattice().c(), simple_stack.lattice().c(), 1e-8));
+}
+
+class OrthogonalizeCVector : public testing::Test
+{
+protected:
+    using Lattice = cu::xtal::Lattice;
+    void SetUp() override
+    {
+        Eigen::Matrix3d col_lat_mat;
+        col_lat_mat << 4, 0, 1, 0, 4, 1, 0, 0, 3.2;
+
+        Eigen::AngleAxisd roll(2.5, Eigen::Vector3d::UnitZ());
+        Eigen::AngleAxisd yaw(61.9, Eigen::Vector3d::UnitY());
+        Eigen::AngleAxisd pitch(-8.3, Eigen::Vector3d::UnitX());
+        Eigen::Quaternion<double> q = roll* yaw* pitch;
+        rotation_mat = q.matrix();
+
+        col_lat_mat=rotation_mat*col_lat_mat;
+        quarter_slant_ptr.reset(new Lattice(col_lat_mat.col(0),col_lat_mat.col(1),col_lat_mat.col(2)));
+    }
+
+    void EXPECT_xy_values_for_c_vector(const Eigen::Vector3d& c, double x, double y)
+    {
+        EXPECT_TRUE(cu::almost_equal(c(0), x, 1e-8));
+        EXPECT_TRUE(cu::almost_equal(c(1), y, 1e-8));
+    }
+
+    // c vector  slants to 0.25,0.25 fractional coordinates
+    std::unique_ptr<Lattice> quarter_slant_ptr;
+
+    // rotate an arbitrary direction so that the vectors aren't aligned in
+    // an "easy" direction
+    Eigen::Matrix3d rotation_mat;
+};
+
+TEST_F(OrthogonalizeCVector, BackToOrigin)
+{
+    Eigen::Matrix3i stack_mat;
+    stack_mat << 1, 0, 0, 0, 1, 0, 0, 0, 4;
+
+    auto stack = cu::xtal::make_superlattice(*quarter_slant_ptr, stack_mat);
+    auto ortho = cu::mush::make_aligned_lattice(cu::mush::orthogonalize_c_vector(stack));
+    EXPECT_xy_values_for_c_vector(ortho.c(), 0, 0);
+}
+
+TEST_F(OrthogonalizeCVector, BackwardQuarter)
+{
+    Eigen::Matrix3i stack_mat;
+    stack_mat << 1, 0, 0, 0, 1, 0, 0, 0, 3;
+
+    auto stack = cu::xtal::make_superlattice(*quarter_slant_ptr, stack_mat);
+    auto ortho = cu::mush::make_aligned_lattice(cu::mush::orthogonalize_c_vector(stack));
+    EXPECT_xy_values_for_c_vector(ortho.c(), -1, -1);
+}
+
+TEST_F(OrthogonalizeCVector, ForwardQuarter)
+{
+    Eigen::Matrix3i stack_mat;
+    stack_mat << 1, 0, 0, 0, 1, 0, 0, 0, 9;
+
+    auto stack = cu::xtal::make_superlattice(*quarter_slant_ptr, stack_mat);
+    auto ortho = cu::mush::make_aligned_lattice(cu::mush::orthogonalize_c_vector(stack));
+    EXPECT_xy_values_for_c_vector(ortho.c(), 1, 1);
+}
+
+TEST_F(OrthogonalizeCVector, EquivalentToStack)
+{
+    Eigen::Matrix3i stack_mat;
+    stack_mat << 1, 0, 0, 0, 1, 0, 0, 0, 7;
+
+    auto stack = cu::xtal::make_superlattice(*quarter_slant_ptr, stack_mat);
+    auto ortho = cu::mush::orthogonalize_c_vector(stack);
+
+    cu::xtal::LatticeIsEquivalent_f equivalent(1e-8);
+    EXPECT_TRUE(equivalent(stack,ortho));
+
+    //TODO: make this a binary comparator ffs
+    cu::xtal::LatticeEquals_f equal(stack,1e-8);
+    EXPECT_FALSE(equal(ortho));
 }
 
 int main(int argc, char** argv)

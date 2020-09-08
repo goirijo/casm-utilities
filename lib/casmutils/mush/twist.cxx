@@ -2,6 +2,7 @@
 #include "casmutils/xtal/site.hpp"
 #include "casmutils/xtal/structure_tools.hpp"
 #include <casmutils/mush/twist.hpp>
+#include <casmutils/mush/slab.hpp>
 #include <casmutils/xtal/structure.hpp>
 /* #include "multishift/slab.hpp" */
 #include <casm/crystallography/SuperlatticeEnumerator.hh>
@@ -63,54 +64,6 @@ namespace casmutils
 {
 namespace mush
 {
-/// Returns orhtogonal unit vectors oriented such that the point along the
-/// a vector, the ab plane normal, and whatever is perpendicular to that
-Eigen::Matrix3d slab_unit_vectors(const xtal::Lattice& slab)
-{
-    if (slab.column_vector_matrix().determinant() < 0)
-    {
-        throw std::runtime_error("Encountered a left handed lattice when making slab unit vectors.");
-    }
-
-    Eigen::Matrix3d slab_span;
-    slab_span.col(0) = slab.a().normalized();
-    slab_span.col(2) = slab.a().cross(slab.b()).normalized();
-    slab_span.col(1) = slab_span.col(2).cross(slab_span.col(0)).normalized();
-
-    assert(slab_span.determinant() * slab.column_vector_matrix().determinant() > 0);
-    assert(CASM::almost_equal(std::abs(slab_span.determinant()), 1.0, 1e-10));
-
-    return slab_span;
-}
-
-/// Applies the given transformation the the *column* vector matrix representation
-/// of the lattice
-xtal::Lattice make_transformed_lattice(const xtal::Lattice& lat, const Eigen::Matrix3d& transform)
-{
-    return xtal::Lattice(transform * lat.column_vector_matrix());
-}
-
-Eigen::Matrix3d make_alignment_matrix(const xtal::Lattice& lat)
-{
-    Eigen::Matrix3d lat_span_to_standard = slab_unit_vectors(lat).inverse();
-    return lat_span_to_standard;
-}
-
-xtal::Lattice make_aligned_lattice(const xtal::Lattice& lat)
-{
-    Eigen::Matrix3d lat_span_to_standard = make_alignment_matrix(lat);
-    xtal::Lattice aligned_lat = make_transformed_lattice(lat, lat_span_to_standard);
-
-    assert(CASM::almost_equal(aligned_lat.a()(2), 0.0, 1e-10));
-    assert(CASM::almost_equal(aligned_lat.a()(1), 0.0, 1e-10));
-    assert(CASM::almost_equal(aligned_lat.b()(2), 0.0, 1e-10));
-
-    assert(CASM::almost_equal((aligned_lat.a().cross(aligned_lat.b())).normalized(), Eigen::Vector3d(0, 0, 1), 1e-10));
-    assert(CASM::almost_equal(
-        lat.column_vector_matrix().determinant(), aligned_lat.column_vector_matrix().determinant(), 1e-10));
-    return aligned_lat;
-}
-
 Eigen::Matrix3d make_twist_rotation_matrix(const xtal::Lattice& lat, double degrees)
 {
     double rad = M_PI * degrees / 180.0;

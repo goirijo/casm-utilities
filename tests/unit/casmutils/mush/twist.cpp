@@ -450,7 +450,7 @@ protected:
     }
 
     std::unique_ptr<cu::xtal::Structure> graphene_ptr;
-    // Give coindicent moire superlattices, but may require supercells.
+    // Angles that give coindicent moire superlattices, but may require supercells.
     std::vector<double> magic_angles;
 };
 

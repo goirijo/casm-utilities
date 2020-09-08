@@ -10,6 +10,23 @@ namespace casmutils
 {
 namespace mush
 {
+/// Returns orhtogonal unit vectors oriented such that the point along the
+/// a vector, the ab plane normal, and whatever is perpendicular to that (column vectors).
+Eigen::Matrix3d slab_unit_vectors(const xtal::Lattice& slab);
+
+/// Applies the given transformation the the *column* vector matrix representation
+/// of the lattice
+xtal::Lattice make_transformed_lattice(const xtal::Lattice& lat, const Eigen::Matrix3d& transform);
+
+/// Returns the same lattice, but rotated such that the a vector points along the
+/// Cartesian x direction, and the b vector is parallel to the xy plane.
+xtal::Lattice make_aligned_lattice(const xtal::Lattice& lat);
+
+///Attempts to make the c vector more perpendicular to the ab-plane by applying a
+///"within" operation to bring it's projection into the parallelogram spanned by the
+///a and b vectors.
+xtal::Lattice orthogonalize_c_vector(const xtal::Lattice& lat);
+
 /// Given a slab, where the surface plane has already been exposed to the a-b vectors, create a
 /// superstructure by stacking units along the c direction
 xtal::Structure make_stacked_slab(const xtal::Structure& slab_unit, int stacks);

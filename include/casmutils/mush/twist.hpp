@@ -24,10 +24,6 @@ Eigen::Matrix3d make_twist_rotation_matrix(const xtal::Lattice& lat, double degr
 /// Create a new lattice that has been rotated about the ab normal by the specified angle
 xtal::Lattice make_twisted_lattice(const xtal::Lattice& lat, double degrees);
 
-/// Returns the same lattice, but rotated such that the a vector points along the
-/// Cartesian x direction, and the b vector is parallel to the xy plane.
-xtal::Lattice make_aligned_lattice(const xtal::Lattice& lat);
-
 /// Returns the same lattice, but the c vector has been modified to be orthogonal to the
 /// ab vectors. This will break periodicity, but not the thickness of the slab.
 xtal::Lattice make_prismatic_lattice(const xtal::Lattice& lat);
