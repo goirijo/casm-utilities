@@ -30,6 +30,12 @@ If you plan on cloning the repository, be sure to do it recursively:
 git clone --recurse-submodules
 ```
 
+You should be mindful when switching branches as well, since `casm-utitlities` is currently transitioning towards the latest `CASM` release, and differnt branches are on different submodule commits.
+When checking out a different branch, you can use
+```
+git checkout branch-name --recurse-submodules
+```
+
 If you're trying to install after cloning the git repository, you'll first have to generate the `configure` script using the provided script:
 ```
 ./boostrap.sh
