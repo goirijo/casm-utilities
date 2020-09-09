@@ -2,8 +2,6 @@ from . import _xtal
 from ..sym.cart import CartOp
 from .lattice import *
 from .structure import *
-from .site import *
-from .coordinate import *
 
 
 def make_point_group(lattice, tol):
