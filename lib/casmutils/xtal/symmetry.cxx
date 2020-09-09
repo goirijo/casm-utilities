@@ -39,7 +39,7 @@ Eigen::Vector3d operator*(const sym::CartOp& sym_op, const Eigen::Vector3d& vect
     return sym_op.matrix * vector3d + sym_op.translation;
 }
 
-Site operator*(const sym::CartOp& sym_op, const Site& site) { return Site{sym_op * Coordinate(site), site.label()}; }
+Site operator*(const sym::CartOp& sym_op, const Site& site) { return Site{sym_op * site.cart(), site.label()}; }
 
 Coordinate operator*(const sym::CartOp& sym_op, const Coordinate& coordinate)
 {
