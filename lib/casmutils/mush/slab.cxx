@@ -78,6 +78,11 @@ xtal::Lattice orthogonalize_c_vector(const xtal::Lattice& lat)
     return xtal::Lattice(lat.a(),lat.b(),final_c);
 }
 
+xtal::Structure orthogonalize_c_vector(const xtal::Structure& struc)
+{
+    return struc.set_lattice(orthogonalize_c_vector(struc.lattice()),xtal::CART);
+}
+
 xtal::Structure make_stacked_slab(const xtal::Structure& slab_unit, int stacks)
 {
     // Always stack along c-direction
