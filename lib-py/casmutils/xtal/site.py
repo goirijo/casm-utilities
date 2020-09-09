@@ -175,7 +175,7 @@ class _Site:
 
         Returns
         -------
-        TODO
+        Site
 
         """
         return self._from_pybind(CartOp * self._pybind_value)
