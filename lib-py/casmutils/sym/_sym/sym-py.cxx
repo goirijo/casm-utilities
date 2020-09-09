@@ -1,5 +1,4 @@
 #include <casmutils/sym/cartesian.hpp>
-#include <casmutils/xtal/site.hpp>
 #include <fstream>
 #include <string>
 
