@@ -35,6 +35,10 @@ When checking out a different branch, remember to follow with
 ```
 git submodule update
 ```
+or possibly
+```
+git submodule update --init
+```
 
 If you're trying to install after cloning the git repository, you'll first have to generate the `configure` script using the provided script:
 ```
