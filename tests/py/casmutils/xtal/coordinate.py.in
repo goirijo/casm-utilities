@@ -1,0 +1,87 @@
+#!@PYTHON@
+
+import unittest
+import casmutils as cu
+import numpy as np
+
+
+class CoordinateTest(unittest.TestCase):
+    def setUp(self):
+        """Setting up numpy arrays"""
+        self.lattice_matrix = np.array(
+            [[0, 0.5, 0.5], [0.5, 0, 0.5], [0.5, 0.5, 0]])
+        self.raw_coord0 = np.array([0.1, 0.2, 0.3])
+        self.raw_coord1 = np.array([0.2, 0.4, 0.6])
+
+        """Computing fractional coordinates manually"""
+        self.frac_coords0 = np.dot(np.linalg.inv(
+            self.lattice_matrix), self.raw_coord0)
+        self.frac_coords1 = np.dot(np.linalg.inv(
+            self.lattice_matrix), self.raw_coord1)
+
+        """Constructing Coordinate & MutableCoordinate classes"""
+        self.lat = cu.xtal.Lattice(*self.lattice_matrix)
+        self.coord0 = cu.xtal.Coordinate(self.raw_coord0)
+        self.coord1 = cu.xtal.Coordinate(self.raw_coord1)
+        self.coord0f = cu.xtal.Coordinate.from_fractional(
+            self.frac_coords0, self.lat)
+        self.coord1f = cu.xtal.Coordinate.from_fractional(
+            self.frac_coords1, self.lat)
+        self.coord0m = cu.xtal.MutableCoordinate(self.raw_coord0)
+        self.coord1m = cu.xtal.MutableCoordinate(self.raw_coord1)
+
+        """Setting compare methods for constructed classes"""
+        self.coord0.set_compare_method(cu.xtal.coordinate.Equals, 1e-5)
+        self.coord1.set_compare_method(cu.xtal.coordinate.Equals, 1e-5)
+        self.coord0f.set_compare_method(cu.xtal.coordinate.Equals, 1e-5)
+        self.coord0m.set_compare_method(cu.xtal.coordinate.Equals, 1e-5)
+
+    def test_construct(self):
+        self.assertFalse(self.coord0 == self.coord1)
+        self.assertTrue(self.coord0 != self.coord1)
+        self.assertFalse(self.coord0m == self.coord1m)
+        self.assertTrue(self.coord0m != self.coord1m)
+        self.assertTrue(self.coord0 == self.coord0f)
+        self.assertTrue(self.coord1 == self.coord1f)
+
+    def test_cart_retrieve(self):
+        self.assertTrue(np.array_equal(self.coord0.cart(), self.raw_coord0))
+
+    def test_frac_retrieve(self):
+       self.assertTrue(np.allclose(self.frac_coords0,
+                                   self.coord0f.frac(self.lat)))
+
+    def test_within(self):
+        for i in range(-2, 3):
+            for j in range(-2, 3):
+                for l in range(-2, 3):
+                    lattice_translation = cu.xtal.MutableCoordinate.from_fractional(
+                        np.array([i, j, l]), self.lat)
+                    translated_coordinate = self.coord1m + lattice_translation
+                    translated_coordinate.bring_within(self.lat)
+                    self.assertTrue(self.coord1m == translated_coordinate)
+
+    def test_within_const(self):
+        lat_translation = cu.xtal.Coordinate.from_fractional(
+            np.array([2, 3, 4]), self.lat)
+        translated_coord = self.coord0+lat_translation
+        withined_coord = translated_coord.bring_within(self.lat)
+        self.assertFalse(self.coord0 == translated_coord)
+        self.assertTrue(self.coord0 == withined_coord)
+
+    def test_plus_operator(self):
+        coord_sum = self.coord0 + self.coord1
+        coord_sum.set_compare_method(cu.xtal.coordinate.Equals, 1e-5)
+        summed_coord = cu.xtal.Coordinate(
+            self.coord0.cart()+self.coord1.cart())
+        self.assertTrue(coord_sum == summed_coord)
+
+    def test_pe_operator(self):
+        sum_cart = np.array([0.3, 0.6, 0.9])
+        sum_coord = cu.xtal.MutableCoordinate(sum_cart)
+        self.coord0m += self.coord1m
+        self.assertTrue(sum_coord == self.coord0m)
+
+
+if __name__ == '__main__':
+    unittest.main()

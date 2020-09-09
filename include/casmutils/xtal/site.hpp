@@ -3,6 +3,7 @@
 
 #include <casm/crystallography/Site.hh>
 #include <casmutils/definitions.hpp>
+#include <casmutils/sym/cartesian.hpp>
 
 namespace casmutils
 {

@@ -1,9 +1,4 @@
 TESTS += \
-		 tests/py/stage.py\
-		 tests/py/coordinate.py\
-		 tests/py/structure.py\
-		 tests/py/structure_tools.py\
-		 tests/py/site.py\
-		 tests/py/lattice.py
+		 tests/py/stage.py
 
 include tests/py/casmutils/Makemodule.am

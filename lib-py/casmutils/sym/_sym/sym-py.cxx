@@ -3,6 +3,7 @@
 #include <string>
 
 #include <pybind11/eigen.h>
+#include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
@@ -34,7 +35,7 @@ PYBIND11_MODULE(_sym, m)
             .def_readwrite("matrix", &sym::CartOp::matrix)
             .def_readwrite("translation", &sym::CartOp::translation)
             .def_readwrite("is_time_reversal_active", &sym::CartOp::is_time_reversal_active)
-            .def("__mul__", (sym::CartOp(*)(const sym::CartOp&, const sym::CartOp&))sym::operator*);
+            .def(pybind11::self * pybind11::self);
     }
 }
 } // namespace wrappy

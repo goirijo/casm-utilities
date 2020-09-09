@@ -126,6 +126,7 @@ TEST_F(CoordinateTest, CoordinateEquals)
     CoordinateEquals_f coord0_equals(*coord0_ptr, tol);
     EXPECT_TRUE(coord0_equals(*coord1_ptr));
 }
+
 //
 int main(int argc, char** argv)
 {

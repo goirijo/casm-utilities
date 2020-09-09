@@ -1,6 +1,7 @@
 from . import _xtal
 from . import globaldef
 
+
 class Equals:
 
     """A Coordinate compare method which returns true if
@@ -18,7 +19,8 @@ class Equals:
         tol : double
 
         """
-        self._CoordinateEquals_f = _xtal.CoordinateEquals_f(ref_coordinate._pybind_value, tol)
+        self._CoordinateEquals_f = _xtal.CoordinateEquals_f(
+            ref_coordinate._pybind_value, tol)
 
     def __call__(self, other):
         """
@@ -32,6 +34,7 @@ class Equals:
 
         """
         return self._CoordinateEquals_f(other._pybind_value)
+
 
 class _Coordinate:
 
@@ -109,7 +112,7 @@ class _Coordinate:
         cls
 
         """
-        py_binded = _xtal.Coordinate.from_fractional(coords,lat)
+        py_binded = _xtal.Coordinate.from_fractional(coords, lat)
         return cls._from_pybind(py_binded)
 
     def set_compare_method(self, method, *args):
@@ -123,7 +126,7 @@ class _Coordinate:
         *args : Arguments needed to construct method
 
         """
-        self._equals=method(self, *args)
+        self._equals = method(self, *args)
 
     def __eq__(self, other):
         """Passes the "other" value to the current comparator
@@ -138,7 +141,7 @@ class _Coordinate:
         bool
 
         """
-        if hasattr(self,'_equals') is False:
+        if hasattr(self, '_equals') is False:
             self.set_compare_method(Equals, globaldef.tol)
 
         return self._equals(other)
@@ -157,7 +160,7 @@ class _Coordinate:
         bool
 
         """
-        return not self==other
+        return not self == other
 
     def __add__(self, other):
         """Adds the "other" value to the Coordinate instance
@@ -184,6 +187,22 @@ class _Coordinate:
 
         """
         return self._pybind_value.__str__()
+
+    def __rmul__(self, CartOp):
+        """Applies the provided symmetry operation to the 
+        Coordinate and returns the transformed coordinate
+
+        Parameters
+        ----------
+        CartOp : cu.sym.CartOp
+
+        Returns
+        -------
+        Coordinate
+
+        """
+        return self._from_pybind(CartOp * self._pybind_value)
+
 
 class Coordinate(_Coordinate):
 
@@ -216,6 +235,7 @@ class Coordinate(_Coordinate):
         """
         py_binded = self._pybind_value._bring_within_const(lat)
         return self._from_pybind(py_binded)
+
 
 class MutableCoordinate(_Coordinate):
 

@@ -5,6 +5,7 @@
 #include "./structure-py.hpp"
 #include "casmutils/xtal/lattice.hpp"
 
+#include <casmutils/sym/cartesian.hpp>
 #include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/xtal/rocksalttoggler.hpp>
 #include <casmutils/xtal/structure.hpp>
@@ -80,7 +81,10 @@ PYBIND11_MODULE(_xtal, m)
                  pybind11::overload_cast<const xtal::Lattice&>(&xtal::Coordinate::bring_within, pybind11::const_))
             .def("_bring_within", pybind11::overload_cast<const xtal::Lattice&>(&xtal::Coordinate::bring_within))
             .def("_cart_const", &xtal::Coordinate::cart)
-            .def("_frac_const", &xtal::Coordinate::frac);
+            .def("_frac_const", &xtal::Coordinate::frac)
+            .def("__rmul__", [](const xtal::Coordinate& coord, const sym::CartOp& symop) {
+                return symop * coord;
+            });
     }
 
     {
@@ -97,7 +101,10 @@ PYBIND11_MODULE(_xtal, m)
             .def("__str__", __str__)
             .def("_cart_const", &xtal::Site::cart)
             .def("_frac_const", &xtal::Site::frac)
-            .def("_label_const", &xtal::Site::label);
+            .def("_label_const", &xtal::Site::label)
+            .def("__rmul__", [](const xtal::Site& site, const sym::CartOp& symop) {
+                return symop * site;
+            });
     }
 
     {

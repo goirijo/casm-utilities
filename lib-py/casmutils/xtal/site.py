@@ -1,6 +1,7 @@
 from . import _xtal
 from . import globaldef
 
+
 class Equals:
 
     """Definition of a site compare method which returns true if
@@ -32,12 +33,13 @@ class Equals:
         """
         return self._SiteEquals_f(other._pybind_value)
 
+
 class _Site:
 
     """Base class for both mutable and immutable Site classes.
     Defines the functions that should be common to both"""
 
-    def __init__(self,coord,label):
+    def __init__(self, coord, label):
         """
         Parameters
         ----------
@@ -52,7 +54,7 @@ class _Site:
             self._pybind_value = _xtal.Site(coord._pybind_value, label)
 
         else:
-            self._pybind_value = _xtal.Site(coord,label)
+            self._pybind_value = _xtal.Site(coord, label)
 
     @classmethod
     def _from_pybind(cls, py_bind_value):
@@ -150,7 +152,7 @@ class _Site:
         bool
 
         """
-        return not self==other
+        return not self == other
 
     def __str__(self):
         """Returns the coordinate values along with the
@@ -162,6 +164,22 @@ class _Site:
 
         """
         return self._pybind_value.__str__()
+
+    def __rmul__(self, CartOp):
+        """Applies the provided symmetry operation
+        to the site and returns the transformed site
+
+        Parameters
+        ----------
+        CartOp : cu.sym.CartOp
+
+        Returns
+        -------
+        Site
+
+        """
+        return self._from_pybind(CartOp * self._pybind_value)
+
 
 class Site(_Site):
 
@@ -178,6 +196,7 @@ class Site(_Site):
         """
         super().__init__(coord, label)
 
+
 class MutableSite(_Site):
 
     """Mutable Site Class. Defined as cartesian coordinates along
@@ -192,4 +211,3 @@ class MutableSite(_Site):
 
         """
         super().__init__(coord, label)
-
