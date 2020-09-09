@@ -190,7 +190,7 @@ class _Coordinate:
 
     def __rmul__(self, CartOp):
         """Applies the provided symmetry operation to the 
-        Coordinate and returns the transforme coordinate
+        Coordinate and returns the transformed coordinate
 
         Parameters
         ----------

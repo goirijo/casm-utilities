@@ -7,51 +7,86 @@ import os
 
 input_file_dir = "@abs_top_srcdir@/tests/input_files"
 
+
 class SymmetryGroupsTest(unittest.TestCase):
 
     def setUp(self):
-        prim_fcc_ni_path=os.path.join(input_file_dir,"primitive_fcc_Ni.vasp")
-        self.prim_fcc_ni=cu.xtal.Structure.from_poscar(prim_fcc_ni_path)
-        self.cubic_lat=cu.xtal.Lattice([3,0,0],[0,3,0],[0,0,3])
-        self.tet_lat=cu.xtal.Lattice([3,0,0],[0,3,0],[0,0,4])
-        self.tol=1e-10;
-        hcp_mg_path=os.path.join(input_file_dir,"Mg_hcp.vasp")
-        self.hcp_mg=cu.xtal.Structure.from_poscar(hcp_mg_path)
-        almost_hcp_mg_path=os.path.join(input_file_dir,"distorted_Mg_hcp.vasp")
-        self.almost_hcp_mg=cu.xtal.Structure.from_poscar(almost_hcp_mg_path)
+        prim_fcc_ni_path = os.path.join(
+            input_file_dir, "primitive_fcc_Ni.vasp")
+        self.prim_fcc_ni = cu.xtal.Structure.from_poscar(prim_fcc_ni_path)
+        self.cubic_lat = cu.xtal.Lattice([3, 0, 0], [0, 3, 0], [0, 0, 3])
+        self.tet_lat = cu.xtal.Lattice([3, 0, 0], [0, 3, 0], [0, 0, 4])
+        self.tol = 1e-10
+        hcp_mg_path = os.path.join(input_file_dir, "Mg_hcp.vasp")
+        self.hcp_mg = cu.xtal.Structure.from_poscar(hcp_mg_path)
+        almost_hcp_mg_path = os.path.join(
+            input_file_dir, "distorted_Mg_hcp.vasp")
+        self.almost_hcp_mg = cu.xtal.Structure.from_poscar(almost_hcp_mg_path)
 
     def test_make_point_group(self):
-        pg=cu.xtal.symmetry.make_point_group(self.prim_fcc_ni.lattice(),self.tol)
-        self.assertEqual(len(pg),48);
+        pg = cu.xtal.symmetry.make_point_group(
+            self.prim_fcc_ni.lattice(), self.tol)
+        self.assertEqual(len(pg), 48)
 
     def test_make_factor_group(self):
-        fg=cu.xtal.symmetry.make_factor_group(self.prim_fcc_ni,self.tol)
-        self.assertEqual(len(fg),48);
+        fg = cu.xtal.symmetry.make_factor_group(self.prim_fcc_ni, self.tol)
+        self.assertEqual(len(fg), 48)
+
 
 class SymmetrizeTest(unittest.TestCase):
 
     def setUp(self):
-        self.cubic_lat=cu.xtal.Lattice([3,0,0],[0,3,0],[0,0,3])
-        self.tet_lat=cu.xtal.Lattice([3,0,0],[0,3,0],[0,0,4])
+        self.cubic_lat = cu.xtal.Lattice([3, 0, 0], [0, 3, 0], [0, 0, 3])
+        self.tet_lat = cu.xtal.Lattice([3, 0, 0], [0, 3, 0], [0, 0, 4])
         self.tol = 1e-5
-        hcp_mg_path=os.path.join(input_file_dir,"Mg_hcp.vasp")
-        self.hcp_mg=cu.xtal.Structure.from_poscar(hcp_mg_path)
-        almost_hcp_mg_path=os.path.join(input_file_dir,"distorted_Mg_hcp.vasp")
-        self.almost_hcp_mg=cu.xtal.Structure.from_poscar(almost_hcp_mg_path)
+        hcp_mg_path = os.path.join(input_file_dir, "Mg_hcp.vasp")
+        self.hcp_mg = cu.xtal.Structure.from_poscar(hcp_mg_path)
+        almost_hcp_mg_path = os.path.join(
+            input_file_dir, "distorted_Mg_hcp.vasp")
+        self.almost_hcp_mg = cu.xtal.Structure.from_poscar(almost_hcp_mg_path)
 
     def test_lattice_symmetrize(self):
-        self.assertEqual(len(cu.xtal.symmetry.make_point_group(self.tet_lat,self.tol)),16)
-        sym_cube_lat=cu.xtal.symmetry.symmetrize(self.tet_lat, cu.xtal.symmetry.make_point_group(self.cubic_lat,self.tol)) 
-        self.assertEqual(len(cu.xtal.symmetry.make_point_group(sym_cube_lat,self.tol)),48)
+        self.assertEqual(
+            len(cu.xtal.symmetry.make_point_group(self.tet_lat, self.tol)), 16)
+        sym_cube_lat = cu.xtal.symmetry.symmetrize(
+            self.tet_lat, cu.xtal.symmetry.make_point_group(self.cubic_lat, self.tol))
+        self.assertEqual(
+            len(cu.xtal.symmetry.make_point_group(sym_cube_lat, self.tol)), 48)
 
     def test_structure_symmetrize(self):
-        hcp_fg = cu.xtal.symmetry.make_factor_group(self.hcp_mg,self.tol)
-        symmetrized_struc = cu.xtal.symmetry.symmetrize(self.almost_hcp_mg,hcp_fg)
-        symm_fg = cu.xtal.symmetry.make_factor_group(symmetrized_struc,self.tol)
-        self.assertFalse(len(cu.xtal.symmetry.make_factor_group(self.almost_hcp_mg,self.tol))==24)
-        self.assertEqual(len(hcp_fg),24)
-        self.assertEqual(len(symm_fg),24)
+        hcp_fg = cu.xtal.symmetry.make_factor_group(self.hcp_mg, self.tol)
+        symmetrized_struc = cu.xtal.symmetry.symmetrize(
+            self.almost_hcp_mg, hcp_fg)
+        symm_fg = cu.xtal.symmetry.make_factor_group(
+            symmetrized_struc, self.tol)
+        self.assertFalse(len(cu.xtal.symmetry.make_factor_group(
+            self.almost_hcp_mg, self.tol)) == 24)
+        self.assertEqual(len(hcp_fg), 24)
+        self.assertEqual(len(symm_fg), 24)
 
+
+class SymmetryTests(unittest.TestCase):
+    def setUp(self):
+        self.coord0 = cu.xtal.Coordinate(np.array([0.3, 0.4, 0.5]))
+        self.rotation90 = np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]])
+        self.translation = np.array([0.5, 0.5, 0.5])
+        self.symop = cu.sym.CartOp(self.rotation90, self.translation, False)
+
+    def test_apply_symop_coord(self):
+        new_coord = self.symop * self.coord0
+        transformed_coordinates = np.add(
+            np.matmul(self.rotation90, self.coord0.cart()), self.translation)
+        self.assertTrue(np.array_equal(new_coord.cart(),
+                                       transformed_coordinates))
+
+    def test_apply_symop(self):
+        site0 = cu.xtal.Site(self.coord0, "Li")
+        transformed_site = self.symop * site0
+        transformed_coordinates = np.add(
+            np.matmul(self.rotation90, site0.cart()), self.translation)
+        self.assertTrue(np.array_equal(transformed_site.cart(),
+                                       transformed_coordinates))
+        self.assertEqual(transformed_site.label(), site0.label())
 
 
 if __name__ == '__main__':

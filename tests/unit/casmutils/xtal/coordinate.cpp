@@ -1,5 +1,4 @@
 #include <casmutils/misc.hpp>
-#include <casmutils/sym/cartesian.hpp>
 #include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/xtal/lattice.hpp>
 #include <gtest/gtest.h>
@@ -128,18 +127,6 @@ TEST_F(CoordinateTest, CoordinateEquals)
     EXPECT_TRUE(coord0_equals(*coord1_ptr));
 }
 
-TEST_F(CoordinateTest, ApplySymOp)
-{
-    Eigen::Matrix3d rotation_90;
-    rotation_90 << 0, 1, 0, -1, 0, 0, 0, 0, 1;
-    Eigen::Vector3d translation;
-    translation << 0.5, 0.5, 0.5;
-    casmutils::sym::CartOp symop(rotation_90, translation, false);
-
-    auto coordinate = *coord0_ptr;
-    auto transformed_coordinate = symop * coordinate;
-    EXPECT_TRUE(transformed_coordinate.cart().isApprox(rotation_90 * coord0_ptr->cart() + translation));
-}
 //
 int main(int argc, char** argv)
 {

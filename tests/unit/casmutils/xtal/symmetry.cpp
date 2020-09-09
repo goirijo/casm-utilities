@@ -1,5 +1,6 @@
 #include "../../../autotools.hh"
 #include "casmutils/sym/cartesian.hpp"
+#include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/xtal/structure.hpp>
 #include <casmutils/xtal/symmetry.hpp>
 #include <gtest/gtest.h>
@@ -29,6 +30,8 @@ class SymmetrizeTest : public testing::Test
 protected:
     using Lattice = cu::xtal::Lattice;
     using Structure = cu::xtal::Structure;
+    using CartOp = cu::sym::CartOp;
+    using Coordinate = cu::xtal::Coordinate;
 
     void SetUp() override
     {
@@ -43,12 +46,21 @@ protected:
 
         cu::fs::path almost_hcp_path(cu::autotools::input_filesdir / "distorted_Mg_hcp.vasp");
         almost_hcp_Mg_ptr = std::make_unique<Structure>(Structure::from_poscar(almost_hcp_path));
+
+        rotation_90 << 0, 1, 0, -1, 0, 0, 0, 0, 1;
+        translation << 0.5, 0.5, 0.5;
+        cart_op_ptr.reset(new CartOp{rotation_90, translation, false});
+        coord_ptr.reset(new Coordinate{1.2, 1.3, 1.4});
     }
 
     std::unique_ptr<Lattice> cubic_lat_ptr;
     std::unique_ptr<Lattice> tetragonal_lat_ptr;
     std::unique_ptr<Structure> hcp_Mg_ptr;
     std::unique_ptr<Structure> almost_hcp_Mg_ptr;
+    std::unique_ptr<CartOp> cart_op_ptr;
+    std::unique_ptr<Coordinate> coord_ptr;
+    Eigen::Matrix3d rotation_90;
+    Eigen::Vector3d translation;
     double tol = 1e-5;
 };
 
@@ -80,6 +92,22 @@ TEST_F(SymmetrizeTest, StructureSymmetrize)
     std::vector<cu::sym::CartOp> sym_distorted_factor_group = cu::xtal::make_factor_group(symmetrized_structure, tol);
     EXPECT_EQ(sym_distorted_factor_group.size(), hcp_factor_group.size());
 }
+
+TEST_F(SymmetrizeTest, ApplySymOpSite)
+{
+    cu::xtal::Site lithium_site(*coord_ptr, "Li");
+    auto transformed_site = *cart_op_ptr * lithium_site;
+    EXPECT_TRUE(transformed_site.cart().isApprox(rotation_90 * lithium_site.cart() + translation));
+    EXPECT_EQ(transformed_site.label(), lithium_site.label());
+}
+
+TEST_F(SymmetrizeTest, ApplySymOpCoordinate)
+{
+    auto coord = *coord_ptr;
+    auto transformed_coord = *cart_op_ptr * coord;
+    EXPECT_TRUE(transformed_coord.cart().isApprox(rotation_90 * coord_ptr->cart() + translation));
+}
+
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);

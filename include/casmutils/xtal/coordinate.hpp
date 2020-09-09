@@ -61,9 +61,6 @@ private:
     CASM::xtal::Coordinate casm_coord;
 };
 
-// Apply SymOp to Coordinate
-Coordinate operator*(const sym::CartOp& symop, const Coordinate& coordinate);
-
 // TODO: make this binary, not unary (same with all other comparators)
 struct CoordinateEquals_f
 {

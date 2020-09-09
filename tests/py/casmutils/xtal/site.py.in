@@ -103,17 +103,6 @@ class SiteTest(unittest.TestCase):
         self.site2m.set_compare_method(SiteCoordinateEquals, self.tol)
         self.assertTrue(self.site2m == self.site0m)
 
-    def test_apply_symop(self):
-        rotation90 = np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]])
-        translation = np.array([0.5, 0.5, 0.5])
-        symop = cu.sym.CartOp(rotation90, translation, False)
-        transformed_site = symop * self.site0
-        transformed_coordinates = np.add(
-            np.matmul(rotation90, self.site0.cart()), translation)
-        self.assertTrue(np.array_equal(transformed_site.cart(),
-                                       transformed_coordinates))
-        self.assertEqual(transformed_site.label(), self.site0.label())
-
 
 if __name__ == '__main__':
     unittest.main()

@@ -44,9 +44,6 @@ private:
     CASM::xtal::Site casm_site;
 };
 
-// Applying SymOp onto site by doing an * operator overload
-Site operator*(const sym::CartOp& sym_op, const Site& site);
-
 /// This functor class provides a unary equals operator
 /// for casmutils::xtal::Site
 class SiteEquals_f

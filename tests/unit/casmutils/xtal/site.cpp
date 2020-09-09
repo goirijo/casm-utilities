@@ -4,7 +4,6 @@
 #include <gtest/gtest.h>
 #include <memory>
 // tests the functions in this file
-#include <casmutils/sym/cartesian.hpp>
 #include <casmutils/xtal/site.hpp>
 
 class SiteTest : public testing::Test
@@ -66,20 +65,6 @@ TEST_F(SiteTest, SiteEquals)
     EXPECT_TRUE(is_equal_to_lithium_site(*lithium_site_ptr));
     EXPECT_FALSE(is_equal_to_lithium_site(*nickel_site_ptr));
 };
-
-TEST_F(SiteTest, ApplySymOp)
-{
-    Eigen::Matrix3d rotation_90;
-    rotation_90 << 0, 1, 0, -1, 0, 0, 0, 0, 1;
-    Eigen::Vector3d translation;
-    translation << 0.5, 0.5, 0.5;
-
-    casmutils::sym::CartOp symop(rotation_90, translation, false);
-    auto lithium_site = *lithium_site_ptr;
-    auto transformed_site = symop * lithium_site;
-    EXPECT_TRUE(transformed_site.cart().isApprox(rotation_90 * lithium_site_ptr->cart() + translation));
-    EXPECT_EQ(transformed_site.label(), lithium_site_ptr->label());
-}
 
 int main(int argc, char** argv)
 {

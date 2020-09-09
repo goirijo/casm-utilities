@@ -1,7 +1,9 @@
 #include "casmutils/xtal/structure.hpp"
 #include <casm/crystallography/BasicStructureTools.hh>
 #include <casm/crystallography/SymTools.hh>
+#include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/xtal/lattice.hpp>
+#include <casmutils/xtal/site.hpp>
 #include <casmutils/xtal/symmetry.hpp>
 
 namespace casmutils
@@ -31,5 +33,13 @@ Structure symmetrize(const Structure& noisy_structure, const std::vector<sym::Ca
     return CASM::xtal::symmetrize(structure_with_correct_lattice.__get<CASM::xtal::BasicStructure>(),
                                   enforced_factor_group);
 }
+
+Site operator*(const sym::CartOp& sym_op, const Site& site) { return Site{sym_op * (Coordinate)site, site.label()}; }
+
+Coordinate operator*(const sym::CartOp& symop, const Coordinate& coordinate)
+{
+    return Coordinate{symop.matrix * coordinate.cart() + symop.translation};
+}
+
 } // namespace xtal
 } // namespace casmutils
