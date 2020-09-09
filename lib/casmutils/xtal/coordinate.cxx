@@ -67,6 +67,11 @@ Coordinate Coordinate::operator+(const Coordinate& coord_to_add) const
     return summed_coord;
 }
 
+Coordinate operator*(const sym::CartOp& symop, const Coordinate& coordinate)
+{
+    return Coordinate{symop.matrix * coordinate.cart() + symop.translation};
+}
+
 CoordinateEquals_f::CoordinateEquals_f(const Coordinate& ref_coordinate, double tol)
     : ref_coordinate(ref_coordinate), tol(tol)
 {

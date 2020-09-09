@@ -3,6 +3,7 @@
 
 #include <casm/crystallography/Coordinate.hh>
 #include <casmutils/definitions.hpp>
+#include <casmutils/sym/cartesian.hpp>
 
 namespace casmutils
 {
@@ -59,6 +60,9 @@ private:
     /// Use the CASM implementation to forward any functionality you want
     CASM::xtal::Coordinate casm_coord;
 };
+
+// Apply SymOp to Coordinate
+Coordinate operator*(const sym::CartOp& symop, const Coordinate& coordinate);
 
 // TODO: make this binary, not unary (same with all other comparators)
 struct CoordinateEquals_f

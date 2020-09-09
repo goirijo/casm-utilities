@@ -38,6 +38,8 @@ Eigen::Vector3d Site::frac(const Lattice& ref_lattice) const
     return ref_lattice.column_vector_matrix().inverse() * this->cart();
 }
 
+Site operator*(const sym::CartOp& sym_op, const Site& site) { return Site{sym_op * Coordinate(site), site.label()}; }
+
 SiteEquals_f::SiteEquals_f(const Site& ref_site, double tol) : ref_site(ref_site), tol(tol) {}
 bool SiteEquals_f::operator()(const Site& other)
 {
