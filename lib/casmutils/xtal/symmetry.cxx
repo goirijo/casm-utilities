@@ -34,11 +34,16 @@ Structure symmetrize(const Structure& noisy_structure, const std::vector<sym::Ca
                                   enforced_factor_group);
 }
 
+Eigen::Vector3d operator*(const sym::CartOp& sym_op, const Eigen::Vector3d& vector3d)
+{
+    return sym_op.matrix * vector3d + sym_op.translation;
+}
+
 Site operator*(const sym::CartOp& sym_op, const Site& site) { return Site{sym_op * (Coordinate)site, site.label()}; }
 
-Coordinate operator*(const sym::CartOp& symop, const Coordinate& coordinate)
+Coordinate operator*(const sym::CartOp& sym_op, const Coordinate& coordinate)
 {
-    return Coordinate{symop.matrix * coordinate.cart() + symop.translation};
+    return Coordinate{sym_op * coordinate.cart()};
 }
 
 } // namespace xtal

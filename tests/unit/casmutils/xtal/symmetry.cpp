@@ -32,7 +32,6 @@ protected:
     using Structure = cu::xtal::Structure;
     using CartOp = cu::sym::CartOp;
     using Coordinate = cu::xtal::Coordinate;
-
     void SetUp() override
     {
         Eigen::Matrix3d cubic_lat_matrix = 3 * Eigen::Matrix3d::Identity();
@@ -49,8 +48,9 @@ protected:
 
         rotation_90 << 0, 1, 0, -1, 0, 0, 0, 0, 1;
         translation << 0.5, 0.5, 0.5;
+        eigen_vector_coordinate << 1.2, 1.3, 1.4;
         cart_op_ptr.reset(new CartOp{rotation_90, translation, false});
-        coord_ptr.reset(new Coordinate{1.2, 1.3, 1.4});
+        coord_ptr.reset(new Coordinate{eigen_vector_coordinate});
     }
 
     std::unique_ptr<Lattice> cubic_lat_ptr;
@@ -61,6 +61,7 @@ protected:
     std::unique_ptr<Coordinate> coord_ptr;
     Eigen::Matrix3d rotation_90;
     Eigen::Vector3d translation;
+    Eigen::Vector3d eigen_vector_coordinate;
     double tol = 1e-5;
 };
 
@@ -91,6 +92,14 @@ TEST_F(SymmetrizeTest, StructureSymmetrize)
     cu::xtal::Structure symmetrized_structure = cu::xtal::symmetrize(*almost_hcp_Mg_ptr, hcp_factor_group);
     std::vector<cu::sym::CartOp> sym_distorted_factor_group = cu::xtal::make_factor_group(symmetrized_structure, tol);
     EXPECT_EQ(sym_distorted_factor_group.size(), hcp_factor_group.size());
+}
+
+TEST_F(SymmetrizeTest, ApplySymOpEigenVector)
+{
+    using namespace cu::xtal;
+    auto cart_op = *cart_op_ptr;
+    Eigen::Vector3d transformed_eigen_vector = cart_op * eigen_vector_coordinate;
+    EXPECT_TRUE(transformed_eigen_vector.isApprox(rotation_90 * eigen_vector_coordinate + translation));
 }
 
 TEST_F(SymmetrizeTest, ApplySymOpSite)
