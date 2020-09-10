@@ -79,9 +79,6 @@ TEST_F(CrystalGroupTest, FactorGroupSize)
 
 TEST_F(SymmetrizeTest, LatticeSymmetrize)
 {
-    EXPECT_TRUE(false);
-    return;
-
     std::vector<cu::sym::CartOp> cubic_point_group = cu::xtal::make_point_group(*cubic_lat_ptr, tol);
     cu::xtal::Lattice symmetrized_tetragonal_lattice = cu::xtal::symmetrize(*tetragonal_lat_ptr, cubic_point_group);
     std::vector<cu::sym::CartOp> symmetrized_tetragonal_point_group =
@@ -90,9 +87,6 @@ TEST_F(SymmetrizeTest, LatticeSymmetrize)
 }
 TEST_F(SymmetrizeTest, StructureSymmetrize)
 {
-    EXPECT_TRUE(false);
-    return;
-
     std::vector<cu::sym::CartOp> hcp_factor_group = cu::xtal::make_factor_group(*hcp_Mg_ptr, tol);
     EXPECT_NE(cu::xtal::make_factor_group(*almost_hcp_Mg_ptr, tol).size(), hcp_factor_group.size());
     cu::xtal::Structure symmetrized_structure = cu::xtal::symmetrize(*almost_hcp_Mg_ptr, hcp_factor_group);

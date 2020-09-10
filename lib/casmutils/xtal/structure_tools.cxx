@@ -168,7 +168,7 @@ Structure slice_along_plane(const Structure& unit_structure, const Eigen::Vector
     // TODO: Refactor out, so that it's available in casmutils
     CASM::xtal::Superlattice slice_superlattice(unit_lattice.__get(), sliced_lattice.__get());
     // TODO: Fix this annoying casting issue with Eigen
-    Eigen::Matrix3i slice_transf_mat = slice_superlattice.transformation_matrix().cast<int>();
+    Eigen::Matrix3i slice_transf_mat = slice_superlattice.transformation_matrix_to_super().cast<int>();
 
     Structure sliced_structure = make_superstructure(unit_structure, slice_transf_mat);
     sliced_structure.within();
