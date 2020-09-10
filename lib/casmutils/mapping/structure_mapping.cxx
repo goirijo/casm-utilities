@@ -9,6 +9,37 @@ namespace casmutils
 {
 namespace mapping
 {
+
+namespace
+{
+double atomic_cost_child(const MappingReport& mapped_result, int Nsites)
+{
+    Nsites = std::max(Nsites, int(1));
+    double atomic_vol = mapped_result.reference_lattice.volume() / double(Nsites) / mapped_result.stretch.determinant();
+    return pow(3. * abs(atomic_vol) / (4. * M_PI), -2. / 3.) *
+           (mapped_result.stretch.inverse() * mapped_result.displacement).squaredNorm() / double(Nsites);
+}
+//*******************************************************************************************
+
+double atomic_cost_parent(const MappingReport& mapped_result, int Nsites)
+{
+    Nsites = std::max(Nsites, int(1));
+    // mean square displacement distance in deformed coordinate system
+    double atomic_vol = mapped_result.reference_lattice.volume() / double(Nsites);
+    return pow(3. * abs(atomic_vol) / (4. * M_PI), -2. / 3.) * (mapped_result.displacement).squaredNorm() /
+           double(Nsites);
+}
+
+//*******************************************************************************************
+
+double atomic_cost(const MappingReport& mapped_result, int Nsites)
+{
+    // mean square displacement distance in deformed coordinate system
+    return (atomic_cost_child(mapped_result, Nsites) + atomic_cost_parent(mapped_result, Nsites)) / 2.;
+}
+
+} // namespace
+
 std::vector<sym::CartOp> StructureMapper_f::make_default_factor_group() const
 {
     if (this->settings.use_crystal_symmetry)
@@ -106,12 +137,8 @@ std::vector<mapping::MappingReport> map_structure(const xtal::Structure& map_ref
 
 std::pair<double, double> structure_score(const mapping::MappingReport& mapping_data)
 {
-    double lattice_score = CASM::xtal::StrainCostCalculator::iso_strain_cost(
-        mapping_data.stretch,
-        mapping_data.mapped_lattice.column_vector_matrix().determinant() /
-            std::max(int(mapping_data.permutation.size()), 1));
-    double basis_score = (mapping_data.stretch.inverse() * mapping_data.displacement).squaredNorm() /
-                         double(std::max(int(mapping_data.permutation.size()), 1));
+    double lattice_score = CASM::xtal::StrainCostCalculator::isotropic_strain_cost(mapping_data.stretch);
+    double basis_score = atomic_cost(mapping_data, std::max(int(mapping_data.permutation.size()), 1));
     return std::make_pair(lattice_score, basis_score);
 }
 

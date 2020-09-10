@@ -5,7 +5,4 @@ _casmutils_stage_SOURCES=\
 
 
 _casmutils_stage_LDADD=\
-						libcasmutils.la\
-						$(BOOST_SYSTEM_LIB)\
-						$(BOOST_FILESYSTEM_LIB)\
-						$(BOOST_PROGRAM_OPTIONS_LIB)
+						libcasmutils.la

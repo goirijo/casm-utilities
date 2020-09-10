@@ -1,0 +1,108 @@
+#!@PYTHON@
+
+import unittest
+import casmutils as cu
+import numpy as np
+
+
+class SiteCoordinateEquals:
+    """A custom Site compare method
+        which compares only the
+        coordinates and returns true
+        if they are the same."""
+
+    def __init__(self, ref_site, tol):
+        """Constructs the functor with
+        Site
+
+        Parameters
+        ----------
+        ref_site : Site or MutableSite
+        tol : double
+
+        """
+        self._ref_site = ref_site
+        self._tol = tol
+
+    def __call__(self, other):
+        """Overloading the () operator
+
+        Parameters
+        ----------
+        other : Site
+
+        Returns
+        -------
+        bool
+
+        """
+        return np.allclose(self._ref_site.cart(), other.cart(), self._tol, self._tol)
+
+
+class SiteTest(unittest.TestCase):
+    def setUp(self):
+        """Setting up numpy arrays and labels for atoms"""
+        self.lattice_matrix = np.array(
+            [[0, 0.5, 0.5], [0.5, 0, 0.5], [0.5, 0.5, 0]])
+        self.raw_coord0 = np.array([0.1, 0.2, 0.3])
+        self.raw_coord1 = np.array([0.2, 0.4, 0.6])
+        self.atom0 = "O"
+        self.atom1 = "P"
+        self.tol = cu.xtal.globaldef.tol
+
+        """Computing fractional coordinates manually"""
+        self.frac_coords0 = np.dot(np.linalg.inv(
+            self.lattice_matrix), self.raw_coord0)
+
+        """Constructing required classes"""
+        self.lat = cu.xtal.Lattice(*self.lattice_matrix)
+        self.coord0 = cu.xtal.Coordinate(self.raw_coord0)
+        self.coord1 = cu.xtal.Coordinate(self.raw_coord1)
+
+        self.site0 = cu.xtal.Site(self.raw_coord0, self.atom0)
+        self.site0m = cu.xtal.MutableSite(self.raw_coord0, self.atom0)
+        self.site1 = cu.xtal.Site(self.raw_coord1, self.atom1)
+        self.site1m = cu.xtal.MutableSite(self.raw_coord1, self.atom1)
+        self.site2 = cu.xtal.Site(self.raw_coord0, self.atom1)
+        self.site2m = cu.xtal.MutableSite(self.raw_coord0, self.atom1)
+        self.site3 = cu.xtal.Site(self.coord0, self.atom0)
+        self.site4 = cu.xtal.Site(self.coord1, self.atom1)
+
+    def test_construct(self):
+        self.assertFalse(self.site0 == self.site1)
+        self.assertFalse(self.site0m == self.site1m)
+        self.assertTrue(self.site0 != self.site1)
+        self.assertTrue(self.site0m != self.site1m)
+        self.assertFalse(self.site2 == self.site0)
+        self.assertFalse(self.site2m == self.site0)
+        self.assertFalse(self.site2 == self.site1)
+        self.assertFalse(self.site2m == self.site1m)
+        self.assertTrue(self.site3 == self.site0)
+        self.assertTrue(self.site4 == self.site1)
+
+    def test_cart(self):
+        self.assertTrue(np.array_equal(self.site0.cart(), self.raw_coord0))
+        self.assertTrue(np.array_equal(self.site0m.cart(), self.raw_coord0))
+
+    def test_frac(self):
+        self.assertTrue(np.allclose(self.site0.frac(self.lat),
+                                    self.frac_coords0, self.tol, self.tol))
+        self.assertTrue(np.allclose(self.site0m.frac(self.lat),
+                                    self.frac_coords0, self.tol, self.tol))
+
+    def test_label(self):
+        self.assertTrue(self.site0.label() == self.atom0)
+        self.assertTrue(self.site0m.label() == self.atom0)
+        self.assertTrue(self.site1.label() == self.atom1)
+        self.assertTrue(self.site1m.label() == self.atom1)
+        self.assertFalse(self.site1.label() == self.atom0)
+        self.assertFalse(self.site1m.label() == self.atom0)
+
+    def test_set_compare_method(self):
+        self.assertFalse(self.site2m == self.site0m)
+        self.site2m.set_compare_method(SiteCoordinateEquals, self.tol)
+        self.assertTrue(self.site2m == self.site0m)
+
+
+if __name__ == '__main__':
+    unittest.main()
