@@ -111,16 +111,10 @@ categorize_equivalently_shifted_structures(const std::vector<xtal::Structure>& s
     mapping::MappingInput map_strategy = make_shifted_structures_categorization_map_strategy();
     for (const auto shifted_structure : shifted_structures)
     {
-        std::cout<<"*********************\n";
-        xtal::print_poscar(shifted_structure,std::cout);
-        std::cout<<"&&&&&&&&&&&&&&&&&&&&&\n";
         mapping::StructureMapper_f map_to_shifted(shifted_structure, map_strategy);
         index_map.push_back({});
         for (int s_ix = 0; s_ix < shifted_structures.size(); ++s_ix)
         {
-            std::cout<<"s_ix: "<<s_ix<<std::endl;
-            xtal::print_poscar(shifted_structures[s_ix],std::cout);
-        std::cout<<"*********************\n";
             auto results = map_to_shifted(shifted_structures[s_ix]);
             if (results.size() > 0)
             {

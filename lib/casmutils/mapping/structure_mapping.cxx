@@ -44,9 +44,6 @@ std::vector<sym::CartOp> StructureMapper_f::make_default_factor_group() const
 {
     if (this->settings.use_crystal_symmetry)
     {
-        std::cout<<"In the mapper:\n";
-        xtal::print_poscar(reference_structure,std::cout);
-        
         return xtal::make_factor_group(reference_structure,this->settings.tol);
     }
 
