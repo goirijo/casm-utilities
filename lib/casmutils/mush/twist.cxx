@@ -1,8 +1,8 @@
 #include "casmutils/xtal/coordinate.hpp"
 #include "casmutils/xtal/site.hpp"
 #include "casmutils/xtal/structure_tools.hpp"
-#include <casmutils/mush/twist.hpp>
 #include <casmutils/mush/slab.hpp>
+#include <casmutils/mush/twist.hpp>
 #include <casmutils/xtal/structure.hpp>
 /* #include "multishift/slab.hpp" */
 #include <casm/crystallography/SuperlatticeEnumerator.hh>
@@ -86,7 +86,7 @@ std::pair<Eigen::Matrix3l, Eigen::Matrix3d> approximate_integer_transformation(c
                                                                                const xtal::Lattice& M)
 {
     Eigen::Matrix3d Td = L.column_vector_matrix().inverse() * M.column_vector_matrix();
-    
+
     Eigen::Matrix3l T = CASM::lround(Td);
     Eigen::Matrix3d E = Td - T.cast<double>();
 
@@ -165,11 +165,11 @@ Eigen::Matrix2d MoireLattice::bring_vectors_into_voronoi(const Eigen::Matrix2d& 
     return col_vectors_within;
 }
 
-    xtal::Lattice MoireLattice::make_right_handed_by_ab_swap(const xtal::Lattice& lat)
+xtal::Lattice MoireLattice::make_right_handed_by_ab_swap(const xtal::Lattice& lat)
 {
-    if(lat.column_vector_matrix().determinant()<0)
+    if (lat.column_vector_matrix().determinant() < 0)
     {
-        return xtal::Lattice(lat.b(),lat.a(),lat.c());
+        return xtal::Lattice(lat.b(), lat.a(), lat.c());
     }
     return lat;
 }
@@ -238,52 +238,80 @@ xtal::Lattice make_prismatic_lattice(const xtal::Lattice& lat)
     return xtal::Lattice(lat.a(), lat.b(), new_c);
 }
 
+MoireLatticeReport MoireGenerator::generate(ZONE bz, LATTICE layer) const
+{
+    const Eigen::Matrix3l& true_moire_scel_mat = (bz == ZONE::ALIGNED) ? transformation_matrix_to_super_aligned_moire
+                                                            : transformation_matrix_to_super_rotated_moire;
+
+    const auto& approximant = (bz == ZONE::ALIGNED) ? aligned_moire_approximant : rotated_moire_approximant;
+    /* return MoireLatticeReport(bz, */
+    /*                           layer, */
+    /*                           /1* angle, *1/ */
+    /*                           moire.moire(bz), */
+    /*                           true_moire_scel_mat, */
+    /*                           approximant.approximate_moire_lattice, */
+    /*                           approximant.approximate_lattices.at(layer), */
+    /*                           approximant.approximate_moire_integer_transformations.at(layer), */
+    /*                           Eigen::Matrix3l(), */
+    /*                           Eigen::Matrix3d()); */
+    return MoireLatticeReport(bz,
+                              layer,
+                              /* angle, */
+                              moire.moire(bz),
+                              true_moire_scel_mat,
+                              approximant.approximate_moire_lattice,
+                              approximant.approximate_lattices.at(layer),
+                              approximant.approximate_moire_integer_transformations.at(layer),
+                              approximant.approximate_moire_integer_transformation_errors.at(layer),
+                              approximant.approximation_deformations.at(layer));
+}
+
 xtal::Lattice MoireGenerator::make_reduced_cell(const xtal::Lattice& lat)
 {
     auto raw_reduced = lat.__get().reduced_cell2();
 
     Eigen::Matrix3d T;
-    //turns a,b,c to b,c,a
+    // turns a,b,c to b,c,a
     Eigen::Matrix3d P;
-    P<<0,1,0,0,0,1,1,0,0;
-    //Swap a and b
+    P << 0, 1, 0, 0, 0, 1, 1, 0, 0;
+    // Swap a and b
     Eigen::Matrix3d S;
-    S<<0,1,0,1,0,0,0,0,1;
+    S << 0, 1, 0, 1, 0, 0, 0, 0, 1;
 
     if (almost_equal(lat.c(), raw_reduced[2]))
     {
-        T=Eigen::Matrix3d::Identity();
+        T = Eigen::Matrix3d::Identity();
     }
     else if (almost_equal(lat.c(), -raw_reduced[2]))
     {
-        T=Eigen::Matrix3d::Identity()*S;
+        T = Eigen::Matrix3d::Identity() * S;
     }
 
     else if (almost_equal(lat.c(), raw_reduced[1]))
     {
-        T=P;
+        T = P;
     }
     else if (almost_equal(lat.c(), -raw_reduced[1]))
     {
-        T=P*S;
+        T = P * S;
     }
 
     else if (almost_equal(lat.c(), raw_reduced[0]))
     {
-        T=P*P;
+        T = P * P;
     }
     else if (almost_equal(lat.c(), -raw_reduced[0]))
     {
-        T=P*P*S;
+        T = P * P * S;
     }
 
     else
     {
-        auto [V,E]=approximate_integer_transformation(lat.column_vector_matrix(),raw_reduced.lat_column_mat());
+        auto [V, E] = approximate_integer_transformation(lat.column_vector_matrix(), raw_reduced.lat_column_mat());
         throw std::runtime_error("Could not permute lattice vectors to recover C after making reduced cell");
     }
 
-    return xtal::Lattice::from_column_vector_matrix(raw_reduced.lat_column_mat()*T);
+    return xtal::Lattice::from_column_vector_matrix(raw_reduced.lat_column_mat() * T);
 }
 
 MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, long max_lattice_sites)
@@ -325,7 +353,7 @@ MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, l
             continue;
         }
 
-        CASM::xtal::ScelEnumProps super_moire_props(2, max_moire_scel_size+1, "ab");
+        CASM::xtal::ScelEnumProps super_moire_props(2, max_moire_scel_size + 1, "ab");
         CASM::xtal::SuperlatticeEnumerator super_moire_enumerator(
             moire_unit.__get(), xtal::make_point_group(moire_unit, 1e-5), super_moire_props);
 
@@ -338,7 +366,7 @@ MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, l
         for (auto super_moire_it = super_moire_enumerator.begin(); super_moire_it != super_moire_enumerator.end();
              ++super_moire_it)
         {
-            xtal::Lattice super_moire=make_reduced_cell(*super_moire_it);
+            xtal::Lattice super_moire = make_reduced_cell(*super_moire_it);
             // the C vectors should't be changing
             assert(CASM::almost_equal(super_moire.c(), super_moire_it->operator[](2).eval()));
 
@@ -379,8 +407,12 @@ MoireStructureGenerator::MoireStructureGenerator(const Structure& slab_unit, dou
 
 MoireStructureGenerator::Structure MoireStructureGenerator::layer(ZONE brillouin, LATTICE lat) const
 {
-    const auto& approx_lat = this->approximate_lattice(brillouin, lat);
-    const auto& T = this->approximate_moire_integer_transformation(brillouin, lat);
+    const auto report=this->generate(brillouin,lat);
+
+    const auto& approx_lat=report.approximate_tiling_unit;
+    const auto& T= report.tiling_unit_supercell_matrix;
+    /* const auto& approx_lat = this->approximate_lattice(brillouin, lat); */
+    /* const auto& T = this->approximate_moire_integer_transformation(brillouin, lat); */
 
     Structure approx_unit = slab_unit;
     approx_unit.set_lattice(approx_lat, xtal::FRAC);

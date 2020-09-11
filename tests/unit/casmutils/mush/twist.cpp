@@ -253,13 +253,15 @@ TEST_F(TwistTest, MoireGeneratorVectorMatch)
             using ZONE = cu::mush::MoireGenerator::ZONE;
             using LATTICE = cu::mush::MoireGenerator::LATTICE;
 
-            Lattice aligned_super = cu::xtal::make_superlattice(
-                approx_moire.approximate_lattice(ZONE::ALIGNED, LATTICE::ALIGNED),
-                approx_moire.approximate_moire_integer_transformation(ZONE::ALIGNED, LATTICE::ALIGNED).cast<int>());
+            const auto approx_moire_AA=approx_moire.generate(ZONE::ALIGNED,LATTICE::ALIGNED);
+            Lattice aligned_super = cu::xtal::make_superlattice(approx_moire_AA.approximate_tiling_unit,approx_moire_AA.tiling_unit_supercell_matrix.cast<int>());
+                /* approx_moire.approximate_lattice(ZONE::ALIGNED, LATTICE::ALIGNED), */
+                /* approx_moire.approximate_moire_integer_transformation(ZONE::ALIGNED, LATTICE::ALIGNED).cast<int>()); */
 
-            Lattice rot_super = cu::xtal::make_superlattice(
-                approx_moire.approximate_lattice(ZONE::ALIGNED, LATTICE::ROTATED),
-                approx_moire.approximate_moire_integer_transformation(ZONE::ALIGNED, LATTICE::ROTATED).cast<int>());
+            const auto approx_moire_AR=approx_moire.generate(ZONE::ALIGNED,LATTICE::ROTATED);
+            Lattice rot_super = cu::xtal::make_superlattice(approx_moire_AR.approximate_tiling_unit,approx_moire_AR.tiling_unit_supercell_matrix.cast<int>());
+                /* approx_moire.approximate_lattice(ZONE::ALIGNED, LATTICE::ROTATED), */
+                /* approx_moire.approximate_moire_integer_transformation(ZONE::ALIGNED, LATTICE::ROTATED).cast<int>()); */
 
             EXPECT_TRUE(almost_equal(aligned_super.a(), rot_super.a()));
             EXPECT_TRUE(almost_equal(aligned_super.b(), rot_super.b()));
@@ -469,13 +471,13 @@ TEST_F(GrapheneTwistTest, MoireScel15DegreeTwist)
     sqrt3_transfmat << 2, 1, 0, 1, 2, 0, 0, 0, 1;
 
     const cu::mush::MoireGenerator mini_graph_moire(graphene_ptr->lattice(), angle, 0);
-    const auto& mini_moire_unit = mini_graph_moire.moire.moire(LAT::ALIGNED);
+    const auto& mini_moire_unit = mini_graph_moire.true_moire(ZONE::ALIGNED);
 
     cu::xtal::Lattice sqrt3_super_moire = cu::xtal::make_superlattice(mini_moire_unit, sqrt3_transfmat);
     cu::mush::MoireGenerator graph_moire(graphene_ptr->lattice(), angle, 100);
 
-    EXPECT_TRUE(equivalent(graph_moire.aligned_moire_approximant.approximate_moire_lattice, sqrt3_super_moire));
-    EXPECT_TRUE(equivalent(graph_moire.aligned_moire_approximant.approximate_moire_lattice, sqrt3_super_moire));
+    EXPECT_TRUE(equivalent(graph_moire.approximate_moire(ZONE::ALIGNED), sqrt3_super_moire));
+    EXPECT_TRUE(equivalent(graph_moire.approximate_moire(ZONE::ALIGNED), sqrt3_super_moire));
 }
 
 TEST_F(GrapheneTwistTest, MoireScelMagicDegreeTwist)
@@ -484,15 +486,23 @@ TEST_F(GrapheneTwistTest, MoireScelMagicDegreeTwist)
     for (double angle : magic_angles)
     {
         cu::mush::MoireGenerator graph_moire(graphene_ptr->lattice(), angle, 1000);
-        EXPECT_TRUE(almost_zero(graph_moire.approximation_deformation(ZONE::ALIGNED, LAT::ALIGNED) - I));
-        EXPECT_TRUE(almost_zero(graph_moire.approximation_deformation(ZONE::ALIGNED, LAT::ROTATED) - I));
-        EXPECT_TRUE(almost_zero(graph_moire.approximation_deformation(ZONE::ROTATED, LAT::ALIGNED) - I));
-        EXPECT_TRUE(almost_zero(graph_moire.approximation_deformation(ZONE::ROTATED, LAT::ROTATED) - I));
+        for(auto Z : {ZONE::ALIGNED, ZONE::ROTATED})
+        {
+            for(auto L : {LAT::ALIGNED,LAT::ROTATED})
+            {
+                const auto report=graph_moire.generate(Z,L);
+                const auto& F=report.approximation_deformation;
+                EXPECT_TRUE(almost_zero(F- I));
+            }
+        }
     }
 }
 
 TEST_F(GrapheneTwistTest, Debug)
 {
+    for (double degrees = 0.5; degrees < 361; degrees += 1.0)
+    {
+    }
     /* double angle = 15.178178937949879; // This angle gives a coincident sqrt(3) sqrt(3) moire superlattice */
     /* cu::mush::MoireStructureGenerator mini_graph_moire(*graphene_ptr, angle); */
     /* cu::mush::MoireStructureGenerator graph_moire(*graphene_ptr, angle, 100); */

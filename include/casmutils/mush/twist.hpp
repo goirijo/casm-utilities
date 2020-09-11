@@ -31,7 +31,8 @@ xtal::Lattice make_prismatic_lattice(const xtal::Lattice& lat);
 /// Return the closest integer transformation matrix T that relates L to M such that
 /// M=L*T. The first parameter returned is the integer transformation T, and the second
 /// parameter is the error E that arises when rouding values to make T an integer matrix
-std::pair<Eigen::Matrix3l,Eigen::Matrix3d> approximate_integer_transformation(const xtal::Lattice& L, const xtal::Lattice& M);
+std::pair<Eigen::Matrix3l, Eigen::Matrix3d> approximate_integer_transformation(const xtal::Lattice& L,
+                                                                               const xtal::Lattice& M);
 
 /// Constructs Moire lattice for the given angle, and keeps information of the steps made along
 /// the way. Before anything happens, the input lattice will be transformed to an aligned
@@ -97,7 +98,7 @@ struct MoireLattice
     xtal::Lattice rotated_moire_lattice;
 
     /// Returns the moire lattice of either ALIGNED or ROTATED Brillouin zone
-    const xtal::Lattice& moire(LATTICE lat) const
+    const xtal::Lattice& moire(ZONE lat) const
     {
         return lat == LATTICE::ALIGNED ? aligned_moire_lattice : rotated_moire_lattice;
     }
@@ -146,6 +147,7 @@ struct MoireApproximant
     /// The moire lattice after straining it a bit to make the aligned and rotated lattices coincident
     xtal::Lattice approximate_moire_lattice;
 
+    //TODO: Rename to "tiling unit"? There's too much "lattice" flying around.
     /// The aligned and rotated lattices with some strain introduced, such creating superlattices
     /// from them results in fully periodic Moire lattices
     std::unordered_map<LATTICE, xtal::Lattice> approximate_lattices;
@@ -163,6 +165,74 @@ private:
     xtal::Lattice default_lattice() { return xtal::Lattice(Eigen::Matrix3d::Zero()); }
 };
 
+/// Relevant information about the generated Moire lattice. This IS the class you're looking for:
+/// * Requested Brillouin zone used to create it (aligned vs rotated)
+/// * Requested layer (aligned vs rotated)
+/// * The true Moire lattice (unlikely to be coincident)
+/// * Transformation matrix of the true Moire lattice applied before creating the approximate Moire lattice
+/// * The approximated Moire lattice for the requested Brillouin zone
+/// * Tiling unit of the appriximated Moire lattice for the requested layer (deformed input lattice)
+/// * Transformation matrix to go from the tiling unit to the approximated Moire lattice
+/// * Rouding error that resulted from using the original tiling unit to get the tiling unit transformation matrix
+/// * Deformation matrix required for the approximation
+/// * Rotation portion of the deformation matrix
+/// * Strain portion of the deformation
+struct MoireLatticeReport
+{
+    using LATTICE = MoireLattice::LATTICE;
+    using ZONE = MoireLattice::ZONE;
+
+    MoireLatticeReport(ZONE zone,
+                       LATTICE layer,
+                       /* double angle, */
+                       const xtal::Lattice& true_moire,
+                       const Eigen::Matrix3l& true_moire_supercell_matrix,
+                       const xtal::Lattice& approximate_moire,
+                       const xtal::Lattice& approximate_tiling_unit,
+                       const Eigen::Matrix3l& tiling_unit_supercell_matrix,
+                       const Eigen::Matrix3d& tiling_unit_supercell_rounding_error,
+                       const Eigen::Matrix3d& approximation_deformation)
+        : zone(zone),
+          layer(layer),
+          /* angle(angle), */
+          true_moire(true_moire),
+          true_moire_supercell_matrix(true_moire_supercell_matrix),
+          approximate_moire(approximate_moire),
+          approximate_tiling_unit(approximate_tiling_unit),
+          tiling_unit_supercell_matrix(tiling_unit_supercell_matrix),
+          tiling_unit_supercell_rounding_error(tiling_unit_supercell_rounding_error),
+          approximation_deformation(approximation_deformation)
+    {
+        std::tie(approximation_rotation, approximation_strain) = xtal::polar_decomposition(approximation_deformation);
+    }
+
+    /// Requested Brillouin zone used to create it (ALIGNED vs ROTATED)
+    ZONE zone;
+    /// Requested layer (ALIGNED vs ROTATED)
+    LATTICE layer;
+    /// Requested rotation angle
+    /* double angle; */
+    /// The true Moire lattice (unlikely to be coincident)
+    xtal::Lattice true_moire;
+    /// Transformation matrix of the true Moire lattice applied before creating the approximate Moire lattice
+    Eigen::Matrix3l true_moire_supercell_matrix;
+    /// The approximated Moire lattice for the requested Brillouin zone
+    xtal::Lattice approximate_moire;
+    /// Tiling unit of the appriximated Moire lattice for the requested layer (deformed input lattice)
+    xtal::Lattice approximate_tiling_unit;
+    /// Transformation matrix to go from the tiling unit to the approximated Moire lattice
+    Eigen::Matrix3l tiling_unit_supercell_matrix;
+    /// Rouding error left over from trying to squeeze the original tiling unit onto the true Moire
+    /// supercell.
+    Eigen::Matrix3d tiling_unit_supercell_rounding_error;
+    /// Deformation matrix required for the approximation
+    Eigen::Matrix3d approximation_deformation;
+    /// Rotation portion of the deformation matrix (polar decomposition)
+    Eigen::Matrix3d approximation_rotation;
+    /// Strain portion of the deformation (polar decomposition)
+    Eigen::Matrix3d approximation_strain;
+};
+
 /// Interface class to access the Moire lattice, which can be relative do different Brillouin zones,
 /// as well as relevant deformations on each lattice. Basically just a wrapper class for everythin
 /// in MoireLattice and MoireApproximant
@@ -172,10 +242,11 @@ public:
     using LATTICE = MoireLattice::LATTICE;
     using ZONE = MoireLattice::ZONE;
 
+private:
     MoireLattice moire;
 
-    ///Supercell transformation of the Moire lattice
-    ///which can best accomodate the original and rotated lattices
+    /// Supercell transformation of the Moire lattice
+    /// which can best accomodate the original and rotated lattices
     Eigen::Matrix3l transformation_matrix_to_super_aligned_moire;
     Eigen::Matrix3l transformation_matrix_to_super_rotated_moire;
 
@@ -187,7 +258,6 @@ public:
     /// Brillouin zone
     MoireApproximant rotated_moire_approximant;
 
-private:
     /* const Lattice* requested_key(LATTICE lat) { return lat == LATTICE::ALIGNED ? aligned_key : rotated_key; } */
 
     const MoireApproximant& requested_zone(ZONE brillouin) const
@@ -195,11 +265,11 @@ private:
         return brillouin == ZONE::ALIGNED ? aligned_moire_approximant : rotated_moire_approximant;
     }
 
-    ///Measures how badly the moire lattice is from landing on coindicent lattice sites
+    /// Measures how badly the moire lattice is from landing on coindicent lattice sites
     double error_metric(const xtal::Lattice& moire, const xtal::Lattice& aligned, const xtal::Lattice& rotated);
 
-    ///Creates the reduced cell, but keeps the c vector pointing the same direction.
-    ///Will only work if the c vector doesn't need to be corrected to create the reduced cell.
+    /// Creates the reduced cell, but keeps the c vector pointing the same direction.
+    /// Will only work if the c vector doesn't need to be corrected to create the reduced cell.
     xtal::Lattice make_reduced_cell(const xtal::Lattice& lat);
 
 public:
@@ -207,24 +277,38 @@ public:
     /// parameter will determine how many moirons are allowed to fit in the Moire lattice.
     /// If the values is less than the number of lattice sites that fit in a single moiron
     /// lattice, then the smallest possible Moire lattice is used.
-    MoireGenerator(const xtal::Lattice& input_lat, double degrees, long max_lattice_sites=0);
+    MoireGenerator(const xtal::Lattice& input_lat, double degrees, long max_lattice_sites = 0);
 
-    const xtal::Lattice& approximate_lattice(ZONE brillouin, LATTICE lat) const
+    /// Returns collection of information for the requested brillouin zone and half bilayer,
+    /// including the true Moire lattice, and the approximated one.
+    MoireLatticeReport generate(ZONE brillouin, LATTICE layer) const;
+
+    const xtal::Lattice& true_moire(ZONE brillouin) const
     {
-        return requested_zone(brillouin).approximate_lattices.at(lat);
+        return moire.moire(brillouin);
     }
 
-    const Eigen::Matrix3l& approximate_moire_integer_transformation(ZONE bz, LATTICE lat) const
+    const xtal::Lattice& approximate_moire(ZONE brillouin) const
     {
-        return requested_zone(bz).approximate_moire_integer_transformations.at(lat);
+        return requested_zone(brillouin).approximate_moire_lattice;
     }
 
-    const Eigen::Matrix3d& approximation_deformation(ZONE bz, LATTICE lat)
-    {
-        return requested_zone(bz).approximation_deformations.at(lat);
-    }
+    /* const xtal::Lattice& approximate_lattice(ZONE brillouin, LATTICE lat) const */
+    /* { */
+    /*     return requested_zone(brillouin).approximate_lattices.at(lat); */
+    /* } */
 
-    double degrees() const { return moire.input_degrees; }
+    /* const Eigen::Matrix3l& approximate_moire_integer_transformation(ZONE bz, LATTICE lat) const */
+    /* { */
+    /*     return requested_zone(bz).approximate_moire_integer_transformations.at(lat); */
+    /* } */
+
+    /* const Eigen::Matrix3d& approximation_deformation(ZONE bz, LATTICE lat) */
+    /* { */
+    /*     return requested_zone(bz).approximation_deformations.at(lat); */
+    /* } */
+
+    /* double degrees() const { return moire.input_degrees; } */
 };
 
 /// Generates slab superstructures that can be stacked together to create bilayers with Moire
@@ -235,9 +319,9 @@ public:
     using ZONE = MoireGenerator::ZONE;
     using LATTICE = MoireGenerator::LATTICE;
     using Structure = xtal::Structure;
-    using MoireGenerator::degrees;
+    /* using MoireGenerator::degrees; */
 
-    MoireStructureGenerator(const Structure& slab_unit, double degrees, long max_lattice_sites=0);
+    MoireStructureGenerator(const Structure& slab_unit, double degrees, long max_lattice_sites = 0);
 
     Structure layer(ZONE brillouin, LATTICE lat) const;
 
