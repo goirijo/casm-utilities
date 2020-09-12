@@ -13,8 +13,10 @@ from ._xtal import make_superstructure as _make_superstructure
 from ._xtal import make_primitive as _make_primitive
 # from .single_block_wadsley_roth import *
 
+
 def extra_function(self):
     print("I'm the extra function!")
+
 
 def make_niggli(input_value):
     """Returns the niggli version of input_value. Type checks the argument
@@ -24,14 +26,15 @@ def make_niggli(input_value):
     :returns: casmutils.xtal.lattice.Lattice or casmutils.xtal.structure.Structure 
 
     """
-    if isinstance(input_value,Structure): 
+    if isinstance(input_value, Structure):
         return Structure._from_pybind(_make_niggli(input_value._pybind_value))
-    elif isinstance(input_value,Lattice): 
+    elif isinstance(input_value, Lattice):
         return Lattice._from_pybind(_make_niggli(input_value))
     else:
         raise ValueError
 
-def make_superstructure(structure,transformation_matrix):
+
+def make_superstructure(structure, transformation_matrix):
     """Returns the superstructure of the given structure,
     scaling the lattice by the given transformation matrix
 
@@ -40,7 +43,9 @@ def make_superstructure(structure,transformation_matrix):
     :returns: casmutils.xtal.structure.Structure
 
     """
-    return Structure._from_pybind(_make_superstructure(structure._pybind_value,transformation_matrix))
+    return Structure._from_pybind(
+        _make_superstructure(structure._pybind_value, transformation_matrix))
+
 
 def make_primitive(structure):
     """Returns the primitive version of the given structure.
@@ -51,4 +56,5 @@ def make_primitive(structure):
     """
     return Structure._from_pybind(_make_primitive(structure._pybind_value))
 
-Coordinate.extra_function=extra_function
+
+Coordinate.extra_function = extra_function

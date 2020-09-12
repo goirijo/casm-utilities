@@ -18,6 +18,7 @@ def _conventional_rocksalt_transformation_matrix():
 
     return m
 
+
 def _final_lattice(block_dims, shift_vals):
     """Creates the final lattice of the Wadsley-Roth
     structure. 
@@ -32,13 +33,14 @@ def _final_lattice(block_dims, shift_vals):
     np.array
 
     """
-    bx,by=block_dims
-    sx,sy=shift_vals
-    S = np.array([[2 * bx - 1, 2 * sy, 0], [2 * sx, 2 * by - 1, 0],
-                  [1, 1, 2]])
+    bx, by = block_dims
+    sx, sy = shift_vals
+    S = np.array([[2 * bx - 1, 2 * sy, 0], [2 * sx, 2 * by - 1, 0], [1, 1, 2]])
     return S
 
-def single_block_wadsley_roth(block_dims, shift_vals, species, nearest_neighbor_distance):
+
+def single_block_wadsley_roth(block_dims, shift_vals, species,
+                              nearest_neighbor_distance):
     """Generates a Wadsley-Roth structure where there
     is only a single tiling unit (e.g. 3x3 octahedra)
 
@@ -54,8 +56,8 @@ def single_block_wadsley_roth(block_dims, shift_vals, species, nearest_neighbor_
     xtal.Structure
 
     """
-    m=_conventional_rocksalt_transformation_matrix()
-    S=_final_lattice(block_dims,shift_vals)
+    m = _conventional_rocksalt_transformation_matrix()
+    S = _final_lattice(block_dims, shift_vals)
     trans = np.dot(np.linalg.inv(m), S)
 
     nn = nearest_neighbor_distance
@@ -69,17 +71,18 @@ def single_block_wadsley_roth(block_dims, shift_vals, species, nearest_neighbor_
 
     return rs.structure()
 
+
 def main():
-    block_dims=[6,4]
-    shift_vals=[2,0]
+    block_dims = [6, 4]
+    shift_vals = [2, 0]
 
-    tilel,tilew=block_dims
-    mshift,nshift=shift_vals
+    tilel, tilew = block_dims
+    mshift, nshift = shift_vals
 
-    rs=single_block_wadsley_roth(block_dims,shift_vals,["Nb","O"],2.0)
-    rs.to_poscar("shear" + str(tilel) + "x" + str(tilew) + "_" + str(nshift) + "_" +
-                 str(mshift) + ".vasp")
-    
+    rs = single_block_wadsley_roth(block_dims, shift_vals, ["Nb", "O"], 2.0)
+    rs.to_poscar("shear" + str(tilel) + "x" + str(tilew) + "_" + str(nshift) +
+                 "_" + str(mshift) + ".vasp")
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()
