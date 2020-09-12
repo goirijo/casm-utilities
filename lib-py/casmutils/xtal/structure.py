@@ -2,12 +2,11 @@ from . import _xtal
 from .lattice import Lattice
 from .site import Site, MutableSite
 
-class _Structure():
 
+class _Structure():
     """Base class for both mutable and immutable
     Structure classes. Defines function that are
     common to both"""
-
     def __init__(self, lattice, basis):
         """
         Parameters
@@ -89,7 +88,9 @@ class _Structure():
 
         """
         py_bind_basis = self._pybind_value._basis_sites_const()
-        basis = [Site._from_pybind(py_bind_site) for py_bind_site in py_bind_basis]
+        basis = [
+            Site._from_pybind(py_bind_site) for py_bind_site in py_bind_basis
+        ]
 
         return basis
 
@@ -104,11 +105,10 @@ class _Structure():
         """
         return self._pybind_value.__str__()
 
-class Structure(_Structure):
 
+class Structure(_Structure):
     """Immutable structure defined by a Lattice and a list of basis sites.
     Handles all the operations in a const way"""
-
     def __init__(self, lattice, basis):
         """
         Paremeters
@@ -135,14 +135,14 @@ class Structure(_Structure):
         Structure
 
         """
-        return self._from_pybind(self._pybind_value._set_lattice_const(new_lattice, coord_type))
+        return self._from_pybind(
+            self._pybind_value._set_lattice_const(new_lattice, coord_type))
+
 
 class MutableStructure(_Structure):
-
     """Mutable structure defined by a Lattice and a list of basis sites.
     can handle non const operations. use only when you want to mutate
     the class itself."""
-
     def __init__(self, lattice, basis):
         """
         Paremeters
@@ -179,6 +179,5 @@ class MutableStructure(_Structure):
         TODO
 
         """
-        self._pybind_value._set_lattice(new_lattice,coord_type)
+        self._pybind_value._set_lattice(new_lattice, coord_type)
         return
-

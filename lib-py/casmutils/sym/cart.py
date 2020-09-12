@@ -7,7 +7,6 @@ class CartOp(_sym.CartOp):
     """Basic symmetry operation that deals with Cartesian representations.
     Conains a matrix, translation, and time reversal boolean.
     Construct with a 3x3 matrix, 3x1 vector, boolean."""
-
     def __str__(self):
         """Concatenates __str__ of each member (matrix, vector, bool)
         Returns
@@ -29,7 +28,9 @@ class CartOp(_sym.CartOp):
         ) + '\n\n' + self.is_time_reversal_active.__repr__()
 
     def __iter__(self):
-        yield from [self.matrix, self.translation, self.is_time_reversal_active]
+        yield from [
+            self.matrix, self.translation, self.is_time_reversal_active
+        ]
 
     @classmethod
     def identity(cls):
