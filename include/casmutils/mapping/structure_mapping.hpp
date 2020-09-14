@@ -180,7 +180,7 @@ std::vector<mapping::MappingReport> map_structure(const xtal::Structure& map_ref
 
 /// Calculates the symmetry preserving part of the MappingReport according to the given factor group
 /// This is the part of the distortion that has the same symmetry as the given factor group.
-/// Therefore, applying this distortion to the ideal crystal does not change its symmetry. 
+/// Therefore, applying this distortion to the ideal crystal does not change its symmetry.
 mapping::MappingReport symmetry_preserving_mapping_report(const mapping::MappingReport& mapping_data,
                                                           const std::vector<sym::CartOp>& group_as_operations,
                                                           const std::vector<sym::PermRep>& group_as_permutations);
