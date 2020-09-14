@@ -20,7 +20,6 @@ std::vector<sym::CartOp> make_factor_group(const Structure& struc, double tol)
 
 Lattice symmetrize(const Lattice& noisy_lattice, const std::vector<sym::CartOp>& enforced_point_group)
 {
-    std::cout << "Inside lattice symmetrize" << std::endl;
     return CASM::xtal::symmetrize(noisy_lattice.__get(), enforced_point_group);
 }
 
