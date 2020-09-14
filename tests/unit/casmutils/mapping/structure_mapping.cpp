@@ -62,8 +62,6 @@ TEST_F(StructureMapTest, BainMappingScore)
     auto [perfect_bain_lattice_score, perfect_bain_basis_score] = cu::mapping::structure_score(perfect_bain_report);
 
     // lattice score should be finite and identical for bcc and fully bained no matter the volume
-    std::cout << "DEBUGGING: full_bain_lattice_score " << full_bain_lattice_score << std::endl;
-    std::cout << "DEBUGGING: perfect_bain_lattice_score " << perfect_bain_lattice_score << std::endl;
     EXPECT_TRUE(std::abs(full_bain_lattice_score - perfect_bain_lattice_score) < 1e-10);
     // partially bained fcc should have a lower score than bcc
     EXPECT_TRUE(full_bain_lattice_score > partial_bain_lattice_score);
@@ -142,7 +140,6 @@ TEST_F(SymmetryPreservingMappingTest, NotPreservingTest)
     cu::mapping::MappingReport full_report =
         cu::mapping::map_structure(*conventional_fcc_Ni_ptr, *partial_bain_Ni_ptr)[0];
     auto fcc_group = cu::xtal::make_factor_group(*conventional_fcc_Ni_ptr, tol);
-    std::cout << "DEBUGGING: full_report.stretch" << full_report.stretch << std::endl;
     // construct the corresponding permutation representation
     cu::sym::PermRep no_swap = {0, 1, 2, 3};
     cu::sym::PermRep swap = {3, 2, 1, 0};
