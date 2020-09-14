@@ -26,12 +26,9 @@ Lattice symmetrize(const Lattice& noisy_lattice, const std::vector<sym::CartOp>&
 
 Structure symmetrize(const Structure& noisy_structure, const std::vector<sym::CartOp>& enforced_factor_group)
 {
-    std::cout << "Inside structure symmetrize" << std::endl;
-    std::cout << "DEBUGGING: enforced_factor_group.size()" << enforced_factor_group.size() << std::endl;
     Lattice corrected_lattice = symmetrize(noisy_structure.lattice(), enforced_factor_group);
     Structure structure_with_correct_lattice = noisy_structure;
     structure_with_correct_lattice.set_lattice(corrected_lattice, FRAC);
-    std::cout << "reset lattice" << std::endl;
     return CASM::xtal::symmetrize(structure_with_correct_lattice.__get<CASM::xtal::BasicStructure>(),
                                   enforced_factor_group);
 }
