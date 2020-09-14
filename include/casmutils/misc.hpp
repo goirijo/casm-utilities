@@ -19,7 +19,8 @@ class PrimClex;
 
 namespace casmutils
 {
-
+using CASM::almost_equal;
+using CASM::almost_zero;
 template <typename ComparatorType_f, typename CompareType, typename... Args>
 bool is_equal(const CompareType& reference, const CompareType& other, const Args&... functor_params)
 {
@@ -30,7 +31,7 @@ bool is_equal(const CompareType& reference, const CompareType& other, const Args
 template <typename Derived1, typename Derived2>
 bool is_equal(const Eigen::MatrixBase<Derived1>& reference, const Eigen::MatrixBase<Derived2>& other, double tol)
 {
-    return CASM::almost_equal(reference, other, tol);
+    return casmutils::almost_equal(reference, other, tol);
 }
 
 } // namespace casmutils
