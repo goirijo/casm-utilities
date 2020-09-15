@@ -1,0 +1,6 @@
+noinst_LTLIBRARIES += libcasmutils-sym.la
+
+libcasmutils_sym_la_SOURCES=
+libcasmutils_sym_la_SOURCES+=\
+						 lib/casmutils/sym/cartesian.cxx\
+						 include/casmutils/sym/cartesian.hpp

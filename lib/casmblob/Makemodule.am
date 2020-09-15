@@ -1,196 +1,31 @@
 noinst_LTLIBRARIES+=libcasmblob.la
 libcasmblob_la_SOURCES=\
-    CASMcode/include/casm/app/APICommand.hh\
-    CASMcode/include/casm/app/APICommand_impl.hh\
-    CASMcode/include/casm/app/AppIO.hh\
-    CASMcode/include/casm/app/AppIO_impl.hh\
-    CASMcode/include/casm/app/CLIParse.hh\
-    CASMcode/include/casm/app/ClexDescription.hh\
-    CASMcode/include/casm/app/DBInterface.hh\
-    CASMcode/include/casm/app/DBInterface_impl.hh\
-    CASMcode/include/casm/app/DirectoryStructure.hh\
-    CASMcode/include/casm/app/EnumeratorHandler.hh\
-    CASMcode/include/casm/app/EnumeratorHandler_impl.hh\
-    CASMcode/include/casm/app/FileEnumerator.hh\
-    CASMcode/include/casm/app/HamiltonianModules.hh\
-    CASMcode/include/casm/app/HamiltonianModules_impl.hh\
-    CASMcode/include/casm/app/LogRuntimeLibrary.hh\
-    CASMcode/include/casm/app/ProjectBuilder.hh\
-    CASMcode/include/casm/app/ProjectSettings.hh\
-    CASMcode/include/casm/app/QueryHandler.hh\
-    CASMcode/include/casm/app/QueryHandler_impl.hh\
-    CASMcode/include/casm/app/bset.hh\
-    CASMcode/include/casm/app/casm_functions.hh\
-    CASMcode/include/casm/app/composition.hh\
-    CASMcode/include/casm/app/enum.hh\
-    CASMcode/include/casm/app/files.hh\
-    CASMcode/include/casm/app/format.hh\
-    CASMcode/include/casm/app/import.hh\
-    CASMcode/include/casm/app/init.hh\
-    CASMcode/include/casm/app/io/json/SpeciesSetParser.hh\
-    CASMcode/include/casm/app/io/json/SpeciesSetParser_impl.hh\
-    CASMcode/include/casm/app/json_io.hh\
-    CASMcode/include/casm/app/json_io_impl.hh\
-    CASMcode/include/casm/app/monte.hh\
-    CASMcode/include/casm/app/query.hh\
-    CASMcode/include/casm/app/ref.hh\
-    CASMcode/include/casm/app/rm.hh\
-    CASMcode/include/casm/app/run.hh\
-    CASMcode/include/casm/app/select.hh\
-    CASMcode/include/casm/app/settings.hh\
-    CASMcode/include/casm/app/status.hh\
-    CASMcode/include/casm/app/super.hh\
-    CASMcode/include/casm/app/sym.hh\
-    CASMcode/include/casm/app/update.hh\
-    CASMcode/include/casm/app/view.hh\
-    CASMcode/include/casm/basis_set/BasisFunction.hh\
-    CASMcode/include/casm/basis_set/BasisSet.hh\
-    CASMcode/include/casm/basis_set/DisplacementDoFTraits.hh\
-    CASMcode/include/casm/basis_set/DoF.hh\
-    CASMcode/include/casm/basis_set/DoFIsEquivalent.hh\
-    CASMcode/include/casm/basis_set/DoFIsEquivalent_impl.hh\
-    CASMcode/include/casm/basis_set/DoFSet.hh\
-    CASMcode/include/casm/basis_set/DoFTraits.hh\
-    CASMcode/include/casm/basis_set/FunctionVisitor.hh\
-    CASMcode/include/casm/basis_set/MagSpinDoFTraits.hh\
-    CASMcode/include/casm/basis_set/OccupantFunction.hh\
-    CASMcode/include/casm/basis_set/OccupationDoFTraits.hh\
-    CASMcode/include/casm/basis_set/PolynomialFunction.hh\
-    CASMcode/include/casm/basis_set/StrainDoFTraits.hh\
-    CASMcode/include/casm/basis_set/Variable.hh\
-    CASMcode/include/casm/casm_io/FormatFlag.hh\
-    CASMcode/include/casm/casm_io/Help.hh\
-    CASMcode/include/casm/casm_io/Log.hh\
-    CASMcode/include/casm/casm_io/SafeOfstream.hh\
-    CASMcode/include/casm/casm_io/container/json_io.hh\
-    CASMcode/include/casm/casm_io/container/stream_io.hh\
-    CASMcode/include/casm/casm_io/dataformatter/DataFormatter.hh\
-    CASMcode/include/casm/casm_io/dataformatter/DataFormatterDecl.hh\
-    CASMcode/include/casm/casm_io/dataformatter/DataFormatterTools.hh\
-    CASMcode/include/casm/casm_io/dataformatter/DataFormatterTools_impl.hh\
-    CASMcode/include/casm/casm_io/dataformatter/DataFormatter_impl.hh\
-    CASMcode/include/casm/casm_io/dataformatter/DataStream.hh\
-    CASMcode/include/casm/casm_io/dataformatter/EigenDataStream.hh\
-    CASMcode/include/casm/casm_io/enum/io_traits.hh\
-    CASMcode/include/casm/casm_io/enum/json_io.hh\
-    CASMcode/include/casm/casm_io/enum/stream_io.hh\
-    CASMcode/include/casm/casm_io/json/InputParser.hh\
-    CASMcode/include/casm/casm_io/json/InputParser_impl.hh\
-    CASMcode/include/casm/casm_io/json/jsonFile.hh\
-    CASMcode/include/casm/casm_io/json/jsonParser.hh\
-    CASMcode/include/casm/clex/BasicClexParamPack.hh\
-    CASMcode/include/casm/clex/Calculable.hh\
-    CASMcode/include/casm/clex/ChemicalReference.hh\
-    CASMcode/include/casm/clex/ChemicalReference_impl.hh\
-    CASMcode/include/casm/clex/Clex.hh\
-    CASMcode/include/casm/clex/ClexBasis.hh\
-    CASMcode/include/casm/clex/ClexBasisWriter.hh\
-    CASMcode/include/casm/clex/ClexBasisWriter_impl.hh\
-    CASMcode/include/casm/clex/ClexBasis_impl.hh\
-    CASMcode/include/casm/clex/ClexParamPack.hh\
-    CASMcode/include/casm/clex/Clexulator.hh\
-    CASMcode/include/casm/clex/Clexulator_Draft.hh\
-    CASMcode/include/casm/clex/CompositionConverter.hh\
-    CASMcode/include/casm/clex/ConfigCompare.hh\
-    CASMcode/include/casm/clex/ConfigDoF.hh\
-    CASMcode/include/casm/clex/ConfigDoFCompare.hh\
-    CASMcode/include/casm/clex/ConfigDoFIsEquivalent.hh\
-    CASMcode/include/casm/clex/ConfigDoFValues.hh\
-    CASMcode/include/casm/clex/ConfigEnumAllOccupations.hh\
-    CASMcode/include/casm/clex/ConfigEnumAllOccupations_impl.hh\
-    CASMcode/include/casm/clex/ConfigEnumEquivalents.hh\
-    CASMcode/include/casm/clex/ConfigEnumInterpolation.hh\
-    CASMcode/include/casm/clex/ConfigEnumOccPerturbations.hh\
-    CASMcode/include/casm/clex/ConfigEnumRandomLocal.hh\
-    CASMcode/include/casm/clex/ConfigEnumRandomOccupations.hh\
-    CASMcode/include/casm/clex/ConfigEnumSiteDoFs.hh\
-    CASMcode/include/casm/clex/ConfigEnumStrain.hh\
-    CASMcode/include/casm/clex/ConfigIO.hh\
-    CASMcode/include/casm/clex/ConfigIOHull.hh\
-    CASMcode/include/casm/clex/ConfigIONovelty.hh\
-    CASMcode/include/casm/clex/ConfigIOStrain.hh\
-    CASMcode/include/casm/clex/ConfigIOStrucScore.hh\
-    CASMcode/include/casm/clex/ConfigIsEquivalent.hh\
-    CASMcode/include/casm/clex/ConfigMapping.hh\
-    CASMcode/include/casm/clex/Configuration.hh\
-    CASMcode/include/casm/clex/ConfigurationTraits.hh\
-    CASMcode/include/casm/clex/Configuration_impl.hh\
-    CASMcode/include/casm/clex/DiffClexParamPack.hh\
-    CASMcode/include/casm/clex/ECIContainer.hh\
-    CASMcode/include/casm/clex/FilteredConfigIterator.hh\
-    CASMcode/include/casm/clex/HasCanonicalForm.hh\
-    CASMcode/include/casm/clex/HasCanonicalForm_impl.hh\
-    CASMcode/include/casm/clex/HasPrimClex.hh\
-    CASMcode/include/casm/clex/HasPrimClex_impl.hh\
-    CASMcode/include/casm/clex/HasSupercell.hh\
-    CASMcode/include/casm/clex/HasSupercell_impl.hh\
-    CASMcode/include/casm/clex/MappedPropertiesTools.hh\
-    CASMcode/include/casm/clex/NeighborList.hh\
-    CASMcode/include/casm/clex/Norm.hh\
-    CASMcode/include/casm/clex/OrbitFunctionTraits.hh\
-    CASMcode/include/casm/clex/OrbitFunctionWriter.hh\
-    CASMcode/include/casm/clex/ParamComposition.hh\
-    CASMcode/include/casm/clex/PrimClex.hh\
-    CASMcode/include/casm/clex/PrimClex_impl.hh\
-    CASMcode/include/casm/clex/Reference.hh\
-    CASMcode/include/casm/clex/RemoveSupercell.hh\
-    CASMcode/include/casm/clex/ScelEnum.hh\
-    CASMcode/include/casm/clex/ScelEnumEquivalents.hh\
-    CASMcode/include/casm/clex/ScelEnum_impl.hh\
-    CASMcode/include/casm/clex/SuperConfigEnum.hh\
-    CASMcode/include/casm/clex/Supercell.hh\
-    CASMcode/include/casm/clex/SupercellIO.hh\
-    CASMcode/include/casm/clex/SupercellTraits.hh\
-    CASMcode/include/casm/clex/Supercell_functions.hh\
-    CASMcode/include/casm/clex/Supercell_impl.hh\
-    CASMcode/include/casm/clex/io/json/ChemicalReference.hh\
-    CASMcode/include/casm/clex/json_io.hh\
-    CASMcode/include/casm/clusterography/ClusterDecl.hh\
-    CASMcode/include/casm/clusterography/ClusterInvariants.hh\
-    CASMcode/include/casm/clusterography/ClusterInvariants_impl.hh\
-    CASMcode/include/casm/clusterography/ClusterOrbits.hh\
-    CASMcode/include/casm/clusterography/ClusterOrbits_impl.hh\
-    CASMcode/include/casm/clusterography/ClusterSpecsParser.hh\
-    CASMcode/include/casm/clusterography/ClusterSpecsParser_impl.hh\
-    CASMcode/include/casm/clusterography/ClusterSymCompare.hh\
-    CASMcode/include/casm/clusterography/ClusterSymCompare_impl.hh\
-    CASMcode/include/casm/clusterography/CoordCluster.hh\
-    CASMcode/include/casm/clusterography/CoordClusterTraits.hh\
-    CASMcode/include/casm/clusterography/GenericCluster.hh\
-    CASMcode/include/casm/clusterography/IntegralCluster.hh\
-    CASMcode/include/casm/clusterography/IntegralCluster_impl.hh\
-    CASMcode/include/casm/clusterography/SubClusterGenerator.hh\
-    CASMcode/include/casm/completer/Complete.hh\
-    CASMcode/include/casm/completer/Handlers.hh\
+    CASMcode/include/casm/container/algorithm.hh\
     CASMcode/include/casm/container/Array.hh\
     CASMcode/include/casm/container/BaseCounter.hh\
     CASMcode/include/casm/container/ContainerTraits.hh\
     CASMcode/include/casm/container/Counter.hh\
     CASMcode/include/casm/container/IsoCounter.hh\
     CASMcode/include/casm/container/MultiCounter.hh\
+    CASMcode/include/casm/container/multivector.hh\
     CASMcode/include/casm/container/Permutation.hh\
     CASMcode/include/casm/container/PolyTrie.hh\
     CASMcode/include/casm/container/Template_Algorithms.hh\
     CASMcode/include/casm/container/Tensor.hh\
-    CASMcode/include/casm/container/algorithm.hh\
-    CASMcode/include/casm/container/multivector.hh\
     CASMcode/include/casm/crystallography/Adapter.hh\
     CASMcode/include/casm/crystallography/AnisoValTraits.hh\
     CASMcode/include/casm/crystallography/BasicStructure.hh\
     CASMcode/include/casm/crystallography/BasicStructureTools.hh\
-    CASMcode/include/casm/crystallography/BasicStructure_impl.hh\
     CASMcode/include/casm/crystallography/CanonicalForm.hh\
     CASMcode/include/casm/crystallography/Coordinate.hh\
     CASMcode/include/casm/crystallography/CoordinateSystems.hh\
-    CASMcode/include/casm/crystallography/DoF.hh\
     CASMcode/include/casm/crystallography/DoFDecl.hh\
     CASMcode/include/casm/crystallography/DoFSet.hh\
     CASMcode/include/casm/crystallography/HermiteCounter.hh\
+    CASMcode/include/casm/crystallography/IntegralCoordinateWithin.hh\
     CASMcode/include/casm/crystallography/Lattice.hh\
-    CASMcode/include/casm/crystallography/LatticeEnumEquivalents.hh\
     CASMcode/include/casm/crystallography/LatticeIsEquivalent.hh\
     CASMcode/include/casm/crystallography/LatticeMap.hh\
-    CASMcode/include/casm/crystallography/LatticePointWithin.hh\
     CASMcode/include/casm/crystallography/Lattice_impl.hh\
     CASMcode/include/casm/crystallography/LinearIndexConverter.hh\
     CASMcode/include/casm/crystallography/Molecule.hh\
@@ -200,9 +35,10 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/crystallography/SimpleStructureTools.hh\
     CASMcode/include/casm/crystallography/Site.hh\
     CASMcode/include/casm/crystallography/SpeciesAttribute.hh\
+    CASMcode/include/casm/crystallography/Strain.hh\
     CASMcode/include/casm/crystallography/StrucMapCalculatorInterface.hh\
     CASMcode/include/casm/crystallography/StrucMapping.hh\
-    CASMcode/include/casm/crystallography/Structure.hh\
+    CASMcode/include/casm/crystallography/Superlattice.hh\
     CASMcode/include/casm/crystallography/SuperlatticeEnumerator.hh\
     CASMcode/include/casm/crystallography/SymRepBuilder.hh\
     CASMcode/include/casm/crystallography/SymTools.hh\
@@ -210,54 +46,11 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/crystallography/SymTypeComparator.hh\
     CASMcode/include/casm/crystallography/UnitCellCoord.hh\
     CASMcode/include/casm/crystallography/UnitCellCoordTraits.hh\
-    CASMcode/include/casm/crystallography/io/VaspIO.hh\
-    CASMcode/include/casm/crystallography/jsonStruc.hh\
-    CASMcode/include/casm/database/Cache.hh\
-    CASMcode/include/casm/database/ConfigData.hh\
-    CASMcode/include/casm/database/ConfigData_impl.hh\
-    CASMcode/include/casm/database/ConfigDatabase.hh\
-    CASMcode/include/casm/database/ConfigDatabaseDefs.hh\
-    CASMcode/include/casm/database/ConfigImport.hh\
-    CASMcode/include/casm/database/Database.hh\
-    CASMcode/include/casm/database/DatabaseHandler.hh\
-    CASMcode/include/casm/database/DatabaseHandler_impl.hh\
-    CASMcode/include/casm/database/DatabaseNameIterator.hh\
-    CASMcode/include/casm/database/DatabaseSetIterator.hh\
-    CASMcode/include/casm/database/DatabaseTypes.hh\
-    CASMcode/include/casm/database/DatabaseTypesTraits.hh\
-    CASMcode/include/casm/database/DatabaseTypes_impl.hh\
-    CASMcode/include/casm/database/Database_impl.hh\
-    CASMcode/include/casm/database/DiffTransConfigDatabase.hh\
-    CASMcode/include/casm/database/DiffTransConfigImport.hh\
-    CASMcode/include/casm/database/DiffTransDatabase.hh\
-    CASMcode/include/casm/database/DiffTransOrbitDatabase.hh\
-    CASMcode/include/casm/database/Import.hh\
-    CASMcode/include/casm/database/Import_impl.hh\
-    CASMcode/include/casm/database/MappedProperties.hh\
-    CASMcode/include/casm/database/Named.hh\
-    CASMcode/include/casm/database/Named_impl.hh\
-    CASMcode/include/casm/database/PropertiesDatabase.hh\
-    CASMcode/include/casm/database/Remove.hh\
-    CASMcode/include/casm/database/Remove_impl.hh\
-    CASMcode/include/casm/database/ScelDatabase.hh\
-    CASMcode/include/casm/database/Selected.hh\
-    CASMcode/include/casm/database/Selected_impl.hh\
-    CASMcode/include/casm/database/Selection.hh\
-    CASMcode/include/casm/database/Selection_impl.hh\
-    CASMcode/include/casm/database/Update.hh\
-    CASMcode/include/casm/database/Update_impl.hh\
-    CASMcode/include/casm/database/json/jsonDatabase.hh\
-    CASMcode/include/casm/database/json/jsonPropertiesDatabase.hh\
-    CASMcode/include/casm/enumerator/EnumInputParser.hh\
-    CASMcode/include/casm/enumerator/Enumerator.hh\
-    CASMcode/include/casm/enumerator/Enumerator_impl.hh\
-    CASMcode/include/casm/enumerator/InputEnumerator.hh\
-    CASMcode/include/casm/enumerator/RandomAccessEnumerator.hh\
     CASMcode/include/casm/external/Eigen/Array\
     CASMcode/include/casm/external/Eigen/CASM_AddOns\
-    CASMcode/include/casm/external/Eigen/CMakeLists.txt\
     CASMcode/include/casm/external/Eigen/Cholesky\
     CASMcode/include/casm/external/Eigen/CholmodSupport\
+    CASMcode/include/casm/external/Eigen/CMakeLists.txt\
     CASMcode/include/casm/external/Eigen/Core\
     CASMcode/include/casm/external/Eigen/Dense\
     CASMcode/include/casm/external/Eigen/Eigen\
@@ -267,32 +60,34 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/external/Eigen/Householder\
     CASMcode/include/casm/external/Eigen/IterativeLinearSolvers\
     CASMcode/include/casm/external/Eigen/Jacobi\
-    CASMcode/include/casm/external/Eigen/LU\
     CASMcode/include/casm/external/Eigen/LeastSquares\
+    CASMcode/include/casm/external/Eigen/LU\
     CASMcode/include/casm/external/Eigen/MetisSupport\
     CASMcode/include/casm/external/Eigen/OrderingMethods\
-    CASMcode/include/casm/external/Eigen/PaStiXSupport\
     CASMcode/include/casm/external/Eigen/PardisoSupport\
+    CASMcode/include/casm/external/Eigen/PaStiXSupport\
     CASMcode/include/casm/external/Eigen/QR\
     CASMcode/include/casm/external/Eigen/QtAlignedMalloc\
-    CASMcode/include/casm/external/Eigen/SPQRSupport\
-    CASMcode/include/casm/external/Eigen/SVD\
     CASMcode/include/casm/external/Eigen/Sparse\
     CASMcode/include/casm/external/Eigen/SparseCholesky\
     CASMcode/include/casm/external/Eigen/SparseCore\
     CASMcode/include/casm/external/Eigen/SparseLU\
     CASMcode/include/casm/external/Eigen/SparseQR\
-    CASMcode/include/casm/external/Eigen/StdDeque\
-    CASMcode/include/casm/external/Eigen/StdList\
-    CASMcode/include/casm/external/Eigen/StdVector\
-    CASMcode/include/casm/external/Eigen/SuperLUSupport\
-    CASMcode/include/casm/external/Eigen/UmfPackSupport\
+    CASMcode/include/casm/external/Eigen/SPQRSupport\
     CASMcode/include/casm/external/Eigen/src/Cholesky/LDLT.h\
     CASMcode/include/casm/external/Eigen/src/Cholesky/LLT.h\
     CASMcode/include/casm/external/Eigen/src/Cholesky/LLT_MKL.h\
     CASMcode/include/casm/external/Eigen/src/CholmodSupport/CholmodSupport.h\
-    CASMcode/include/casm/external/Eigen/src/Core/Array.h\
+    CASMcode/include/casm/external/Eigen/src/Core/arch/AltiVec/Complex.h\
+    CASMcode/include/casm/external/Eigen/src/Core/arch/AltiVec/PacketMath.h\
+    CASMcode/include/casm/external/Eigen/src/Core/arch/Default/Settings.h\
+    CASMcode/include/casm/external/Eigen/src/Core/arch/NEON/Complex.h\
+    CASMcode/include/casm/external/Eigen/src/Core/arch/NEON/PacketMath.h\
+    CASMcode/include/casm/external/Eigen/src/Core/arch/SSE/Complex.h\
+    CASMcode/include/casm/external/Eigen/src/Core/arch/SSE/MathFunctions.h\
+    CASMcode/include/casm/external/Eigen/src/Core/arch/SSE/PacketMath.h\
     CASMcode/include/casm/external/Eigen/src/Core/ArrayBase.h\
+    CASMcode/include/casm/external/Eigen/src/Core/Array.h\
     CASMcode/include/casm/external/Eigen/src/Core/ArrayWrapper.h\
     CASMcode/include/casm/external/Eigen/src/Core/Assign.h\
     CASMcode/include/casm/external/Eigen/src/Core/Assign_MKL.h\
@@ -321,50 +116,23 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/external/Eigen/src/Core/GenericPacketMath.h\
     CASMcode/include/casm/external/Eigen/src/Core/GlobalFunctions.h\
     CASMcode/include/casm/external/Eigen/src/Core/IO.h\
-    CASMcode/include/casm/external/Eigen/src/Core/Map.h\
     CASMcode/include/casm/external/Eigen/src/Core/MapBase.h\
+    CASMcode/include/casm/external/Eigen/src/Core/Map.h\
     CASMcode/include/casm/external/Eigen/src/Core/MathFunctions.h\
-    CASMcode/include/casm/external/Eigen/src/Core/Matrix.h\
     CASMcode/include/casm/external/Eigen/src/Core/MatrixBase.h\
+    CASMcode/include/casm/external/Eigen/src/Core/Matrix.h\
     CASMcode/include/casm/external/Eigen/src/Core/NestByValue.h\
     CASMcode/include/casm/external/Eigen/src/Core/NoAlias.h\
     CASMcode/include/casm/external/Eigen/src/Core/NumTraits.h\
     CASMcode/include/casm/external/Eigen/src/Core/PermutationMatrix.h\
     CASMcode/include/casm/external/Eigen/src/Core/PlainObjectBase.h\
     CASMcode/include/casm/external/Eigen/src/Core/ProductBase.h\
-    CASMcode/include/casm/external/Eigen/src/Core/Random.h\
-    CASMcode/include/casm/external/Eigen/src/Core/Redux.h\
-    CASMcode/include/casm/external/Eigen/src/Core/Ref.h\
-    CASMcode/include/casm/external/Eigen/src/Core/Replicate.h\
-    CASMcode/include/casm/external/Eigen/src/Core/ReturnByValue.h\
-    CASMcode/include/casm/external/Eigen/src/Core/Reverse.h\
-    CASMcode/include/casm/external/Eigen/src/Core/Select.h\
-    CASMcode/include/casm/external/Eigen/src/Core/SelfAdjointView.h\
-    CASMcode/include/casm/external/Eigen/src/Core/SelfCwiseBinaryOp.h\
-    CASMcode/include/casm/external/Eigen/src/Core/SolveTriangular.h\
-    CASMcode/include/casm/external/Eigen/src/Core/StableNorm.h\
-    CASMcode/include/casm/external/Eigen/src/Core/Stride.h\
-    CASMcode/include/casm/external/Eigen/src/Core/Swap.h\
-    CASMcode/include/casm/external/Eigen/src/Core/Transpose.h\
-    CASMcode/include/casm/external/Eigen/src/Core/Transpositions.h\
-    CASMcode/include/casm/external/Eigen/src/Core/TriangularMatrix.h\
-    CASMcode/include/casm/external/Eigen/src/Core/VectorBlock.h\
-    CASMcode/include/casm/external/Eigen/src/Core/VectorwiseOp.h\
-    CASMcode/include/casm/external/Eigen/src/Core/Visitor.h\
-    CASMcode/include/casm/external/Eigen/src/Core/arch/AltiVec/Complex.h\
-    CASMcode/include/casm/external/Eigen/src/Core/arch/AltiVec/PacketMath.h\
-    CASMcode/include/casm/external/Eigen/src/Core/arch/Default/Settings.h\
-    CASMcode/include/casm/external/Eigen/src/Core/arch/NEON/Complex.h\
-    CASMcode/include/casm/external/Eigen/src/Core/arch/NEON/PacketMath.h\
-    CASMcode/include/casm/external/Eigen/src/Core/arch/SSE/Complex.h\
-    CASMcode/include/casm/external/Eigen/src/Core/arch/SSE/MathFunctions.h\
-    CASMcode/include/casm/external/Eigen/src/Core/arch/SSE/PacketMath.h\
     CASMcode/include/casm/external/Eigen/src/Core/products/CoeffBasedProduct.h\
     CASMcode/include/casm/external/Eigen/src/Core/products/GeneralBlockPanelKernel.h\
     CASMcode/include/casm/external/Eigen/src/Core/products/GeneralMatrixMatrix.h\
+    CASMcode/include/casm/external/Eigen/src/Core/products/GeneralMatrixMatrix_MKL.h\
     CASMcode/include/casm/external/Eigen/src/Core/products/GeneralMatrixMatrixTriangular.h\
     CASMcode/include/casm/external/Eigen/src/Core/products/GeneralMatrixMatrixTriangular_MKL.h\
-    CASMcode/include/casm/external/Eigen/src/Core/products/GeneralMatrixMatrix_MKL.h\
     CASMcode/include/casm/external/Eigen/src/Core/products/GeneralMatrixVector.h\
     CASMcode/include/casm/external/Eigen/src/Core/products/GeneralMatrixVector_MKL.h\
     CASMcode/include/casm/external/Eigen/src/Core/products/Parallelizer.h\
@@ -381,18 +149,37 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/external/Eigen/src/Core/products/TriangularSolverMatrix.h\
     CASMcode/include/casm/external/Eigen/src/Core/products/TriangularSolverMatrix_MKL.h\
     CASMcode/include/casm/external/Eigen/src/Core/products/TriangularSolverVector.h\
+    CASMcode/include/casm/external/Eigen/src/Core/Random.h\
+    CASMcode/include/casm/external/Eigen/src/Core/Redux.h\
+    CASMcode/include/casm/external/Eigen/src/Core/Ref.h\
+    CASMcode/include/casm/external/Eigen/src/Core/Replicate.h\
+    CASMcode/include/casm/external/Eigen/src/Core/ReturnByValue.h\
+    CASMcode/include/casm/external/Eigen/src/Core/Reverse.h\
+    CASMcode/include/casm/external/Eigen/src/Core/Select.h\
+    CASMcode/include/casm/external/Eigen/src/Core/SelfAdjointView.h\
+    CASMcode/include/casm/external/Eigen/src/Core/SelfCwiseBinaryOp.h\
+    CASMcode/include/casm/external/Eigen/src/Core/SolveTriangular.h\
+    CASMcode/include/casm/external/Eigen/src/Core/StableNorm.h\
+    CASMcode/include/casm/external/Eigen/src/Core/Stride.h\
+    CASMcode/include/casm/external/Eigen/src/Core/Swap.h\
+    CASMcode/include/casm/external/Eigen/src/Core/Transpose.h\
+    CASMcode/include/casm/external/Eigen/src/Core/Transpositions.h\
+    CASMcode/include/casm/external/Eigen/src/Core/TriangularMatrix.h\
     CASMcode/include/casm/external/Eigen/src/Core/util/BlasUtil.h\
     CASMcode/include/casm/external/Eigen/src/Core/util/Constants.h\
     CASMcode/include/casm/external/Eigen/src/Core/util/DisableStupidWarnings.h\
     CASMcode/include/casm/external/Eigen/src/Core/util/ForwardDeclarations.h\
-    CASMcode/include/casm/external/Eigen/src/Core/util/MKL_support.h\
     CASMcode/include/casm/external/Eigen/src/Core/util/Macros.h\
     CASMcode/include/casm/external/Eigen/src/Core/util/Memory.h\
     CASMcode/include/casm/external/Eigen/src/Core/util/Meta.h\
+    CASMcode/include/casm/external/Eigen/src/Core/util/MKL_support.h\
     CASMcode/include/casm/external/Eigen/src/Core/util/NonMPL2.h\
     CASMcode/include/casm/external/Eigen/src/Core/util/ReenableStupidWarnings.h\
     CASMcode/include/casm/external/Eigen/src/Core/util/StaticAssert.h\
     CASMcode/include/casm/external/Eigen/src/Core/util/XprHelper.h\
+    CASMcode/include/casm/external/Eigen/src/Core/VectorBlock.h\
+    CASMcode/include/casm/external/Eigen/src/Core/VectorwiseOp.h\
+    CASMcode/include/casm/external/Eigen/src/Core/Visitor.h\
     CASMcode/include/casm/external/Eigen/src/Eigen2Support/Block.h\
     CASMcode/include/casm/external/Eigen/src/Eigen2Support/Cwise.h\
     CASMcode/include/casm/external/Eigen/src/Eigen2Support/CwiseOperators.h\
@@ -407,9 +194,9 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/external/Eigen/src/Eigen2Support/Geometry/Scaling.h\
     CASMcode/include/casm/external/Eigen/src/Eigen2Support/Geometry/Transform.h\
     CASMcode/include/casm/external/Eigen/src/Eigen2Support/Geometry/Translation.h\
-    CASMcode/include/casm/external/Eigen/src/Eigen2Support/LU.h\
     CASMcode/include/casm/external/Eigen/src/Eigen2Support/Lazy.h\
     CASMcode/include/casm/external/Eigen/src/Eigen2Support/LeastSquares.h\
+    CASMcode/include/casm/external/Eigen/src/Eigen2Support/LU.h\
     CASMcode/include/casm/external/Eigen/src/Eigen2Support/Macros.h\
     CASMcode/include/casm/external/Eigen/src/Eigen2Support/MathFunctions.h\
     CASMcode/include/casm/external/Eigen/src/Eigen2Support/Memory.h\
@@ -435,6 +222,7 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/external/Eigen/src/Eigenvalues/Tridiagonalization.h\
     CASMcode/include/casm/external/Eigen/src/Geometry/AlignedBox.h\
     CASMcode/include/casm/external/Eigen/src/Geometry/AngleAxis.h\
+    CASMcode/include/casm/external/Eigen/src/Geometry/arch/Geometry_SSE.h\
     CASMcode/include/casm/external/Eigen/src/Geometry/EulerAngles.h\
     CASMcode/include/casm/external/Eigen/src/Geometry/Homogeneous.h\
     CASMcode/include/casm/external/Eigen/src/Geometry/Hyperplane.h\
@@ -447,7 +235,6 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/external/Eigen/src/Geometry/Transform.h\
     CASMcode/include/casm/external/Eigen/src/Geometry/Translation.h\
     CASMcode/include/casm/external/Eigen/src/Geometry/Umeyama.h\
-    CASMcode/include/casm/external/Eigen/src/Geometry/arch/Geometry_SSE.h\
     CASMcode/include/casm/external/Eigen/src/Householder/BlockHouseholder.h\
     CASMcode/include/casm/external/Eigen/src/Householder/Householder.h\
     CASMcode/include/casm/external/Eigen/src/Householder/HouseholderSequence.h\
@@ -457,27 +244,35 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/external/Eigen/src/IterativeLinearSolvers/IncompleteLUT.h\
     CASMcode/include/casm/external/Eigen/src/IterativeLinearSolvers/IterativeSolverBase.h\
     CASMcode/include/casm/external/Eigen/src/Jacobi/Jacobi.h\
+    CASMcode/include/casm/external/Eigen/src/LU/arch/Inverse_SSE.h\
     CASMcode/include/casm/external/Eigen/src/LU/Determinant.h\
     CASMcode/include/casm/external/Eigen/src/LU/FullPivLU.h\
     CASMcode/include/casm/external/Eigen/src/LU/Inverse.h\
     CASMcode/include/casm/external/Eigen/src/LU/PartialPivLU.h\
     CASMcode/include/casm/external/Eigen/src/LU/PartialPivLU_MKL.h\
-    CASMcode/include/casm/external/Eigen/src/LU/arch/Inverse_SSE.h\
     CASMcode/include/casm/external/Eigen/src/MetisSupport/MetisSupport.h\
+    CASMcode/include/casm/external/Eigen/src/misc/blas.h\
+    CASMcode/include/casm/external/Eigen/src/misc/Image.h\
+    CASMcode/include/casm/external/Eigen/src/misc/Kernel.h\
+    CASMcode/include/casm/external/Eigen/src/misc/Solve.h\
+    CASMcode/include/casm/external/Eigen/src/misc/SparseSolve.h\
     CASMcode/include/casm/external/Eigen/src/OrderingMethods/Amd.h\
     CASMcode/include/casm/external/Eigen/src/OrderingMethods/Eigen_Colamd.h\
     CASMcode/include/casm/external/Eigen/src/OrderingMethods/Ordering.h\
-    CASMcode/include/casm/external/Eigen/src/PaStiXSupport/PaStiXSupport.h\
     CASMcode/include/casm/external/Eigen/src/PardisoSupport/PardisoSupport.h\
+    CASMcode/include/casm/external/Eigen/src/PaStiXSupport/PaStiXSupport.h\
+    CASMcode/include/casm/external/Eigen/src/plugins/ArrayCwiseBinaryOps.h\
+    CASMcode/include/casm/external/Eigen/src/plugins/ArrayCwiseUnaryOps.h\
+    CASMcode/include/casm/external/Eigen/src/plugins/BlockMethods.h\
+    CASMcode/include/casm/external/Eigen/src/plugins/CommonCwiseBinaryOps.h\
+    CASMcode/include/casm/external/Eigen/src/plugins/CommonCwiseUnaryOps.h\
+    CASMcode/include/casm/external/Eigen/src/plugins/MatrixCwiseBinaryOps.h\
+    CASMcode/include/casm/external/Eigen/src/plugins/MatrixCwiseUnaryOps.h\
     CASMcode/include/casm/external/Eigen/src/QR/ColPivHouseholderQR.h\
     CASMcode/include/casm/external/Eigen/src/QR/ColPivHouseholderQR_MKL.h\
     CASMcode/include/casm/external/Eigen/src/QR/FullPivHouseholderQR.h\
     CASMcode/include/casm/external/Eigen/src/QR/HouseholderQR.h\
     CASMcode/include/casm/external/Eigen/src/QR/HouseholderQR_MKL.h\
-    CASMcode/include/casm/external/Eigen/src/SPQRSupport/SuiteSparseQRSupport.h\
-    CASMcode/include/casm/external/Eigen/src/SVD/JacobiSVD.h\
-    CASMcode/include/casm/external/Eigen/src/SVD/JacobiSVD_MKL.h\
-    CASMcode/include/casm/external/Eigen/src/SVD/UpperBidiagonalization.h\
     CASMcode/include/casm/external/Eigen/src/SparseCholesky/SimplicialCholesky.h\
     CASMcode/include/casm/external/Eigen/src/SparseCholesky/SimplicialCholesky_impl.h\
     CASMcode/include/casm/external/Eigen/src/SparseCore/AmbiVector.h\
@@ -492,8 +287,8 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/external/Eigen/src/SparseCore/SparseDiagonalProduct.h\
     CASMcode/include/casm/external/Eigen/src/SparseCore/SparseDot.h\
     CASMcode/include/casm/external/Eigen/src/SparseCore/SparseFuzzy.h\
-    CASMcode/include/casm/external/Eigen/src/SparseCore/SparseMatrix.h\
     CASMcode/include/casm/external/Eigen/src/SparseCore/SparseMatrixBase.h\
+    CASMcode/include/casm/external/Eigen/src/SparseCore/SparseMatrix.h\
     CASMcode/include/casm/external/Eigen/src/SparseCore/SparsePermutation.h\
     CASMcode/include/casm/external/Eigen/src/SparseCore/SparseProduct.h\
     CASMcode/include/casm/external/Eigen/src/SparseCore/SparseRedux.h\
@@ -505,73 +300,55 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/external/Eigen/src/SparseCore/SparseVector.h\
     CASMcode/include/casm/external/Eigen/src/SparseCore/SparseView.h\
     CASMcode/include/casm/external/Eigen/src/SparseCore/TriangularSolver.h\
-    CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU.h\
-    CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLUImpl.h\
-    CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_Memory.h\
-    CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_Structs.h\
-    CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_SupernodalMatrix.h\
-    CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_Utils.h\
     CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_column_bmod.h\
     CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_column_dfs.h\
     CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_copy_to_ucol.h\
     CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_gemm_kernel.h\
+    CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU.h\
     CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_heap_relax_snode.h\
+    CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLUImpl.h\
     CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_kernel_bmod.h\
+    CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_Memory.h\
     CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_panel_bmod.h\
     CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_panel_dfs.h\
     CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_pivotL.h\
     CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_pruneL.h\
     CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_relax_snode.h\
+    CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_Structs.h\
+    CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_SupernodalMatrix.h\
+    CASMcode/include/casm/external/Eigen/src/SparseLU/SparseLU_Utils.h\
     CASMcode/include/casm/external/Eigen/src/SparseQR/SparseQR.h\
+    CASMcode/include/casm/external/Eigen/src/SPQRSupport/SuiteSparseQRSupport.h\
+    CASMcode/include/casm/external/Eigen/src/StlSupport/details.h\
     CASMcode/include/casm/external/Eigen/src/StlSupport/StdDeque.h\
     CASMcode/include/casm/external/Eigen/src/StlSupport/StdList.h\
     CASMcode/include/casm/external/Eigen/src/StlSupport/StdVector.h\
-    CASMcode/include/casm/external/Eigen/src/StlSupport/details.h\
     CASMcode/include/casm/external/Eigen/src/SuperLUSupport/SuperLUSupport.h\
+    CASMcode/include/casm/external/Eigen/src/SVD/JacobiSVD.h\
+    CASMcode/include/casm/external/Eigen/src/SVD/JacobiSVD_MKL.h\
+    CASMcode/include/casm/external/Eigen/src/SVD/UpperBidiagonalization.h\
     CASMcode/include/casm/external/Eigen/src/UmfPackSupport/UmfPackSupport.h\
-    CASMcode/include/casm/external/Eigen/src/misc/Image.h\
-    CASMcode/include/casm/external/Eigen/src/misc/Kernel.h\
-    CASMcode/include/casm/external/Eigen/src/misc/Solve.h\
-    CASMcode/include/casm/external/Eigen/src/misc/SparseSolve.h\
-    CASMcode/include/casm/external/Eigen/src/misc/blas.h\
-    CASMcode/include/casm/external/Eigen/src/plugins/ArrayCwiseBinaryOps.h\
-    CASMcode/include/casm/external/Eigen/src/plugins/ArrayCwiseUnaryOps.h\
-    CASMcode/include/casm/external/Eigen/src/plugins/BlockMethods.h\
-    CASMcode/include/casm/external/Eigen/src/plugins/CommonCwiseBinaryOps.h\
-    CASMcode/include/casm/external/Eigen/src/plugins/CommonCwiseUnaryOps.h\
-    CASMcode/include/casm/external/Eigen/src/plugins/MatrixCwiseBinaryOps.h\
-    CASMcode/include/casm/external/Eigen/src/plugins/MatrixCwiseUnaryOps.h\
     CASMcode/include/casm/external/Eigen/src/unsupported/KroneckerTensorProduct.h\
-    CASMcode/include/casm/external/MersenneTwister/MersenneTwister.h\
+    CASMcode/include/casm/external/Eigen/StdDeque\
+    CASMcode/include/casm/external/Eigen/StdList\
+    CASMcode/include/casm/external/Eigen/StdVector\
+    CASMcode/include/casm/external/Eigen/SuperLUSupport\
+    CASMcode/include/casm/external/Eigen/SVD\
+    CASMcode/include/casm/external/Eigen/UmfPackSupport\
     CASMcode/include/casm/external/fadbad/badiff.h\
     CASMcode/include/casm/external/fadbad/fadbad.h\
     CASMcode/include/casm/external/fadbad/fadiff.h\
     CASMcode/include/casm/external/fadbad/tadiff.h\
     CASMcode/include/casm/external/gzstream/gzstream.h\
-    CASMcode/include/casm/external/json_spirit/json_spirit.h\
-    CASMcode/include/casm/external/json_spirit/json_spirit_error_position.h\
-    CASMcode/include/casm/external/json_spirit/json_spirit_reader_template.h\
-    CASMcode/include/casm/external/json_spirit/json_spirit_value.h\
-    CASMcode/include/casm/external/json_spirit/json_spirit_writer_options.h\
-    CASMcode/include/casm/external/json_spirit/json_spirit_writer_template.h\
-    CASMcode/include/casm/external/qhull/libqhull_r/geom_r.h\
-    CASMcode/include/casm/external/qhull/libqhull_r/io_r.h\
-    CASMcode/include/casm/external/qhull/libqhull_r/libqhull_r.h\
-    CASMcode/include/casm/external/qhull/libqhull_r/mem_r.h\
-    CASMcode/include/casm/external/qhull/libqhull_r/merge_r.h\
-    CASMcode/include/casm/external/qhull/libqhull_r/poly_r.h\
-    CASMcode/include/casm/external/qhull/libqhull_r/qhull_ra.h\
-    CASMcode/include/casm/external/qhull/libqhull_r/qset_r.h\
-    CASMcode/include/casm/external/qhull/libqhull_r/random_r.h\
-    CASMcode/include/casm/external/qhull/libqhull_r/stat_r.h\
-    CASMcode/include/casm/external/qhull/libqhull_r/user_r.h\
+    CASMcode/include/casm/external/MersenneTwister/MersenneTwister.h\
     CASMcode/include/casm/external/qhull/libqhullcpp/Coordinates.h\
+    CASMcode/include/casm/external/qhull/libqhullcpp/functionObjects.h\
     CASMcode/include/casm/external/qhull/libqhullcpp/PointCoordinates.h\
-    CASMcode/include/casm/external/qhull/libqhullcpp/Qhull.h\
     CASMcode/include/casm/external/qhull/libqhullcpp/QhullError.h\
     CASMcode/include/casm/external/qhull/libqhullcpp/QhullFacet.h\
     CASMcode/include/casm/external/qhull/libqhullcpp/QhullFacetList.h\
     CASMcode/include/casm/external/qhull/libqhullcpp/QhullFacetSet.h\
+    CASMcode/include/casm/external/qhull/libqhullcpp/Qhull.h\
     CASMcode/include/casm/external/qhull/libqhullcpp/QhullHyperplane.h\
     CASMcode/include/casm/external/qhull/libqhullcpp/QhullIterator.h\
     CASMcode/include/casm/external/qhull/libqhullcpp/QhullLinkedList.h\
@@ -588,230 +365,38 @@ libcasmblob_la_SOURCES=\
     CASMcode/include/casm/external/qhull/libqhullcpp/RboxPoints.h\
     CASMcode/include/casm/external/qhull/libqhullcpp/RoadError.h\
     CASMcode/include/casm/external/qhull/libqhullcpp/RoadLogEvent.h\
-    CASMcode/include/casm/external/qhull/libqhullcpp/functionObjects.h\
+    CASMcode/include/casm/external/qhull/libqhull_r/geom_r.h\
+    CASMcode/include/casm/external/qhull/libqhull_r/io_r.h\
+    CASMcode/include/casm/external/qhull/libqhull_r/libqhull_r.h\
+    CASMcode/include/casm/external/qhull/libqhull_r/mem_r.h\
+    CASMcode/include/casm/external/qhull/libqhull_r/merge_r.h\
+    CASMcode/include/casm/external/qhull/libqhull_r/poly_r.h\
+    CASMcode/include/casm/external/qhull/libqhull_r/qhull_ra.h\
+    CASMcode/include/casm/external/qhull/libqhull_r/qset_r.h\
+    CASMcode/include/casm/external/qhull/libqhull_r/random_r.h\
+    CASMcode/include/casm/external/qhull/libqhull_r/stat_r.h\
+    CASMcode/include/casm/external/qhull/libqhull_r/user_r.h\
     CASMcode/include/casm/global/definitions.hh\
     CASMcode/include/casm/global/eigen.hh\
     CASMcode/include/casm/global/enum.hh\
     CASMcode/include/casm/global/enum/io_traits.hh\
-    CASMcode/include/casm/global/enum/json_io.hh\
     CASMcode/include/casm/global/enum/stream_io.hh\
-    CASMcode/include/casm/hull/Hull.hh\
-    CASMcode/include/casm/kinetics/DiffTransConfigEnumOccPerturbations.hh\
-    CASMcode/include/casm/kinetics/DiffTransConfigInterpolation.hh\
-    CASMcode/include/casm/kinetics/DiffTransConfigIsEqual.hh\
-    CASMcode/include/casm/kinetics/DiffTransConfigMapping.hh\
-    CASMcode/include/casm/kinetics/DiffTransConfiguration.hh\
-    CASMcode/include/casm/kinetics/DiffTransConfigurationIO.hh\
-    CASMcode/include/casm/kinetics/DiffTransConfigurationTraits.hh\
-    CASMcode/include/casm/kinetics/DiffTransConfiguration_impl.hh\
-    CASMcode/include/casm/kinetics/DiffusionTransformation.hh\
-    CASMcode/include/casm/kinetics/DiffusionTransformationEnum.hh\
-    CASMcode/include/casm/kinetics/DiffusionTransformationEnum_impl.hh\
-    CASMcode/include/casm/kinetics/DiffusionTransformationTraits.hh\
-    CASMcode/include/casm/kinetics/DiffusionTransformation_impl.hh\
-    CASMcode/include/casm/kinetics/DoFTransformation.hh\
-    CASMcode/include/casm/kinetics/DoFTransformation_impl.hh\
-    CASMcode/include/casm/kinetics/EnumDiffTransConfigEndpoints.hh\
-    CASMcode/include/casm/kinetics/KineticsDecl.hh\
-    CASMcode/include/casm/kinetics/KineticsOrbits.hh\
-    CASMcode/include/casm/kinetics/KineticsOrbits_impl.hh\
-    CASMcode/include/casm/kinetics/OccPerturbation.hh\
-    CASMcode/include/casm/kinetics/OccPerturbation_impl.hh\
-    CASMcode/include/casm/kinetics/OccupationTransformation.hh\
-    CASMcode/include/casm/kinetics/OccupationTransformationTraits.hh\
-    CASMcode/include/casm/kinetics/PrimPeriodicDiffTransOrbitIO.hh\
-    CASMcode/include/casm/kinetics/PrimPeriodicDiffTransOrbitTraits.hh\
-    CASMcode/include/casm/kinetics/RemovePrimPeriodicDiffTransOrbit.hh\
-    CASMcode/include/casm/kinetics/SubOrbitGenerators.hh\
+    CASMcode/include/casm/misc/algorithm.hh\
     CASMcode/include/casm/misc/CASM_Array_math.hh\
     CASMcode/include/casm/misc/CASM_Eigen_math.hh\
-    CASMcode/include/casm/misc/CASM_TMP.hh\
     CASMcode/include/casm/misc/CASM_math.hh\
-    CASMcode/include/casm/misc/CRTPBase.hh\
+    CASMcode/include/casm/misc/CASM_TMP.hh\
+    CASMcode/include/casm/misc/cloneable_ptr.hh\
     CASMcode/include/casm/misc/Comparisons.hh\
+    CASMcode/include/casm/misc/CRTPBase.hh\
     CASMcode/include/casm/misc/HallOfFame.hh\
     CASMcode/include/casm/misc/HierarchyID.hh\
-    CASMcode/include/casm/misc/PCA.hh\
     CASMcode/include/casm/misc/ParsingDictionary.hh\
+    CASMcode/include/casm/misc/PCA.hh\
     CASMcode/include/casm/misc/TypeInfo.hh\
-    CASMcode/include/casm/misc/algorithm.hh\
-    CASMcode/include/casm/misc/cloneable_ptr.hh\
     CASMcode/include/casm/misc/type_traits.hh\
     CASMcode/include/casm/misc/unique_cloneable_map.hh\
     CASMcode/include/casm/misc/unique_map.hh\
-    CASMcode/include/casm/monte_carlo/Conversions.hh\
-    CASMcode/include/casm/monte_carlo/DoFMod.hh\
-    CASMcode/include/casm/monte_carlo/MCData.hh\
-    CASMcode/include/casm/monte_carlo/MonteCarlo.hh\
-    CASMcode/include/casm/monte_carlo/MonteCarloEnum.hh\
-    CASMcode/include/casm/monte_carlo/MonteCarloEnum_impl.hh\
-    CASMcode/include/casm/monte_carlo/MonteCarlo_impl.hh\
-    CASMcode/include/casm/monte_carlo/MonteCounter.hh\
-    CASMcode/include/casm/monte_carlo/MonteDefinitions.hh\
-    CASMcode/include/casm/monte_carlo/MonteDriver.hh\
-    CASMcode/include/casm/monte_carlo/MonteDriver_impl.hh\
-    CASMcode/include/casm/monte_carlo/MonteIO.hh\
-    CASMcode/include/casm/monte_carlo/MonteIO_impl.hh\
-    CASMcode/include/casm/monte_carlo/MonteSampler.hh\
-    CASMcode/include/casm/monte_carlo/MonteSettings.hh\
-    CASMcode/include/casm/monte_carlo/OccCandidate.hh\
-    CASMcode/include/casm/monte_carlo/OccLocation.hh\
-    CASMcode/include/casm/monte_carlo/SiteExchanger.hh\
-    CASMcode/include/casm/monte_carlo/canonical/Canonical.hh\
-    CASMcode/include/casm/monte_carlo/canonical/CanonicalConditions.hh\
-    CASMcode/include/casm/monte_carlo/canonical/CanonicalEvent.hh\
-    CASMcode/include/casm/monte_carlo/canonical/CanonicalIO.hh\
-    CASMcode/include/casm/monte_carlo/canonical/CanonicalSettings.hh\
-    CASMcode/include/casm/monte_carlo/canonical/CanonicalSettings_impl.hh\
-    CASMcode/include/casm/monte_carlo/grand_canonical/GrandCanonical.hh\
-    CASMcode/include/casm/monte_carlo/grand_canonical/GrandCanonicalConditions.hh\
-    CASMcode/include/casm/monte_carlo/grand_canonical/GrandCanonicalEvent.hh\
-    CASMcode/include/casm/monte_carlo/grand_canonical/GrandCanonicalIO.hh\
-    CASMcode/include/casm/monte_carlo/grand_canonical/GrandCanonicalSettings.hh\
-    CASMcode/include/casm/monte_carlo/grand_canonical/GrandCanonicalSettings_impl.hh\
-    CASMcode/include/casm/strain/StrainConverter.hh\
-    CASMcode/include/casm/symmetry/ConfigSubOrbits.hh\
-    CASMcode/include/casm/symmetry/ConfigSubOrbits_impl.hh\
-    CASMcode/include/casm/symmetry/ElementSymApply.hh\
-    CASMcode/include/casm/symmetry/EnumEquivalents.hh\
-    CASMcode/include/casm/symmetry/InvariantSubgroup.hh\
-    CASMcode/include/casm/symmetry/InvariantSubgroup_impl.hh\
-    CASMcode/include/casm/symmetry/Orbit.hh\
-    CASMcode/include/casm/symmetry/OrbitDecl.hh\
-    CASMcode/include/casm/symmetry/OrbitGeneration.hh\
-    CASMcode/include/casm/symmetry/OrbitGeneration_impl.hh\
-    CASMcode/include/casm/symmetry/Orbit_impl.hh\
-    CASMcode/include/casm/symmetry/PermuteIterator.hh\
-    CASMcode/include/casm/symmetry/ScelOrbitGeneration.hh\
-    CASMcode/include/casm/symmetry/ScelOrbitGeneration_impl.hh\
-    CASMcode/include/casm/symmetry/ScelSubOrbits.hh\
-    CASMcode/include/casm/symmetry/ScelSubOrbits_impl.hh\
-    CASMcode/include/casm/symmetry/SubOrbits.hh\
-    CASMcode/include/casm/symmetry/SubOrbits_impl.hh\
-    CASMcode/include/casm/symmetry/SupercellSymInfo.hh\
-    CASMcode/include/casm/symmetry/SupercellSymInfo_impl.hh\
-    CASMcode/include/casm/symmetry/SymBasisPermute.hh\
-    CASMcode/include/casm/symmetry/SymCompare.hh\
-    CASMcode/include/casm/symmetry/SymGroup.hh\
-    CASMcode/include/casm/symmetry/SymGroupRep.hh\
-    CASMcode/include/casm/symmetry/SymGroupRepID.hh\
-    CASMcode/include/casm/symmetry/SymInfo.hh\
-    CASMcode/include/casm/symmetry/SymMatrixXd.hh\
-    CASMcode/include/casm/symmetry/SymOp.hh\
-    CASMcode/include/casm/symmetry/SymOpRepresentation.hh\
-    CASMcode/include/casm/symmetry/SymPermutation.hh\
-    CASMcode/include/casm/symmetry/SymRepTools.hh\
-    CASMcode/include/casm/symmetry/SymTools.hh\
-    CASMcode/include/casm/symmetry/SymTools_impl.hh\
-    CASMcode/include/casm/symmetry/VectorOrbits.hh\
-    CASMcode/include/casm/symmetry/VectorSymCompare.hh\
-    CASMcode/include/casm/symmetry/VectorSymCompare_impl.hh\
-    CASMcode/include/casm/system/Popen.hh\
-    CASMcode/include/casm/system/RuntimeLibrary.hh\
-    CASMcode/include/casm/version/version.hh\
-    CASMcode/src/casm/app/APICommand.cc\
-    CASMcode/src/casm/app/AppIO.cc\
-    CASMcode/src/casm/app/CLIParse.cc\
-    CASMcode/src/casm/app/ClexDescription.cc\
-    CASMcode/src/casm/app/DBInterface.cc\
-    CASMcode/src/casm/app/DirectoryStructure.cc\
-    CASMcode/src/casm/app/EnumeratorHandler.cc\
-    CASMcode/src/casm/app/HamiltonianModules.cc\
-    CASMcode/src/casm/app/LogRuntimeLibrary.cc\
-    CASMcode/src/casm/app/ProjectBuilder.cc\
-    CASMcode/src/casm/app/ProjectSettings.cc\
-    CASMcode/src/casm/app/QueryHandler.cc\
-    CASMcode/src/casm/app/bset.cc\
-    CASMcode/src/casm/app/casm_functions.cc\
-    CASMcode/src/casm/app/composition.cc\
-    CASMcode/src/casm/app/enum.cc\
-    CASMcode/src/casm/app/files.cc\
-    CASMcode/src/casm/app/format.cc\
-    CASMcode/src/casm/app/import.cc\
-    CASMcode/src/casm/app/init.cc\
-    CASMcode/src/casm/app/monte.cc\
-    CASMcode/src/casm/app/perturb.cc\
-    CASMcode/src/casm/app/query.cc\
-    CASMcode/src/casm/app/ref.cc\
-    CASMcode/src/casm/app/rm.cc\
-    CASMcode/src/casm/app/run.cc\
-    CASMcode/src/casm/app/select.cc\
-    CASMcode/src/casm/app/settings.cc\
-    CASMcode/src/casm/app/status.cc\
-    CASMcode/src/casm/app/super.cc\
-    CASMcode/src/casm/app/sym.cc\
-    CASMcode/src/casm/app/update.cc\
-    CASMcode/src/casm/app/view.cc\
-    CASMcode/src/casm/basis_set/BasisFunction.cc\
-    CASMcode/src/casm/basis_set/BasisSet.cc\
-    CASMcode/src/casm/basis_set/DisplacementDoFTraits.cc\
-    CASMcode/src/casm/basis_set/DoF.cc\
-    CASMcode/src/casm/basis_set/DoFIsEquivalent.cc\
-    CASMcode/src/casm/basis_set/DoFSet.cc\
-    CASMcode/src/casm/basis_set/DoFTraits.cc\
-    CASMcode/src/casm/basis_set/FunctionVisitor.cc\
-    CASMcode/src/casm/basis_set/MagSpinDoFTraits.cc\
-    CASMcode/src/casm/basis_set/OccupantFunction.cc\
-    CASMcode/src/casm/basis_set/OccupationDoFTraits.cc\
-    CASMcode/src/casm/basis_set/PolynomialFunction.cc\
-    CASMcode/src/casm/basis_set/StrainDoFTraits.cc\
-    CASMcode/src/casm/basis_set/Variable.cc\
-    CASMcode/src/casm/casm_io/DataFormatter.cc\
-    CASMcode/src/casm/casm_io/DataStream.cc\
-    CASMcode/src/casm/casm_io/FormatFlag.cc\
-    CASMcode/src/casm/casm_io/InputParser.cc\
-    CASMcode/src/casm/casm_io/Log.cc\
-    CASMcode/src/casm/casm_io/jsonParser.cc\
-    CASMcode/src/casm/casm_io/json_io/SpeciesSetParser.cc\
-    CASMcode/src/casm/casm_io/json_io/clex.cc\
-    CASMcode/src/casm/clex/Calculable.cc\
-    CASMcode/src/casm/clex/ChemicalReference.cc\
-    CASMcode/src/casm/clex/Clex.cc\
-    CASMcode/src/casm/clex/ClexBasis.cc\
-    CASMcode/src/casm/clex/ClexBasisWriter.cc\
-    CASMcode/src/casm/clex/Clexulator.cc\
-    CASMcode/src/casm/clex/CompositionConverter.cc\
-    CASMcode/src/casm/clex/ConfigCompare.cc\
-    CASMcode/src/casm/clex/ConfigDoF.cc\
-    CASMcode/src/casm/clex/ConfigDoFValues.cc\
-    CASMcode/src/casm/clex/ConfigEnumAllOccupations.cc\
-    CASMcode/src/casm/clex/ConfigEnumEquivalents.cc\
-    CASMcode/src/casm/clex/ConfigEnumInterpolation.cc\
-    CASMcode/src/casm/clex/ConfigEnumOccPerturbations.cc\
-    CASMcode/src/casm/clex/ConfigEnumRandomLocal.cc\
-    CASMcode/src/casm/clex/ConfigEnumRandomOccupations.cc\
-    CASMcode/src/casm/clex/ConfigEnumSiteDoFs.cc\
-    CASMcode/src/casm/clex/ConfigEnumStrain.cc\
-    CASMcode/src/casm/clex/ConfigIO.cc\
-    CASMcode/src/casm/clex/ConfigIOHull.cc\
-    CASMcode/src/casm/clex/ConfigIONovelty.cc\
-    CASMcode/src/casm/clex/ConfigIOStrain.cc\
-    CASMcode/src/casm/clex/ConfigIOStrucScore.cc\
-    CASMcode/src/casm/clex/ConfigIsEquivalent.cc\
-    CASMcode/src/casm/clex/ConfigMapping.cc\
-    CASMcode/src/casm/clex/Configuration.cc\
-    CASMcode/src/casm/clex/ConfigurationTraits.cc\
-    CASMcode/src/casm/clex/ECIContainer.cc\
-    CASMcode/src/casm/clex/MappedPropertiesTools.cc\
-    CASMcode/src/casm/clex/NeighborList.cc\
-    CASMcode/src/casm/clex/OrbitFunctionTraits.cc\
-    CASMcode/src/casm/clex/ParamComposition.cc\
-    CASMcode/src/casm/clex/PrimClex.cc\
-    CASMcode/src/casm/clex/Reference.cc\
-    CASMcode/src/casm/clex/RemoveSupercell.cc\
-    CASMcode/src/casm/clex/ScelEnum.cc\
-    CASMcode/src/casm/clex/ScelEnumEquivalents.cc\
-    CASMcode/src/casm/clex/SuperConfigEnum.cc\
-    CASMcode/src/casm/clex/Supercell.cc\
-    CASMcode/src/casm/clex/SupercellIO.cc\
-    CASMcode/src/casm/clex/SupercellTraits.cc\
-    CASMcode/src/casm/clex/Supercell_functions.cc\
-    CASMcode/src/casm/clusterography/ClusterOrbits.cc\
-    CASMcode/src/casm/clusterography/ClusterSpecsParser.cc\
-    CASMcode/src/casm/clusterography/ClusterSymCompareSpecializations.cc\
-    CASMcode/src/casm/clusterography/IntegralCluster.cc\
-    CASMcode/src/casm/completer/Complete.cc\
-    CASMcode/src/casm/completer/Handlers.cc\
     CASMcode/src/casm/container/Permutation.cc\
     CASMcode/src/casm/crystallography/AnisoValTraits.cc\
     CASMcode/src/casm/crystallography/BasicStructure.cc\
@@ -819,14 +404,12 @@ libcasmblob_la_SOURCES=\
     CASMcode/src/casm/crystallography/CanonicalForm.cc\
     CASMcode/src/casm/crystallography/Coordinate.cc\
     CASMcode/src/casm/crystallography/CoordinateSystems.cc\
-    CASMcode/src/casm/crystallography/DoF.cc\
     CASMcode/src/casm/crystallography/DoFSet.cc\
     CASMcode/src/casm/crystallography/HermiteCounter.cc\
+    CASMcode/src/casm/crystallography/IntegralCoordinateWithin.cc\
     CASMcode/src/casm/crystallography/Lattice.cc\
-    CASMcode/src/casm/crystallography/LatticeEnumEquivalents.cc\
     CASMcode/src/casm/crystallography/LatticeIsEquivalent.cc\
     CASMcode/src/casm/crystallography/LatticeMap.cc\
-    CASMcode/src/casm/crystallography/LatticePointWithin.cc\
     CASMcode/src/casm/crystallography/LinearIndexConverter.cc\
     CASMcode/src/casm/crystallography/Molecule.cc\
     CASMcode/src/casm/crystallography/Niggli.cc\
@@ -835,37 +418,35 @@ libcasmblob_la_SOURCES=\
     CASMcode/src/casm/crystallography/SimpleStructureTools.cc\
     CASMcode/src/casm/crystallography/Site.cc\
     CASMcode/src/casm/crystallography/SpeciesAttribute.cc\
+    CASMcode/src/casm/crystallography/Strain.cc\
     CASMcode/src/casm/crystallography/StrucMapping.cc\
-    CASMcode/src/casm/crystallography/Structure.cc\
+    CASMcode/src/casm/crystallography/Superlattice.cc\
     CASMcode/src/casm/crystallography/SuperlatticeEnumerator.cc\
     CASMcode/src/casm/crystallography/SymTools.cc\
     CASMcode/src/casm/crystallography/SymType.cc\
     CASMcode/src/casm/crystallography/SymTypeComparator.cc\
     CASMcode/src/casm/crystallography/UnitCellCoord.cc\
     CASMcode/src/casm/crystallography/UnitCellCoordTraits.cc\
-    CASMcode/src/casm/crystallography/io/VaspIO.cc\
-    CASMcode/src/casm/database/ConfigData.cc\
-    CASMcode/src/casm/database/ConfigDatabase.cc\
-    CASMcode/src/casm/database/ConfigImport.cc\
-    CASMcode/src/casm/database/Database.cc\
-    CASMcode/src/casm/database/DatabaseHandler.cc\
-    CASMcode/src/casm/database/DatabaseTypes.cc\
-    CASMcode/src/casm/database/DiffTransConfigDatabase.cc\
-    CASMcode/src/casm/database/DiffTransConfigImport.cc\
-    CASMcode/src/casm/database/DiffTransOrbitDatabase.cc\
-    CASMcode/src/casm/database/Import.cc\
-    CASMcode/src/casm/database/MappedProperties.cc\
-    CASMcode/src/casm/database/PropertiesDatabase.cc\
-    CASMcode/src/casm/database/Remove.cc\
-    CASMcode/src/casm/database/ScelDatabase.cc\
-    CASMcode/src/casm/database/Selected.cc\
-    CASMcode/src/casm/database/Selection.cc\
-    CASMcode/src/casm/database/Update.cc\
-    CASMcode/src/casm/database/json/jsonDatabase.cc\
-    CASMcode/src/casm/database/json/jsonPropertiesDatabase.cc\
-    CASMcode/src/casm/enumerator/EnumInputParser.cc\
-    CASMcode/src/casm/enumerator/Enumerator.cc\
     CASMcode/src/casm/external/gzstream/gzstream.C\
+    CASMcode/src/casm/external/qhull/libqhullcpp/Coordinates.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/PointCoordinates.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/Qhull.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/QhullFacet.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/QhullFacetList.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/QhullFacetSet.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/QhullHyperplane.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/QhullPoint.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/QhullPoints.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/QhullPointSet.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/QhullQh.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/QhullRidge.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/QhullSet.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/QhullStat.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/QhullVertex.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/QhullVertexSet.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/RboxPoints.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/RoadError.cpp\
+    CASMcode/src/casm/external/qhull/libqhullcpp/RoadLogEvent.cpp\
     CASMcode/src/casm/external/qhull/libqhull_r/geom2_r.c\
     CASMcode/src/casm/external/qhull/libqhull_r/geom_r.c\
     CASMcode/src/casm/external/qhull/libqhull_r/global_r.c\
@@ -879,104 +460,16 @@ libcasmblob_la_SOURCES=\
     CASMcode/src/casm/external/qhull/libqhull_r/random_r.c\
     CASMcode/src/casm/external/qhull/libqhull_r/rboxlib_r.c\
     CASMcode/src/casm/external/qhull/libqhull_r/stat_r.c\
-    CASMcode/src/casm/external/qhull/libqhull_r/user_r.c\
     CASMcode/src/casm/external/qhull/libqhull_r/usermem_r.c\
-    CASMcode/src/casm/external/qhull/libqhullcpp/Coordinates.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/PointCoordinates.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/Qhull.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/QhullFacet.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/QhullFacetList.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/QhullFacetSet.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/QhullHyperplane.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/QhullPoint.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/QhullPointSet.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/QhullPoints.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/QhullQh.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/QhullRidge.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/QhullSet.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/QhullStat.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/QhullVertex.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/QhullVertexSet.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/RboxPoints.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/RoadError.cpp\
-    CASMcode/src/casm/external/qhull/libqhullcpp/RoadLogEvent.cpp\
+    CASMcode/src/casm/external/qhull/libqhull_r/user_r.c\
     CASMcode/src/casm/global/definitions.cc\
     CASMcode/src/casm/global/enum/io_traits.cc\
-    CASMcode/src/casm/global/enum/json_io.cc\
     CASMcode/src/casm/global/enum/stream_io.cc\
-    CASMcode/src/casm/hull/Hull.cc\
-    CASMcode/src/casm/kinetics/DiffTransConfigEnumOccPerturbations.cc\
-    CASMcode/src/casm/kinetics/DiffTransConfigInterpolation.cc\
-    CASMcode/src/casm/kinetics/DiffTransConfigIsEqual.cc\
-    CASMcode/src/casm/kinetics/DiffTransConfigMapping.cc\
-    CASMcode/src/casm/kinetics/DiffTransConfiguration.cc\
-    CASMcode/src/casm/kinetics/DiffTransConfigurationIO.cc\
-    CASMcode/src/casm/kinetics/DiffTransConfigurationTraits.cc\
-    CASMcode/src/casm/kinetics/DiffusionTransformation.cc\
-    CASMcode/src/casm/kinetics/DiffusionTransformationEnum.cc\
-    CASMcode/src/casm/kinetics/DiffusionTransformationTraits.cc\
-    CASMcode/src/casm/kinetics/DoFTransformation.cc\
-    CASMcode/src/casm/kinetics/EnumDiffTransConfigEndpoints.cc\
-    CASMcode/src/casm/kinetics/KineticsOrbits.cc\
-    CASMcode/src/casm/kinetics/OccPerturbation.cc\
-    CASMcode/src/casm/kinetics/OccupationTransformation.cc\
-    CASMcode/src/casm/kinetics/OccupationTransformationTraits.cc\
-    CASMcode/src/casm/kinetics/PrimPeriodicDiffTransOrbitIO.cc\
-    CASMcode/src/casm/kinetics/PrimPeriodicDiffTransOrbitTraits.cc\
-    CASMcode/src/casm/kinetics/RemovePrimPeriodicDiffTransOrbit.cc\
     CASMcode/src/casm/misc/CASM_Array_math.cc\
     CASMcode/src/casm/misc/CASM_Eigen_math.cc\
     CASMcode/src/casm/misc/CASM_math.cc\
-    CASMcode/src/casm/monte_carlo/Conversions.cc\
-    CASMcode/src/casm/monte_carlo/MCData.cc\
-    CASMcode/src/casm/monte_carlo/MonteCarlo.cc\
-    CASMcode/src/casm/monte_carlo/MonteCarloEnum.cc\
-    CASMcode/src/casm/monte_carlo/MonteCounter.cc\
-    CASMcode/src/casm/monte_carlo/MonteDefinitions.cc\
-    CASMcode/src/casm/monte_carlo/MonteDriver.cc\
-    CASMcode/src/casm/monte_carlo/MonteIO.cc\
-    CASMcode/src/casm/monte_carlo/MonteSampler.cc\
-    CASMcode/src/casm/monte_carlo/MonteSettings.cc\
-    CASMcode/src/casm/monte_carlo/OccCandidate.cc\
-    CASMcode/src/casm/monte_carlo/OccLocation.cc\
-    CASMcode/src/casm/monte_carlo/SiteExchanger.cc\
-    CASMcode/src/casm/monte_carlo/canonical/Canonical.cc\
-    CASMcode/src/casm/monte_carlo/canonical/CanonicalConditions.cc\
-    CASMcode/src/casm/monte_carlo/canonical/CanonicalEvent.cc\
-    CASMcode/src/casm/monte_carlo/canonical/CanonicalIO.cc\
-    CASMcode/src/casm/monte_carlo/canonical/CanonicalSettings.cc\
-    CASMcode/src/casm/monte_carlo/grand_canonical/GrandCanonical.cc\
-    CASMcode/src/casm/monte_carlo/grand_canonical/GrandCanonicalConditions.cc\
-    CASMcode/src/casm/monte_carlo/grand_canonical/GrandCanonicalIO.cc\
-    CASMcode/src/casm/monte_carlo/grand_canonical/GrandCanonicalSettings.cc\
-    CASMcode/src/casm/strain/StrainConverter.cc\
-    CASMcode/src/casm/symmetry/ConfigSubOrbits.cc\
-    CASMcode/src/casm/symmetry/InvariantSubgroup.cc\
-    CASMcode/src/casm/symmetry/Orbit.cc\
-    CASMcode/src/casm/symmetry/PermuteIterator.cc\
-    CASMcode/src/casm/symmetry/SupercellSymInfo.cc\
-    CASMcode/src/casm/symmetry/SymBasisPermute.cc\
-    CASMcode/src/casm/symmetry/SymGroup.cc\
-    CASMcode/src/casm/symmetry/SymGroupRep.cc\
-    CASMcode/src/casm/symmetry/SymGroupRepID.cc\
-    CASMcode/src/casm/symmetry/SymInfo.cc\
-    CASMcode/src/casm/symmetry/SymMatrixXd.cc\
-    CASMcode/src/casm/symmetry/SymOp.cc\
-    CASMcode/src/casm/symmetry/SymOpRepresentation.cc\
-    CASMcode/src/casm/symmetry/SymPermutation.cc\
-    CASMcode/src/casm/symmetry/SymRepTools.cc\
-    CASMcode/src/casm/symmetry/SymTools.cc\
-    CASMcode/src/casm/system/Popen.cc\
-    CASMcode/src/casm/system/RuntimeLibrary.cc\
-    CASMcode/src/casm/version/autoversion.cc
+	lib/casmblob/VaspIO.cc\
+	lib/casmblob/VaspIO.hh
 
 #I'm being lazy. You're supposed to include the declarations as part of the _SOURCES
 # EXTRA_DIST+=CASMcode/include/casm
-
-
-# libcasmblob_la_LIBADD=\
-# 				 $(BOOST_SYSTEM_LIB)\
-# 				 $(BOOST_FILESYSTEM_LIB)\
-# 				 $(BOOST_CHRONO_LIB)\
-# 				 $(BOOST_REGEX_LIB)\
-# 				 $(BOOST_PROGRAM_OPTIONS_LIB)

@@ -3,8 +3,7 @@ A collection of utilities that make use of the [CASM](https://github.com/prisms-
 
 ## Getting started
 This project relies heavily on [CASM](https://github.com/prisms-center/CASMcode), which will be internally compiled.
-In order to use this repository, you'll need to have any dependencies of CASM installed, namely the [boost](https://www.boost.org/) libraries.
-You will also need a compiler with `c++17` support (at least `g++-8`).
+You will need a compiler with `c++17` support (at least `g++-8`, or `clang-6`).
 
 casm-utilities uses autotools to build and install everything, so if you're installing via git cloning, a few additional packages might need to be installed on your computer:
 
@@ -31,6 +30,16 @@ If you plan on cloning the repository, be sure to do it recursively:
 git clone --recurse-submodules
 ```
 
+You should be mindful when switching branches as well, since `casm-utitlities` is currently transitioning towards the latest `CASM` release, and differnt branches are on different submodule commits.
+When checking out a different branch, remember to follow with
+```
+git submodule update
+```
+or possibly
+```
+git submodule update --init
+```
+
 If you're trying to install after cloning the git repository, you'll first have to generate the `configure` script using the provided script:
 ```
 ./boostrap.sh
@@ -54,6 +63,11 @@ Once you're set on what flags you need, put it all together to run the configure
 ```
 ../configure --prefix=$HOME/.local CXXFLAGS='-Any-flags -You -Might-want'    
 ```
+Note that the python modules have been written for `python3`. If your default python version is still lagging, you'll have to specify `PYTHON_VERSION` during the configure step above. An example of what the configure step could look like:
+```
+CXX=g++-8 PYTHON_VERSION=3.6 ../configure --prefix=$HOME/.local CXXFLAGS='-O3 -DNDEBUG'    
+```
+
 
 For more information on the configure step, see the documentation by calling `../configure -h`.
 

@@ -3,23 +3,29 @@
 
 #include <string>
 
-namespace rewrap
+namespace casmutils
+{
+namespace xtal
 {
 class Structure;
 class Lattice;
-} // namespace rewrap
+} // namespace xtal
+} // namespace casmutils
 
 namespace wrappy
 {
+using namespace casmutils;
 namespace Structure
 {
-rewrap::Structure from_poscar(const std::string& filename);
+xtal::Structure from_poscar(const std::string& filename);
 
-void to_poscar(const rewrap::Structure& writeable, const std::string& filename);
+void to_poscar(const xtal::Structure& writeable, const std::string& filename);
 
-std::string __str__(const rewrap::Structure& printable);
+std::string __str__(const xtal::Structure& printable);
 
-void set_lattice(rewrap::Structure* self, const rewrap::Lattice& new_lattice, std::string mode);
+void set_lattice(xtal::Structure* self, const xtal::Lattice& new_lattice, std::string mode);
+
+xtal::Structure set_lattice_const(xtal::Structure* self, const xtal::Lattice& new_lattice, std::string mode);
 
 } // namespace Structure
 

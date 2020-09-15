@@ -16,13 +16,16 @@ void vacuumpack_initializer(po::options_description& vacuumpack_desc)
     utilities::add_help_suboption(vacuumpack_desc);
     utilities::add_desc_suboption(vacuumpack_desc);
     utilities::add_output_suboption(vacuumpack_desc);
-    vacuumpack_desc.add_options()("structure,s", po::value<fs::path>()->required(),
+    vacuumpack_desc.add_options()("structure,s",
+                                  po::value<fs::path>()->required(),
                                   "POS.vasp like file you want to "
                                   "shrink the boundaries of");
-    vacuumpack_desc.add_options()("dirs,d", po::value<std::string>()->required(),
+    vacuumpack_desc.add_options()("dirs,d",
+                                  po::value<std::string>()->required(),
                                   "directions that shrinkage is allowed to happen in. any "
                                   "combination of a, b, and c");
-    vacuumpack_desc.add_options()("padding,p", po::value<double>()->required(),
+    vacuumpack_desc.add_options()("padding,p",
+                                  po::value<double>()->required(),
                                   "Add an amount of extra space around the border of the atom enclosure");
     return;
 }
@@ -32,6 +35,7 @@ using namespace utilities;
 
 int main(int argc, char* argv[])
 {
+    using namespace casmutils;
     Handler vacuumpack_launch(argc, argv, vacuumpack_initializer);
 
     if (vacuumpack_launch.count("help"))
@@ -52,7 +56,7 @@ int main(int argc, char* argv[])
     }
 
     auto struc_path = vacuumpack_launch.fetch<fs::path>("structure");
-    auto struc = rewrap::Structure::from_poscar(struc_path);
+    auto struc = xtal::Structure::from_poscar(struc_path);
     auto out_struc = struc;
     auto dirs = vacuumpack_launch.fetch<std::string>("dirs");
     auto padding = vacuumpack_launch.fetch<double>("padding");
@@ -63,9 +67,9 @@ int main(int argc, char* argv[])
     out_struc = frankenstein::vacuum_pack(struc, allowed_dirs, padding);
     if (vacuumpack_launch.vm().count("output"))
     {
-        simplicity::write_poscar(out_struc, vacuumpack_launch.fetch<fs::path>("output"));
+        casmutils::xtal::write_poscar(out_struc, vacuumpack_launch.fetch<fs::path>("output"));
         return 0;
     }
-    simplicity::print_poscar(out_struc, std::cout);
+    casmutils::xtal::print_poscar(out_struc, std::cout);
     return 0;
 }

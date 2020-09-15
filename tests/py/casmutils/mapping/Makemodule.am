@@ -1,0 +1,3 @@
+TESTS += \
+		 tests/py/casmutils/mapping/structure.py\
+		 tests/py/casmutils/mapping/mapping.py

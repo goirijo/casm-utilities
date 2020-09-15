@@ -1,0 +1,10 @@
+sympydir=$(pythondir)/casmutils/sym
+
+sympy_PYTHON=\
+			  lib-py/casmutils/sym/__init__.py\
+			  lib-py/casmutils/sym/cart.py
+
+sympy_LTLIBRARIES=\
+				   _sym.la
+
+include lib-py/casmutils/sym/_sym/Makemodule.am

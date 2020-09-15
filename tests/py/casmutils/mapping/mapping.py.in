@@ -1,0 +1,139 @@
+#!@PYTHON@
+
+import unittest
+import casmutils as cu
+import numpy as np
+import os
+import glob
+import re
+
+input_filedir = "@abs_top_srcdir@/tests/input_files"
+
+
+class StructureMapTest(unittest.TestCase):
+
+    def setUp(self):
+        self.primitive_fcc_Ni = cu.xtal.Structure.from_poscar(
+            os.path.join(input_filedir, "primitive_fcc_Ni.vasp"))
+        self.primitive_bcc_Ni = cu.xtal.Structure.from_poscar(
+            os.path.join(input_filedir, "primitive_bcc_Ni.vasp"))
+        self.partial_bain_Ni = cu.xtal.Structure.from_poscar(
+            os.path.join(input_filedir, "partial_bain_Ni.vasp"))
+        self.perfect_bain_Ni = cu.xtal.Structure.from_poscar(
+            os.path.join(input_filedir, "perfectly_bained_Ni.vasp"))
+        self.displaced_fcc_Ni = cu.xtal.Structure.from_poscar(
+            os.path.join(input_filedir, "displaced_fcc_Ni.vasp"))
+
+    def test_mapping_score(self):
+        full_bain_report = cu.mapping.map_structure(self.primitive_fcc_Ni,
+                                                    self.primitive_bcc_Ni)[0]
+        perfect_bain_report = cu.mapping.map_structure(self.primitive_fcc_Ni,
+                                                       self.perfect_bain_Ni)[0]
+        partial_bain_report = cu.mapping.map_structure(self.primitive_fcc_Ni,
+                                                       self.partial_bain_Ni)[0]
+
+        full_bain_lattice_score, full_bain_basis_score = cu.mapping.structure_score(
+            full_bain_report)
+        partial_bain_lattice_score, partial_bain_basis_score = cu.mapping.structure_score(
+            partial_bain_report)
+        perfect_bain_lattice_score, perfect_bain_basis_score = cu.mapping.structure_score(
+            perfect_bain_report)
+
+        self.assertAlmostEqual(
+            full_bain_lattice_score, perfect_bain_lattice_score, delta=1e-10)
+        self.assertTrue(full_bain_lattice_score > partial_bain_lattice_score)
+
+        self.assertAlmostEqual(
+            full_bain_basis_score, partial_bain_basis_score, delta=1e-10)
+        self.assertAlmostEqual(
+            perfect_bain_basis_score, partial_bain_basis_score, delta=1e-10)
+
+        self.assertAlmostEqual(perfect_bain_basis_score, 0, delta=1e-10)
+
+    def test_displacement_mapping_score(self):
+        displacement_report = cu.mapping.map_structure(self.primitive_fcc_Ni,
+                                                       self.displaced_fcc_Ni)[0]
+        lattice_score, basis_score = cu.mapping.structure_score(
+            displacement_report)
+
+        self.assertAlmostEqual(lattice_score, 0, delta=1e-10)
+        self.assertAlmostEqual(basis_score, 0.0327393, delta=1e-5)
+
+
+class MgGammaSurfaceMapTest(unittest.TestCase):
+
+    def setUp(self):
+        zero_cleave_pos = glob.glob(
+            os.path.join(
+                input_filedir,
+                "Mg-mush/basal/testing.shift/shift*/cleave_0.000*/POSCAR"))
+        zero_cleave_pos.sort()
+
+        shift_names = [p.split(os.sep)[-3] for p in zero_cleave_pos]
+        shift_names.sort()
+
+        self.shifts = [
+            [int(x) for x in re.split('\.|_', n)[-2::]] for n in shift_names
+        ]
+        self.structures = [
+            cu.xtal.Structure.from_poscar(p) for p in zero_cleave_pos
+        ]
+
+        avals, bvals = zip(*self.shifts)
+        a_shifts = max(avals) + 1
+        b_shifts = max(bvals) + 1
+
+        self.equivalence_grid = a_shifts * [b_shifts * [None]]
+
+        map_strategy = cu.mapping.structure.MappingInput(
+            use_crystal_symmetry=True, k_best_maps=0, min_cost=1e-10)
+        for ref_s, a_b in zip(self.structures, self.shifts):
+            map_to_ref = cu.mapping.structure.StructureMapper(
+                ref_s, map_strategy)
+            a, b = a_b
+
+            self.equivalence_grid[a][b] = [
+                ix for ix, s in enumerate(self.structures)
+                if len(map_to_ref(s)) > 0
+            ]
+
+    def test_mirror_mapping_symmetry(self):
+        for i, _ in enumerate(self.equivalence_grid):
+            for j, _ in enumerate(self.equivalence_grid):
+                self.assertEqual(self.equivalence_grid[i][j],
+                                 self.equivalence_grid[j][i])
+        return
+
+    def test_mirror_mapping_symmetry(self):
+        mapped6 = False
+        for i, _ in enumerate(self.equivalence_grid):
+            for j, _ in enumerate(self.equivalence_grid):
+                if len(self.equivalence_grid[i][j]) == 6:
+                    mapped6 = True
+
+        self.assertTrue(mapped6)
+        return
+
+    def test_factor_group_factor_mapping(self):
+        for i, _ in enumerate(self.equivalence_grid):
+            for j, _ in enumerate(self.equivalence_grid):
+                self.assertTrue(
+                    len(self.equivalence_grid[i][j]) in [1, 2, 3, 4, 6])
+        return
+
+    def test_self_map_results_size(self):
+        hcp_super = self.structures[0]
+        map_to_hcp_super_with_sym = cu.mapping.structure.StructureMapper(
+            hcp_super, k=0, use_crystal_symmetry=True, min_cost=1e-10)
+
+        self.assertEqual(1, len(map_to_hcp_super_with_sym(hcp_super)))
+
+        map_to_hcp_super_without_sym = cu.mapping.structure.StructureMapper(
+            hcp_super, k=0, use_crystal_symmetry=False, min_cost=1e-10)
+        self.assertEqual(72, len(map_to_hcp_super_without_sym(hcp_super)))
+
+        return
+
+
+if __name__ == '__main__':
+    unittest.main()

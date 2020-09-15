@@ -15,10 +15,11 @@ void superstructure_initializer(po::options_description& superstructure_desc)
     utilities::add_help_suboption(superstructure_desc);
     utilities::add_output_suboption(superstructure_desc);
 
-    superstructure_desc.add_options()("structure,s", po::value<fs::path>()->required(),
+    superstructure_desc.add_options()("structure,s",
+                                      po::value<fs::path>()->required(),
                                       "POS.vasp like file that you want to get the super structure for.");
-    superstructure_desc.add_options()("transf-matrix,t", po::value<fs::path>()->required(),
-                                      "path to a file with transformation matrix.");
+    superstructure_desc.add_options()(
+        "transf-matrix,t", po::value<fs::path>()->required(), "path to a file with transformation matrix.");
 
     return;
 }
@@ -57,19 +58,19 @@ int main(int argc, char* argv[])
 
     throw except::NotImplemented();
 
-    auto struc = rewrap::Structure::from_poscar(structure_path);
-    auto super_struc = simplicity::make_super_structure(struc, transf_mat);
+    auto struc = casmutils::xtal::Structure::from_poscar(structure_path);
+    auto super_struc = casmutils::xtal::make_superstructure(struc, transf_mat);
 
     // checks the output type and writes the super structure to a output stream
     if (superstructure_launch.vm().count("output"))
     {
         auto out_path = superstructure_launch.fetch<fs::path>("output");
-        simplicity::write_poscar(super_struc, out_path);
+        casmutils::xtal::write_poscar(super_struc, out_path);
     }
 
     else
     {
-        simplicity::print_poscar(super_struc, std::cout);
+        casmutils::xtal::print_poscar(super_struc, std::cout);
     }
 
     return 0;

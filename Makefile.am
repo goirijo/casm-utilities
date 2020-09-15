@@ -28,6 +28,7 @@ AM_CXXFLAGS=\
 AM_CPPFLAGS=\
 			 -I$(srcdir)/include\
 			 -I$(srcdir)/pybind11/include\
+			 -I$(srcdir)/CLI11/include\
 			 -I$(srcdir)/CASMcode/include\
 			 -I$(srcdir)/googletest/googletest\
 			 -I$(srcdir)/googletest/googletest/include\
@@ -35,12 +36,9 @@ AM_CPPFLAGS=\
 			 -I$(srcdir)/CASMcode/include/casm/external/qhull/libqhullcpp\
 			 -I$(srcdir)/CASMcode/include/casm/external/qhull/libqhull_r\
 			 -I$(srcdir)/CASMcode/include/casm/external/gzstream\
-			 $(BOOST_CPPFLAGS)\
 			 $(PYTHON_CPPFLAGS)\
 			 -DABS_SRCDIR=\"$(abs_srcdir)\"\
 			 -DABS_TOP_BUILDDIR=\"$(abs_top_builddir)\"
-
-AM_LDFLAGS=$(BOOST_LDFLAGS)
 
 
 #===========================================================================#

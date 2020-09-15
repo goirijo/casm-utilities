@@ -2,6 +2,8 @@
 
 import casmutils as cu
 import casmutils.xtal
+import casmutils.sym
+import casmutils.mapping
 
 def main():
     print("Successfully imported casmutils")

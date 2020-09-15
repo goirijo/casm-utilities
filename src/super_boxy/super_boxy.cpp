@@ -14,10 +14,11 @@ void super_boxy_initializer(po::options_description& super_boxy_desc)
 {
     utilities::add_help_suboption(super_boxy_desc);
     utilities::add_output_suboption(super_boxy_desc);
-    super_boxy_desc.add_options()("structure,s", po::value<fs::path>()->required(),
+    super_boxy_desc.add_options()("structure,s",
+                                  po::value<fs::path>()->required(),
                                   "POS.vasp like file that you want to get the boxy supercell for.");
-    super_boxy_desc.add_options()("volume,v", po::value<int>()->required(),
-                                  "Volume of the boxy superstructure, relative to the input structure");
+    super_boxy_desc.add_options()(
+        "volume,v", po::value<int>()->required(), "Volume of the boxy superstructure, relative to the input structure");
 
     return;
 }
@@ -27,6 +28,7 @@ using namespace utilities;
 
 int main(int argc, char* argv[])
 {
+    using namespace casmutils;
     Handler super_boxy_launch(argc, argv, super_boxy_initializer);
 
     if (super_boxy_launch.count("help"))
@@ -47,22 +49,23 @@ int main(int argc, char* argv[])
     }
 
     // initialize structure from POSCAR file
-    // rewrap::Structure in_struc("/home/julija/programming/casm-utilities/test/POSCAR_1");
+    // xtal::Structure in_struc("/home/julija/programming/casm-utilities/test/POSCAR_1");
     auto in_struc_path = super_boxy_launch.fetch<fs::path>("structure");
-    auto in_struc = rewrap::Structure::from_poscar(in_struc_path);
+    auto in_struc = xtal::Structure::from_poscar(in_struc_path);
     auto in_vol = super_boxy_launch.fetch<int>("volume");
 
-    auto boxy_struc = simplicity::make_boxiest_superstructure_of_volume(in_struc, in_vol);
+    // TODO: fix this
+    auto boxy_struc = in_struc;
 
     if (super_boxy_launch.vm().count("output"))
     {
         auto out_path = super_boxy_launch.fetch<fs::path>("output");
-        simplicity::write_poscar(boxy_struc, out_path);
+        casmutils::xtal::write_poscar(boxy_struc, out_path);
     }
 
     else
     {
-        simplicity::print_poscar(boxy_struc, std::cout);
+        casmutils::xtal::print_poscar(boxy_struc, std::cout);
     }
 
     return 0;

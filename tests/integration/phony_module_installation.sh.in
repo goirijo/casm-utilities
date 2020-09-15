@@ -30,9 +30,23 @@ phony__xtal_install()
 phony__stage_install()
 {
     cd ${phony_path}/casmutils/stage
-    softlink_all_here -s ${compiled_libs_path}/_stage*
+    softlink_all_here ${compiled_libs_path}/_stage*
+}
+
+phony__mapping_install()
+{
+    cd ${phony_path}/casmutils/mapping
+    softlink_all_here ${compiled_libs_path}/_mapping*
+}
+
+phony__sym_install()
+{
+    cd ${phony_path}/casmutils/sym
+    softlink_all_here ${compiled_libs_path}/_sym*
 }
 
 prepare_environment
 phony__xtal_install
 phony__stage_install
+phony__mapping_install
+phony__sym_install

@@ -14,9 +14,9 @@ namespace enumeration
 class RockSaltOctahedraToggler
 {
 public:
-    typedef rewrap::Coordinate Coordinate;
-    typedef rewrap::Structure Structure;
-    typedef rewrap::Lattice Lattice;
+    typedef casmutils::xtal::Coordinate Coordinate;
+    typedef casmutils::xtal::Structure Structure;
+    typedef casmutils::xtal::Lattice Lattice;
     typedef int index;
 
     /// Construct with a transformation matrix relative to the primitive structure.
@@ -25,7 +25,8 @@ public:
     /// be the central atom of the octahedra.
     static RockSaltOctahedraToggler relative_to_primitive(const Eigen::Matrix3i trans_mat,
                                                           std::pair<std::string, std::string> species_names,
-                                                          bool second_is_central, double init_nn_distance);
+                                                          bool second_is_central,
+                                                          double init_nn_distance);
 
     // TODO
     /// Construct with a transformation matrix relative to the conventional structure
@@ -34,7 +35,8 @@ public:
     /// be the central atom of the octahedra.
     static RockSaltOctahedraToggler relative_to_conventional(const Eigen::Matrix3i trans_mat,
                                                              std::pair<std::string, std::string> species_names,
-                                                             bool second_is_central, double init_nn_distance);
+                                                             bool second_is_central,
+                                                             double init_nn_distance);
 
     /// Sets the central coordinate (center of octahedron) ON
     /// along with its surrounding oxygen (or other specified anion)
@@ -99,10 +101,13 @@ private:
     /// Useful to know when the vertex_ion can be "released" and switched off (when count becomes zero)
     std::unordered_map<index, int> leashed_vertex_ions;
 
-    RockSaltOctahedraToggler(Structure&& init_struc, std::string init_central_name, std::string init_vertex_name,
+    RockSaltOctahedraToggler(Structure&& init_struc,
+                             std::string init_central_name,
+                             std::string init_vertex_name,
                              std::array<Coordinate, 6>&& init_nn_deltas,
                              std::unordered_map<index, bool>&& init_central_is_on,
-                             std::unordered_map<index, int>&& init_leashes, double init_nn_distance);
+                             std::unordered_map<index, int>&& init_leashes,
+                             double init_nn_distance);
 
     /// Converts the given coordinate to the corresponding index within the Structure
     index coordinate_to_index(Coordinate coordinate) const;

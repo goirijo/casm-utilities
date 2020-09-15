@@ -14,24 +14,25 @@
 
 namespace wrappy
 {
+using namespace casmutils;
 namespace Structure
 {
-std::string __str__(const rewrap::Structure& printable)
+std::string __str__(const xtal::Structure& printable)
 {
     std::ostringstream sstream;
-    simplicity::print_poscar(printable, sstream);
+    casmutils::xtal::print_poscar(printable, sstream);
     return sstream.str();
 }
 
-rewrap::Structure from_poscar(const std::string& filename) { return rewrap::Structure::from_poscar(filename); }
+xtal::Structure from_poscar(const std::string& filename) { return xtal::Structure::from_poscar(filename); }
 
-void to_poscar(const rewrap::Structure& writeable, const std::string& filename)
+void to_poscar(const xtal::Structure& writeable, const std::string& filename)
 {
-    simplicity::write_poscar(writeable, filename);
+    casmutils::xtal::write_poscar(writeable, filename);
     return;
 }
 
-void set_lattice(rewrap::Structure* self, const rewrap::Lattice& new_lattice, std::string mode)
+xtal::COORD_TYPE string_to_coord_mode(std::string mode)
 {
     if (mode.size() == 0)
     {
@@ -39,23 +40,32 @@ void set_lattice(rewrap::Structure* self, const rewrap::Lattice& new_lattice, st
     }
 
     char m = std::tolower(mode[0]);
+
     switch (m)
     {
+
     case 'f':
-        self->set_lattice(new_lattice, rewrap::COORD_TYPE::FRAC);
-        break;
+        return xtal::COORD_TYPE::FRAC;
 
     case 'c':
-        self->set_lattice(new_lattice, rewrap::COORD_TYPE::CART);
-        break;
+        return xtal::COORD_TYPE::CART;
 
     default:
         throw except::BadCoordMode();
     }
+}
 
+void set_lattice(xtal::Structure* self, const xtal::Lattice& new_lattice, std::string mode)
+{
+    self->set_lattice(new_lattice, string_to_coord_mode(mode));
     return;
 }
 
+xtal::Structure set_lattice_const(xtal::Structure* self, const xtal::Lattice& new_lattice, std::string mode)
+{
+    const xtal::Structure self_structure = *self;
+    return self_structure.set_lattice(new_lattice, string_to_coord_mode(mode));
+}
 } // namespace Structure
 
 } // namespace wrappy

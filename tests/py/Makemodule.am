@@ -1,6 +1,4 @@
 TESTS += \
-		 tests/py/xtal-import.py\
-		 tests/py/stage-import.py\
-		 tests/py/cu-import.py\
-		 tests/py/stage.py\
-		 tests/py/coordinate.py
+		 tests/py/stage.py
+
+include tests/py/casmutils/Makemodule.am

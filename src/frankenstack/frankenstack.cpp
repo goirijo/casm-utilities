@@ -15,10 +15,12 @@ void frankenstack_initializer(po::options_description& frankenstack_desc)
     utilities::add_help_suboption(frankenstack_desc);
     utilities::add_desc_suboption(frankenstack_desc);
     utilities::add_output_suboption(frankenstack_desc);
-    frankenstack_desc.add_options()("substructures,s", po::value<std::vector<fs::path>>()->multitoken()->required(),
+    frankenstack_desc.add_options()("substructures,s",
+                                    po::value<std::vector<fs::path>>()->multitoken()->required(),
                                     "POS.vasp like files you want to "
                                     "stack on top of each other.");
-    frankenstack_desc.add_options()("number,n", po::value<int>(),
+    frankenstack_desc.add_options()("number,n",
+                                    po::value<int>(),
                                     "number of times to repeat the "
                                     "stacking if only one unit is given");
     return;
@@ -29,6 +31,8 @@ using namespace utilities;
 
 int main(int argc, char* argv[])
 {
+    using namespace casmutils;
+
     Handler frankenstack_launch(argc, argv, frankenstack_initializer);
 
     if (frankenstack_launch.count("help"))
@@ -54,25 +58,25 @@ int main(int argc, char* argv[])
     {
         std::cerr << "Missing substructure path " << std::endl;
     }
-    auto big_struc = rewrap::Structure::from_poscar(sub_paths[0]);
+    auto big_struc = casmutils::xtal::Structure::from_poscar(sub_paths[0]);
     if (sub_paths.size() == 1)
     {
-        auto unit = rewrap::Structure::from_poscar(sub_paths[0]);
+        auto unit = casmutils::xtal::Structure::from_poscar(sub_paths[0]);
         int num_stacks = 1;
         if (frankenstack_launch.vm().count("number"))
         {
             num_stacks = frankenstack_launch.fetch<int>("number");
         }
-        std::vector<rewrap::Structure> struc_vec;
+        std::vector<casmutils::xtal::Structure> struc_vec;
         struc_vec.insert(struc_vec.end(), num_stacks, unit);
         big_struc = frankenstein::stack(struc_vec);
     }
     else
     {
-        std::vector<rewrap::Structure> units;
+        std::vector<casmutils::xtal::Structure> units;
         for (auto& item : sub_paths)
         {
-            units.push_back(rewrap::Structure::from_poscar(item));
+            units.push_back(casmutils::xtal::Structure::from_poscar(item));
         }
         big_struc = frankenstein::stack(units);
     }
@@ -114,9 +118,9 @@ int main(int argc, char* argv[])
     std::cout << "IT'S ALIVE " << std::endl;
     if (frankenstack_launch.vm().count("output"))
     {
-        simplicity::write_poscar(big_struc, frankenstack_launch.fetch<fs::path>("output"));
+        casmutils::xtal::write_poscar(big_struc, frankenstack_launch.fetch<fs::path>("output"));
         return 0;
     }
-    simplicity::print_poscar(big_struc, std::cout);
+    casmutils::xtal::print_poscar(big_struc, std::cout);
     return 0;
 }

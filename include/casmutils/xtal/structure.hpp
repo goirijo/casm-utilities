@@ -7,9 +7,13 @@
 #include <casmutils/xtal/lattice.hpp>
 #include <casmutils/xtal/site.hpp>
 #include <iostream>
-
-namespace rewrap
+namespace casmutils
 {
+namespace xtal
+{
+using CASM::CART;
+using CASM::COORD_TYPE;
+using CASM::FRAC;
 
 /**
  * Describes a current, fixed state of a crystal. Composed of a lattice,
@@ -22,6 +26,7 @@ class Structure
 public:
     Structure() = delete;
 
+    // TODO: Take a stream, not a file. Extract from class?
     /// Construct by providing a path to a POSCAR like file
     static Structure from_poscar(const fs::path& poscar_path);
 
@@ -30,7 +35,7 @@ public:
     Structure(const CASM::xtal::BasicStructure& init_struc);
 
     /// Construct with a lattice and list of sites (basis)
-    Structure(const rewrap::Lattice& init_lat, const std::vector<Site>& init_basis);
+    Structure(const Lattice& init_lat, const std::vector<Site>& init_basis);
 
     /// Returns a copy of the current lattice of the structure
     const Lattice& lattice() const;
@@ -40,6 +45,10 @@ public:
 
     /// Give the structure a new lattice, and either keep the Cartesian, or fractional coordinates of the basis
     [[nodiscard]] Structure set_lattice(const Lattice& new_lattice, COORD_TYPE mode) const;
+
+    // TODO: Needs a better name, bring_basis_within?
+    /// Moves the basis sites within the lattice cell
+    void within();
 
     /// Return a copy of all the basis sites
     const std::vector<Site>& basis_sites() const;
@@ -86,16 +95,7 @@ private:
     /// rewrap representation of the lattice
     Lattice structure_lattice;
 };
-} // namespace rewrap
 
-namespace casmutils
-{
-namespace xtal
-{
-using rewrap::CART;
-using rewrap::COORD_TYPE;
-using rewrap::FRAC;
-using rewrap::Structure;
 } // namespace xtal
 } // namespace casmutils
 

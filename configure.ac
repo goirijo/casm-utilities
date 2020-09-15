@@ -23,15 +23,6 @@ AX_PYTHON
 AM_PATH_PYTHON
 
 # Checks for libraries.
-BOOSTV=1.52
-AX_BOOST_BASE([$BOOSTV],[],[AC_MSG_ERROR(You need Boost $BOOSTV libraries or higher.)])
-AX_BOOST_SYSTEM
-AX_BOOST_FILESYSTEM
-AX_BOOST_PROGRAM_OPTIONS
-
-#If you're compiling casm for them, you need these also
-AX_BOOST_CHRONO
-AX_BOOST_REGEX
 AX_CHECK_ZLIB([],AC_MSG_ERROR(zlib library not found!))
 AX_PTHREAD([],AC_MSG_WARN(pthread is required to run tests!))
 
@@ -71,12 +62,16 @@ fi
 AC_CONFIG_FILES([Makefile])
 
 ##############Prepares all tests scripts related to python modules################# 
-AC_CONFIG_FILES([tests/py/stage-import.py],[chmod +x tests/py/stage-import.py])
-AC_CONFIG_FILES([tests/py/xtal-import.py],[chmod +x tests/py/xtal-import.py])
-AC_CONFIG_FILES([tests/py/cu-import.py],[chmod +x tests/py/cu-import.py])
 AC_CONFIG_FILES([tests/py/stage.py],[chmod +x tests/py/stage.py])
-AC_CONFIG_FILES([tests/py/coordinate.py],[chmod +x tests/py/coordinate.py])
-
+AC_CONFIG_FILES([tests/py/casmutils/xtal/coordinate.py],[chmod +x tests/py/casmutils/xtal/coordinate.py])
+AC_CONFIG_FILES([tests/py/casmutils/xtal/site.py],[chmod +x tests/py/casmutils/xtal/site.py])
+AC_CONFIG_FILES([tests/py/casmutils/xtal/lattice.py],[chmod +x tests/py/casmutils/xtal/lattice.py])
+AC_CONFIG_FILES([tests/py/casmutils/xtal/structure.py],[chmod +x tests/py/casmutils/xtal/structure.py])
+AC_CONFIG_FILES([tests/py/casmutils/xtal/structure_tools.py],[chmod +x tests/py/casmutils/xtal/structure_tools.py])
+AC_CONFIG_FILES([tests/py/casmutils/mapping/mapping.py],[chmod +x tests/py/casmutils/mapping/mapping.py])
+AC_CONFIG_FILES([tests/py/casmutils/mapping/structure.py],[chmod +x tests/py/casmutils/mapping/structure.py])
+AC_CONFIG_FILES([tests/py/casmutils/sym/cart.py],[chmod +x tests/py/casmutils/sym/cart.py])
+AC_CONFIG_FILES([tests/py/casmutils/xtal/symmetry.py],[chmod +x tests/py/casmutils/xtal/symmetry.py])
 
 AC_CONFIG_FILES([tests/integration/phony_module_installation.sh])
 AC_CONFIG_FILES([tests/integration/cu-import.py],[chmod +x tests/integration/cu-import.py])

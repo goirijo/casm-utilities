@@ -12,8 +12,18 @@ namespace extend
 {
 } // namespace extend
 
-namespace rewrap
+namespace casmutils
 {
+namespace xtal
+
+{
+
+// TODO: Does it work to just have the _update_using calls be used during __get?
+// Then always have the rewrap representation be the state of the structure, and
+// whenever you need a CASM implementation, just get it via __get, which would automatically
+// update it to the correct state. This might allow us to have the basis
+// as a public member, so that you could easily add, remove or edit sites without doing
+// an entire reset.
 
 template <> void Structure::_update_using<CASM::xtal::BasicStructure>()
 {
@@ -50,12 +60,14 @@ Structure::Structure(const CASM::xtal::BasicStructure& init_struc)
 {
     _update_using<CASM::xtal::BasicStructure>();
 }
+
 Structure::Structure(const CASM::xtal::SimpleStructure& init_struc)
     : structure_lattice(init_struc.lat_column_mat), casm_simplestructure(init_struc)
 {
     _update_using<CASM::xtal::SimpleStructure>();
 }
-Structure::Structure(const rewrap::Lattice& init_lat, const std::vector<rewrap::Site>& init_basis)
+
+Structure::Structure(const Lattice& init_lat, const std::vector<Site>& init_basis)
     : structure_lattice(init_lat), basis(init_basis)
 {
     _update_using<casmutils::xtal::Structure>();
@@ -63,13 +75,12 @@ Structure::Structure(const rewrap::Lattice& init_lat, const std::vector<rewrap::
 
 Structure Structure::from_poscar(const fs::path& poscar_path)
 {
-    CASM::xtal::BasicStructure pos;
     if (!fs::exists(poscar_path))
     {
         throw except::BadPath(poscar_path);
     }
     std::ifstream infile(poscar_path);
-    pos.read(infile);
+    CASM::xtal::BasicStructure pos = CASM::xtal::BasicStructure::from_poscar_stream(infile);
     return casmutils::xtal::Structure(pos);
 }
 
@@ -88,6 +99,14 @@ void Structure::set_lattice(const Lattice& new_lattice, COORD_TYPE mode)
     new_struc.set_lattice(new_lattice, mode);
     return new_struc;
 }
+
+void Structure::within()
+{
+    this->casm_basicstructure.within();
+    _update_using<CASM::xtal::BasicStructure>();
+    return;
+}
+
 const std::vector<Site>& Structure::basis_sites() const { return this->basis; }
 
 void Structure::_update_simple_from_basic()
@@ -117,7 +136,7 @@ void Structure::_update_basic_from_simple()
     {
         const auto& info =
             this->__get<CASM::xtal::SimpleStructure>().info(CASM::xtal::SimpleStructure::SpeciesMode::ATOM);
-        Eigen::Vector3d raw_coord = info.coord(index);
+        Eigen::Vector3d raw_coord = info.cart_coord(index);
         basic_basis.emplace_back(
             CASM::xtal::Coordinate(raw_coord, this->__get<CASM::xtal::BasicStructure>().lattice(), CASM::CART),
             info.names[index]);
@@ -132,7 +151,7 @@ void Structure::_update_internals_from_simple()
     {
         const auto& info =
             this->__get<CASM::xtal::SimpleStructure>().info(CASM::xtal::SimpleStructure::SpeciesMode::ATOM);
-        Eigen::Vector3d raw_coord = info.coord(index);
+        Eigen::Vector3d raw_coord = info.cart_coord(index);
         new_basis.emplace_back(casmutils::xtal::Coordinate(raw_coord), info.names[index]);
     }
     this->basis = new_basis;
@@ -166,5 +185,5 @@ void Structure::_update_simple_from_internals()
     }
     this->casm_simplestructure = CASM::xtal::make_simple_structure(temp_basic);
 }
-
-} // namespace rewrap
+} // namespace xtal
+} // namespace casmutils
