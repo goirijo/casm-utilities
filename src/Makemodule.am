@@ -10,4 +10,4 @@ include src/primify/Makemodule.am
 # include src/inflate/Makemodule.am
 # include src/struc_score/Makemodule.am
 # include src/super_boxy/Makemodule.am
-# include src/stage/Makemodule.am
+include src/stage/Makemodule.am

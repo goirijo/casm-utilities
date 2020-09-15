@@ -5,6 +5,7 @@
 #include <memory>
 // tests the functions in this file
 #include <casmutils/xtal/site.hpp>
+
 class SiteTest : public testing::Test
 {
 protected:
@@ -55,6 +56,7 @@ TEST_F(SiteTest, FracConversion)
     // coordinates of a site with respect to a lattice
     EXPECT_EQ(lithium_site_ptr->frac(*cubic_lattice_ptr), Eigen::Vector3d(0.025, 0.05, 0.075));
 };
+
 TEST_F(SiteTest, SiteEquals)
 {
     // checks the ability to determine the equality of sites using Functor
@@ -63,6 +65,7 @@ TEST_F(SiteTest, SiteEquals)
     EXPECT_TRUE(is_equal_to_lithium_site(*lithium_site_ptr));
     EXPECT_FALSE(is_equal_to_lithium_site(*nickel_site_ptr));
 };
+
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
