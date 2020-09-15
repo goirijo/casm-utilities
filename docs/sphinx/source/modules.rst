@@ -1,5 +1,5 @@
-lib-py
-======
+casmutils
+=========
 
 .. toctree::
    :maxdepth: 4
