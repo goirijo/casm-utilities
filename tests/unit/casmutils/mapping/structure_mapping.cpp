@@ -131,8 +131,8 @@ TEST_F(SymmetryPreservingMappingTest, PreservingTest)
     cu::mapping::MappingReport adjusted_report =
         cu::mapping::symmetry_preserving_mapping_report(full_report, hcp_group, perm_group);
     // because only difference is c/a ratio the mapping report should be entirely symmetry preserving
-    EXPECT_TRUE(cu::is_equal(full_report.displacement, adjusted_report.displacement, 1e-5));
-    EXPECT_TRUE(cu::is_equal(full_report.stretch, adjusted_report.stretch, 1e-5));
+    EXPECT_TRUE(cu::almost_equal(full_report.displacement, adjusted_report.displacement, 1e-5));
+    EXPECT_TRUE(cu::almost_equal(full_report.stretch, adjusted_report.stretch, 1e-5));
 }
 
 TEST_F(SymmetryPreservingMappingTest, NotPreservingTest)
@@ -161,9 +161,9 @@ TEST_F(SymmetryPreservingMappingTest, NotPreservingTest)
     double volume_factor = ((conventional_fcc_Ni_ptr->lattice().volume()) / partial_bain_Ni_ptr->lattice().volume());
     double scale_factor = (volume_factor - 1.0) / 3 + 1;
     // because only difference is partial bain ratio the mapping report should be entirely symmetry breaking
-    EXPECT_TRUE(cu::is_equal(full_report.displacement, adjusted_report.displacement, 1e-5));
+    EXPECT_TRUE(cu::almost_equal(full_report.displacement, adjusted_report.displacement, 1e-5));
     Eigen::Matrix3d ident = Eigen::Matrix3d::Identity() * scale_factor;
-    EXPECT_TRUE(cu::is_equal(ident, adjusted_report.stretch, 1e-5));
+    EXPECT_TRUE(cu::almost_equal(ident, adjusted_report.stretch, 1e-5));
 }
 //**********************************************************************************************
 
