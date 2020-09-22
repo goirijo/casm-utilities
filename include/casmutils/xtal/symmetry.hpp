@@ -11,6 +11,8 @@ namespace xtal
 {
 class Lattice;
 class Structure;
+class Site;
+class Coordinate;
 
 /// Create the group of all symmetry operations that map the
 /// given lattice onto itself.
@@ -30,6 +32,15 @@ Lattice symmetrize(const Lattice& noisy_lattice, const std::vector<sym::CartOp>&
 /// The same operations will then be applied to the basis and the resulting values
 /// will be averaged out.
 Structure symmetrize(const Structure& noisy_structure, const std::vector<sym::CartOp>& enforced_factor_group);
+
+/// Apply SymOp to Eigen::Vector3d
+Eigen::Vector3d operator*(const sym::CartOp& sym_op, const Eigen::Vector3d& vector3d);
+
+/// Apply SymOp to Site
+Site operator*(const sym::CartOp& sym_op, const Site& site);
+
+/// Apply SymOp to Coordinate
+Coordinate operator*(const sym::CartOp& sym_op, const Coordinate& coordinate);
 
 } // namespace xtal
 } // namespace casmutils

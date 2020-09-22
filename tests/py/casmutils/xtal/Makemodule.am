@@ -1,2 +1,7 @@
 TESTS += \
-		 tests/py/casmutils/xtal/symmetry.py
+		 tests/py/casmutils/xtal/symmetry.py\
+		 tests/py/casmutils/xtal/lattice.py\
+		 tests/py/casmutils/xtal/structure.py\
+		 tests/py/casmutils/xtal/site.py\
+		 tests/py/casmutils/xtal/coordinate.py\
+		 tests/py/casmutils/xtal/structure_tools.py
