@@ -238,6 +238,27 @@ xtal::Lattice make_prismatic_lattice(const xtal::Lattice& lat)
     return xtal::Lattice(lat.a(), lat.b(), new_c);
 }
 
+DeformationReport::DeformationReport(const Eigen::Matrix3d& _deformation):deformation(_deformation)
+{
+    std::tie(rotation,strain)=xtal::polar_decomposition(deformation);
+    this->rotation_angle=std::atan2(rotation(1,0),rotation(0,0))*180.0/M_PI;
+
+    Eigen::Matrix3d E=strain-Eigen::Matrix3d::Identity();
+    this->strain_metrics[0]=(1.0/std::sqrt(2))*(E(0,0)+E(1,1));
+    this->strain_metrics[1]=(1.0/std::sqrt(2))*(E(0,0)-E(1,1));
+    this->strain_metrics[2]=std::sqrt(2)*E(0,1);
+
+    const auto& eta=strain_metrics;
+    dilation_strain=eta[0];
+    deviatoric_strain=std::sqrt(eta[1]*eta[1]+eta[2]*eta[2]);
+
+    if(!almost_zero(E.col(2)) || !almost_zero(E.row(2)))
+    {
+        throw std::runtime_error("Deformation matrix extends beyond the xy subspace");
+    }
+
+}
+
 MoireLatticeReport MoireGenerator::generate(ZONE bz, LATTICE layer) const
 {
     const Eigen::Matrix3l& true_moire_scel_mat = (bz == ZONE::ALIGNED) ? transformation_matrix_to_super_aligned_moire
@@ -375,7 +396,7 @@ MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, l
             auto [moire_to_super_trans_mat, residual] = approximate_integer_transformation(moire_unit, super_moire);
             assert(almost_zero(residual));
 
-            if (current_error < best_error)
+            if (current_error < best_error-1e-5)
             {
                 best_error = current_error;
                 *best_approximants[lat] = MoireApproximant(super_moire, aligned_unit, rotated_unit);
@@ -388,14 +409,23 @@ MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, l
 double
 MoireGenerator::error_metric(const xtal::Lattice& moire, const xtal::Lattice& aligned, const xtal::Lattice& rotated)
 {
+    MoireApproximant approx(moire,aligned,rotated);
     double error = 0.0;
-    for (const auto& tile : {aligned, rotated})
+
+    for (auto LAT : {LATTICE::ALIGNED, LATTICE::ROTATED})
     {
-        auto [integer_transform, residual_error] = approximate_integer_transformation(tile, moire);
         for (int i : {0, 1})
         {
-            error += residual_error.col(i).norm();
+            if(!almost_zero(approx.approximate_moire_integer_transformations[LAT]))
+            {
+                error += approx.approximate_moire_integer_transformation_errors[LAT].col(i).norm();
+            }
         }
+
+        //This works really poorly
+        /* const auto& F=approx.approximation_deformations[LAT]; */
+        /* DeformationReport report(F); */
+        /* error+=report.deviatoric_strain; */
     }
     return error;
 }

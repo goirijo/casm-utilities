@@ -480,7 +480,6 @@ TEST_F(GrapheneTwistTest, MoireScel15DegreeTwist)
 
 TEST_F(GrapheneTwistTest, MoireScelMagicDegreeTwist)
 {
-    return;
     const auto I = Eigen::Matrix3d::Identity();
     for (double angle : magic_angles)
     {
@@ -497,6 +496,7 @@ TEST_F(GrapheneTwistTest, MoireScelMagicDegreeTwist)
     }
 }
 
+/*
 void spit_rotation_error_data(const cu::xtal::Structure& tile, const std::vector<double>& magic_angles, int max_tiles)
 {
     using ZONE=cu::mush::MoireGenerator::ZONE;
@@ -512,7 +512,8 @@ void spit_rotation_error_data(const cu::xtal::Structure& tile, const std::vector
         incdeg<<degrees<<"    ";
         for(auto report : {aligned_report, rotated_report})
         {
-            for(auto mat : {report.approximation_rotation,report.approximation_strain})
+            cu::mush::DeformationReport dr(report.approximation_deformation);
+            for(auto mat : {dr.rotation,dr.strain})
             {
                 for(int i=0; i<3; ++i)
                 {
@@ -546,7 +547,8 @@ void spit_rotation_error_data(const cu::xtal::Structure& tile, const std::vector
         magicdeg<<degrees<<"    ";
         for(auto report : {aligned_report, rotated_report})
         {
-            for(auto mat : {report.approximation_rotation,report.approximation_strain})
+            cu::mush::DeformationReport dr(report.approximation_deformation);
+            for(auto mat : {dr.rotation,dr.strain})
             {
                 for(int i=0; i<3; ++i)
                 {
@@ -564,44 +566,103 @@ void spit_rotation_error_data(const cu::xtal::Structure& tile, const std::vector
     return;
 }
 
+void spit_internal_error_data(const cu::xtal::Lattice& tile, const std::vector<double>& magic_angles, int max_tiles)
+{
+    using ZONE=cu::mush::MoireGenerator::ZONE;
+    using LAT=cu::mush::MoireGenerator::LATTICE;
+
+    std::ofstream incdeg("internal_size"+std::to_string(max_tiles)+".txt");
+    for (double degrees = -60.25; degrees < 61; degrees += 0.5)
+    {
+        cu::mush::MoireGenerator graph_moire(tile,degrees,max_tiles);
+        const auto aligned_report=graph_moire.generate(ZONE::ALIGNED,LAT::ALIGNED);
+        const auto rotated_report=graph_moire.generate(ZONE::ALIGNED,LAT::ROTATED);
+
+        incdeg<<degrees<<"    ";
+        for(auto report : {aligned_report, rotated_report})
+        {
+            cu::mush::DeformationReport dr(report.approximation_deformation);
+            incdeg<<dr.rotation_angle<<"    "<<dr.dilation_strain<<"    "<<dr.deviatoric_strain<<"    ";
+        }
+        incdeg<<"\n";
+    }
+    incdeg.close();
+
+    std::ofstream magicdeg("internal_magic"+std::to_string(max_tiles)+".txt");
+    auto double_magic=magic_angles;
+   
+    for(double d : magic_angles)
+    {
+        double_magic.push_back(-d);
+    }
+
+    for (double degrees : double_magic)
+    {
+        cu::mush::MoireGenerator graph_moire(tile,degrees,max_tiles);
+        const auto aligned_report=graph_moire.generate(ZONE::ALIGNED,LAT::ALIGNED);
+        const auto rotated_report=graph_moire.generate(ZONE::ALIGNED,LAT::ROTATED);
+
+        magicdeg<<degrees<<"    ";
+        for(auto report : {aligned_report, rotated_report})
+        {
+            cu::mush::DeformationReport dr(report.approximation_deformation);
+            magicdeg<<dr.rotation_angle<<"    "<<dr.dilation_strain<<"    "<<dr.deviatoric_strain<<"    ";
+        }
+        magicdeg<<"\n";
+    }
+    magicdeg.close();
+
+    return;
+}
+
 TEST_F(GrapheneTwistTest, Debug)
 {
+    spit_internal_error_data(graphene_ptr->lattice(), magic_angles, 0);
+    spit_internal_error_data(graphene_ptr->lattice(), magic_angles, 200);
+    spit_internal_error_data(graphene_ptr->lattice(), magic_angles, 1000);
+
+
+    spit_rotation_error_data(*graphene_ptr, magic_angles, 0);
+    spit_rotation_error_data(*graphene_ptr, magic_angles, 200);
     spit_rotation_error_data(*graphene_ptr, magic_angles, 1000);
     return;
+
     for(int i=0; i<=1000; i+=100)
     {
         spit_rotation_error_data(*graphene_ptr, magic_angles, i);
     }
-    /* double angle = 15.178178937949879; // This angle gives a coincident sqrt(3) sqrt(3) moire superlattice */
-    /* cu::mush::MoireStructureGenerator mini_graph_moire(*graphene_ptr, angle); */
-    /* cu::mush::MoireStructureGenerator graph_moire(*graphene_ptr, angle, 100); */
 
-    /* const auto mini_struc_top = mini_graph_moire.layer(ZONE::ALIGNED, LAT::ROTATED); */
-    /* const auto mini_struc_bottom = mini_graph_moire.layer(ZONE::ALIGNED, LAT::ALIGNED); */
-    /* const auto mini_stack = cu::frankenstein::stack({mini_struc_bottom, mini_struc_top}); */
+    double angle = 15.178178937949879; // This angle gives a coincident sqrt(3) sqrt(3) moire superlattice
+    cu::mush::MoireStructureGenerator mini_graph_moire(*graphene_ptr, angle);
+    cu::mush::MoireStructureGenerator graph_moire(*graphene_ptr, angle, 100);
 
-    /* const auto struc_top = graph_moire.layer(ZONE::ALIGNED, LAT::ROTATED); */
-    /* const auto struc_bottom = graph_moire.layer(ZONE::ALIGNED, LAT::ALIGNED); */
-    /* const auto stack = cu::frankenstein::stack({struc_bottom, struc_top}); */
+    const auto mini_struc_top = mini_graph_moire.layer(ZONE::ALIGNED, LAT::ROTATED);
+    const auto mini_struc_bottom = mini_graph_moire.layer(ZONE::ALIGNED, LAT::ALIGNED);
+    const auto mini_stack = cu::frankenstein::stack({mini_struc_bottom, mini_struc_top});
 
-    /* cu::xtal::write_poscar(mini_stack, "mini_stack.vasp"); */
-    /* cu::xtal::write_poscar(stack, "scel_stack.vasp"); */
+    const auto struc_top = graph_moire.layer(ZONE::ALIGNED, LAT::ROTATED);
+    const auto struc_bottom = graph_moire.layer(ZONE::ALIGNED, LAT::ALIGNED);
+    const auto stack = cu::frankenstein::stack({struc_bottom, struc_top});
 
-    /* for (double angle : magic_angles) */
-    /* { */
-    /*     cu::mush::MoireStructureGenerator graph_moire(*graphene_ptr, angle, 1000); */
+    cu::xtal::write_poscar(mini_stack, "mini_stack.vasp");
+    cu::xtal::write_poscar(stack, "scel_stack.vasp");
 
-    /*     const auto a_top=graph_moire.layer(ZONE::ALIGNED,LAT::ROTATED); */
-    /*     const auto a_bottom=graph_moire.layer(ZONE::ALIGNED,LAT::ALIGNED); */
-    /*     const auto a_stack=cu::frankenstein::stack({a_bottom,a_top}); */
-    /*     cu::xtal::write_poscar(a_stack,std::to_string(angle)+"aligned.vasp"); */
+    for (double angle : magic_angles)
+    {
+        cu::mush::MoireStructureGenerator graph_moire(*graphene_ptr, angle, 1000);
 
-    /*     const auto r_top=graph_moire.layer(ZONE::ROTATED,LAT::ROTATED); */
-    /*     const auto r_bottom=graph_moire.layer(ZONE::ROTATED,LAT::ALIGNED); */
-    /*     const auto r_stack=cu::frankenstein::stack({a_bottom,a_top}); */
-    /*     cu::xtal::write_poscar(r_stack,std::to_string(angle)+"rotated.vasp"); */
-    /* } */
+        const auto a_top=graph_moire.layer(ZONE::ALIGNED,LAT::ROTATED);
+        const auto a_bottom=graph_moire.layer(ZONE::ALIGNED,LAT::ALIGNED);
+        const auto a_stack=cu::frankenstein::stack({a_bottom,a_top});
+        cu::xtal::write_poscar(a_stack,std::to_string(angle)+"aligned.vasp");
+
+        const auto r_top=graph_moire.layer(ZONE::ROTATED,LAT::ROTATED);
+        const auto r_bottom=graph_moire.layer(ZONE::ROTATED,LAT::ALIGNED);
+        const auto r_stack=cu::frankenstein::stack({a_bottom,a_top});
+        cu::xtal::write_poscar(r_stack,std::to_string(angle)+"rotated.vasp");
+    }
 }
+*/
 
 int main(int argc, char** argv)
 {

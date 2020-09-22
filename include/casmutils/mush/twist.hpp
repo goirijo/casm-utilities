@@ -203,7 +203,7 @@ struct MoireLatticeReport
           tiling_unit_supercell_rounding_error(tiling_unit_supercell_rounding_error),
           approximation_deformation(approximation_deformation)
     {
-        std::tie(approximation_rotation, approximation_strain) = xtal::polar_decomposition(approximation_deformation);
+        /* std::tie(approximation_rotation, approximation_strain) = xtal::polar_decomposition(approximation_deformation); */
     }
 
     /// Requested Brillouin zone used to create it (ALIGNED vs ROTATED)
@@ -228,9 +228,43 @@ struct MoireLatticeReport
     /// Deformation matrix required for the approximation
     Eigen::Matrix3d approximation_deformation;
     /// Rotation portion of the deformation matrix (polar decomposition)
-    Eigen::Matrix3d approximation_rotation;
+    /* Eigen::Matrix3d approximation_rotation; */
     /// Strain portion of the deformation (polar decomposition)
-    Eigen::Matrix3d approximation_strain;
+    /* Eigen::Matrix3d approximation_strain; */
+};
+
+/// Decomposes the defromation matrix into a rotation and deformation matrix.
+/// Additional values like dilation and deviatoric strain that can be extracted
+/// will only make sense if the deformation matrix is really just a 3d version
+/// of a deformation that occurs on the xy plane.
+struct DeformationReport
+{
+    /// Input as a 2d matrix, an extra dimension will be added to all the internal values
+    /* DeformationReport(const Eigen::Matrix2d& deformation); */
+    DeformationReport(const Eigen::Matrix3d& deformation);
+
+    /// The deformation matrix used at construction
+    Eigen::Matrix3d deformation;
+    /// Rotation component of the deformation matrix
+    Eigen::Matrix3d rotation;
+    /// Strain component of the deformation matrix
+    Eigen::Matrix3d strain;
+
+    /// Extracted rotation angle of the rotation matrix
+    double rotation_angle;
+
+    /// Alternative strain metrics extracted from the strain matrix (U), defined as:
+    /// \eta_1=\frac{1}{\sqrt{2}}(E_{11}+E_{22})
+    /// \eta_2=\frac{1}{\sqrt{2}}(E_{11}-E_{22})
+    /// \eta_3=\sqrt{2}(E_{12})
+    /// where E=U-I
+    std::array<double,3> strain_metrics;
+    
+    /// Dilation strain, i.e. \eta_1 strain metric
+    double dilation_strain;
+
+    /// Deviatoric strain, defined as \sqrt{\eta_2^2+\eta_3^2}
+    double deviatoric_strain;
 };
 
 /// Interface class to access the Moire lattice, which can be relative do different Brillouin zones,
@@ -292,23 +326,6 @@ public:
     {
         return requested_zone(brillouin).approximate_moire_lattice;
     }
-
-    /* const xtal::Lattice& approximate_lattice(ZONE brillouin, LATTICE lat) const */
-    /* { */
-    /*     return requested_zone(brillouin).approximate_lattices.at(lat); */
-    /* } */
-
-    /* const Eigen::Matrix3l& approximate_moire_integer_transformation(ZONE bz, LATTICE lat) const */
-    /* { */
-    /*     return requested_zone(bz).approximate_moire_integer_transformations.at(lat); */
-    /* } */
-
-    /* const Eigen::Matrix3d& approximation_deformation(ZONE bz, LATTICE lat) */
-    /* { */
-    /*     return requested_zone(bz).approximation_deformations.at(lat); */
-    /* } */
-
-    /* double degrees() const { return moire.input_degrees; } */
 };
 
 /// Generates slab superstructures that can be stacked together to create bilayers with Moire
