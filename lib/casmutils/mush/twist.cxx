@@ -396,8 +396,9 @@ MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, l
             auto [moire_to_super_trans_mat, residual] = approximate_integer_transformation(moire_unit, super_moire);
             assert(almost_zero(residual));
 
-            if (current_error < best_error-1e-5)
+            if (current_error < best_error-1e-8)
             {
+                std::cout<<"Improvement of "<<std::abs(current_error-best_error)<<"\n";
                 best_error = current_error;
                 *best_approximants[lat] = MoireApproximant(super_moire, aligned_unit, rotated_unit);
                 *trans_mats_to_super_moire[lat] = moire_to_super_trans_mat;
@@ -414,18 +415,21 @@ MoireGenerator::error_metric(const xtal::Lattice& moire, const xtal::Lattice& al
 
     for (auto LAT : {LATTICE::ALIGNED, LATTICE::ROTATED})
     {
-        for (int i : {0, 1})
-        {
-            if(!almost_zero(approx.approximate_moire_integer_transformations[LAT]))
-            {
-                error += approx.approximate_moire_integer_transformation_errors[LAT].col(i).norm();
-            }
-        }
+        /* for (int i : {0, 1}) */
+        /* { */
+        /*     if(!almost_zero(approx.approximate_moire_integer_transformations[LAT])) */
+        /*     { */
+        /*         error += approx.approximate_moire_integer_transformation_errors[LAT].col(i).norm(); */
+        /*     } */
+        /* } */
 
-        //This works really poorly
-        /* const auto& F=approx.approximation_deformations[LAT]; */
-        /* DeformationReport report(F); */
-        /* error+=report.deviatoric_strain; */
+        const auto& F=approx.approximation_deformations[LAT];
+        DeformationReport report(F);
+        for(double eta : report.strain_metrics)
+        {
+            error+=eta*eta;
+        }
+        error=std::sqrt(error);
     }
     return error;
 }

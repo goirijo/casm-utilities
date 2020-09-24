@@ -617,6 +617,8 @@ void spit_internal_error_data(const cu::xtal::Lattice& tile, const std::vector<d
 
 TEST_F(GrapheneTwistTest, Debug)
 {
+    spit_internal_error_data(graphene_ptr->lattice(), magic_angles, 3000);
+
     spit_internal_error_data(graphene_ptr->lattice(), magic_angles, 0);
     spit_internal_error_data(graphene_ptr->lattice(), magic_angles, 200);
     spit_internal_error_data(graphene_ptr->lattice(), magic_angles, 1000);
