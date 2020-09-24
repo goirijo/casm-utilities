@@ -28,12 +28,6 @@ bool is_equal(const CompareType& reference, const CompareType& other, const Args
     return reference_equals(other);
 }
 
-template <typename Derived1, typename Derived2>
-bool is_equal(const Eigen::MatrixBase<Derived1>& reference, const Eigen::MatrixBase<Derived2>& other, double tol)
-{
-    return casmutils::almost_equal(reference, other, tol);
-}
-
 } // namespace casmutils
 
 /**
