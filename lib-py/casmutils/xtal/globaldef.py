@@ -1,7 +1,7 @@
 """ All the global definitions are declared here """
-
 """Tolerance"""
 tol = 1e-5
+
 
 def _is_pybind_value(value):
     """Checks if the value passed

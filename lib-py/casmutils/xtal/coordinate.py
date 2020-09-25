@@ -3,12 +3,10 @@ from . import globaldef
 
 
 class Equals:
-
     """A Coordinate compare method which returns true if
     each of the x,y,z values of the "reference" Coordinate
     are within a specified tolerance of x,y,z values
     of the "other" Coordinate or MutableCoordinate"""
-
     def __init__(self, ref_coordinate, tol):
         """Construct Equals from Coordinate
         or MutableCoordinate & a given tolerance
@@ -37,10 +35,8 @@ class Equals:
 
 
 class _Coordinate:
-
     """Base class for both mutable and immutable Coordinate classes.
     Defines the functions that should be common for both."""
-
     def __init__(self, coord):
         """
         Parameters
@@ -205,11 +201,9 @@ class _Coordinate:
 
 
 class Coordinate(_Coordinate):
-
     """Immutable Coordinate class. Defined as the Cartesian
     coodrinates, can handle opperations related to lattice
     periodicity."""
-
     def __init__(self, coord):
         """
         Parameters
@@ -238,11 +232,9 @@ class Coordinate(_Coordinate):
 
 
 class MutableCoordinate(_Coordinate):
-
     """Mutable Coordinate class. Defined as the Cartesian
     coodrinates, can handle opperations related to lattice
     periodicity."""
-
     def __init__(self, coord):
         """
         Parameters

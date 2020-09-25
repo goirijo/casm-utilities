@@ -4,16 +4,17 @@ import unittest
 import casmutils as cu
 import numpy as np
 
+
 class LatticeTest(unittest.TestCase):
     def setUp(self):
         """Setting numpy arrays for lattice"""
-        self.a0 = np.array([0,1,0.5])
-        self.b0 = np.array([1.5,0,0.5])
-        self.c0 = np.array([0.5,0.5,0])
-        self.lat_matrix = np.array([[0,1.5,0.5],[1,0,0.5],[0.5,0.5,0]])
-        self.non_niggli_lat_matrix = np.array([[1,0,0],[0,1,0],[1,1,1]])
-        self.niggli_lat_matrix = np.array([[1,0,0],[0,1,0],[0,0,1]])
-
+        self.a0 = np.array([0, 1, 0.5])
+        self.b0 = np.array([1.5, 0, 0.5])
+        self.c0 = np.array([0.5, 0.5, 0])
+        self.lat_matrix = np.array([[0, 1.5, 0.5], [1, 0, 0.5], [0.5, 0.5, 0]])
+        self.non_niggli_lat_matrix = np.array([[1, 0, 0], [0, 1, 0], [1, 1,
+                                                                      1]])
+        self.niggli_lat_matrix = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
         """Setting up Lattice"""
         self.lat0 = cu.xtal.Lattice(self.a0, self.b0, self.c0)
         self.non_niggli_lat = cu.xtal.Lattice(*self.non_niggli_lat_matrix)
@@ -25,27 +26,33 @@ class LatticeTest(unittest.TestCase):
         self.assertTrue(self.lat0 != lat)
 
     def test_lattice_vector_retrieve(self):
-        self.assertTrue(np.array_equal(self.a0,self.lat0.a()))
-        self.assertTrue(np.array_equal(self.b0,self.lat0.b()))
-        self.assertTrue(np.array_equal(self.c0,self.lat0.c()))
+        self.assertTrue(np.array_equal(self.a0, self.lat0.a()))
+        self.assertTrue(np.array_equal(self.b0, self.lat0.b()))
+        self.assertTrue(np.array_equal(self.c0, self.lat0.c()))
 
     def test_volume(self):
-        self.assertAlmostEqual(self.lat0.volume(),np.dot(self.a0,np.cross(self.b0,self.c0)),5)
+        self.assertAlmostEqual(self.lat0.volume(),
+                               np.dot(self.a0, np.cross(self.b0, self.c0)), 5)
 
     def test_get_item(self):
-        self.assertTrue(np.array_equal(self.a0,self.lat0[0]))
-        self.assertTrue(np.array_equal(self.b0,self.lat0[1]))
-        self.assertTrue(np.array_equal(self.c0,self.lat0[2]))
+        self.assertTrue(np.array_equal(self.a0, self.lat0[0]))
+        self.assertTrue(np.array_equal(self.b0, self.lat0[1]))
+        self.assertTrue(np.array_equal(self.c0, self.lat0[2]))
 
     def test_col_vec_mat_retrieve(self):
-        self.assertTrue(np.array_equal(self.lat0.column_vector_matrix(),self.lat_matrix))
+        self.assertTrue(
+            np.array_equal(self.lat0.column_vector_matrix(), self.lat_matrix))
 
     def test_row_vec_mat_retrieve(self):
-        self.assertTrue(np.array_equal(self.lat0.row_vector_matrix(),np.transpose(self.lat_matrix)))
+        self.assertTrue(
+            np.array_equal(self.lat0.row_vector_matrix(),
+                           np.transpose(self.lat_matrix)))
 
     def test_make_niggli(self):
-        self.assertTrue(cu.xtal.make_niggli(self.non_niggli_lat) == self.niggli_lat)
+        self.assertTrue(
+            cu.xtal.make_niggli(self.non_niggli_lat) == self.niggli_lat)
         self.assertFalse(self.non_niggli_lat == self.niggli_lat)
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     unittest.main()

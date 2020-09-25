@@ -1,13 +1,12 @@
 from . import _xtal
 from . import globaldef
 
-class Equals:
 
+class Equals:
     """A Lattice compare method which returns true
     if all the lattice vectors of "reference" lattice
     are within a specified tolerance of the lattice vectors
     of "other" lattice"""
-
     def __init__(self, ref_lattice, tol):
         """Construct Equals from Lattice or MutableLattice &
         a given tolerance
@@ -33,11 +32,10 @@ class Equals:
         """
         return self._LatticeEquals_f(other)
 
-class Lattice(_xtal.Lattice):
 
+class Lattice(_xtal.Lattice):
     """A Lattice class. Defined as the unit cells that
     define the unit cell"""
-
     def __init__(self, a, b, c):
         """
         Parameters
@@ -47,7 +45,7 @@ class Lattice(_xtal.Lattice):
         c : np.array
 
         """
-        super().__init__(a,b,c)
+        super().__init__(a, b, c)
 
     @classmethod
     def _from_pybind(cls, pybind_value):
@@ -184,4 +182,3 @@ class Lattice(_xtal.Lattice):
 
         """
         return self.__str__()
-
