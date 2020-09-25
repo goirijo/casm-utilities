@@ -12,10 +12,9 @@ class LatticeTest(unittest.TestCase):
         self.b0 = np.array([1.5, 0, 0.5])
         self.c0 = np.array([0.5, 0.5, 0])
         self.lat_matrix = np.array([[0, 1.5, 0.5], [1, 0, 0.5], [0.5, 0.5, 0]])
-        self.non_niggli_lat_matrix = np.array(
-            [[1, 0, 0], [0, 1, 0], [1, 1, 1]])
+        self.non_niggli_lat_matrix = np.array([[1, 0, 0], [0, 1, 0], [1, 1,
+                                                                      1]])
         self.niggli_lat_matrix = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-
         """Setting up Lattice"""
         self.lat0 = cu.xtal.Lattice(self.a0, self.b0, self.c0)
         self.non_niggli_lat = cu.xtal.Lattice(*self.non_niggli_lat_matrix)
@@ -32,8 +31,8 @@ class LatticeTest(unittest.TestCase):
         self.assertTrue(np.array_equal(self.c0, self.lat0.c()))
 
     def test_volume(self):
-        self.assertAlmostEqual(self.lat0.volume(), np.dot(
-            self.a0, np.cross(self.b0, self.c0)), 5)
+        self.assertAlmostEqual(self.lat0.volume(),
+                               np.dot(self.a0, np.cross(self.b0, self.c0)), 5)
 
     def test_get_item(self):
         self.assertTrue(np.array_equal(self.a0, self.lat0[0]))
@@ -41,16 +40,17 @@ class LatticeTest(unittest.TestCase):
         self.assertTrue(np.array_equal(self.c0, self.lat0[2]))
 
     def test_col_vec_mat_retrieve(self):
-        self.assertTrue(np.array_equal(
-            self.lat0.column_vector_matrix(), self.lat_matrix))
+        self.assertTrue(
+            np.array_equal(self.lat0.column_vector_matrix(), self.lat_matrix))
 
     def test_row_vec_mat_retrieve(self):
-        self.assertTrue(np.array_equal(
-            self.lat0.row_vector_matrix(), np.transpose(self.lat_matrix)))
+        self.assertTrue(
+            np.array_equal(self.lat0.row_vector_matrix(),
+                           np.transpose(self.lat_matrix)))
 
     def test_make_niggli(self):
-        self.assertTrue(cu.xtal.make_niggli(
-            self.non_niggli_lat) == self.niggli_lat)
+        self.assertTrue(
+            cu.xtal.make_niggli(self.non_niggli_lat) == self.niggli_lat)
         self.assertFalse(self.non_niggli_lat == self.niggli_lat)
 
     def test_lattice_from_params(self):
@@ -61,12 +61,21 @@ class LatticeTest(unittest.TestCase):
         beta = 122.891
         gamma = 90.0
 
-        expected_lat = np.array(
-            [[6.114733, 0, -3.954436], [0, 7.317, 0], [0, 0, 6.104]])
-        lat = cu.xtal.Lattice.from_lattice_parameters(
-            aa, bb, cc, alpha, beta, gamma)
-        self.assertTrue(np.allclose(
-            lat.row_vector_matrix(), expected_lat))
+        expected_lat = np.array([[6.114733, 0, -3.954436], [0, 7.317, 0],
+                                 [0, 0, 6.104]])
+        lat = cu.xtal.Lattice.from_lattice_parameters(aa, bb, cc, alpha, beta,
+                                                      gamma)
+        self.assertTrue(np.allclose(lat.row_vector_matrix(), expected_lat))
+
+    def test_row_vec_mat_retrieve(self):
+        self.assertTrue(
+            np.array_equal(self.lat0.row_vector_matrix(),
+                           np.transpose(self.lat_matrix)))
+
+    def test_make_niggli(self):
+        self.assertTrue(
+            cu.xtal.make_niggli(self.non_niggli_lat) == self.niggli_lat)
+        self.assertFalse(self.non_niggli_lat == self.niggli_lat)
 
 
 if __name__ == '__main__':

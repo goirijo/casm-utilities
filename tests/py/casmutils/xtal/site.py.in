@@ -10,7 +10,6 @@ class SiteCoordinateEquals:
         which compares only the
         coordinates and returns true
         if they are the same."""
-
     def __init__(self, ref_site, tol):
         """Constructs the functor with
         Site
@@ -36,24 +35,23 @@ class SiteCoordinateEquals:
         bool
 
         """
-        return np.allclose(self._ref_site.cart(), other.cart(), self._tol, self._tol)
+        return np.allclose(self._ref_site.cart(), other.cart(), self._tol,
+                           self._tol)
 
 
 class SiteTest(unittest.TestCase):
     def setUp(self):
         """Setting up numpy arrays and labels for atoms"""
-        self.lattice_matrix = np.array(
-            [[0, 0.5, 0.5], [0.5, 0, 0.5], [0.5, 0.5, 0]])
+        self.lattice_matrix = np.array([[0, 0.5, 0.5], [0.5, 0, 0.5],
+                                        [0.5, 0.5, 0]])
         self.raw_coord0 = np.array([0.1, 0.2, 0.3])
         self.raw_coord1 = np.array([0.2, 0.4, 0.6])
         self.atom0 = "O"
         self.atom1 = "P"
         self.tol = cu.xtal.globaldef.tol
-
         """Computing fractional coordinates manually"""
-        self.frac_coords0 = np.dot(np.linalg.inv(
-            self.lattice_matrix), self.raw_coord0)
-
+        self.frac_coords0 = np.dot(np.linalg.inv(self.lattice_matrix),
+                                   self.raw_coord0)
         """Constructing required classes"""
         self.lat = cu.xtal.Lattice(*self.lattice_matrix)
         self.coord0 = cu.xtal.Coordinate(self.raw_coord0)
@@ -85,10 +83,12 @@ class SiteTest(unittest.TestCase):
         self.assertTrue(np.array_equal(self.site0m.cart(), self.raw_coord0))
 
     def test_frac(self):
-        self.assertTrue(np.allclose(self.site0.frac(self.lat),
-                                    self.frac_coords0, self.tol, self.tol))
-        self.assertTrue(np.allclose(self.site0m.frac(self.lat),
-                                    self.frac_coords0, self.tol, self.tol))
+        self.assertTrue(
+            np.allclose(self.site0.frac(self.lat), self.frac_coords0, self.tol,
+                        self.tol))
+        self.assertTrue(
+            np.allclose(self.site0m.frac(self.lat), self.frac_coords0,
+                        self.tol, self.tol))
 
     def test_label(self):
         self.assertTrue(self.site0.label() == self.atom0)
