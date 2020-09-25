@@ -6,7 +6,6 @@ class MappingReport():
     a description of the tensors required to match the lattices, permutations
     and displacements required to map the basis, and both individual costs associated
     with each part of the mapping, as well as a combined lattice and basis mapping score"""
-
     def __init__(self, pybind_value):
         self._pybind_value = pybind_value
 
@@ -70,7 +69,6 @@ class MappingReport():
 class MappingInput(_mapping.MappingInput):
     """Specifies all possible mapping specifications except for the reference
     structure itself, and the symmetry operations that should be considered."""
-
     @classmethod
     def _sanitize_kwargs(cls, kwargs):
         """Some options will have more than one way to be specified,
@@ -94,14 +92,14 @@ class MappingInput(_mapping.MappingInput):
         #better to leave that in the c++ implementatiton though
         return kwargs
 
-    def __setattr__(self,name,value):
-        if not hasattr(self,name):
-            raise AttributeError("{} is not a valid keyword for MappingInput".format(name))
-        super().__setattr__(name,value)
+    def __setattr__(self, name, value):
+        if not hasattr(self, name):
+            raise AttributeError(
+                "{} is not a valid keyword for MappingInput".format(name))
+        super().__setattr__(name, value)
 
     def __init__(self, **kwargs):
         #TODO: list what the default values are here?
-
         """Specify only values for which you don't want to keep the defaults.
 
         Parameters
@@ -123,10 +121,10 @@ class MappingInput(_mapping.MappingInput):
 
         """
         _mapping.MappingInput.__init__(self)
-        kwargs=MappingInput._sanitize_kwargs(kwargs)
+        kwargs = MappingInput._sanitize_kwargs(kwargs)
 
         for k in kwargs:
-            self.__setattr__(k,kwargs[k])
+            self.__setattr__(k, kwargs[k])
 
     def __str__(self):
         as_str = ""

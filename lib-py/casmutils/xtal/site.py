@@ -3,11 +3,9 @@ from . import globaldef
 
 
 class Equals:
-
     """Definition of a site compare method which returns true if
     the coordinate and the atom type of the "reference" site matches
     with the coordinate and the atom type of the "other" site"""
-
     def __init__(self, ref_site, tol):
         """Construct Equals from Site
         or MutableSite and a given tolerance
@@ -35,10 +33,8 @@ class Equals:
 
 
 class _Site:
-
     """Base class for both mutable and immutable Site classes.
     Defines the functions that should be common to both"""
-
     def __init__(self, coord, label):
         """
         Parameters
@@ -50,7 +46,8 @@ class _Site:
         if coord is _xtal.Site and label is None:
             self._pybind_value = None
 
-        elif type(coord).__name__ is "Coordinate" or type(coord).__name__ is "MutableCoordinate":
+        elif type(coord).__name__ is "Coordinate" or type(
+                coord).__name__ is "MutableCoordinate":
             self._pybind_value = _xtal.Site(coord._pybind_value, label)
 
         else:
@@ -182,10 +179,8 @@ class _Site:
 
 
 class Site(_Site):
-
     """Immutable Site Class. Defined as cartesian coordinates
     along with atom type. Handles all const site operations"""
-
     def __init__(self, coord, label):
         """
         Parameters
@@ -198,10 +193,8 @@ class Site(_Site):
 
 
 class MutableSite(_Site):
-
     """Mutable Site Class. Defined as cartesian coordinates along
     with atom type. Handles all non const site operations"""
-
     def __init__(self, coord, label):
         """
         Parameters
