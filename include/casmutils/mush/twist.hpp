@@ -147,7 +147,7 @@ struct MoireApproximant
     /// The moire lattice after straining it a bit to make the aligned and rotated lattices coincident
     xtal::Lattice approximate_moire_lattice;
 
-    //TODO: Rename to "tiling unit"? There's too much "lattice" flying around.
+    // TODO: Rename to "tiling unit"? There's too much "lattice" flying around.
     /// The aligned and rotated lattices with some strain introduced, such creating superlattices
     /// from them results in fully periodic Moire lattices
     std::unordered_map<LATTICE, xtal::Lattice> approximate_lattices;
@@ -203,7 +203,8 @@ struct MoireLatticeReport
           tiling_unit_supercell_rounding_error(tiling_unit_supercell_rounding_error),
           approximation_deformation(approximation_deformation)
     {
-        /* std::tie(approximation_rotation, approximation_strain) = xtal::polar_decomposition(approximation_deformation); */
+        /* std::tie(approximation_rotation, approximation_strain) =
+         * xtal::polar_decomposition(approximation_deformation); */
     }
 
     /// Requested Brillouin zone used to create it (ALIGNED vs ROTATED)
@@ -258,8 +259,8 @@ struct DeformationReport
     /// \eta_2=\frac{1}{\sqrt{2}}(E_{11}-E_{22})
     /// \eta_3=\sqrt{2}(E_{12})
     /// where E=U-I
-    std::array<double,3> strain_metrics;
-    
+    std::array<double, 3> strain_metrics;
+
     /// Dilation strain, i.e. \eta_1 strain metric
     double dilation_strain;
 
@@ -317,10 +318,7 @@ public:
     /// including the true Moire lattice, and the approximated one.
     MoireLatticeReport generate(ZONE brillouin, LATTICE layer) const;
 
-    const xtal::Lattice& true_moire(ZONE brillouin) const
-    {
-        return moire.moire(brillouin);
-    }
+    const xtal::Lattice& true_moire(ZONE brillouin) const { return moire.moire(brillouin); }
 
     const xtal::Lattice& approximate_moire(ZONE brillouin) const
     {

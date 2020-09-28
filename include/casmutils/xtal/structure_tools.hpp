@@ -32,7 +32,6 @@ Structure make_primitive(const Structure& input);
 /// that has the a and b vectors spanning the specified plane
 xtal::Structure slice_along_plane(const xtal::Structure& unit_structure, const Eigen::Vector3i& miller_indexes);
 
-
 /// Returns a super structure after applying a transformation matrix to the structure.
 /// Applies transformation to the lattice and uses CASM::Structure::create_superstruc to fill the basis.
 /// transformed_lattice =  original_lattice * transformation_matrix

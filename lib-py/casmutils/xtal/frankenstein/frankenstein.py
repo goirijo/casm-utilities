@@ -4,7 +4,8 @@ from ._frankenstein import translate_basis as _translate_basis
 from ._frankenstein import stack as _stack
 from .. import xtal
 
-def translate_basis(struc,shift):
+
+def translate_basis(struc, shift):
     """Create a new structure that has had each of its
     basis sites translated by the specified shift value.
 
@@ -18,7 +19,9 @@ def translate_basis(struc,shift):
     xtal.Structure
 
     """
-    return xtal.Structure._from_pybind(_translate_basis(struc._pybind_value,shift))
+    return xtal.Structure._from_pybind(
+        _translate_basis(struc._pybind_value, shift))
+
 
 def stack(strucs):
     """Given a series of structures that have the same ab values, stack them
@@ -35,4 +38,5 @@ def stack(strucs):
     xtal.Structure
 
     """
-    return xtal.Structure._from_pybind(_stack([s._pybind_value for s in strucs]))
+    return xtal.Structure._from_pybind(
+        _stack([s._pybind_value for s in strucs]))

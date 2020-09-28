@@ -11,8 +11,8 @@ namespace xtal
 
 class Lattice;
 
-//TODO: Just erase this class, it's super annoying. You can do all of this
-//stuff with functions
+// TODO: Just erase this class, it's super annoying. You can do all of this
+// stuff with functions
 
 /**
  * The rewrap version of Coordinate does *not* have a home Lattice,

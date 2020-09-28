@@ -171,7 +171,10 @@ TEST_F(SlabTest, FlooredStructure)
     EXPECT_TRUE(origin_site_it->label() != original_origin_label);
 }
 
-TEST_F(SlabTest, Consistent_C_Vector) { EXPECT_EQ(b2_101_ptr->lattice().c() * slab_size, b2_101_stack5_ptr->lattice().c()); }
+TEST_F(SlabTest, Consistent_C_Vector)
+{
+    EXPECT_EQ(b2_101_ptr->lattice().c() * slab_size, b2_101_stack5_ptr->lattice().c());
+}
 
 TEST_F(SlabTest, OrthogonalSlab)
 {
@@ -183,7 +186,7 @@ TEST_F(SlabTest, OrthogonalSlab)
     EXPECT_TRUE(equivalent(b2_101_stack5_ptr->lattice(), simple_stack.lattice()));
     EXPECT_TRUE(cu::almost_equal(b2_101_stack5_ptr->lattice().a(), simple_stack.lattice().a(), 1e-8));
     EXPECT_TRUE(cu::almost_equal(b2_101_stack5_ptr->lattice().b(), simple_stack.lattice().b(), 1e-8));
-    //Only because c is orthogonal! otherwise it'd probably be false
+    // Only because c is orthogonal! otherwise it'd probably be false
     EXPECT_TRUE(cu::almost_equal(b2_101_stack5_ptr->lattice().c(), simple_stack.lattice().c(), 1e-8));
 }
 
@@ -199,11 +202,11 @@ protected:
         Eigen::AngleAxisd roll(2.5, Eigen::Vector3d::UnitZ());
         Eigen::AngleAxisd yaw(61.9, Eigen::Vector3d::UnitY());
         Eigen::AngleAxisd pitch(-8.3, Eigen::Vector3d::UnitX());
-        Eigen::Quaternion<double> q = roll* yaw* pitch;
+        Eigen::Quaternion<double> q = roll * yaw * pitch;
         rotation_mat = q.matrix();
 
-        col_lat_mat=rotation_mat*col_lat_mat;
-        quarter_slant_ptr.reset(new Lattice(col_lat_mat.col(0),col_lat_mat.col(1),col_lat_mat.col(2)));
+        col_lat_mat = rotation_mat * col_lat_mat;
+        quarter_slant_ptr.reset(new Lattice(col_lat_mat.col(0), col_lat_mat.col(1), col_lat_mat.col(2)));
     }
 
     void EXPECT_xy_values_for_c_vector(const Eigen::Vector3d& c, double x, double y)
@@ -259,10 +262,10 @@ TEST_F(OrthogonalizeCVector, EquivalentToStack)
     auto ortho = cu::mush::orthogonalize_c_vector(stack);
 
     cu::xtal::LatticeIsEquivalent_f equivalent(1e-8);
-    EXPECT_TRUE(equivalent(stack,ortho));
+    EXPECT_TRUE(equivalent(stack, ortho));
 
-    //TODO: make this a binary comparator ffs
-    cu::xtal::LatticeEquals_f equal(stack,1e-8);
+    // TODO: make this a binary comparator ffs
+    cu::xtal::LatticeEquals_f equal(stack, 1e-8);
     EXPECT_FALSE(equal(ortho));
 }
 

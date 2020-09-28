@@ -1,5 +1,5 @@
-#include <casmutils/mush/slab.hpp>
 #include "casmutils/xtal/structure.hpp"
+#include <casmutils/mush/slab.hpp>
 #include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/xtal/frankenstein.hpp>
 #include <casmutils/xtal/lattice.hpp>
@@ -40,7 +40,6 @@ xtal::Lattice make_transformed_lattice(const xtal::Lattice& lat, const Eigen::Ma
     return xtal::Lattice(transform * lat.column_vector_matrix());
 }
 
-
 Eigen::Matrix3d make_alignment_matrix(const xtal::Lattice& lat)
 {
     Eigen::Matrix3d lat_span_to_standard = slab_unit_vectors(lat).inverse();
@@ -64,23 +63,23 @@ xtal::Lattice make_aligned_lattice(const xtal::Lattice& lat)
 
 xtal::Lattice orthogonalize_c_vector(const xtal::Lattice& lat)
 {
-    assert(lat.column_vector_matrix().determinant()>0);
-    Eigen::Vector3d normal=lat.a().cross(lat.b()).normalized();
+    assert(lat.column_vector_matrix().determinant() > 0);
+    Eigen::Vector3d normal = lat.a().cross(lat.b()).normalized();
 
-    xtal::Coordinate ortho_component=xtal::Coordinate(lat.c().dot(normal)*normal);
-    xtal::Coordinate plane_component=xtal::Coordinate(lat.c()-ortho_component.cart());
+    xtal::Coordinate ortho_component = xtal::Coordinate(lat.c().dot(normal) * normal);
+    xtal::Coordinate plane_component = xtal::Coordinate(lat.c() - ortho_component.cart());
 
-    //In plane component should have no c component
-    assert(almost_equal(plane_component.frac(lat)(2),0.0,1e-8));
-    
+    // In plane component should have no c component
+    assert(almost_equal(plane_component.frac(lat)(2), 0.0, 1e-8));
+
     plane_component.bring_within_wigner_seitz(lat);
-    Eigen::Vector3d final_c=plane_component.cart()+ortho_component.cart();
-    return xtal::Lattice(lat.a(),lat.b(),final_c);
+    Eigen::Vector3d final_c = plane_component.cart() + ortho_component.cart();
+    return xtal::Lattice(lat.a(), lat.b(), final_c);
 }
 
 xtal::Structure orthogonalize_c_vector(const xtal::Structure& struc)
 {
-    return struc.set_lattice(orthogonalize_c_vector(struc.lattice()),xtal::CART);
+    return struc.set_lattice(orthogonalize_c_vector(struc.lattice()), xtal::CART);
 }
 
 xtal::Structure make_stacked_slab(const xtal::Structure& slab_unit, int stacks)
@@ -89,8 +88,8 @@ xtal::Structure make_stacked_slab(const xtal::Structure& slab_unit, int stacks)
     Eigen::Matrix3i stack_mat;
     stack_mat << 1, 0, 0, 0, 1, 0, 0, 0, stacks;
 
-    xtal::Structure stack=xtal::make_superstructure(slab_unit, stack_mat);
-    stack.set_lattice(orthogonalize_c_vector(stack.lattice()),xtal::CART);
+    xtal::Structure stack = xtal::make_superstructure(slab_unit, stack_mat);
+    stack.set_lattice(orthogonalize_c_vector(stack.lattice()), xtal::CART);
 
     return stack;
 }

@@ -5,9 +5,9 @@
 
 #include <algorithm>
 #include <casmutils/definitions.hpp>
-#include <gtest/gtest.h>
-#include <casmutils/mush/shift.hpp>
 #include <casmutils/mapping/structure_mapping.hpp>
+#include <casmutils/mush/shift.hpp>
+#include <gtest/gtest.h>
 #include <vector>
 
 namespace cu = casmutils;
@@ -18,7 +18,10 @@ protected:
     using Structure = cu::xtal::Structure;
     std::unique_ptr<Structure> b2_ptr;
 
-    virtual void SetUp() override { b2_ptr.reset(new Structure(Structure::from_poscar(cu::autotools::input_filesdir / "b2.vasp"))); }
+    virtual void SetUp() override
+    {
+        b2_ptr.reset(new Structure(Structure::from_poscar(cu::autotools::input_filesdir / "b2.vasp")));
+    }
 
     void compare_basis_to_b2(const Structure& mutated_b2)
     {
@@ -90,7 +93,8 @@ protected:
     {
         B2ModifiedC_Vector::SetUp();
 
-        std::tie(shift_values, shift_records) = cu::mush::make_uniform_in_plane_shift_vectors(b2_ptr->lattice(), as, bs);
+        std::tie(shift_values, shift_records) =
+            cu::mush::make_uniform_in_plane_shift_vectors(b2_ptr->lattice(), as, bs);
         std::tie(wigner_seitz_shift_values, wigner_seitz_shift_records) =
             cu::mush::make_uniform_in_plane_wigner_seitz_shift_vectors(b2_ptr->lattice(), as, bs);
 
@@ -118,7 +122,9 @@ TEST_F(ShiftingTest, ShiftValues)
 
     // Shift at half along a has record a=5, b=0
     Eigen::Vector3d expected_shift = b2_ptr->lattice().a() * 0.5;
-    auto is_half_a_record = [this](const cu::mush::ShiftRecord& record) { return record.a == as/2 && record.b == 0; };
+    auto is_half_a_record = [this](const cu::mush::ShiftRecord& record) {
+        return record.a == as / 2 && record.b == 0;
+    };
     cu::mush::ShiftRecord half_a_record = *(std::find_if(shift_records.begin(), shift_records.end(), is_half_a_record));
 
     EXPECT_EQ(expected_shift, shift_values[half_a_record.index]);
@@ -127,12 +133,12 @@ TEST_F(ShiftingTest, ShiftValues)
 
 TEST_F(ShiftingTest, WignerSeitzShiftMatches)
 {
-    EXPECT_EQ(shift_values.size(),wigner_seitz_shift_values.size());
-    int didnt_match=0;
-    for(int i=0; i<shift_values.size(); ++i)
+    EXPECT_EQ(shift_values.size(), wigner_seitz_shift_values.size());
+    int didnt_match = 0;
+    for (int i = 0; i < shift_values.size(); ++i)
     {
         cu::xtal::Coordinate ws_shift(wigner_seitz_shift_values[i]);
-        if(!shift_values[i].isApprox(ws_shift.cart()))
+        if (!shift_values[i].isApprox(ws_shift.cart()))
         {
             ++didnt_match;
         }
@@ -140,34 +146,34 @@ TEST_F(ShiftingTest, WignerSeitzShiftMatches)
         ws_shift.bring_within(b2_ptr->lattice());
         EXPECT_TRUE(shift_values[i].isApprox(ws_shift.cart()));
     }
-    
-    EXPECT_TRUE(didnt_match>=as*bs/4);
+
+    EXPECT_TRUE(didnt_match >= as * bs / 4);
 }
 
 TEST_F(ShiftingTest, WignerSeitzStructureMatches)
 {
-    EXPECT_EQ(shifted_structures.size(),wigner_seitz_shifted_structures.size());
+    EXPECT_EQ(shifted_structures.size(), wigner_seitz_shifted_structures.size());
     cu::mapping::MappingInput map_strategy;
-    map_strategy.k_best_maps=0;
-    map_strategy.use_crystal_symmetry=true;
-    //This is a casm bug, you should be able to pass a much smaller min_cost
-    map_strategy.min_cost=1e-5;
+    map_strategy.k_best_maps = 0;
+    map_strategy.use_crystal_symmetry = true;
+    // This is a casm bug, you should be able to pass a much smaller min_cost
+    map_strategy.min_cost = 1e-5;
 
-    for(int i=0; i<shifted_structures.size(); ++i)
+    for (int i = 0; i < shifted_structures.size(); ++i)
     {
-        cu::mapping::StructureMapper_f map_to_shifted(shifted_structures[i],map_strategy);
-        auto results=map_to_shifted(wigner_seitz_shifted_structures[i]);
+        cu::mapping::StructureMapper_f map_to_shifted(shifted_structures[i], map_strategy);
+        auto results = map_to_shifted(wigner_seitz_shifted_structures[i]);
 
-        EXPECT_TRUE(results.size()>0);
-        EXPECT_TRUE(results[0].cost<1e-10);
+        EXPECT_TRUE(results.size() > 0);
+        EXPECT_TRUE(results[0].cost < 1e-10);
     }
 }
 
 TEST_F(ShiftingTest, SitesHaventMoved)
 {
-    for(const auto& structure_set : {shifted_structures,wigner_seitz_shifted_structures})
+    for (const auto& structure_set : {shifted_structures, wigner_seitz_shifted_structures})
     {
-        for(const Structure& struc : structure_set)
+        for (const Structure& struc : structure_set)
         {
             compare_basis_to_b2(struc);
         }
@@ -176,45 +182,45 @@ TEST_F(ShiftingTest, SitesHaventMoved)
 
 TEST_F(ShiftingTest, CategorizeShifts)
 {
-    auto index_map=cu::mush::categorize_equivalently_shifted_structures(shifted_structures);
+    auto index_map = cu::mush::categorize_equivalently_shifted_structures(shifted_structures);
 
-    //The origin only maps to itself
-    EXPECT_TRUE(index_map[0].size()==1);
-    EXPECT_TRUE(index_map[0][0]==0);
+    // The origin only maps to itself
+    EXPECT_TRUE(index_map[0].size() == 1);
+    EXPECT_TRUE(index_map[0][0] == 0);
 
-    //Everyone mapped to at least themselves
-    for(const auto& indexes : index_map)
+    // Everyone mapped to at least themselves
+    for (const auto& indexes : index_map)
     {
-        EXPECT_TRUE(indexes.size()>0);
+        EXPECT_TRUE(indexes.size() > 0);
     }
 
-    //TODO: Is this arrangement useful elsewhere?
-    std::vector<std::vector<std::size_t>> arranged_structure_indexes(as,std::vector<std::size_t>(bs));
-    for(const auto& record : shift_records)
+    // TODO: Is this arrangement useful elsewhere?
+    std::vector<std::vector<std::size_t>> arranged_structure_indexes(as, std::vector<std::size_t>(bs));
+    for (const auto& record : shift_records)
     {
-        int a_ix=record.a;
-        int b_ix=record.b;
-        int ix=record.index;
+        int a_ix = record.a;
+        int b_ix = record.b;
+        int ix = record.index;
 
-        arranged_structure_indexes[a_ix][b_ix]=ix;
+        arranged_structure_indexes[a_ix][b_ix] = ix;
     }
 
-    //Expect 2 fold symmetry for the b2 slice along both axis
-    //start counting at 1 because the equivalent is the periodic image, which
-    //doesn't get generated
-    for(int a=1; a<arranged_structure_indexes.size()/2; ++a)
+    // Expect 2 fold symmetry for the b2 slice along both axis
+    // start counting at 1 because the equivalent is the periodic image, which
+    // doesn't get generated
+    for (int a = 1; a < arranged_structure_indexes.size() / 2; ++a)
     {
-        for(int b=1; b<arranged_structure_indexes[a].size()/2; ++b)
+        for (int b = 1; b < arranged_structure_indexes[a].size() / 2; ++b)
         {
-            int pa_pb_ix=arranged_structure_indexes[a][b];          //bottom left
-            int ma_pb_ix=arranged_structure_indexes[as-a][b];       //bottom righ
-            int pa_mb_ix=arranged_structure_indexes[a][bs-b];       //top left
-            int ma_mb_ix=arranged_structure_indexes[as-a][bs-b];    //top right
+            int pa_pb_ix = arranged_structure_indexes[a][b];           // bottom left
+            int ma_pb_ix = arranged_structure_indexes[as - a][b];      // bottom righ
+            int pa_mb_ix = arranged_structure_indexes[a][bs - b];      // top left
+            int ma_mb_ix = arranged_structure_indexes[as - a][bs - b]; // top right
 
-            EXPECT_EQ(index_map[pa_pb_ix],index_map[ma_pb_ix]);
-            EXPECT_EQ(index_map[ma_pb_ix],index_map[pa_mb_ix]);
-            EXPECT_EQ(index_map[pa_mb_ix],index_map[ma_mb_ix]);
-            EXPECT_EQ(index_map[ma_mb_ix],index_map[pa_pb_ix]); //redundant
+            EXPECT_EQ(index_map[pa_pb_ix], index_map[ma_pb_ix]);
+            EXPECT_EQ(index_map[ma_pb_ix], index_map[pa_mb_ix]);
+            EXPECT_EQ(index_map[pa_mb_ix], index_map[ma_mb_ix]);
+            EXPECT_EQ(index_map[ma_mb_ix], index_map[pa_pb_ix]); // redundant
         }
     }
 }

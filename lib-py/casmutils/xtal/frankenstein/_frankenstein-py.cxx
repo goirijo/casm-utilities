@@ -34,6 +34,7 @@ PYBIND11_MODULE(_frankenstein, m)
     m.def("stack", frankenstein::stack);
     m.def("vacuum_pack", frankenstein::vacuum_pack);
     m.def("inflate", frankenstein::inflate);
-    m.def("translate_basis", pybind11::overload_cast<const xtal::Structure&, const Eigen::Vector3d&>(&frankenstein::translate_basis));
+    m.def("translate_basis",
+          pybind11::overload_cast<const xtal::Structure&, const Eigen::Vector3d&>(&frankenstein::translate_basis));
 }
 } // namespace wrappy

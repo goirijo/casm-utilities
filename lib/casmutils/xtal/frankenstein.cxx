@@ -3,10 +3,10 @@
 #include <casmutils/exceptions.hpp>
 #include <casmutils/xtal/frankenstein.hpp>
 
-#include <casm/crystallography/Niggli.hh>
-#include <casm/crystallography/Structure.hh>
 #include <casm/crystallography/Coordinate.hh>
+#include <casm/crystallography/Niggli.hh>
 #include <casm/crystallography/Site.hh>
+#include <casm/crystallography/Structure.hh>
 #include <casm/crystallography/io/VaspIO.hh>
 #include <fstream>
 #include <set>
@@ -84,12 +84,12 @@ std::vector<xtal::Site> translate_basis(const std::vector<xtal::Site>& basis, co
 xtal::Structure translate_basis(const xtal::Structure& struc, const Eigen::Vector3d& shift)
 {
     std::vector<xtal::Site> translated_basis;
-    for(const auto& s : struc.basis_sites())
+    for (const auto& s : struc.basis_sites())
     {
-        translated_basis.emplace_back(xtal::Coordinate(s.cart()+shift),s.label());
+        translated_basis.emplace_back(xtal::Coordinate(s.cart() + shift), s.label());
     }
 
-    return xtal::Structure(struc.lattice(),translated_basis);
+    return xtal::Structure(struc.lattice(), translated_basis);
 }
 
 std::pair<xtal::Structure, xtal::Structure> slice(const xtal::Structure& big_struc, double slice_loc, double tol)

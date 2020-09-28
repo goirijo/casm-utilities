@@ -25,13 +25,13 @@ struct ShiftRecord
 
     bool operator==(const ShiftRecord& lhs) const
     {
-        return (this->a==lhs.a && this->b==lhs.b && this->index==lhs.index);
+        return (this->a == lhs.a && this->b == lhs.b && this->index == lhs.index);
     }
 };
 
 inline std::ostream& operator<<(std::ostream& os, const ShiftRecord& sr)
 {
-    os<<sr.a<<", "<<sr.b<<": "<<sr.index;
+    os << sr.a << ", " << sr.b << ": " << sr.index;
     return os;
 }
 
@@ -41,7 +41,8 @@ xtal::Lattice mutate(const xtal::Lattice& lat, const Eigen::Vector3d& c_vector_m
 xtal::Structure mutate(const xtal::Structure& struc, const Eigen::Vector3d& c_vector_mutation);
 
 /// For each cleavage value, create a new structure that has that amount of empty space over the a-b plane
-std::vector<xtal::Structure> make_cleaved_structures(const xtal::Structure& slab, const std::vector<double>& cleavage_values);
+std::vector<xtal::Structure> make_cleaved_structures(const xtal::Structure& slab,
+                                                     const std::vector<double>& cleavage_values);
 
 /// Given a density along each of the a and b directions, create an unrolled vector of shifts
 /// along the ab-plane with a uniform distribution. The density specifies the number of unique
@@ -73,8 +74,9 @@ std::vector<xtal::Structure> make_shifted_structures(const xtal::Structure& slab
 /// Given a list of slab structures with different shifts applied, return a list of indexes
 /// that describe which structures are equivalent to each other. The vector at index i contains
 /// all the indexes of the structures that are equivalent to the structure at index i.
-std::vector<std::vector<std::size_t>> categorize_equivalently_shifted_structures(const std::vector<xtal::Structure>& shifted_structures);
+std::vector<std::vector<std::size_t>>
+categorize_equivalently_shifted_structures(const std::vector<xtal::Structure>& shifted_structures);
 } // namespace mush
-}
+} // namespace casmutils
 
 #endif

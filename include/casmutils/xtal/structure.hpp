@@ -50,7 +50,7 @@ public:
     /// Moves the basis sites within the lattice cell
     void within();
 
-    //TODO: Rename to basis()
+    // TODO: Rename to basis()
     /// Return a copy of all the basis sites
     const std::vector<Site>& basis_sites() const;
 

@@ -22,9 +22,9 @@ xtal::Lattice make_transformed_lattice(const xtal::Lattice& lat, const Eigen::Ma
 /// Cartesian x direction, and the b vector is parallel to the xy plane.
 xtal::Lattice make_aligned_lattice(const xtal::Lattice& struc);
 
-///Attempts to make the c vector more perpendicular to the ab-plane by applying a
+/// Attempts to make the c vector more perpendicular to the ab-plane by applying a
 ///"within" operation to bring it's projection into the parallelogram spanned by the
-///a and b vectors.
+/// a and b vectors.
 xtal::Lattice orthogonalize_c_vector(const xtal::Lattice& lat);
 xtal::Structure orthogonalize_c_vector(const xtal::Structure& lat);
 

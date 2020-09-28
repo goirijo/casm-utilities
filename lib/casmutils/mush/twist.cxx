@@ -238,31 +238,30 @@ xtal::Lattice make_prismatic_lattice(const xtal::Lattice& lat)
     return xtal::Lattice(lat.a(), lat.b(), new_c);
 }
 
-DeformationReport::DeformationReport(const Eigen::Matrix3d& _deformation):deformation(_deformation)
+DeformationReport::DeformationReport(const Eigen::Matrix3d& _deformation) : deformation(_deformation)
 {
-    std::tie(rotation,strain)=xtal::polar_decomposition(deformation);
-    this->rotation_angle=std::atan2(rotation(1,0),rotation(0,0))*180.0/M_PI;
+    std::tie(rotation, strain) = xtal::polar_decomposition(deformation);
+    this->rotation_angle = std::atan2(rotation(1, 0), rotation(0, 0)) * 180.0 / M_PI;
 
-    Eigen::Matrix3d E=strain-Eigen::Matrix3d::Identity();
-    this->strain_metrics[0]=(1.0/std::sqrt(2))*(E(0,0)+E(1,1));
-    this->strain_metrics[1]=(1.0/std::sqrt(2))*(E(0,0)-E(1,1));
-    this->strain_metrics[2]=std::sqrt(2)*E(0,1);
+    Eigen::Matrix3d E = strain - Eigen::Matrix3d::Identity();
+    this->strain_metrics[0] = (1.0 / std::sqrt(2)) * (E(0, 0) + E(1, 1));
+    this->strain_metrics[1] = (1.0 / std::sqrt(2)) * (E(0, 0) - E(1, 1));
+    this->strain_metrics[2] = std::sqrt(2) * E(0, 1);
 
-    const auto& eta=strain_metrics;
-    dilation_strain=eta[0];
-    deviatoric_strain=std::sqrt(eta[1]*eta[1]+eta[2]*eta[2]);
+    const auto& eta = strain_metrics;
+    dilation_strain = eta[0];
+    deviatoric_strain = std::sqrt(eta[1] * eta[1] + eta[2] * eta[2]);
 
-    if(!almost_zero(E.col(2)) || !almost_zero(E.row(2)))
+    if (!almost_zero(E.col(2)) || !almost_zero(E.row(2)))
     {
         throw std::runtime_error("Deformation matrix extends beyond the xy subspace");
     }
-
 }
 
 MoireLatticeReport MoireGenerator::generate(ZONE bz, LATTICE layer) const
 {
     const Eigen::Matrix3l& true_moire_scel_mat = (bz == ZONE::ALIGNED) ? transformation_matrix_to_super_aligned_moire
-                                                            : transformation_matrix_to_super_rotated_moire;
+                                                                       : transformation_matrix_to_super_rotated_moire;
 
     const auto& approximant = (bz == ZONE::ALIGNED) ? aligned_moire_approximant : rotated_moire_approximant;
     /* return MoireLatticeReport(bz, */
@@ -396,9 +395,9 @@ MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, l
             auto [moire_to_super_trans_mat, residual] = approximate_integer_transformation(moire_unit, super_moire);
             assert(almost_zero(residual));
 
-            if (current_error < best_error-1e-8)
+            if (current_error < best_error - 1e-8)
             {
-                std::cout<<"Improvement of "<<std::abs(current_error-best_error)<<"\n";
+                std::cout << "Improvement of " << std::abs(current_error - best_error) << "\n";
                 best_error = current_error;
                 *best_approximants[lat] = MoireApproximant(super_moire, aligned_unit, rotated_unit);
                 *trans_mats_to_super_moire[lat] = moire_to_super_trans_mat;
@@ -410,7 +409,7 @@ MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, l
 double
 MoireGenerator::error_metric(const xtal::Lattice& moire, const xtal::Lattice& aligned, const xtal::Lattice& rotated)
 {
-    MoireApproximant approx(moire,aligned,rotated);
+    MoireApproximant approx(moire, aligned, rotated);
     double error = 0.0;
 
     for (auto LAT : {LATTICE::ALIGNED, LATTICE::ROTATED})
@@ -423,13 +422,13 @@ MoireGenerator::error_metric(const xtal::Lattice& moire, const xtal::Lattice& al
         /*     } */
         /* } */
 
-        const auto& F=approx.approximation_deformations[LAT];
+        const auto& F = approx.approximation_deformations[LAT];
         DeformationReport report(F);
-        for(double eta : report.strain_metrics)
+        for (double eta : report.strain_metrics)
         {
-            error+=eta*eta;
+            error += eta * eta;
         }
-        error=std::sqrt(error);
+        error = std::sqrt(error);
     }
     return error;
 }
@@ -441,10 +440,10 @@ MoireStructureGenerator::MoireStructureGenerator(const Structure& slab_unit, dou
 
 MoireStructureGenerator::Structure MoireStructureGenerator::layer(ZONE brillouin, LATTICE lat) const
 {
-    const auto report=this->generate(brillouin,lat);
+    const auto report = this->generate(brillouin, lat);
 
-    const auto& approx_lat=report.approximate_tiling_unit;
-    const auto& T= report.tiling_unit_supercell_matrix;
+    const auto& approx_lat = report.approximate_tiling_unit;
+    const auto& T = report.tiling_unit_supercell_matrix;
     /* const auto& approx_lat = this->approximate_lattice(brillouin, lat); */
     /* const auto& T = this->approximate_moire_integer_transformation(brillouin, lat); */
 

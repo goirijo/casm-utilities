@@ -1,10 +1,10 @@
 #ifndef CASM_UTILS_DEFINITIONS
 #define CASM_UTILS_DEFINITIONS
 
-#include <casm/misc/CASM_math.hh>
-#include <casm/misc/CASM_Eigen_math.hh>
 #include "casm/global/definitions.hh"
 #include "casm/global/enum.hh"
+#include <casm/misc/CASM_Eigen_math.hh>
+#include <casm/misc/CASM_math.hh>
 #include <filesystem>
 
 namespace casmutils

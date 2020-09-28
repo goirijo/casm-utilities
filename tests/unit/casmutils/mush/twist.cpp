@@ -530,7 +530,7 @@ void spit_rotation_error_data(const cu::xtal::Structure& tile, const std::vector
 
     std::ofstream magicdeg("magic"+std::to_string(max_tiles)+".txt");
     auto double_magic=magic_angles;
-   
+
     for(double d : magic_angles)
     {
         double_magic.push_back(-d);
@@ -543,9 +543,11 @@ void spit_rotation_error_data(const cu::xtal::Structure& tile, const std::vector
         const auto aligned_report=graph_moire.generate(ZONE::ALIGNED,LAT::ALIGNED);
         const auto rotated_report=graph_moire.generate(ZONE::ALIGNED,LAT::ROTATED);
 
-        magicdet<<degrees<<"    "<<aligned_report.tiling_unit_supercell_matrix.determinant()<<"    "<<rotated_report.tiling_unit_supercell_matrix.determinant()<<"    "<<aligned_report.true_moire_supercell_matrix.determinant()<<"    "<<rotated_report.true_moire_supercell_matrix.determinant()<<"\n";
-        magicdeg<<degrees<<"    ";
-        for(auto report : {aligned_report, rotated_report})
+        magicdet<<degrees<<"    "<<aligned_report.tiling_unit_supercell_matrix.determinant()<<"
+"<<rotated_report.tiling_unit_supercell_matrix.determinant()<<"
+"<<aligned_report.true_moire_supercell_matrix.determinant()<<"
+"<<rotated_report.true_moire_supercell_matrix.determinant()<<"\n"; magicdeg<<degrees<<"    "; for(auto report :
+{aligned_report, rotated_report})
         {
             cu::mush::DeformationReport dr(report.approximation_deformation);
             for(auto mat : {dr.rotation,dr.strain})
@@ -590,7 +592,7 @@ void spit_internal_error_data(const cu::xtal::Lattice& tile, const std::vector<d
 
     std::ofstream magicdeg("internal_magic"+std::to_string(max_tiles)+".txt");
     auto double_magic=magic_angles;
-   
+
     for(double d : magic_angles)
     {
         double_magic.push_back(-d);

@@ -1,7 +1,7 @@
 #include <casm/crystallography/Niggli.hh>
 #include <casm/misc/CASM_Eigen_math.hh>
-#include <casmutils/xtal/lattice.hpp>
 #include <casmutils/xtal/coordinate.hpp>
+#include <casmutils/xtal/lattice.hpp>
 
 #include <casm/crystallography/LatticeIsEquivalent.hh>
 

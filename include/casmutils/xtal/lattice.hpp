@@ -60,7 +60,7 @@ private:
     CASM::xtal::Lattice casm_lattice;
 };
 
-//TODO: Make this a binary comparator, fix is_equal, and implement UnaryComparator_f
+// TODO: Make this a binary comparator, fix is_equal, and implement UnaryComparator_f
 /// This functor class provides a unary predicate equals function
 /// for casmutils::xtal::Lattice .
 class LatticeEquals_f
@@ -79,13 +79,13 @@ private:
 /// True if the two lattices are related by a unimodular transformation
 class LatticeIsEquivalent_f
 {
-    public:
-    LatticeIsEquivalent_f(double tol):tol(tol){}
+public:
+    LatticeIsEquivalent_f(double tol) : tol(tol) {}
     /// True if the two lattices are related by a unimodular transformation
     /// (equivalent under point group operation)
     bool operator()(const Lattice& reference, const Lattice& other) const;
 
-    private:
+private:
     double tol;
 };
 
@@ -114,7 +114,7 @@ xtal::Lattice slice_along_plane(const xtal::Lattice& unit_lattice, const Eigen::
 /// Converts Cartesian coordinates to fractional
 Eigen::Vector3d make_fractional(const Eigen::Vector3d& cart_coord, const xtal::Lattice& lat);
 
-//TODO: Tolerance issues?
+// TODO: Tolerance issues?
 /// Brings the given Cartesian coordinate inside the unit cell
 Eigen::Vector3d bring_within(const Eigen::Vector3d cart_coord, const xtal::Lattice& unit_cell);
 

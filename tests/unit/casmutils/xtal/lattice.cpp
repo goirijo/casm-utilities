@@ -163,7 +163,8 @@ TEST_F(LatticeIsEquivalentTest, RotatedButNotUnimodular)
     Eigen::Quaternion<double> q = rollAngle * yawAngle * pitchAngle;
     Eigen::Matrix3d rotation_matrix = q.matrix();
 
-    auto rotated_fcc=casmutils::xtal::Lattice::from_column_vector_matrix(rotation_matrix*fcc_ptr->column_vector_matrix());
+    auto rotated_fcc =
+        casmutils::xtal::Lattice::from_column_vector_matrix(rotation_matrix * fcc_ptr->column_vector_matrix());
     casmutils::xtal::LatticeIsEquivalent_f are_equivalent(1e-5);
     EXPECT_FALSE(are_equivalent(*fcc_ptr, rotated_fcc));
 }

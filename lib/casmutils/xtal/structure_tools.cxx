@@ -3,10 +3,10 @@
 #include <casm/crystallography/BasicStructureTools.hh>
 #include <casm/crystallography/Niggli.hh>
 #include <casm/crystallography/Strain.hh>
+#include <casm/crystallography/Superlattice.hh>
 #include <casm/crystallography/SuperlatticeEnumerator.hh>
 #include <casm/crystallography/SymTools.hh>
 #include <casm/crystallography/io/VaspIO.hh>
-#include <casm/crystallography/Superlattice.hh>
 #include <casmutils/exceptions.hpp>
 #include <casmutils/misc.hpp>
 #include <casmutils/xtal/lattice.hpp>
