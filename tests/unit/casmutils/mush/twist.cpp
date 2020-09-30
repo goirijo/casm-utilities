@@ -496,121 +496,143 @@ TEST_F(GrapheneTwistTest, MoireScelMagicDegreeTwist)
     }
 }
 
-/*
 void spit_rotation_error_data(const cu::xtal::Structure& tile, const std::vector<double>& magic_angles, int max_tiles)
 {
-    using ZONE=cu::mush::MoireGenerator::ZONE;
-    using LAT=cu::mush::MoireGenerator::LATTICE;
+    using ZONE = cu::mush::MoireGenerator::ZONE;
+    using LAT = cu::mush::MoireGenerator::LATTICE;
 
-    std::ofstream incdeg("size"+std::to_string(max_tiles)+".txt");
+    std::ofstream incdeg("size" + std::to_string(max_tiles) + ".txt");
     for (double degrees = -60.25; degrees < 61; degrees += 0.5)
     {
-        cu::mush::MoireGenerator graph_moire(tile.lattice(),degrees,max_tiles);
-        const auto aligned_report=graph_moire.generate(ZONE::ALIGNED,LAT::ALIGNED);
-        const auto rotated_report=graph_moire.generate(ZONE::ALIGNED,LAT::ROTATED);
+        cu::mush::MoireGenerator graph_moire(tile.lattice(), degrees, max_tiles);
+        const auto aligned_report = graph_moire.generate(ZONE::ALIGNED, LAT::ALIGNED);
+        const auto rotated_report = graph_moire.generate(ZONE::ALIGNED, LAT::ROTATED);
 
-        incdeg<<degrees<<"    ";
-        for(auto report : {aligned_report, rotated_report})
+        incdeg << degrees << "    ";
+        for (auto report : {aligned_report, rotated_report})
         {
             cu::mush::DeformationReport dr(report.approximation_deformation);
-            for(auto mat : {dr.rotation,dr.strain})
+            for (auto mat : {dr.rotation, dr.strain})
             {
-                for(int i=0; i<3; ++i)
+                for (int i = 0; i < 3; ++i)
                 {
-                    for(int j=0; j<3; ++j)
+                    for (int j = 0; j < 3; ++j)
                     {
-                        incdeg<<mat(i,j)<<"    ";
+                        incdeg << mat(i, j) << "    ";
                     }
                 }
             }
         }
-        incdeg<<"\n";
+        incdeg << "\n";
     }
     incdeg.close();
 
-    std::ofstream magicdeg("magic"+std::to_string(max_tiles)+".txt");
-    auto double_magic=magic_angles;
+    std::ofstream magicdeg("magic" + std::to_string(max_tiles) + ".txt");
+    auto double_magic = magic_angles;
 
-    for(double d : magic_angles)
+    for (double d : magic_angles)
     {
         double_magic.push_back(-d);
     }
 
-    std::ofstream magicdet("magic"+std::to_string(max_tiles)+"det.txt");
+    std::ofstream magicdet("magic" + std::to_string(max_tiles) + "det.txt");
     for (double degrees : double_magic)
     {
-        cu::mush::MoireGenerator graph_moire(tile.lattice(),degrees,max_tiles);
-        const auto aligned_report=graph_moire.generate(ZONE::ALIGNED,LAT::ALIGNED);
-        const auto rotated_report=graph_moire.generate(ZONE::ALIGNED,LAT::ROTATED);
+        cu::mush::MoireGenerator graph_moire(tile.lattice(), degrees, max_tiles);
+        const auto aligned_report = graph_moire.generate(ZONE::ALIGNED, LAT::ALIGNED);
+        const auto rotated_report = graph_moire.generate(ZONE::ALIGNED, LAT::ROTATED);
 
-        magicdet<<degrees<<"    "<<aligned_report.tiling_unit_supercell_matrix.determinant()<<"
-"<<rotated_report.tiling_unit_supercell_matrix.determinant()<<"
-"<<aligned_report.true_moire_supercell_matrix.determinant()<<"
-"<<rotated_report.true_moire_supercell_matrix.determinant()<<"\n"; magicdeg<<degrees<<"    "; for(auto report :
-{aligned_report, rotated_report})
+        magicdet << degrees << "    " << aligned_report.tiling_unit_supercell_matrix.determinant() << "    "
+                 << rotated_report.tiling_unit_supercell_matrix.determinant() << "    "
+                 << aligned_report.true_moire_supercell_matrix.determinant() << "    "
+                 << rotated_report.true_moire_supercell_matrix.determinant() << "\n";
+
+        magicdeg << degrees << "    ";
+        for (auto report : {aligned_report, rotated_report})
         {
             cu::mush::DeformationReport dr(report.approximation_deformation);
-            for(auto mat : {dr.rotation,dr.strain})
+            for (auto mat : {dr.rotation, dr.strain})
             {
-                for(int i=0; i<3; ++i)
+                for (int i = 0; i < 3; ++i)
                 {
-                    for(int j=0; j<3; ++j)
+                    for (int j = 0; j < 3; ++j)
                     {
-                        magicdeg<<mat(i,j)<<"    ";
+                        magicdeg << mat(i, j) << "    ";
                     }
                 }
             }
         }
-        magicdeg<<"\n";
+        magicdeg << "\n";
     }
     magicdeg.close();
 
     return;
 }
 
+void spit_determinants(const cu::xtal::Lattice& tile, const std::vector<double>& angles, int max_tiles)
+{
+    using ZONE = cu::mush::MoireGenerator::ZONE;
+    using LAT = cu::mush::MoireGenerator::LATTICE;
+
+    std::ofstream magicdet("magic" + std::to_string(max_tiles) + "det.txt");
+    for (double degrees : angles)
+    {
+        cu::mush::MoireGenerator graph_moire(tile, degrees, max_tiles);
+        const auto aligned_report = graph_moire.generate(ZONE::ALIGNED, LAT::ALIGNED);
+        const auto rotated_report = graph_moire.generate(ZONE::ALIGNED, LAT::ROTATED);
+
+        magicdet << degrees << "    " << aligned_report.tiling_unit_supercell_matrix.determinant() << "    "
+                 << rotated_report.tiling_unit_supercell_matrix.determinant() << "    "
+                 << aligned_report.true_moire_supercell_matrix.determinant() << "    "
+                 << rotated_report.true_moire_supercell_matrix.determinant() << "\n";
+
+    }
+    magicdet.close();
+}
+
 void spit_internal_error_data(const cu::xtal::Lattice& tile, const std::vector<double>& magic_angles, int max_tiles)
 {
-    using ZONE=cu::mush::MoireGenerator::ZONE;
-    using LAT=cu::mush::MoireGenerator::LATTICE;
+    using ZONE = cu::mush::MoireGenerator::ZONE;
+    using LAT = cu::mush::MoireGenerator::LATTICE;
 
-    std::ofstream incdeg("internal_size"+std::to_string(max_tiles)+".txt");
+    std::ofstream incdeg("internal_size" + std::to_string(max_tiles) + ".txt");
     for (double degrees = -60.25; degrees < 61; degrees += 0.5)
     {
-        cu::mush::MoireGenerator graph_moire(tile,degrees,max_tiles);
-        const auto aligned_report=graph_moire.generate(ZONE::ALIGNED,LAT::ALIGNED);
-        const auto rotated_report=graph_moire.generate(ZONE::ALIGNED,LAT::ROTATED);
+        cu::mush::MoireGenerator graph_moire(tile, degrees, max_tiles);
+        const auto aligned_report = graph_moire.generate(ZONE::ALIGNED, LAT::ALIGNED);
+        const auto rotated_report = graph_moire.generate(ZONE::ALIGNED, LAT::ROTATED);
 
-        incdeg<<degrees<<"    ";
-        for(auto report : {aligned_report, rotated_report})
+        incdeg << degrees << "    ";
+        for (auto report : {aligned_report, rotated_report})
         {
             cu::mush::DeformationReport dr(report.approximation_deformation);
-            incdeg<<dr.rotation_angle<<"    "<<dr.dilation_strain<<"    "<<dr.deviatoric_strain<<"    ";
+            incdeg << dr.rotation_angle << "    " << dr.dilation_strain << "    " << dr.deviatoric_strain << "    ";
         }
-        incdeg<<"\n";
+        incdeg << "\n";
     }
     incdeg.close();
 
-    std::ofstream magicdeg("internal_magic"+std::to_string(max_tiles)+".txt");
-    auto double_magic=magic_angles;
+    std::ofstream magicdeg("internal_magic" + std::to_string(max_tiles) + ".txt");
+    auto double_magic = magic_angles;
 
-    for(double d : magic_angles)
+    for (double d : magic_angles)
     {
         double_magic.push_back(-d);
     }
 
     for (double degrees : double_magic)
     {
-        cu::mush::MoireGenerator graph_moire(tile,degrees,max_tiles);
-        const auto aligned_report=graph_moire.generate(ZONE::ALIGNED,LAT::ALIGNED);
-        const auto rotated_report=graph_moire.generate(ZONE::ALIGNED,LAT::ROTATED);
+        cu::mush::MoireGenerator graph_moire(tile, degrees, max_tiles);
+        const auto aligned_report = graph_moire.generate(ZONE::ALIGNED, LAT::ALIGNED);
+        const auto rotated_report = graph_moire.generate(ZONE::ALIGNED, LAT::ROTATED);
 
-        magicdeg<<degrees<<"    ";
-        for(auto report : {aligned_report, rotated_report})
+        magicdeg << degrees << "    ";
+        for (auto report : {aligned_report, rotated_report})
         {
             cu::mush::DeformationReport dr(report.approximation_deformation);
-            magicdeg<<dr.rotation_angle<<"    "<<dr.dilation_strain<<"    "<<dr.deviatoric_strain<<"    ";
+            magicdeg << dr.rotation_angle << "    " << dr.dilation_strain << "    " << dr.deviatoric_strain << "    ";
         }
-        magicdeg<<"\n";
+        magicdeg << "\n";
     }
     magicdeg.close();
 
@@ -619,19 +641,31 @@ void spit_internal_error_data(const cu::xtal::Lattice& tile, const std::vector<d
 
 TEST_F(GrapheneTwistTest, Debug)
 {
+    return;
+    std::ifstream magics("/home/mesto/programming/multishifter.tmp/sandbox/magic.txt");
+    std::vector<double> angles;
+    while(!magics.eof())
+    {
+        double angle;
+        magics>>angle;
+        angles.push_back(angle);
+    }
+
+    spit_determinants(graphene_ptr->lattice(), angles, 5000);
+    return;
+
     spit_internal_error_data(graphene_ptr->lattice(), magic_angles, 3000);
 
     spit_internal_error_data(graphene_ptr->lattice(), magic_angles, 0);
     spit_internal_error_data(graphene_ptr->lattice(), magic_angles, 200);
     spit_internal_error_data(graphene_ptr->lattice(), magic_angles, 1000);
 
-
     spit_rotation_error_data(*graphene_ptr, magic_angles, 0);
     spit_rotation_error_data(*graphene_ptr, magic_angles, 200);
     spit_rotation_error_data(*graphene_ptr, magic_angles, 1000);
     return;
 
-    for(int i=0; i<=1000; i+=100)
+    for (int i = 0; i <= 1000; i += 100)
     {
         spit_rotation_error_data(*graphene_ptr, magic_angles, i);
     }
@@ -640,12 +674,12 @@ TEST_F(GrapheneTwistTest, Debug)
     cu::mush::MoireStructureGenerator mini_graph_moire(*graphene_ptr, angle);
     cu::mush::MoireStructureGenerator graph_moire(*graphene_ptr, angle, 100);
 
-    const auto mini_struc_top = mini_graph_moire.layer(ZONE::ALIGNED, LAT::ROTATED);
-    const auto mini_struc_bottom = mini_graph_moire.layer(ZONE::ALIGNED, LAT::ALIGNED);
+    const auto mini_struc_top = mini_graph_moire.generate(ZONE::ALIGNED, LAT::ROTATED).approximate_moire_structure;
+    const auto mini_struc_bottom = mini_graph_moire.generate(ZONE::ALIGNED, LAT::ALIGNED).approximate_moire_structure;
     const auto mini_stack = cu::frankenstein::stack({mini_struc_bottom, mini_struc_top});
 
-    const auto struc_top = graph_moire.layer(ZONE::ALIGNED, LAT::ROTATED);
-    const auto struc_bottom = graph_moire.layer(ZONE::ALIGNED, LAT::ALIGNED);
+    const auto struc_top = graph_moire.generate(ZONE::ALIGNED, LAT::ROTATED).approximate_moire_structure;
+    const auto struc_bottom = graph_moire.generate(ZONE::ALIGNED, LAT::ALIGNED).approximate_moire_structure;
     const auto stack = cu::frankenstein::stack({struc_bottom, struc_top});
 
     cu::xtal::write_poscar(mini_stack, "mini_stack.vasp");
@@ -655,18 +689,17 @@ TEST_F(GrapheneTwistTest, Debug)
     {
         cu::mush::MoireStructureGenerator graph_moire(*graphene_ptr, angle, 1000);
 
-        const auto a_top=graph_moire.layer(ZONE::ALIGNED,LAT::ROTATED);
-        const auto a_bottom=graph_moire.layer(ZONE::ALIGNED,LAT::ALIGNED);
-        const auto a_stack=cu::frankenstein::stack({a_bottom,a_top});
-        cu::xtal::write_poscar(a_stack,std::to_string(angle)+"aligned.vasp");
+        const auto a_top = graph_moire.generate(ZONE::ALIGNED, LAT::ROTATED).approximate_moire_structure;
+        const auto a_bottom = graph_moire.generate(ZONE::ALIGNED, LAT::ALIGNED).approximate_moire_structure;
+        const auto a_stack = cu::frankenstein::stack({a_bottom, a_top});
+        cu::xtal::write_poscar(a_stack, std::to_string(angle) + "aligned.vasp");
 
-        const auto r_top=graph_moire.layer(ZONE::ROTATED,LAT::ROTATED);
-        const auto r_bottom=graph_moire.layer(ZONE::ROTATED,LAT::ALIGNED);
-        const auto r_stack=cu::frankenstein::stack({a_bottom,a_top});
-        cu::xtal::write_poscar(r_stack,std::to_string(angle)+"rotated.vasp");
+        const auto r_top = graph_moire.generate(ZONE::ROTATED, LAT::ROTATED).approximate_moire_structure;
+        const auto r_bottom = graph_moire.generate(ZONE::ROTATED, LAT::ALIGNED).approximate_moire_structure;
+        const auto r_stack = cu::frankenstein::stack({a_bottom, a_top});
+        cu::xtal::write_poscar(r_stack, std::to_string(angle) + "rotated.vasp");
     }
 }
-*/
 
 int main(int argc, char** argv)
 {

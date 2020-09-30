@@ -326,6 +326,14 @@ public:
     }
 };
 
+/// Everythin in the MoireLatticeReport, but also has a crystal structure, not just the lattice
+struct MoireStructureReport : public MoireLatticeReport
+{
+    MoireStructureReport(const MoireLatticeReport& lattice_report, const xtal::Structure& approx_tiling_unit);
+    xtal::Structure approximate_tiling_unit_structure;
+    xtal::Structure approximate_moire_structure;
+};
+
 /// Generates slab superstructures that can be stacked together to create bilayers with Moire
 /// patterns
 class MoireStructureGenerator : MoireGenerator
@@ -338,7 +346,7 @@ public:
 
     MoireStructureGenerator(const Structure& slab_unit, double degrees, long max_lattice_sites = 0);
 
-    Structure layer(ZONE brillouin, LATTICE lat) const;
+    MoireStructureReport generate(ZONE brillouin, LATTICE lat) const;
 
 private:
     const Structure slab_unit;

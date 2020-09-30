@@ -16,11 +16,10 @@ LT_INIT
 AC_PROG_CXX
 AX_CXX_COMPILE_STDCXX_17
 
-#Is this how you get it to find the python related things for compiling the wrapper?
-# AX_PYTHON_DEVEL(=='3.5')
+# By default, aborts if no suitable Python is found:
+AM_PATH_PYTHON([3.4])
+# Will assume the Python interpreter previously identified by AM_PATH_PYTHON:
 AX_PYTHON_DEVEL
-AX_PYTHON
-AM_PATH_PYTHON
 
 # Checks for libraries.
 AX_CHECK_ZLIB([],AC_MSG_ERROR(zlib library not found!))

@@ -433,25 +433,24 @@ MoireGenerator::error_metric(const xtal::Lattice& moire, const xtal::Lattice& al
     return error;
 }
 
+MoireStructureReport::MoireStructureReport(const MoireLatticeReport& lattice_report, const xtal::Structure& approx_tiling_unit): MoireLatticeReport(lattice_report),approximate_tiling_unit_structure(approx_tiling_unit),approximate_moire_structure(xtal::make_superstructure(this->approximate_tiling_unit_structure,this->tiling_unit_supercell_matrix.cast<int>()))
+{
+}
+
 MoireStructureGenerator::MoireStructureGenerator(const Structure& slab_unit, double degrees, long max_lattice_sites)
     : MoireGenerator(slab_unit.lattice(), degrees, max_lattice_sites), slab_unit(slab_unit)
 {
 }
 
-MoireStructureGenerator::Structure MoireStructureGenerator::layer(ZONE brillouin, LATTICE lat) const
+MoireStructureReport MoireStructureGenerator::generate(ZONE brillouin, LATTICE lat) const
 {
     const auto report = this->generate(brillouin, lat);
 
     const auto& approx_lat = report.approximate_tiling_unit;
-    const auto& T = report.tiling_unit_supercell_matrix;
-    /* const auto& approx_lat = this->approximate_lattice(brillouin, lat); */
-    /* const auto& T = this->approximate_moire_integer_transformation(brillouin, lat); */
-
     Structure approx_unit = slab_unit;
     approx_unit.set_lattice(approx_lat, xtal::FRAC);
 
-    auto layer = xtal::make_superstructure(approx_unit, T.cast<int>());
-    return layer;
+    return MoireStructureReport(report,approx_unit);
 }
 } // namespace mush
 } // namespace casmutils
