@@ -23,7 +23,7 @@ public:
     Site() = delete;
     Site(const CASM::xtal::Site& init_site, int occupant);
     Site(const Coordinate& init_coord, const std::string& occupant_name);
-    /* Site(const Eigen::Vector3d& init_coord, const std::string& occupant_name); */
+    Site(const Eigen::Vector3d& init_coord, const std::string& occupant_name);
 
     /// Allow casting to Coordinate, by stripping everything away except the Cartesian position
     operator Coordinate() const;

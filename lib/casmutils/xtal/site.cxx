@@ -17,13 +17,18 @@ Site::operator Coordinate() const { return Coordinate(this->casm_site); }
 
 Site::Site(const Coordinate& init_coord, const std::string& occupant_name)
     : casm_site(CASM::xtal::Site(init_coord.__get(), occupant_name))
-
 {
     // Avoid a multioccupant site
     assert(casm_site.allowed_occupants().size() == 1);
     // Avoid an unitialized state.
     this->casm_site.set_label(0);
 }
+
+Site::Site(const Eigen::Vector3d& init_coord, const std::string& occupant_name)
+    : Site(Coordinate(init_coord), occupant_name)
+{
+}
+
 Site::Site(const CASM::xtal::Site& init_site, int occupant) : casm_site(init_site)
 {
     // Avoid an unitialized state.

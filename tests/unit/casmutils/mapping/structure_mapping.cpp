@@ -1,5 +1,6 @@
 // These are classes that structure_tools depends on
 #include "../../../autotools.hh"
+#include "casmutils/xtal/site.hpp"
 #include <algorithm>
 #include <casmutils/misc.hpp>
 #include <casmutils/xtal/structure.hpp>
@@ -13,6 +14,7 @@
 #include <casmutils/mapping/structure_mapping.hpp>
 #include <limits>
 #include <math.h>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -371,6 +373,48 @@ TEST_F(MgGammaSurfaceMapTest, SelfMapResultsSize)
     // When not using crystal symmetry, the mapper should find as many mappings as
     // there are factor group operations (3*24, i.e. number of primitives * hcp factor group size)
     EXPECT_EQ(72, map_to_hcp_super_without_sym(hcp_super).size());
+}
+
+class SelfMappingTest : public testing::Test
+{
+protected:
+    using Structure = casmutils::xtal::Structure;
+    void SetUp() override
+    {
+        cu::fs::path fcc_path(cu::autotools::input_filesdir / "primitive_fcc_Ni.vasp");
+        fcc_Ni_ptr = std::make_unique<Structure>(Structure::from_poscar(fcc_path));
+
+        cu::xtal::Site origin_X(Eigen::Vector3d::Zero(), "X");
+        std::vector<cu::xtal::Site> basis_X{origin_X};
+        fcc_X_ptr = std::make_unique<Structure>(fcc_Ni_ptr->lattice(), basis_X);
+    }
+
+    std::unique_ptr<Structure> fcc_Ni_ptr;
+    std::unique_ptr<Structure> fcc_X_ptr;
+};
+
+TEST_F(SelfMappingTest, AlternativeFactorGroup)
+{
+    cu::mapping::MappingInput map_strategy;
+    map_strategy.use_crystal_symmetry = false;
+
+    cu::mapping::StructureMapper_f map_to_fcc_Ni(*fcc_Ni_ptr, map_strategy);
+    auto fcc_fg = cu::xtal::make_factor_group(*fcc_Ni_ptr, 1e-5);
+
+    EXPECT_EQ(fcc_fg.size(), map_to_fcc_Ni(*fcc_Ni_ptr).size());
+}
+
+TEST_F(SelfMappingTest, AlternativeOccupants)
+{
+    return;
+    cu::mapping::MappingInput map_strategy;
+    map_strategy.use_crystal_symmetry = false;
+
+    cu::mapping::StructureMapper_f map_to_fcc_Ni(*fcc_Ni_ptr, map_strategy, {{"Ni", "X"}});
+
+    EXPECT_EQ(48, map_to_fcc_Ni(*fcc_Ni_ptr).size());
+    EXPECT_EQ(map_to_fcc_Ni(*fcc_X_ptr).size(), 48);
+    EXPECT_EQ(map_to_fcc_Ni(*fcc_X_ptr).size(), map_to_fcc_Ni(*fcc_Ni_ptr).size());
 }
 
 int main(int argc, char** argv)
