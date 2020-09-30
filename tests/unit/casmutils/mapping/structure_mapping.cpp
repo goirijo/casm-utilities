@@ -412,7 +412,6 @@ TEST_F(SelfMappingTest, AlternativeOccupants)
 
     cu::mapping::StructureMapper_f map_to_fcc_Ni(*fcc_Ni_ptr, map_strategy, {{"Ni", "X"}});
 
-    EXPECT_EQ(48, map_to_fcc_Ni(*fcc_Ni_ptr).size());
     EXPECT_EQ(map_to_fcc_Ni(*fcc_X_ptr).size(), 48);
     EXPECT_EQ(map_to_fcc_Ni(*fcc_X_ptr).size(), map_to_fcc_Ni(*fcc_Ni_ptr).size());
 }

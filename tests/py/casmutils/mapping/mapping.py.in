@@ -11,6 +11,7 @@ input_filedir = "@abs_top_srcdir@/tests/input_files"
 
 
 class StructureMapTest(unittest.TestCase):
+
     def setUp(self):
         self.primitive_fcc_Ni = cu.xtal.Structure.from_poscar(
             os.path.join(input_filedir, "primitive_fcc_Ni.vasp"))
@@ -53,8 +54,8 @@ class StructureMapTest(unittest.TestCase):
         self.assertAlmostEqual(perfect_bain_basis_score, 0, delta=1e-10)
 
     def test_displacement_mapping_score(self):
-        displacement_report = cu.mapping.map_structure(
-            self.primitive_fcc_Ni, self.displaced_fcc_Ni)[0]
+        displacement_report = cu.mapping.map_structure(self.primitive_fcc_Ni,
+                                                       self.displaced_fcc_Ni)[0]
         lattice_score, basis_score = cu.mapping.structure_score(
             displacement_report)
 
@@ -63,6 +64,7 @@ class StructureMapTest(unittest.TestCase):
 
 
 class MgGammaSurfaceMapTest(unittest.TestCase):
+
     def setUp(self):
         zero_cleave_pos = glob.glob(
             os.path.join(
@@ -73,8 +75,9 @@ class MgGammaSurfaceMapTest(unittest.TestCase):
         shift_names = [p.split(os.sep)[-3] for p in zero_cleave_pos]
         shift_names.sort()
 
-        self.shifts = [[int(x) for x in re.split('\.|_', n)[-2::]]
-                       for n in shift_names]
+        self.shifts = [
+            [int(x) for x in re.split('\.|_', n)[-2::]] for n in shift_names
+        ]
         self.structures = [
             cu.xtal.Structure.from_poscar(p) for p in zero_cleave_pos
         ]
@@ -133,6 +136,32 @@ class MgGammaSurfaceMapTest(unittest.TestCase):
         self.assertEqual(72, len(map_to_hcp_super_without_sym(hcp_super)))
 
         return
+
+
+class SelfMappingTest(unittest.TestCase):
+
+    def setUp(self):
+        fcc_Ni_path=os.path.join(input_filedir,"primitive_fcc_Ni.vasp")
+        self.fcc_Ni = cu.xtal.Structure.from_poscar(fcc_Ni_path)
+
+        origin_X = cu.xtal.Site(np.array([0, 0, 0]), "X")
+        self.fcc_X = cu.xtal.Structure(self.fcc_Ni.lattice(), [origin_X])
+
+    def test_alternative_factor_group(self):
+        map_to_fcc_Ni = cu.mapping.structure.StructureMapper(
+            self.fcc_Ni, use_crystal_symmetry=False)
+        fg = cu.xtal.make_factor_group(self.fcc_Ni, 1e-5)
+
+        self.assertEqual(len(fg), len(map_to_fcc_Ni(self.fcc_Ni)))
+
+    def test_alternative_occupants(self):
+        map_to_fcc_Ni = cu.mapping.structure.StructureMapper(
+            self.fcc_Ni,
+            use_crystal_symmetry=False,
+            allowed_species=[["Ni", "X"]])
+
+        self.assertEqual(48, len(map_to_fcc_Ni(self.fcc_Ni)))
+        self.assertEqual(48, len(map_to_fcc_Ni(self.fcc_X)))
 
 
 if __name__ == '__main__':
