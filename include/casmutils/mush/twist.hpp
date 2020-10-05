@@ -34,6 +34,8 @@ xtal::Lattice make_prismatic_lattice(const xtal::Lattice& lat);
 std::pair<Eigen::Matrix3l, Eigen::Matrix3d> approximate_integer_transformation(const xtal::Lattice& L,
                                                                                const xtal::Lattice& M);
 
+xtal::Lattice make_right_handed_by_ab_swap(const xtal::Lattice& left_handed_lattice);
+
 /// Constructs Moire lattice for the given angle, and keeps information of the steps made along
 /// the way. Before anything happens, the input lattice will be transformed to an aligned
 /// prismatic one, breaking periodicity along the c axis.
@@ -125,8 +127,6 @@ struct MoireLattice
 private:
     Eigen::Matrix2d calculate_reciprocal_difference() const;
     bool is_within_voronoi(const Eigen::Vector2d& v, const xtal::Lattice& lat) const;
-
-    static xtal::Lattice make_right_handed_by_ab_swap(const xtal::Lattice& left_handed_lattice);
 };
 
 /// Helper struct to convert an aligned and rotated lattice to a superlattice that's as close
@@ -280,7 +280,7 @@ public:
 
 private:
     using MoireScel = std::pair<MoireApproximant, Eigen::Matrix3l>;
-    using MoireScelMap = std::unordered_map<int, std::vector<MoireScel>>;
+    using MoireScelMap = std::map<int, std::vector<MoireScel>>;
 
     MoireLattice moire;
 
@@ -320,6 +320,9 @@ private:
     MoireLatticeReport
     make_report(ZONE bz, LATTICE layer, const std::pair<MoireApproximant, Eigen::Matrix3l>& data) const;
 
+    /// Unroll the map that holds all the Moire supercells in order
+    std::vector<MoireScel> all_candidates(ZONE bz) const;
+
     /// Return index of the best Moire supercell within the provided tolerance
     int best_candidate(const std::vector<MoireScel>& moire_supercells, double minimum_cost) const;
 
@@ -341,10 +344,10 @@ public:
     MoireLatticeReport best_smallest(ZONE brillouin, LATTICE layer, double minimum_cost = 1e-8) const;
 
     /// Return reports of every Moire supercell calculated so far
-    std::vector<MoireScel> all(ZONE bz) const;
+    std::vector<MoireLatticeReport> all(ZONE bz, LATTICE layer) const;
 
     /// Return reports of the best Moire supercell for each size
-    std::vector<MoireScel> best_of_each_size(ZONE bz) const;
+    std::vector<MoireLatticeReport> best_of_each_size(ZONE bz) const;
 
     /// The true Moire lattice, not necessarily commensurate
     const xtal::Lattice& true_moire(ZONE brillouin) const { return moire.moire(brillouin); }

@@ -454,6 +454,76 @@ protected:
     std::vector<double> magic_angles;
 };
 
+TEST_F(GrapheneTwistTest, MoireScelOrder)
+{
+    cu::mush::MoireApproximator graph_moire(graphene_ptr->lattice(), magic_angles[20], 1000);
+    auto all_scels = graph_moire.all(ZONE::ALIGNED, LAT::ALIGNED);
+
+    std::vector<int> determinants;
+    for (const auto& report : all_scels)
+    {
+        determinants.emplace_back(report.true_moire_supercell_matrix.determinant());
+    }
+
+    auto sorted_determinates = determinants;
+    std::sort(sorted_determinates.begin(), sorted_determinates.end());
+
+    EXPECT_EQ(determinants, sorted_determinates);
+}
+
+TEST_F(GrapheneTwistTest, ReportsSelfConsistency)
+{
+    for (ZONE bz : {ZONE::ALIGNED, ZONE::ROTATED})
+    {
+        for (LAT layer : {LAT::ALIGNED, LAT::ROTATED})
+        {
+            for (double angle = 1.0; angle < 55.0; angle += 1.5)
+            {
+                cu::mush::MoireApproximator graphene_approximator(graphene_ptr->lattice(), angle, 500);
+                auto all_reports = graphene_approximator.all(bz, layer);
+
+                for (const auto& r : all_reports)
+                {
+                    EXPECT_EQ(r.zone, bz);
+                    EXPECT_EQ(r.layer, layer);
+
+                    EXPECT_TRUE(r.true_moire.column_vector_matrix().determinant() > 0);
+                    EXPECT_TRUE(r.true_moire_supercell_matrix.determinant() > 0);
+
+                    auto approx_moire_reconstruct = cu::xtal::make_superlattice(
+                        r.approximate_tiling_unit, r.tiling_unit_supercell_matrix.cast<int>());
+                    cu::xtal::LatticeEquals_f equals(approx_moire_reconstruct, 1e-8);
+                    EXPECT_TRUE(equals(r.approximate_moire));
+                }
+            }
+        }
+    }
+}
+
+TEST_F(GrapheneTwistTest, ReportsLayerConsistency)
+{
+    for (ZONE bz : {ZONE::ALIGNED, ZONE::ROTATED})
+    {
+        for (double angle = 1.0; angle < 55.0; angle += 1.5)
+        {
+            cu::mush::MoireApproximator graphene_approximator(graphene_ptr->lattice(), angle, 500);
+            auto top_all_reports = graphene_approximator.all(bz, LAT::ALIGNED);
+            auto bottom_all_reports = graphene_approximator.all(bz, LAT::ROTATED);
+
+            EXPECT_EQ(top_all_reports.size(), bottom_all_reports.size());
+
+            for (int i = 0; i < top_all_reports.size(); ++i)
+            {
+                //should be ok to compare exact values
+                EXPECT_EQ(top_all_reports[i].approximate_moire.column_vector_matrix(),
+                          bottom_all_reports[i].approximate_moire.column_vector_matrix());
+                EXPECT_EQ(top_all_reports[i].true_moire.column_vector_matrix(),
+                          bottom_all_reports[i].true_moire.column_vector_matrix());
+            }
+        }
+    }
+}
+
 TEST_F(GrapheneTwistTest, MoireScel15DegreeTwist)
 {
     /* auto equivalent=[](const cu::xtal::Lattice& L1, const cu::xtal::Lattice& L2) */
@@ -470,13 +540,13 @@ TEST_F(GrapheneTwistTest, MoireScel15DegreeTwist)
 
     cu::mush::MoireApproximator mini_graph_moire(graphene_ptr->lattice(), angle);
     const auto& mini_moire_unit = mini_graph_moire.true_moire(ZONE::ALIGNED);
-    const auto mini_moire_best_smallest=mini_graph_moire.best_smallest(ZONE::ALIGNED,LAT::ALIGNED,1e-10);
+    const auto mini_moire_best_smallest = mini_graph_moire.best_smallest(ZONE::ALIGNED, LAT::ALIGNED, 1e-10);
     mini_graph_moire.expand(100);
-    const auto better_moire_best_smallest=mini_graph_moire.best_smallest(ZONE::ALIGNED,LAT::ALIGNED,1e-10);
+    const auto better_moire_best_smallest = mini_graph_moire.best_smallest(ZONE::ALIGNED, LAT::ALIGNED, 1e-10);
 
     cu::xtal::Lattice sqrt3_super_moire = cu::xtal::make_superlattice(mini_moire_unit, sqrt3_transfmat);
 
-    EXPECT_TRUE(equivalent(mini_moire_best_smallest.true_moire,mini_moire_unit));
+    EXPECT_TRUE(equivalent(mini_moire_best_smallest.true_moire, mini_moire_unit));
     EXPECT_TRUE(equivalent(better_moire_best_smallest.approximate_moire, sqrt3_super_moire));
 }
 
@@ -494,6 +564,7 @@ TEST_F(GrapheneTwistTest, MoireScelMagicDegreeTwist)
                 const auto report = graph_moire.best_smallest(Z, L, 1e-8);
                 const auto& F = report.approximation_deformation;
                 EXPECT_TRUE(almost_zero(F - I));
+                EXPECT_TRUE(almost_zero(report.tiling_unit_supercell_rounding_error));
             }
         }
     }
@@ -580,15 +651,15 @@ void spit_determinants(const cu::xtal::Lattice& tile, const std::vector<double>&
     std::ofstream magicdet("magic" + std::to_string(max_tiles) + "det.txt");
     for (double degrees : angles)
     {
+        std::cout << "working on " << degrees << "\n";
         cu::mush::MoireApproximator graph_moire(tile, degrees, max_tiles);
-        const auto aligned_report = graph_moire.best_smallest(ZONE::ALIGNED, LAT::ALIGNED);
-        const auto rotated_report = graph_moire.best_smallest(ZONE::ALIGNED, LAT::ROTATED);
+        const auto aligned_report = graph_moire.best_smallest(ZONE::ALIGNED, LAT::ALIGNED, 1e-20);
+        const auto rotated_report = graph_moire.best_smallest(ZONE::ALIGNED, LAT::ROTATED, 1e-20);
 
         magicdet << degrees << "    " << aligned_report.tiling_unit_supercell_matrix.determinant() << "    "
                  << rotated_report.tiling_unit_supercell_matrix.determinant() << "    "
                  << aligned_report.true_moire_supercell_matrix.determinant() << "    "
                  << rotated_report.true_moire_supercell_matrix.determinant() << "\n";
-
     }
     magicdet.close();
 }
@@ -625,7 +696,7 @@ void spit_internal_error_data(const cu::xtal::Lattice& tile, const std::vector<d
 
     for (double degrees : double_magic)
     {
-        cu::mush::MoireApproximator graph_moire(tile, degrees,max_tiles);
+        cu::mush::MoireApproximator graph_moire(tile, degrees, max_tiles);
         const auto aligned_report = graph_moire.best_smallest(ZONE::ALIGNED, LAT::ALIGNED);
         const auto rotated_report = graph_moire.best_smallest(ZONE::ALIGNED, LAT::ROTATED);
 
@@ -644,18 +715,18 @@ void spit_internal_error_data(const cu::xtal::Lattice& tile, const std::vector<d
 
 TEST_F(GrapheneTwistTest, Debug)
 {
-    return;
     std::ifstream magics("/home/mesto/programming/multishifter.tmp/sandbox/magic.txt");
     std::vector<double> angles;
-    while(!magics.eof())
+    while (!magics.eof())
     {
         double angle;
-        magics>>angle;
+        magics >> angle;
         angles.push_back(angle);
     }
 
     spit_determinants(graphene_ptr->lattice(), magic_angles, 1000);
-    return
+    std::cout << "all done\n";
+    return;
 
     spit_internal_error_data(graphene_ptr->lattice(), magic_angles, 3000);
 
@@ -674,11 +745,12 @@ TEST_F(GrapheneTwistTest, Debug)
     }
 
     double angle = 15.178178937949879; // This angle gives a coincident sqrt(3) sqrt(3) moire superlattice
-    cu::mush::MoireStructureApproximator mini_graph_moire(*graphene_ptr, angle,100);
-    cu::mush::MoireStructureApproximator graph_moire(*graphene_ptr, angle,100);
+    cu::mush::MoireStructureApproximator mini_graph_moire(*graphene_ptr, angle, 100);
+    cu::mush::MoireStructureApproximator graph_moire(*graphene_ptr, angle, 100);
 
     const auto mini_struc_top = mini_graph_moire.best_smallest(ZONE::ALIGNED, LAT::ROTATED).approximate_moire_structure;
-    const auto mini_struc_bottom = mini_graph_moire.best_smallest(ZONE::ALIGNED, LAT::ALIGNED).approximate_moire_structure;
+    const auto mini_struc_bottom =
+        mini_graph_moire.best_smallest(ZONE::ALIGNED, LAT::ALIGNED).approximate_moire_structure;
     const auto mini_stack = cu::frankenstein::stack({mini_struc_bottom, mini_struc_top});
 
     const auto struc_top = graph_moire.best_smallest(ZONE::ALIGNED, LAT::ROTATED).approximate_moire_structure;

@@ -93,6 +93,15 @@ std::pair<Eigen::Matrix3l, Eigen::Matrix3d> approximate_integer_transformation(c
     return std::make_pair(T, E);
 }
 
+xtal::Lattice make_right_handed_by_ab_swap(const xtal::Lattice& lat)
+{
+    if (lat.column_vector_matrix().determinant() < 0)
+    {
+        return xtal::Lattice(lat.b(), lat.a(), lat.c());
+    }
+    return lat;
+}
+
 MoireLattice::MoireLattice(const xtal::Lattice& lat, double degrees)
     : input_lattice(lat),
       input_degrees(degrees),
@@ -163,15 +172,6 @@ Eigen::Matrix2d MoireLattice::bring_vectors_into_voronoi(const Eigen::Matrix2d& 
     col_vectors_within.col(1) = kb.cart().head(2);
 
     return col_vectors_within;
-}
-
-xtal::Lattice MoireLattice::make_right_handed_by_ab_swap(const xtal::Lattice& lat)
-{
-    if (lat.column_vector_matrix().determinant() < 0)
-    {
-        return xtal::Lattice(lat.b(), lat.a(), lat.c());
-    }
-    return lat;
 }
 
 xtal::Lattice MoireLattice::make_moire_lattice_from_reciprocal_difference(const Eigen::Matrix2d diff,
@@ -270,6 +270,7 @@ void MoireApproximator::insert_moire_supercells_of_size(int num_moire_units)
     for (ZONE bz : {ZONE::ALIGNED, ZONE::ROTATED})
     {
         const auto& moire_unit = *moire_units.at(bz);
+        assert(moire_unit.column_vector_matrix().determinant()>0.0);
 
         CASM::xtal::ScelEnumProps super_moire_props(num_moire_units, num_moire_units + 1, "ab");
         CASM::xtal::SuperlatticeEnumerator super_moire_enumerator(
@@ -320,7 +321,7 @@ void MoireApproximator::expand(long max_lattice_sites)
     return;
 }
 
-std::vector<MoireApproximator::MoireScel> MoireApproximator::all(ZONE bz) const
+std::vector<MoireApproximator::MoireScel> MoireApproximator::all_candidates(ZONE bz) const
 {
 
     std::vector<MoireScel> moire_supercells;
@@ -331,6 +332,19 @@ std::vector<MoireApproximator::MoireScel> MoireApproximator::all(ZONE bz) const
     }
 
     return moire_supercells;
+}
+
+std::vector<MoireLatticeReport> MoireApproximator::all(ZONE bz, LATTICE layer) const
+{
+
+    auto moire_supercells=all_candidates(bz);
+    std::vector<MoireLatticeReport> all_reports;
+    for(const auto& scel : moire_supercells)
+    {
+        all_reports.emplace_back(make_report(bz, layer, scel));
+    }
+
+    return all_reports;
 }
 
 MoireLatticeReport
@@ -377,7 +391,7 @@ int MoireApproximator::best_candidate(const std::vector<MoireScel>& moire_superc
 /* std::vector<MoireLatticeReport> */
 MoireLatticeReport MoireApproximator::best_smallest(ZONE bz, LATTICE lat, double minimum_cost) const
 {
-    auto moire_scels = all(bz);
+    auto moire_scels = all_candidates(bz);
     auto best_ix = best_candidate(moire_scels, minimum_cost);
     return make_report(bz, lat, moire_scels[best_ix]);
 }
@@ -427,7 +441,8 @@ xtal::Lattice MoireApproximator::make_reduced_cell(const xtal::Lattice& lat) con
         throw std::runtime_error("Could not permute lattice vectors to recover C after making reduced cell");
     }
 
-    return xtal::Lattice::from_column_vector_matrix(raw_reduced.lat_column_mat() * T);
+    auto corrected_lattice=xtal::Lattice::from_column_vector_matrix(raw_reduced.lat_column_mat() * T);
+    return make_right_handed_by_ab_swap(corrected_lattice);
 }
 
 MoireApproximator::MoireApproximator(const xtal::Lattice& input_lat, double degrees, long max_lattice_sites)
