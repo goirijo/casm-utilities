@@ -258,7 +258,7 @@ DeformationReport::DeformationReport(const Eigen::Matrix3d& _deformation) : defo
     }
 }
 
-void MoireGenerator::insert_moire_supercells_of_size(int num_moire_units)
+void MoireApproximator::insert_moire_supercells_of_size(int num_moire_units)
 {
     // We already did this
     if (enumerated_moire_supercells[ZONE::ALIGNED].count(num_moire_units) == 1 &&
@@ -297,14 +297,14 @@ void MoireGenerator::insert_moire_supercells_of_size(int num_moire_units)
     return;
 }
 
-int MoireGenerator::maximum_lattice_sites_to_moire_supercell_size(ZONE bz, long max_lattice_sites) const
+int MoireApproximator::maximum_lattice_sites_to_moire_supercell_size(ZONE bz, long max_lattice_sites) const
 {
     long min_lattice_sites = this->minimum_lattice_sites(bz);
     int max_moire_scel_size = max_lattice_sites / min_lattice_sites;
     return max_moire_scel_size;
 }
 
-void MoireGenerator::expand(long max_lattice_sites)
+void MoireApproximator::expand(long max_lattice_sites)
 {
 
     for (ZONE bz : {ZONE::ALIGNED, ZONE::ROTATED})
@@ -320,7 +320,7 @@ void MoireGenerator::expand(long max_lattice_sites)
     return;
 }
 
-std::vector<MoireGenerator::MoireScel> MoireGenerator::all(ZONE bz) const
+std::vector<MoireApproximator::MoireScel> MoireApproximator::all(ZONE bz) const
 {
 
     std::vector<MoireScel> moire_supercells;
@@ -334,7 +334,7 @@ std::vector<MoireGenerator::MoireScel> MoireGenerator::all(ZONE bz) const
 }
 
 MoireLatticeReport
-MoireGenerator::make_report(ZONE bz, LATTICE layer, const std::pair<MoireApproximant, Eigen::Matrix3l>& data) const
+MoireApproximator::make_report(ZONE bz, LATTICE layer, const std::pair<MoireApproximant, Eigen::Matrix3l>& data) const
 {
     const auto& approximant = data.first;
     const auto& true_moire_scel_mat = data.second;
@@ -351,7 +351,7 @@ MoireGenerator::make_report(ZONE bz, LATTICE layer, const std::pair<MoireApproxi
                               approximant.approximation_deformations.at(layer));
 }
 
-int MoireGenerator::best_candidate(const std::vector<MoireScel>& moire_supercells, double minimum_cost) const
+int MoireApproximator::best_candidate(const std::vector<MoireScel>& moire_supercells, double minimum_cost) const
 {
     assert(moire_supercells.size() > 0);
     const auto& moire_tile_approx = moire_supercells[0].first;
@@ -375,14 +375,14 @@ int MoireGenerator::best_candidate(const std::vector<MoireScel>& moire_supercell
 }
 
 /* std::vector<MoireLatticeReport> */
-MoireLatticeReport MoireGenerator::best_smallest(ZONE bz, LATTICE lat, double minimum_cost) const
+MoireLatticeReport MoireApproximator::best_smallest(ZONE bz, LATTICE lat, double minimum_cost) const
 {
     auto moire_scels = all(bz);
     auto best_ix = best_candidate(moire_scels, minimum_cost);
     return make_report(bz, lat, moire_scels[best_ix]);
 }
 
-xtal::Lattice MoireGenerator::make_reduced_cell(const xtal::Lattice& lat) const
+xtal::Lattice MoireApproximator::make_reduced_cell(const xtal::Lattice& lat) const
 {
     auto raw_reduced = lat.__get().reduced_cell2();
 
@@ -430,7 +430,7 @@ xtal::Lattice MoireGenerator::make_reduced_cell(const xtal::Lattice& lat) const
     return xtal::Lattice::from_column_vector_matrix(raw_reduced.lat_column_mat() * T);
 }
 
-MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, long max_lattice_sites)
+MoireApproximator::MoireApproximator(const xtal::Lattice& input_lat, double degrees, long max_lattice_sites)
     : moire(input_lat, degrees)
 {
     this->moire_units.try_emplace(ZONE::ALIGNED, &moire.aligned_moire_lattice);
@@ -450,7 +450,7 @@ MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, l
     this->expand(max_lattice_sites);
 }
 
-long MoireGenerator::minimum_lattice_sites(ZONE bz) const
+long MoireApproximator::minimum_lattice_sites(ZONE bz) const
 {
     double tile_vol = std::abs(moire.input_lattice.volume());
     double moire_vol = std::abs(moire.moire(bz).volume());
@@ -458,7 +458,7 @@ long MoireGenerator::minimum_lattice_sites(ZONE bz) const
     return std::lround(2 * moire_vol / tile_vol);
 }
 
-double MoireGenerator::error_metric(const xtal::Lattice& moire,
+double MoireApproximator::error_metric(const xtal::Lattice& moire,
                                     const xtal::Lattice& aligned,
                                     const xtal::Lattice& rotated) const
 {
@@ -487,14 +487,14 @@ MoireStructureReport::MoireStructureReport(const MoireLatticeReport& lattice_rep
 {
 }
 
-MoireStructureGenerator::MoireStructureGenerator(const Structure& slab_unit, double degrees, long max_lattice_sites)
-    : MoireGenerator(slab_unit.lattice(), degrees), slab_unit(slab_unit)
+MoireStructureApproximator::MoireStructureApproximator(const Structure& slab_unit, double degrees, long max_lattice_sites)
+    : MoireApproximator(slab_unit.lattice(), degrees), slab_unit(slab_unit)
 {
 }
 
-MoireStructureReport MoireStructureGenerator::best_smallest(ZONE brillouin, LATTICE lat, double minimum_cost) const
+MoireStructureReport MoireStructureApproximator::best_smallest(ZONE brillouin, LATTICE lat, double minimum_cost) const
 {
-    const auto report = MoireGenerator::best_smallest(brillouin, lat, minimum_cost);
+    const auto report = MoireApproximator::best_smallest(brillouin, lat, minimum_cost);
 
     const auto& approx_lat = report.approximate_tiling_unit;
     Structure approx_unit = slab_unit;

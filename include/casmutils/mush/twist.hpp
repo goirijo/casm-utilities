@@ -272,7 +272,7 @@ struct DeformationReport
 /// Interface class to access the Moire lattice, which can be relative do different Brillouin zones,
 /// as well as relevant deformations on each lattice. Basically just a wrapper class for everythin
 /// in MoireLattice and MoireApproximant
-class MoireGenerator
+class MoireApproximator
 {
 public:
     using LATTICE = MoireLattice::LATTICE;
@@ -325,7 +325,7 @@ private:
 
 public:
     /// Give the original unrotated lattice and rotation angle.
-    explicit MoireGenerator(const xtal::Lattice& input_lat, double degrees, long max_lattice_sites = 0);
+    explicit MoireApproximator(const xtal::Lattice& input_lat, double degrees, long max_lattice_sites = 0);
 
     /// Calculates Moire supercells allowed to contain as many lattice sites as specified
     void expand(long max_lattice_sites);
@@ -360,19 +360,19 @@ struct MoireStructureReport : public MoireLatticeReport
 
 /// Generates slab superstructures that can be stacked together to create bilayers with Moire
 /// patterns
-class MoireStructureGenerator : MoireGenerator
+class MoireStructureApproximator : MoireApproximator
 {
 public:
-    using ZONE = MoireGenerator::ZONE;
-    using LATTICE = MoireGenerator::LATTICE;
+    using ZONE = MoireApproximator::ZONE;
+    using LATTICE = MoireApproximator::LATTICE;
     using Structure = xtal::Structure;
-    /* using MoireGenerator::degrees; */
+    /* using MoireApproximator::degrees; */
 
-    explicit MoireStructureGenerator(const Structure& slab_unit, double degrees, long max_lattice_sites = 0);
+    explicit MoireStructureApproximator(const Structure& slab_unit, double degrees, long max_lattice_sites = 0);
 
     MoireStructureReport best_smallest(ZONE brillouin, LATTICE lat, double minimum_cost = 1e-8) const;
 
-    using MoireGenerator::expand;
+    using MoireApproximator::expand;
 
 private:
     const Structure slab_unit;
