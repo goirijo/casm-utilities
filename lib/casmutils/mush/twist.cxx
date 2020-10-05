@@ -258,20 +258,20 @@ DeformationReport::DeformationReport(const Eigen::Matrix3d& _deformation) : defo
     }
 }
 
-std::vector<std::pair<MoireApproximant, Eigen::Matrix3l>>
-MoireGenerator::approximant_supercells(ZONE bz, LATTICE lat, long max_lattice_sites) const
+void MoireGenerator::insert_moire_supercells_of_size(int num_moire_units)
 {
-    const auto& moire_unit = *moire_units.at(lat);
-
-    long min_lattice_sites = this->minimum_lattice_sites();
-    long max_moire_scel_size = max_lattice_sites / min_lattice_sites;
-
-    std::vector<std::pair<MoireApproximant, Eigen::Matrix3l>> moire_supercells;
-    moire_supercells.emplace_back(moire_unit_approximants.at(bz), Eigen::Matrix3l::Identity());
-
-    if (max_moire_scel_size > 1)
+    // We already did this
+    if (enumerated_moire_supercells[ZONE::ALIGNED].count(num_moire_units) == 1 &&
+        enumerated_moire_supercells[ZONE::ROTATED].count(num_moire_units) == 1)
     {
-        CASM::xtal::ScelEnumProps super_moire_props(2, max_moire_scel_size + 1, "ab");
+        return;
+    }
+
+    for (ZONE bz : {ZONE::ALIGNED, ZONE::ROTATED})
+    {
+        const auto& moire_unit = *moire_units.at(bz);
+
+        CASM::xtal::ScelEnumProps super_moire_props(num_moire_units, num_moire_units + 1, "ab");
         CASM::xtal::SuperlatticeEnumerator super_moire_enumerator(
             moire_unit.__get(), xtal::make_point_group(moire_unit, 1e-5), super_moire_props);
 
@@ -289,8 +289,45 @@ MoireGenerator::approximant_supercells(ZONE bz, LATTICE lat, long max_lattice_si
             auto [moire_to_super_trans_mat, residual] = approximate_integer_transformation(moire_unit, super_moire);
             assert(almost_zero(residual));
 
-            moire_supercells.emplace_back(MoireApproximant(super_moire, aligned_unit, rotated_unit), moire_to_super_trans_mat);
+            enumerated_moire_supercells[bz][num_moire_units].emplace_back(
+                MoireApproximant(super_moire, aligned_unit, rotated_unit), moire_to_super_trans_mat);
         }
+    }
+
+    return;
+}
+
+int MoireGenerator::maximum_lattice_sites_to_moire_supercell_size(ZONE bz, long max_lattice_sites) const
+{
+    long min_lattice_sites = this->minimum_lattice_sites(bz);
+    int max_moire_scel_size = max_lattice_sites / min_lattice_sites;
+    return max_moire_scel_size;
+}
+
+void MoireGenerator::expand(long max_lattice_sites)
+{
+
+    for (ZONE bz : {ZONE::ALIGNED, ZONE::ROTATED})
+    {
+        long max_moire_scel_size = maximum_lattice_sites_to_moire_supercell_size(bz,max_lattice_sites);
+        const auto& moire_unit = *moire_units.at(bz);
+        for (int i = 2; i <= max_moire_scel_size; ++i)
+        {
+            insert_moire_supercells_of_size(i);
+        }
+    }
+
+    return;
+}
+
+std::vector<MoireGenerator::MoireScel> MoireGenerator::all(ZONE bz) const
+{
+
+    std::vector<MoireScel> moire_supercells;
+
+    for (const auto& [size, scels] : enumerated_moire_supercells.at(bz))
+    {
+        moire_supercells.insert(moire_supercells.end(), scels.begin(), scels.end());
     }
 
     return moire_supercells;
@@ -315,28 +352,28 @@ MoireGenerator::make_report(ZONE bz, LATTICE layer, const std::pair<MoireApproxi
 }
 
 /* std::vector<MoireLatticeReport> */
-MoireLatticeReport MoireGenerator::generate(ZONE bz, LATTICE lat, long max_lattice_sites, double minimum_cost) const
+MoireLatticeReport MoireGenerator::best_smallest(ZONE bz, LATTICE lat, double minimum_cost) const
 {
-    auto moire_scels = approximant_supercells(bz, lat, max_lattice_sites);
+    auto moire_scels = all(bz);
 
-    assert(moire_scels.size()>0);
-    const auto& moire_tile_approx=moire_scels[0].first;
-    const auto& aligned_unit=moire.aligned_lattice;
-    const auto& rotated_unit=moire.rotated_lattice;
-    double best_error=error_metric(moire_tile_approx.approximate_moire_lattice,aligned_unit,rotated_unit);
+    assert(moire_scels.size() > 0);
+    const auto& moire_tile_approx = moire_scels[0].first;
+    const auto& aligned_unit = moire.aligned_lattice;
+    const auto& rotated_unit = moire.rotated_lattice;
+    double best_error = error_metric(moire_tile_approx.approximate_moire_lattice, aligned_unit, rotated_unit);
     int best_ix = 0;
     for (int i = 1; i < moire_scels.size(); ++i)
     {
-        const auto& moire_scel_approx=moire_scels[i].first;
-        double candidate_error=error_metric(moire_scel_approx.approximate_moire_lattice,aligned_unit,rotated_unit);
-        if(candidate_error<best_error-minimum_cost)
+        const auto& moire_scel_approx = moire_scels[i].first;
+        double candidate_error = error_metric(moire_scel_approx.approximate_moire_lattice, aligned_unit, rotated_unit);
+        if (candidate_error < best_error - minimum_cost)
         {
-            best_ix=i;
-            best_error=candidate_error;
+            best_ix = i;
+            best_error = candidate_error;
         }
     }
 
-    return make_report(bz,lat,moire_scels[best_ix]);
+    return make_report(bz, lat, moire_scels[best_ix]);
 }
 
 xtal::Lattice MoireGenerator::make_reduced_cell(const xtal::Lattice& lat) const
@@ -387,7 +424,7 @@ xtal::Lattice MoireGenerator::make_reduced_cell(const xtal::Lattice& lat) const
     return xtal::Lattice::from_column_vector_matrix(raw_reduced.lat_column_mat() * T);
 }
 
-MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees) : moire(input_lat, degrees)
+MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees, long max_lattice_sites) : moire(input_lat, degrees)
 {
     this->moire_units.try_emplace(ZONE::ALIGNED, &moire.aligned_moire_lattice);
     this->moire_units.try_emplace(ZONE::ROTATED, &moire.rotated_moire_lattice);
@@ -396,19 +433,27 @@ MoireGenerator::MoireGenerator(const xtal::Lattice& input_lat, double degrees) :
         LATTICE::ALIGNED, moire.aligned_moire_lattice, moire.aligned_lattice, moire.rotated_lattice);
     this->moire_unit_approximants.try_emplace(
         LATTICE::ROTATED, moire.aligned_moire_lattice, moire.rotated_lattice, moire.rotated_lattice);
+
+    // Go ahead and enumerate the smallest Moire possible
+    for (ZONE bz : {ZONE::ALIGNED, ZONE::ROTATED})
+    {
+        enumerated_moire_supercells[bz][0].emplace_back(moire_unit_approximants.at(bz), Eigen::Matrix3l::Identity());
+    }
+
+    this->expand(max_lattice_sites);
 }
 
-long MoireGenerator::minimum_lattice_sites() const
+long MoireGenerator::minimum_lattice_sites(ZONE bz) const
 {
     double tile_vol = std::abs(moire.input_lattice.volume());
-    double moire_aligned_vol = std::abs(moire.aligned_moire_lattice.volume());
-    double moire_rotated_vol = std::abs(moire.rotated_moire_lattice.volume());
+    double moire_vol=std::abs(moire.moire(bz).volume());
 
-    return std::lround((moire_aligned_vol + moire_rotated_vol) / tile_vol);
+    return std::lround(2*moire_vol / tile_vol);
 }
 
-double
-MoireGenerator::error_metric(const xtal::Lattice& moire, const xtal::Lattice& aligned, const xtal::Lattice& rotated) const
+double MoireGenerator::error_metric(const xtal::Lattice& moire,
+                                    const xtal::Lattice& aligned,
+                                    const xtal::Lattice& rotated) const
 {
     MoireApproximant approx(moire, aligned, rotated);
     double error = 0.0;
@@ -435,14 +480,15 @@ MoireStructureReport::MoireStructureReport(const MoireLatticeReport& lattice_rep
 {
 }
 
-MoireStructureGenerator::MoireStructureGenerator(const Structure& slab_unit, double degrees)
+MoireStructureGenerator::MoireStructureGenerator(const Structure& slab_unit, double degrees, long max_lattice_sites)
     : MoireGenerator(slab_unit.lattice(), degrees), slab_unit(slab_unit)
 {
 }
 
-MoireStructureReport MoireStructureGenerator::generate(ZONE brillouin, LATTICE lat, long max_lattice_sites, double minimum_cost) const
+MoireStructureReport
+MoireStructureGenerator::best_smallest(ZONE brillouin, LATTICE lat, double minimum_cost) const
 {
-    const auto report = this->generate(brillouin, lat);
+    const auto report = MoireGenerator::best_smallest(brillouin, lat, minimum_cost);
 
     const auto& approx_lat = report.approximate_tiling_unit;
     Structure approx_unit = slab_unit;

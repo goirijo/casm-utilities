@@ -98,9 +98,9 @@ struct MoireLattice
     xtal::Lattice rotated_moire_lattice;
 
     /// Returns the moire lattice of either ALIGNED or ROTATED Brillouin zone
-    const xtal::Lattice& moire(ZONE lat) const
+    const xtal::Lattice& moire(ZONE bz) const
     {
-        return lat == LATTICE::ALIGNED ? aligned_moire_lattice : rotated_moire_lattice;
+        return bz == ZONE::ALIGNED ? aligned_moire_lattice : rotated_moire_lattice;
     }
 
     /// Maps the address of a Moire lattice to an array that specifies if its reciprocal vectors
@@ -279,6 +279,9 @@ public:
     using ZONE = MoireLattice::ZONE;
 
 private:
+    using MoireScel = std::pair<MoireApproximant, Eigen::Matrix3l>;
+    using MoireScelMap = std::unordered_map<int, std::vector<MoireScel>>;
+
     MoireLattice moire;
 
     /// Pointer acces to the true moire unit lattices via ZONE enum.
@@ -298,18 +301,31 @@ private:
 
     /// Calculates how many lattice sites are needed to construct the aligned and rotated
     /// unit Moire layers
-    long minimum_lattice_sites() const;
+    long minimum_lattice_sites(ZONE bz) const;
 
-    /// Calculate a range of Moire superlattices and collect them as MoireApproximant
-    std::vector<std::pair<MoireApproximant, Eigen::Matrix3l>>
-    approximant_supercells(ZONE bz, LATTICE lat, long max_lattice_sites) const;
+    /// Translates maximum lattice sites to the supercell size of the Moire unit
+    int maximum_lattice_sites_to_moire_supercell_size(ZONE bz, long max_lattice_sites) const;
+
+    /// Maps the Moire supercell size (relative to the Moire unit, NOT the max lattice sites) to
+    /// all the Moire supercells of that size, for both Brillouin zone constructions.
+    /// This is basically a cache to avoid enumerating the same values twice, but also
+    /// keeps the cells organized by size.
+    std::unordered_map<ZONE, MoireScelMap> enumerated_moire_supercells;
+
+    /// Calculates all Moire superlattices of a particular size (relative to Moire unit) and
+    /// saves them
+    void insert_moire_supercells_of_size(int num_moire_units);
 
     /// Helper construction of a MoireLatticeReport
-    MoireLatticeReport make_report(ZONE bz, LATTICE layer, const std::pair<MoireApproximant, Eigen::Matrix3l>& data) const;
+    MoireLatticeReport
+    make_report(ZONE bz, LATTICE layer, const std::pair<MoireApproximant, Eigen::Matrix3l>& data) const;
 
 public:
     /// Give the original unrotated lattice and rotation angle.
-    MoireGenerator(const xtal::Lattice& input_lat, double degrees);
+    explicit MoireGenerator(const xtal::Lattice& input_lat, double degrees, long max_lattice_sites = 0);
+
+    /// Calculates Moire supercells allowed to contain as many lattice sites as specified
+    void expand(long max_lattice_sites);
 
     /// Returns collection of information for the requested brillouin zone and half bilayer,
     /// including the true Moire lattice, and the approximated one.
@@ -318,10 +334,12 @@ public:
     /// If the values is less than the number of lattice sites that fit in a single moiron
     /// lattice, then the smallest possible Moire lattice is used.
     /// The minimum_error specifies a minimum improvement that must be achieved for larger
-    /// Moire superlattices to be included in the returned value.
-    /* std::vector<MoireLatticeReport> */
-    MoireLatticeReport
-    generate(ZONE brillouin, LATTICE layer, long max_lattice_sites = 0, double minimum_cost = 1e-8) const;
+    /// Moire superlattices to be considered better.
+    MoireLatticeReport best_smallest(ZONE brillouin, LATTICE layer, double minimum_cost = 1e-8) const;
+  
+    /// Return reports of every Moire supercell calculated so far
+    std::vector<MoireScel> all(ZONE bz) const;
+
 
     const xtal::Lattice& true_moire(ZONE brillouin) const { return moire.moire(brillouin); }
 };
@@ -344,9 +362,11 @@ public:
     using Structure = xtal::Structure;
     /* using MoireGenerator::degrees; */
 
-    MoireStructureGenerator(const Structure& slab_unit, double degrees);
+    explicit MoireStructureGenerator(const Structure& slab_unit, double degrees, long max_lattice_sites = 0);
 
-    MoireStructureReport generate(ZONE brillouin, LATTICE lat, long max_lattice_sites=0, double minimum_cost=1e-8) const;
+    MoireStructureReport best_smallest(ZONE brillouin, LATTICE lat, double minimum_cost = 1e-8) const;
+
+    using MoireGenerator::expand;
 
 private:
     const Structure slab_unit;
