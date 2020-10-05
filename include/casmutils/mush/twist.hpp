@@ -320,6 +320,9 @@ private:
     MoireLatticeReport
     make_report(ZONE bz, LATTICE layer, const std::pair<MoireApproximant, Eigen::Matrix3l>& data) const;
 
+    /// Return index of the best Moire supercell within the provided tolerance
+    int best_candidate(const std::vector<MoireScel>& moire_supercells, double minimum_cost) const;
+
 public:
     /// Give the original unrotated lattice and rotation angle.
     explicit MoireGenerator(const xtal::Lattice& input_lat, double degrees, long max_lattice_sites = 0);
@@ -336,11 +339,14 @@ public:
     /// The minimum_error specifies a minimum improvement that must be achieved for larger
     /// Moire superlattices to be considered better.
     MoireLatticeReport best_smallest(ZONE brillouin, LATTICE layer, double minimum_cost = 1e-8) const;
-  
+
     /// Return reports of every Moire supercell calculated so far
     std::vector<MoireScel> all(ZONE bz) const;
 
+    /// Return reports of the best Moire supercell for each size
+    std::vector<MoireScel> best_of_each_size(ZONE bz) const;
 
+    /// The true Moire lattice, not necessarily commensurate
     const xtal::Lattice& true_moire(ZONE brillouin) const { return moire.moire(brillouin); }
 };
 

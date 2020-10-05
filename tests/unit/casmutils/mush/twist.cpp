@@ -580,9 +580,9 @@ void spit_determinants(const cu::xtal::Lattice& tile, const std::vector<double>&
     std::ofstream magicdet("magic" + std::to_string(max_tiles) + "det.txt");
     for (double degrees : angles)
     {
-        cu::mush::MoireGenerator graph_moire(tile, degrees);
-        const auto aligned_report = graph_moire.best_smallest(ZONE::ALIGNED, LAT::ALIGNED, max_tiles);
-        const auto rotated_report = graph_moire.best_smallest(ZONE::ALIGNED, LAT::ROTATED, max_tiles);
+        cu::mush::MoireGenerator graph_moire(tile, degrees, max_tiles);
+        const auto aligned_report = graph_moire.best_smallest(ZONE::ALIGNED, LAT::ALIGNED);
+        const auto rotated_report = graph_moire.best_smallest(ZONE::ALIGNED, LAT::ROTATED);
 
         magicdet << degrees << "    " << aligned_report.tiling_unit_supercell_matrix.determinant() << "    "
                  << rotated_report.tiling_unit_supercell_matrix.determinant() << "    "
@@ -653,7 +653,8 @@ TEST_F(GrapheneTwistTest, Debug)
         angles.push_back(angle);
     }
 
-    spit_determinants(graphene_ptr->lattice(), angles, 1000);
+    spit_determinants(graphene_ptr->lattice(), magic_angles, 1000);
+    return
 
     spit_internal_error_data(graphene_ptr->lattice(), magic_angles, 3000);
 
