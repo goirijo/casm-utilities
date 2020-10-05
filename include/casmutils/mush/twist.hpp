@@ -136,6 +136,7 @@ private:
 /// that you're giving something sensible that came from the MoireLattice class.
 /// Members include unordered maps that use Lattice pointers as keys, the expected pointers are the
 /// addresses of the aligned and rotated lattices given at construction.
+/// All input values should be consistent for a single Brillouin zone.
 struct MoireApproximant
 {
     using LATTICE = MoireLattice::LATTICE;
@@ -280,50 +281,49 @@ public:
 private:
     MoireLattice moire;
 
-    /// Supercell transformation of the Moire lattice
-    /// which can best accomodate the original and rotated lattices
-    Eigen::Matrix3l transformation_matrix_to_super_aligned_moire;
-    Eigen::Matrix3l transformation_matrix_to_super_rotated_moire;
+    /// Pointer acces to the true moire unit lattices via ZONE enum.
+    /// Simply points into this->moire->alinged/rotated_moire_lattice members.
+    std::unordered_map<ZONE, const xtal::Lattice*> moire_units;
 
-    /// Approximations made using the Moire lattice generated using the fixed (aligned)
-    /// Brillouin zone
-    MoireApproximant aligned_moire_approximant;
-
-    /// Approximations made using the Moire lattice generated using the rotated
-    /// Brillouin zone
-    MoireApproximant rotated_moire_approximant;
-
-    /* const Lattice* requested_key(LATTICE lat) { return lat == LATTICE::ALIGNED ? aligned_key : rotated_key; } */
-
-    const MoireApproximant& requested_zone(ZONE brillouin) const
-    {
-        return brillouin == ZONE::ALIGNED ? aligned_moire_approximant : rotated_moire_approximant;
-    }
+    /// Approximations made using the Moire lattice generated using either the rotated
+    /// or aligned Brillouin zone
+    std::unordered_map<ZONE, MoireApproximant> moire_unit_approximants;
 
     /// Measures how badly the moire lattice is from landing on coindicent lattice sites
-    double error_metric(const xtal::Lattice& moire, const xtal::Lattice& aligned, const xtal::Lattice& rotated);
+    double error_metric(const xtal::Lattice& moire, const xtal::Lattice& aligned, const xtal::Lattice& rotated) const;
 
     /// Creates the reduced cell, but keeps the c vector pointing the same direction.
     /// Will only work if the c vector doesn't need to be corrected to create the reduced cell.
-    xtal::Lattice make_reduced_cell(const xtal::Lattice& lat);
+    xtal::Lattice make_reduced_cell(const xtal::Lattice& lat) const;
+
+    /// Calculates how many lattice sites are needed to construct the aligned and rotated
+    /// unit Moire layers
+    long minimum_lattice_sites() const;
+
+    /// Calculate a range of Moire superlattices and collect them as MoireApproximant
+    std::vector<std::pair<MoireApproximant, Eigen::Matrix3l>>
+    approximant_supercells(ZONE bz, LATTICE lat, long max_lattice_sites) const;
+
+    /// Helper construction of a MoireLatticeReport
+    MoireLatticeReport make_report(ZONE bz, LATTICE layer, const std::pair<MoireApproximant, Eigen::Matrix3l>& data) const;
 
 public:
-    /// Give the original unrotated lattice and rotation angle. The maximum lattice sites
-    /// parameter will determine how many moirons are allowed to fit in the Moire lattice.
-    /// If the values is less than the number of lattice sites that fit in a single moiron
-    /// lattice, then the smallest possible Moire lattice is used.
-    MoireGenerator(const xtal::Lattice& input_lat, double degrees, long max_lattice_sites = 0);
+    /// Give the original unrotated lattice and rotation angle.
+    MoireGenerator(const xtal::Lattice& input_lat, double degrees);
 
     /// Returns collection of information for the requested brillouin zone and half bilayer,
     /// including the true Moire lattice, and the approximated one.
-    MoireLatticeReport generate(ZONE brillouin, LATTICE layer) const;
+    /// The maximum lattice sites
+    /// parameter will determine how many moirons are allowed to fit in the Moire lattice.
+    /// If the values is less than the number of lattice sites that fit in a single moiron
+    /// lattice, then the smallest possible Moire lattice is used.
+    /// The minimum_error specifies a minimum improvement that must be achieved for larger
+    /// Moire superlattices to be included in the returned value.
+    /* std::vector<MoireLatticeReport> */
+    MoireLatticeReport
+    generate(ZONE brillouin, LATTICE layer, long max_lattice_sites = 0, double minimum_cost = 1e-8) const;
 
     const xtal::Lattice& true_moire(ZONE brillouin) const { return moire.moire(brillouin); }
-
-    const xtal::Lattice& approximate_moire(ZONE brillouin) const
-    {
-        return requested_zone(brillouin).approximate_moire_lattice;
-    }
 };
 
 /// Everythin in the MoireLatticeReport, but also has a crystal structure, not just the lattice
@@ -344,9 +344,9 @@ public:
     using Structure = xtal::Structure;
     /* using MoireGenerator::degrees; */
 
-    MoireStructureGenerator(const Structure& slab_unit, double degrees, long max_lattice_sites = 0);
+    MoireStructureGenerator(const Structure& slab_unit, double degrees);
 
-    MoireStructureReport generate(ZONE brillouin, LATTICE lat) const;
+    MoireStructureReport generate(ZONE brillouin, LATTICE lat, long max_lattice_sites=0, double minimum_cost=1e-8) const;
 
 private:
     const Structure slab_unit;
