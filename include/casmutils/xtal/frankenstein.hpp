@@ -55,7 +55,7 @@ xtal::Structure inflate(const xtal::Structure& struc, const std::array<double, 3
 
 /// Stack a series of structres by adjusting the ab-vectors to match, and then concatenatig
 /// along the c axis
-xtal::Structure stack(const std::vector<xtal::Structure>& sub_strucs);
+xtal::Structure stack(std::vector<xtal::Structure> sub_strucs);
 
 /// Translate the given basis by the specified cartesian value
 std::vector<xtal::Site> translate_basis(const std::vector<xtal::Site>& basis, const Eigen::Vector3d& shift);

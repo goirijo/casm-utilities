@@ -31,18 +31,28 @@ namespace casmutils
 {
 namespace frankenstein
 {
-xtal::Structure stack(const std::vector<xtal::Structure>& sub_strucs)
+xtal::Structure stack(std::vector<xtal::Structure> sub_strucs)
 {
     // TODO:
-    // Assert that ab matches
+    // Assert that ab matches instead of this strain busines??
+    // Even if you don't want to strain it you HAVE to ensure that the ab vectors
+    // are at least aligned properly, or you're going to sum up weird stuff if you
+    // feed structures that have the same ab vectors within a rigid rotation
+    for(auto& s : sub_strucs)
+    {
+        const auto& ref_lat=sub_strucs[0].lattice();
+        const auto& curr_lat=s.lattice();
+        xtal::Lattice compatible_lat(ref_lat.a(),ref_lat.b(),curr_lat.c());
+        s.set_lattice(compatible_lat,xtal::FRAC);
+    }
 
     // Create a new lattice that has the same ab vectors. but summed up
     // the c vectors of every structure
     Eigen::Matrix3d stacked_lat_mat = sub_strucs[0].lattice().column_vector_matrix();
     for (int i = 1; i < sub_strucs.size(); i++)
     {
-        Eigen::Matrix3d lat_mat = sub_strucs[i].lattice().column_vector_matrix();
-        stacked_lat_mat.col(2) = stacked_lat_mat.col(2) + lat_mat.col(2);
+        const Eigen::Matrix3d& lat_mat = sub_strucs[i].lattice().column_vector_matrix();
+        stacked_lat_mat.col(2) += lat_mat.col(2);
     }
 
     // We now have a template lattice with the right shape, we'll put the
@@ -57,7 +67,7 @@ xtal::Structure stack(const std::vector<xtal::Structure>& sub_strucs)
     for (int i = 1; i < sub_strucs.size(); i++)
     {
         // determine appropriate c-axis shift for position in stacking
-        c_shift += sub_strucs[i].lattice().column_vector_matrix().col(2);
+        c_shift += sub_strucs[i-1].lattice().column_vector_matrix().col(2);
 
         // Shift each site of the basis by the appropriate c shift,
         // and adds them to the stacked structure
