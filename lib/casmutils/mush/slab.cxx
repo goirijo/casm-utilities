@@ -46,7 +46,7 @@ Eigen::Matrix3d make_alignment_matrix(const xtal::Lattice& lat)
     return lat_span_to_standard;
 }
 
-xtal::Lattice make_aligned_lattice(const xtal::Lattice& lat)
+xtal::Lattice make_aligned(const xtal::Lattice& lat)
 {
     Eigen::Matrix3d lat_span_to_standard = make_alignment_matrix(lat);
     xtal::Lattice aligned_lat = make_transformed_lattice(lat, lat_span_to_standard);
@@ -59,6 +59,18 @@ xtal::Lattice make_aligned_lattice(const xtal::Lattice& lat)
     assert(CASM::almost_equal(
         lat.column_vector_matrix().determinant(), aligned_lat.column_vector_matrix().determinant(), 1e-10));
     return aligned_lat;
+}
+
+xtal::Structure make_aligned(xtal::Structure struc)
+{
+    make_aligned(&struc);
+    return struc;
+}
+
+void make_aligned(xtal::Structure* struc)
+{
+    struc->set_lattice(make_aligned(struc->lattice()),xtal::FRAC);
+    return;
 }
 
 xtal::Lattice orthogonalize_c_vector(const xtal::Lattice& lat)

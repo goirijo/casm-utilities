@@ -144,7 +144,7 @@ TEST_F(TwistTest, AlginLattice)
 {
     for (const Lattice& start_lat : sliced_lattices)
     {
-        cu::xtal::Lattice aligned_lat = cu::mush::make_aligned_lattice(start_lat);
+        cu::xtal::Lattice aligned_lat = cu::mush::make_aligned(start_lat);
         EXPECT_TRUE(cu::almost_equal(aligned_lat.a()(1), 0.0, tol));
         EXPECT_TRUE(cu::almost_equal(aligned_lat.a()(2), 0.0, tol));
         EXPECT_TRUE(cu::almost_equal(aligned_lat.b()(2), 0.0, tol));

@@ -229,7 +229,7 @@ TEST_F(OrthogonalizeCVector, BackToOrigin)
     stack_mat << 1, 0, 0, 0, 1, 0, 0, 0, 4;
 
     auto stack = cu::xtal::make_superlattice(*quarter_slant_ptr, stack_mat);
-    auto ortho = cu::mush::make_aligned_lattice(cu::mush::orthogonalize_c_vector(stack));
+    auto ortho = cu::mush::make_aligned(cu::mush::orthogonalize_c_vector(stack));
     EXPECT_xy_values_for_c_vector(ortho.c(), 0, 0);
 }
 
@@ -239,7 +239,7 @@ TEST_F(OrthogonalizeCVector, BackwardQuarter)
     stack_mat << 1, 0, 0, 0, 1, 0, 0, 0, 3;
 
     auto stack = cu::xtal::make_superlattice(*quarter_slant_ptr, stack_mat);
-    auto ortho = cu::mush::make_aligned_lattice(cu::mush::orthogonalize_c_vector(stack));
+    auto ortho = cu::mush::make_aligned(cu::mush::orthogonalize_c_vector(stack));
     EXPECT_xy_values_for_c_vector(ortho.c(), -1, -1);
 }
 
@@ -249,7 +249,7 @@ TEST_F(OrthogonalizeCVector, ForwardQuarter)
     stack_mat << 1, 0, 0, 0, 1, 0, 0, 0, 9;
 
     auto stack = cu::xtal::make_superlattice(*quarter_slant_ptr, stack_mat);
-    auto ortho = cu::mush::make_aligned_lattice(cu::mush::orthogonalize_c_vector(stack));
+    auto ortho = cu::mush::make_aligned(cu::mush::orthogonalize_c_vector(stack));
     EXPECT_xy_values_for_c_vector(ortho.c(), 1, 1);
 }
 

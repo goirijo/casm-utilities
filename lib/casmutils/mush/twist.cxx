@@ -105,7 +105,7 @@ xtal::Lattice make_right_handed_by_ab_swap(const xtal::Lattice& lat)
 MoireLattice::MoireLattice(const xtal::Lattice& lat, double degrees)
     : input_lattice(lat),
       input_degrees(degrees),
-      aligned_lattice(make_prismatic_lattice(make_aligned_lattice(input_lattice))),
+      aligned_lattice(make_prismatic_lattice(make_aligned(input_lattice))),
       reciprocal_aligned_lattice(xtal::make_reciprocal(aligned_lattice)),
       rotated_lattice(make_twisted_lattice(aligned_lattice, input_degrees)),
       reciprocal_rotated_lattice(xtal::make_reciprocal(rotated_lattice)),

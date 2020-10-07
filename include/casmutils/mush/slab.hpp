@@ -20,7 +20,12 @@ xtal::Lattice make_transformed_lattice(const xtal::Lattice& lat, const Eigen::Ma
 
 /// Returns the same lattice, but rotated such that the a vector points along the
 /// Cartesian x direction, and the b vector is parallel to the xy plane.
-xtal::Lattice make_aligned_lattice(const xtal::Lattice& struc);
+xtal::Lattice make_aligned(const xtal::Lattice& struc);
+
+/// Returns the same lattice, but rotated such that the a vector points along the
+/// Cartesian x direction, and the b vector is parallel to the xy plane.
+xtal::Structure make_aligned(xtal::Structure struc);
+void make_aligned(xtal::Structure* struc);
 
 /// Attempts to make the c vector more perpendicular to the ab-plane by applying a
 ///"within" operation to bring it's projection into the parallelogram spanned by the
