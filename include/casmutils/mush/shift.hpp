@@ -43,6 +43,8 @@ xtal::Structure mutate(const xtal::Structure& struc, const Eigen::Vector3d& c_ve
 /// For each cleavage value, create a new structure that has that amount of empty space over the a-b plane
 std::vector<xtal::Structure> make_cleaved_structures(const xtal::Structure& slab,
                                                      const std::vector<double>& cleavage_values);
+/// Create a new structure that has that amount of empty space over the a-b plane
+xtal::Structure make_cleaved_structure(const xtal::Structure& slab, double cleavage);
 
 /// Given a density along each of the a and b directions, create an unrolled vector of shifts
 /// along the ab-plane with a uniform distribution. The density specifies the number of unique

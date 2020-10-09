@@ -26,19 +26,24 @@ xtal::Structure mutate(const xtal::Structure& struc, const Eigen::Vector3d& c_ve
 std::vector<xtal::Structure> make_cleaved_structures(const xtal::Structure& slab,
                                                      const std::vector<double>& cleavage_values)
 {
-    // TODO: This could go astray if you get a left handed lattice <-- pls explain? I don't see it
     std::vector<xtal::Structure> cleaved_structures;
-
-    Eigen::Vector3d unit_normal = slab.lattice().a().cross(slab.lattice().b()).normalized();
     for (double cleave : cleavage_values)
     {
-        /* Eigen::Vector3d new_c_vector = slab.lattice().c() + cleave * unit_normal; */
-        /* xtal::Lattice cleaved_lattice(slab.lattice().a(), slab.lattice().b(), new_c_vector); */
-
-        /* cleaved_structures.emplace_back(slab.set_lattice(cleaved_lattice, xtal::CART)); */
-        cleaved_structures.emplace_back(mutate(slab, cleave * unit_normal));
+        cleaved_structures.emplace_back(make_cleaved_structure(slab,cleave));
     }
     return cleaved_structures;
+}
+
+xtal::Structure make_cleaved_structure(const xtal::Structure& slab, double cleavage)
+{
+    // TODO: This might go astray if you get a left handed lattice, I think it'd cause negative cleavages
+    if(slab.lattice().column_vector_matrix().determinant()<0)
+    {
+        throw std::runtime_error("Cannot currently cleave a left handed structure");
+    }
+
+    Eigen::Vector3d unit_normal = slab.lattice().a().cross(slab.lattice().b()).normalized();
+    return mutate(slab, cleavage * unit_normal);
 }
 
 std::pair<std::vector<Eigen::Vector3d>, std::vector<ShiftRecord>>
