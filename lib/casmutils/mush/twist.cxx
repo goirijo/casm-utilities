@@ -254,6 +254,9 @@ DeformationReport::DeformationReport(const Eigen::Matrix3d& _deformation) : defo
 
     if (!almost_zero(E.col(2)) || !almost_zero(E.row(2)))
     {
+        std::cout<<E<<"\n\n";
+
+        std::cout<<deformation<<"\n\n";
         throw std::runtime_error("Deformation matrix extends beyond the xy subspace");
     }
 }
@@ -270,7 +273,7 @@ void MoireApproximator::insert_moire_supercells_of_size(int num_moire_units)
     for (ZONE bz : {ZONE::ALIGNED, ZONE::ROTATED})
     {
         const auto& moire_unit = *moire_units.at(bz);
-        assert(moire_unit.column_vector_matrix().determinant()>0.0);
+        assert(moire_unit.column_vector_matrix().determinant() > 0.0);
 
         CASM::xtal::ScelEnumProps super_moire_props(num_moire_units, num_moire_units + 1, "ab");
         CASM::xtal::SuperlatticeEnumerator super_moire_enumerator(
@@ -284,14 +287,13 @@ void MoireApproximator::insert_moire_supercells_of_size(int num_moire_units)
              ++super_moire_it)
         {
             xtal::Lattice super_moire = make_reduced_cell(*super_moire_it);
-            // the C vectors should't be changing
-            assert(CASM::almost_equal(super_moire.c(), super_moire_it->operator[](2).eval()));
 
             auto [moire_to_super_trans_mat, residual] = approximate_integer_transformation(moire_unit, super_moire);
             assert(almost_zero(residual));
 
             enumerated_moire_supercells[bz][num_moire_units].emplace_back(
                 MoireApproximant(super_moire, aligned_unit, rotated_unit), moire_to_super_trans_mat);
+            
         }
     }
 
@@ -302,7 +304,8 @@ int MoireApproximator::maximum_lattice_sites_to_moire_supercell_size(ZONE bz, lo
 {
     long min_lattice_sites = this->minimum_lattice_sites(bz);
     int max_moire_scel_size = max_lattice_sites / min_lattice_sites;
-    return max_moire_scel_size;
+    //I don't want "size 0", I want "size 1" for zero lattice sites;
+    return std::max(max_moire_scel_size,1);
 }
 
 void MoireApproximator::expand(long max_lattice_sites)
@@ -337,9 +340,9 @@ std::vector<MoireApproximator::MoireScel> MoireApproximator::all_candidates(ZONE
 std::vector<MoireLatticeReport> MoireApproximator::all(ZONE bz, LATTICE layer) const
 {
 
-    auto moire_supercells=all_candidates(bz);
+    auto moire_supercells = all_candidates(bz);
     std::vector<MoireLatticeReport> all_reports;
-    for(const auto& scel : moire_supercells)
+    for (const auto& scel : moire_supercells)
     {
         all_reports.emplace_back(make_report(bz, layer, scel));
     }
@@ -378,6 +381,7 @@ int MoireApproximator::best_candidate(const std::vector<MoireScel>& moire_superc
     {
         const auto& moire_scel_approx = moire_supercells[i].first;
         double candidate_error = error_metric(moire_scel_approx.approximate_moire_lattice, aligned_unit, rotated_unit);
+
         if (candidate_error < best_error - minimum_cost)
         {
             best_ix = i;
@@ -394,6 +398,25 @@ MoireLatticeReport MoireApproximator::best_smallest(ZONE bz, LATTICE lat, double
     auto moire_scels = all_candidates(bz);
     auto best_ix = best_candidate(moire_scels, minimum_cost);
     return make_report(bz, lat, moire_scels[best_ix]);
+}
+
+/// Return reports of the best Moire supercell for each size
+std::vector<MoireLatticeReport> MoireApproximator::best_of_each_size(ZONE bz, LATTICE layer) const
+{
+    std::vector<MoireLatticeReport> best_of_each;
+
+    int prev = 0;
+    for (const auto& [size, cells] : enumerated_moire_supercells.at(bz))
+    {
+        assert(size - 1 == prev);
+        ++prev;
+        
+        auto best_ix=best_candidate(cells,0.0);
+        best_of_each.emplace_back(make_report(bz,layer,cells[best_ix]));
+    }
+
+    assert(best_of_each.size()==enumerated_moire_supercells.at(bz).size());
+    return best_of_each;
 }
 
 xtal::Lattice MoireApproximator::make_reduced_cell(const xtal::Lattice& lat) const
@@ -441,7 +464,14 @@ xtal::Lattice MoireApproximator::make_reduced_cell(const xtal::Lattice& lat) con
         throw std::runtime_error("Could not permute lattice vectors to recover C after making reduced cell");
     }
 
-    auto corrected_lattice=xtal::Lattice::from_column_vector_matrix(raw_reduced.lat_column_mat() * T);
+    auto corrected_lattice = xtal::Lattice::from_column_vector_matrix(raw_reduced.lat_column_mat() * T);
+    if (!almost_equal(lat.c(), corrected_lattice.c()))
+    {
+        // The c vector got knocked backwards, so put it back by flipping everything
+        corrected_lattice = xtal::Lattice(-corrected_lattice.a(), -corrected_lattice.b(), -corrected_lattice.c());
+    }
+    // the C vectors should't be changing
+    assert(almost_equal(corrected_lattice.c(), lat.c(), 1e-8));
     return make_right_handed_by_ab_swap(corrected_lattice);
 }
 
@@ -456,10 +486,11 @@ MoireApproximator::MoireApproximator(const xtal::Lattice& input_lat, double degr
     this->moire_unit_approximants.try_emplace(
         LATTICE::ROTATED, moire.aligned_moire_lattice, moire.rotated_lattice, moire.rotated_lattice);
 
-    // Go ahead and enumerate the smallest Moire possible
+    // Go ahead and enumerate the smallest Moire possible.
+    // Subsequent enumeration of supercells counts on this.
     for (ZONE bz : {ZONE::ALIGNED, ZONE::ROTATED})
     {
-        enumerated_moire_supercells[bz][0].emplace_back(moire_unit_approximants.at(bz), Eigen::Matrix3l::Identity());
+        enumerated_moire_supercells[bz][1].emplace_back(moire_unit_approximants.at(bz), Eigen::Matrix3l::Identity());
     }
 
     this->expand(max_lattice_sites);
@@ -474,15 +505,16 @@ long MoireApproximator::minimum_lattice_sites(ZONE bz) const
 }
 
 double MoireApproximator::error_metric(const xtal::Lattice& moire,
-                                    const xtal::Lattice& aligned,
-                                    const xtal::Lattice& rotated) const
+                                       const xtal::Lattice& aligned,
+                                       const xtal::Lattice& rotated) const
 {
     MoireApproximant approx(moire, aligned, rotated);
     double error = 0.0;
 
     for (auto LAT : {LATTICE::ALIGNED, LATTICE::ROTATED})
     {
-        const auto& F = approx.approximation_deformations[LAT];
+        const Eigen::Matrix3d& F = approx.approximation_deformations[LAT];
+        
         DeformationReport report(F);
         for (double eta : report.strain_metrics)
         {
@@ -502,20 +534,39 @@ MoireStructureReport::MoireStructureReport(const MoireLatticeReport& lattice_rep
 {
 }
 
-MoireStructureApproximator::MoireStructureApproximator(const Structure& slab_unit, double degrees, long max_lattice_sites)
+MoireStructureApproximator::MoireStructureApproximator(const Structure& slab_unit,
+                                                       double degrees,
+                                                       long max_lattice_sites)
     : MoireApproximator(slab_unit.lattice(), degrees), slab_unit(slab_unit)
 {
+}
+
+MoireStructureReport MoireStructureApproximator::lattice_report_to_structure_report(const MoireLatticeReport& lat_report) const
+{
+    const auto& approx_lat = lat_report.approximate_tiling_unit;
+    Structure approx_unit = slab_unit;
+    approx_unit.set_lattice(approx_lat, xtal::FRAC);
+
+    return MoireStructureReport(lat_report, approx_unit);
 }
 
 MoireStructureReport MoireStructureApproximator::best_smallest(ZONE brillouin, LATTICE lat, double minimum_cost) const
 {
     const auto report = MoireApproximator::best_smallest(brillouin, lat, minimum_cost);
 
-    const auto& approx_lat = report.approximate_tiling_unit;
-    Structure approx_unit = slab_unit;
-    approx_unit.set_lattice(approx_lat, xtal::FRAC);
+    return lattice_report_to_structure_report(report);
+}
 
-    return MoireStructureReport(report, approx_unit);
+std::vector<MoireStructureReport> MoireStructureApproximator::best_of_each_size(ZONE bz, LATTICE layer) const
+{
+    const auto reports = MoireApproximator::best_of_each_size(bz,layer);
+    std::vector<MoireStructureReport> best_of_each;
+    for(const auto& report : reports)
+    {
+        best_of_each.emplace_back(lattice_report_to_structure_report(report));
+    }
+
+    return best_of_each;
 }
 } // namespace mush
 } // namespace casmutils

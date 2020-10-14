@@ -347,13 +347,13 @@ public:
     std::vector<MoireLatticeReport> all(ZONE bz, LATTICE layer) const;
 
     /// Return reports of the best Moire supercell for each size
-    std::vector<MoireLatticeReport> best_of_each_size(ZONE bz) const;
+    std::vector<MoireLatticeReport> best_of_each_size(ZONE bz, LATTICE layer) const;
 
     /// The true Moire lattice, not necessarily commensurate
     const xtal::Lattice& true_moire(ZONE brillouin) const { return moire.moire(brillouin); }
 };
 
-/// Everythin in the MoireLatticeReport, but also has a crystal structure, not just the lattice
+/// Everything in the MoireLatticeReport, but also has a crystal structure, not just the lattice
 struct MoireStructureReport : public MoireLatticeReport
 {
     MoireStructureReport(const MoireLatticeReport& lattice_report, const xtal::Structure& approx_tiling_unit);
@@ -373,12 +373,15 @@ public:
 
     explicit MoireStructureApproximator(const Structure& slab_unit, double degrees, long max_lattice_sites = 0);
 
-    MoireStructureReport best_smallest(ZONE brillouin, LATTICE lat, double minimum_cost = 1e-8) const;
+    MoireStructureReport best_smallest(ZONE brillouin, LATTICE layer, double minimum_cost = 1e-8) const;
+    std::vector<MoireStructureReport> best_of_each_size(ZONE bz, LATTICE layer) const;
 
     using MoireApproximator::expand;
 
 private:
     const Structure slab_unit;
+
+    MoireStructureReport lattice_report_to_structure_report(const MoireLatticeReport& lat_report) const;
 };
 } // namespace mush
 } // namespace casmutils

@@ -570,6 +570,24 @@ TEST_F(GrapheneTwistTest, MoireScelMagicDegreeTwist)
     }
 }
 
+TEST_F(GrapheneTwistTest, RepeatedExpansion)
+{
+    double angle=15.0;
+    cu::mush::MoireApproximator mini_graph_moire(graphene_ptr->lattice(), angle);
+
+    auto all_cells=mini_graph_moire.all(ZONE::ALIGNED,ZONE::ALIGNED);
+    EXPECT_EQ(all_cells.size(),1);
+
+    mini_graph_moire.expand(1000);
+    all_cells=mini_graph_moire.all(ZONE::ALIGNED,ZONE::ALIGNED);
+    int cells_with_1000=all_cells.size();
+
+    mini_graph_moire.expand(1000);
+    all_cells=mini_graph_moire.all(ZONE::ALIGNED,ZONE::ALIGNED);
+
+    EXPECT_EQ(cells_with_1000,all_cells.size());
+}
+
 void spit_rotation_error_data(const cu::xtal::Structure& tile, const std::vector<double>& magic_angles, int max_tiles)
 {
     using ZONE = cu::mush::MoireApproximator::ZONE;
