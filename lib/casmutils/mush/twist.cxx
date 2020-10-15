@@ -498,9 +498,11 @@ MoireApproximator::MoireApproximator(const xtal::Lattice& input_lat, double degr
 
 long MoireApproximator::minimum_lattice_sites(ZONE bz) const
 {
+    const auto& smallest_approximant= enumerated_moire_supercells.at(bz).at(1).at(0).first;
+    return smallest_approximant.approximate_moire_integer_transformations.at(LATTICE::ALIGNED).determinant()+smallest_approximant.approximate_moire_integer_transformations.at(LATTICE::ROTATED).determinant();
+
     double tile_vol = std::abs(moire.input_lattice.volume());
     double moire_vol = std::abs(moire.moire(bz).volume());
-
     return std::lround(2 * moire_vol / tile_vol);
 }
 

@@ -233,6 +233,11 @@ struct MoireLatticeReport
     /* Eigen::Matrix3d approximation_rotation; */
     /// Strain portion of the deformation (polar decomposition)
     /* Eigen::Matrix3d approximation_strain; */
+
+    int num_moirons() const
+    {
+        return true_moire_supercell_matrix.determinant();
+    }
 };
 
 /// Decomposes the defromation matrix into a rotation and deformation matrix.
@@ -299,10 +304,6 @@ private:
     /// Will only work if the c vector doesn't need to be corrected to create the reduced cell.
     xtal::Lattice make_reduced_cell(const xtal::Lattice& lat) const;
 
-    /// Calculates how many lattice sites are needed to construct the aligned and rotated
-    /// unit Moire layers
-    long minimum_lattice_sites(ZONE bz) const;
-
     /// Translates maximum lattice sites to the supercell size of the Moire unit
     int maximum_lattice_sites_to_moire_supercell_size(ZONE bz, long max_lattice_sites) const;
 
@@ -351,6 +352,11 @@ public:
 
     /// The true Moire lattice, not necessarily commensurate
     const xtal::Lattice& true_moire(ZONE brillouin) const { return moire.moire(brillouin); }
+
+    /// Calculates how many lattice sites are needed to construct the aligned and rotated
+    /// smallest possible unit Moire layers
+    long minimum_lattice_sites(ZONE bz) const;
+
 };
 
 /// Everything in the MoireLatticeReport, but also has a crystal structure, not just the lattice
@@ -377,6 +383,7 @@ public:
     std::vector<MoireStructureReport> best_of_each_size(ZONE bz, LATTICE layer) const;
 
     using MoireApproximator::expand;
+    using MoireApproximator::minimum_lattice_sites;
 
 private:
     const Structure slab_unit;
