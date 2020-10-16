@@ -77,5 +77,3 @@ AC_CONFIG_FILES([tests/integration/phony_module_installation.sh])
 AC_CONFIG_FILES([tests/integration/cu-import.py],[chmod +x tests/integration/cu-import.py])
 ####################################################################################
 
-
-AC_OUTPUT

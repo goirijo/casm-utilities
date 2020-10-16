@@ -47,6 +47,7 @@ configure
 config.h*
 *.m4
 *.cache
+configure.ac
 
 #linked external libraries
 include/Eigen

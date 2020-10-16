@@ -28,6 +28,7 @@ AM_CXXFLAGS=\
 AM_CPPFLAGS=\
 			 -I$(srcdir)/include\
 			 -I$(srcdir)/submodules/pybind11/include\
+			 -I$(srcdir)/submodules/nlohmann-json/include\
 			 -I$(srcdir)/submodules/CLI11/include\
 			 -I$(srcdir)/submodules/CASMcode/include\
 			 -I$(srcdir)/submodules/googletest/googletest\
