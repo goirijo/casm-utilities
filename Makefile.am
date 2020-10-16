@@ -45,11 +45,11 @@ AM_CPPFLAGS=\
 #Now do the programs
 #You may comment out any of these lines to suppress parts of the installation process
 include $(srcdir)/lib/Makemodule.am			#utilities library
-include $(srcdir)/src/Makemodule.am			#command line utilities
+include $(srcdir)/src/Makemodule.am			#utilities script for calling plugins
 include $(srcdir)/lib-py/Makemodule.am 		#python library wrappers to utilities library
-# include $(srcdir)/src-py/Makemodule.am	#command line utilities using python modules
 include $(srcdir)/tests/Makemodule.am 		#All types of tests
 
+include $(srcdir)/plugins/Makesocket.am		#command line utilities, or anything else to plug in via git submodule
 
 #===========================================================================#
 var-check:

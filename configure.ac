@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.69])
 AC_INIT([CASM Utilities], [0.0.0], [jgg@ucsb.edu])
-AC_CONFIG_SRCDIR([src/primify/primify.cpp])
+AC_CONFIG_SRCDIR([src/casmutils])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([build-aux/m4])
