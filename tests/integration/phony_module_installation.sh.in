@@ -45,8 +45,17 @@ phony__sym_install()
     softlink_all_here ${compiled_libs_path}/_sym*
 }
 
+phony__mush_install()
+{
+    cd ${phony_path}/casmutils/mush
+    softlink_all_here ${compiled_libs_path}/_mush*
+}
+
 prepare_environment
 phony__xtal_install
 phony__stage_install
 phony__mapping_install
 phony__sym_install
+phony__mush_install
+
+echo "PYTHONPATH is $PYTHONPATH"

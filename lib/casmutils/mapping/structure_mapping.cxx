@@ -3,6 +3,8 @@
 #include <casmutils/mapping/structure_mapping.hpp>
 #include <vector>
 
+#include <casmutils/xtal/structure_tools.hpp>
+#include <casmutils/xtal/symmetry.hpp>
 namespace casmutils
 {
 namespace mapping
@@ -42,10 +44,10 @@ std::vector<sym::CartOp> StructureMapper_f::make_default_factor_group() const
 {
     if (this->settings.use_crystal_symmetry)
     {
-        return CASM::xtal::make_factor_group(this->reference_structure.__get<CASM::xtal::BasicStructure>());
+        return xtal::make_factor_group(reference_structure, this->settings.tol);
     }
 
-    return std::vector<sym::CartOp>{sym::CartOp::identity()};
+    return {sym::CartOp::identity()};
 }
 
 StructureMapper_f::AllowedSpeciesType StructureMapper_f::make_default_allowed_species() const

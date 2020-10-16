@@ -1,8 +1,11 @@
+#include "casmutils/xtal/coordinate.hpp"
 #include <casmutils/definitions.hpp>
 #include <casmutils/exceptions.hpp>
 #include <casmutils/xtal/frankenstein.hpp>
 
+#include <casm/crystallography/Coordinate.hh>
 #include <casm/crystallography/Niggli.hh>
+#include <casm/crystallography/Site.hh>
 #include <casm/crystallography/Structure.hh>
 #include <casm/crystallography/io/VaspIO.hh>
 #include <fstream>
@@ -28,15 +31,75 @@ namespace casmutils
 {
 namespace frankenstein
 {
-void shift_coords_by(xtal::Structure* struc, const Eigen::Vector3d& shift_val)
+xtal::Structure stack(std::vector<xtal::Structure> sub_strucs)
 {
-    throw except::NotImplemented();
-    /* for (auto& item : struc->basis) */
-    /* { */
-    /*     item += CASM::Coordinate(shift_val, struc->lattice(), CASM::FRAC); */
-    /* } */
-    /* bring_coords_within(struc); */
-    /* return; */
+    // TODO:
+    // Assert that ab matches instead of this strain busines??
+    // Even if you don't want to strain it you HAVE to ensure that the ab vectors
+    // are at least aligned properly, or you're going to sum up weird stuff if you
+    // feed structures that have the same ab vectors within a rigid rotation
+    for(auto& s : sub_strucs)
+    {
+        const auto& ref_lat=sub_strucs[0].lattice();
+        const auto& curr_lat=s.lattice();
+        xtal::Lattice compatible_lat(ref_lat.a(),ref_lat.b(),curr_lat.c());
+        s.set_lattice(compatible_lat,xtal::FRAC);
+    }
+
+    // Create a new lattice that has the same ab vectors. but summed up
+    // the c vectors of every structure
+    Eigen::Matrix3d stacked_lat_mat = sub_strucs[0].lattice().column_vector_matrix();
+    for (int i = 1; i < sub_strucs.size(); i++)
+    {
+        const Eigen::Matrix3d& lat_mat = sub_strucs[i].lattice().column_vector_matrix();
+        stacked_lat_mat.col(2) += lat_mat.col(2);
+    }
+
+    // We now have a template lattice with the right shape, we'll put the
+    // sites inside in a second. It already has the basis for the bottom of
+    // the stack
+    xtal::Lattice stacked_lat(stacked_lat_mat);
+    std::vector<xtal::Site> stacked_basis = sub_strucs[0].basis_sites();
+
+    // For each structure we stack, we'll take the basis, shift it up by the
+    // approprate amount, and stick it into our template stacked structure
+    Eigen::Vector3d c_shift = Eigen::Vector3d::Zero();
+    for (int i = 1; i < sub_strucs.size(); i++)
+    {
+        // determine appropriate c-axis shift for position in stacking
+        c_shift += sub_strucs[i-1].lattice().column_vector_matrix().col(2);
+
+        // Shift each site of the basis by the appropriate c shift,
+        // and adds them to the stacked structure
+        for (const xtal::Site& s : sub_strucs[i].basis_sites())
+        {
+            xtal::Coordinate new_coord = xtal::Coordinate(s.cart() + c_shift);
+            stacked_basis.emplace_back(new_coord, s.label());
+        }
+    }
+    return xtal::Structure(stacked_lat, stacked_basis);
+}
+
+std::vector<xtal::Site> translate_basis(const std::vector<xtal::Site>& basis, const Eigen::Vector3d& shift)
+{
+    std::vector<xtal::Site> translated_basis;
+    for (const auto& site : basis)
+    {
+        translated_basis.emplace_back(xtal::Coordinate(site.cart() + shift), site.label());
+    }
+
+    return translated_basis;
+}
+
+xtal::Structure translate_basis(const xtal::Structure& struc, const Eigen::Vector3d& shift)
+{
+    std::vector<xtal::Site> translated_basis;
+    for (const auto& s : struc.basis_sites())
+    {
+        translated_basis.emplace_back(xtal::Coordinate(s.cart() + shift), s.label());
+    }
+
+    return xtal::Structure(struc.lattice(), translated_basis);
 }
 
 std::pair<xtal::Structure, xtal::Structure> slice(const xtal::Structure& big_struc, double slice_loc, double tol)
@@ -145,50 +208,6 @@ std::vector<xtal::Structure> uniformly_slice(const xtal::Structure& big_struc, i
         slice_locs.insert((double)i / (double)n_pieces);
     }
     return multi_slice(big_struc, slice_locs, CASM::TOL);
-}
-
-xtal::Structure stack(const std::vector<xtal::Structure>& sub_strucs)
-{
-    throw except::NotImplemented();
-    /* // Create a new lattice that has the same ab vectors. but summed up */
-    /* // the c vectors of every structure */
-    /* Eigen::Matrix3d stacked_lat_mat = sub_strucs[0].lattice().lat_column_mat(); */
-    /* for (int i = 1; i < sub_strucs.size(); i++) */
-    /* { */
-    /*     Eigen::Matrix3d lat_mat = sub_strucs[i].lattice().lat_column_mat(); */
-    /*     stacked_lat_mat.col(2) = stacked_lat_mat.col(2) + lat_mat.col(2); */
-    /* } */
-    /* CASM::Lattice stacked_lat(stacked_lat_mat); */
-
-    /* // We now have a template structure with the right shape, we'll put the */
-    /* // sites inside in a second. It already has the basis for the bottom of */
-    /* // the stack */
-    /* CASM::Structure stacked_struc(sub_strucs[0]); */
-    /* stacked_struc.set_lattice(stacked_lat, CASM::CART); */
-
-    /* // For each structure we stack, we'll take the basis, shift it up by the */
-    /* // approprate amount, and stick it into our template stacked structure */
-    /* Eigen::Vector3d c_shift = Eigen::Vector3d::Zero(); */
-    /* for (int i = 1; i < sub_strucs.size(); i++) */
-    /* { */
-    /*     // determine appropriate c-axis shift for position in stacking */
-    /*     c_shift = c_shift + sub_strucs[i].lattice().lat_column_mat().col(2); */
-    /*     xtal::Structure cpy_i = sub_strucs[i]; */
-    /*     bring_coords_within(&cpy_i); */
-
-    /*     // Shift each site of the basis by the appropriate c shift, */
-    /*     // and adds them to the stacked structure */
-    /*     for (auto new_site : cpy_i.basis) */
-    /*     { */
-    /*         new_site.cart() += c_shift; */
-    /*         new_site.set_lattice(stacked_lat, CASM::CART); */
-    /*         stacked_struc.basis.push_back(new_site); */
-    /*     } */
-    /* } */
-
-    /* auto rw_struc = xtal::Structure(stacked_struc); */
-    /* bring_coords_within(&rw_struc); */
-    /* return rw_struc; */
 }
 
 xtal::Structure vacuum_pack(const xtal::Structure& big_struc, std::array<bool, 3>& dirs, double padding)

@@ -4,6 +4,7 @@
 #include <pybind11/stl.h>
 
 #include "casmutils/xtal/frankenstein.hpp"
+#include "casmutils/xtal/structure.hpp"
 #include <string>
 
 //******************************************************************************************************//
@@ -13,12 +14,12 @@ namespace wrappy
 {
 using namespace casmutils;
 
-xtal::Structure shift_coords_by(xtal::Structure* struc, const Eigen::Vector3d& shift_val)
-{
-    auto mutable_struc = *struc;
-    frankenstein::shift_coords_by(&mutable_struc, shift_val);
-    return mutable_struc;
-}
+/* xtal::Structure shift_coords_by(xtal::Structure* struc, const Eigen::Vector3d& shift_val) */
+/* { */
+/*     auto mutable_struc = *struc; */
+/*     frankenstein::shift_coords_by(&mutable_struc, shift_val); */
+/*     return mutable_struc; */
+/* } */
 
 PYBIND11_MODULE(_frankenstein, m)
 {
@@ -33,6 +34,7 @@ PYBIND11_MODULE(_frankenstein, m)
     m.def("stack", frankenstein::stack);
     m.def("vacuum_pack", frankenstein::vacuum_pack);
     m.def("inflate", frankenstein::inflate);
-    m.def("shift_coords_by", shift_coords_by);
+    m.def("translate_basis",
+          pybind11::overload_cast<const xtal::Structure&, const Eigen::Vector3d&>(&frankenstein::translate_basis));
 }
 } // namespace wrappy

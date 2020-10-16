@@ -1,0 +1,10 @@
+noinst_LTLIBRARIES += libcasmutils-mush.la
+
+libcasmutils_mush_la_SOURCES=
+libcasmutils_mush_la_SOURCES+=\
+						 lib/casmutils/mush/shift.cxx\
+						 include/casmutils/mush/shift.hpp\
+						 lib/casmutils/mush/slab.cxx\
+						 include/casmutils/mush/slab.hpp\
+						 lib/casmutils/mush/twist.cxx\
+						 include/casmutils/mush/twist.hpp

@@ -36,10 +36,6 @@ std::vector<xtal::Structure> multi_slice(const xtal::Structure& big_struc,
 /// which is perpendicular to the ab plane.
 std::vector<xtal::Structure> uniformly_slice(const xtal::Structure& big_struc, int n_pieces);
 
-/// This function takes a vector of structures with the same ab lattice vectors
-/// and stacks them along the c direction.
-xtal::Structure stack(const std::vector<xtal::Structure>& sub_strucs);
-
 /// This function takes a structure and reduces the lattice boundaries to the
 /// closest atoms to each of the specified boundaries dictated by the vector
 /// dirs. dirs is a vector of bools that indicate whether or not to shrink
@@ -55,8 +51,17 @@ xtal::Structure inflate(const xtal::Structure& struc, const std::array<double, 3
 
 /// This function takes a structures and shifts the origin by shift val
 /// shift val is in fractional coordinates of the lattice
-void shift_coords_by(xtal::Structure* struc, const Eigen::Vector3d& shift_val);
-} // namespace frankenstein
+/* void shift_coords_by(xtal::Structure* struc, const Eigen::Vector3d& shift_val); */
 
+/// Stack a series of structres by adjusting the ab-vectors to match, and then concatenatig
+/// along the c axis
+xtal::Structure stack(std::vector<xtal::Structure> sub_strucs);
+
+/// Translate the given basis by the specified cartesian value
+std::vector<xtal::Site> translate_basis(const std::vector<xtal::Site>& basis, const Eigen::Vector3d& shift);
+
+/// Translate the entire basis of the structure by the specified amount
+xtal::Structure translate_basis(const xtal::Structure& struc, const Eigen::Vector3d& shift);
+} // namespace frankenstein
 } // namespace casmutils
 #endif

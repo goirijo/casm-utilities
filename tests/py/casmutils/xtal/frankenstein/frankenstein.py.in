@@ -1,0 +1,38 @@
+#!@PYTHON@
+
+import unittest
+import numpy as np
+import casmutils as cu
+import os
+
+input_file_dir = "@abs_top_srcdir@/tests/input_files"
+
+
+class FrankensteinTest(unittest.TestCase):
+    def setUp(self):
+        struc_path = os.path.join(input_file_dir, "triple_fcc.vasp")
+        self.struc = cu.xtal.Structure.from_poscar(struc_path)
+
+    def test_translate_basis(self):
+        frac_shift = np.array([0.1, 0.2, 0.3])
+        shift = cu.xtal.Coordinate.from_fractional(frac_shift,
+                                                   self.struc.lattice())
+
+        shifted = cu.xtal.frankenstein.translate_basis(self.struc,
+                                                       shift.cart())
+
+        for st, sh in zip(self.struc.basis_sites(), shifted.basis_sites()):
+            #TODO: Not being able to add values to Site is annoying
+            self.assertEqual(
+                cu.xtal.Site(st.cart() + shift.cart(), st.label()), sh)
+
+    def test_stack(self):
+        stacked_struc = cu.xtal.frankenstein.stack(
+            [self.struc, self.struc, self.struc])
+        self.assertEqual(
+            len(self.struc.basis_sites()) * 3,
+            len(stacked_struc.basis_sites()))
+
+
+if __name__ == '__main__':
+    unittest.main()
