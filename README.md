@@ -15,33 +15,47 @@ casm-utilities uses autotools to build and install everything, so if you're inst
 These should all be readily available via `brew` and `apt-get`.
 
 ### Installation
-The repository comes with three main components:
+The repository comes with two main components:
 
 * The utilities library (c++)
-* A collection of command line utilities
 * Python wrappers for the c++ utilities library
 
-Though it is recommended to simply install all three simultaneously, you can toggle any of these components out of the installation process by commenting out the appropriate line `Makemfile.am`.
+Though it is recommended to simply install both simultaneously, you can toggle any of these components out of the installation process by commenting out the appropriate line `Makemfile.am`.
 
-#### Cloning and generate the configure script
+There are also certain utilities available that use these libraries, which are no longer hosted on this repository.
+Each utility exists in an independent module, which can be plugged into the build, as described below.
+
+#### Cloning the repository
 This repository includes a few submodules that are needed in order to fully compile everything.
 If you plan on cloning the repository, be sure to do it recursively:
-```
+```bash
 git clone --recurse-submodules
 ```
 
-You should be mindful when switching branches as well, since `casm-utitlities` is currently transitioning towards the latest `CASM` release, and differnt branches are on different submodule commits.
+You should be mindful when switching branches as well, since differnt branches may be on different submodule commits.
 When checking out a different branch, remember to follow with
-```
+```bash
 git submodule update
 ```
 or possibly
-```
+```bash
 git submodule update --init
 ```
 
-If you're trying to install after cloning the git repository, you'll first have to generate the `configure` script using the provided script:
+#### Preparing plugins for compilation
+When [properly structured](https://github.com/goirijo/casm-utilities-plugin/blob/main/README.md), independent repositories can piggy back onto the build chain, and be linked agains the `casm-utilities` library.
+To install a plugin, simply clone its repository inside the `plugins` directory, *before* beginning the compilation steps outlined below.
+
+For example, the [`primify`](https://github.com/goirijo/casm-utilities-primify) plugin can be targeted for compilation with:
+```bash
+cd plugins
+git clone https://github.com/goirijo/casm-utilities-primify
 ```
+
+#### Generating the configure script
+Once you've cloned the repository, and also the repository of any plugins you want to install, you'll have to generate the `configure` script.
+You can do this with:
+```bash
 ./boostrap.sh
 ```
 
@@ -50,7 +64,7 @@ Skip this section entirely if you're familiar with the standard `./configure && 
 If you're unsure what do do, just follow the recommended steps here.
 
 Begin by creating a build directory, this is where all the compilation will take place:
-```
+```bash
 mkdir build
 cd build
 ```
@@ -60,18 +74,17 @@ This is the step where you get to specify any compilation flags you might want, 
 You can bypass the need for admin privileges by using the `--prefix` option (recommended): `--prefix=$HOME/.local`
 
 Once you're set on what flags you need, put it all together to run the configure script:
-```
+```bash
 ../configure --prefix=$HOME/.local CXXFLAGS='-Any-flags -You -Might-want'    
 ```
 Note that the python modules have been written for `python3`. If your default python version is still lagging, you'll have to specify `PYTHON_VERSION` during the configure step above. An example of what the configure step could look like:
-```
+```bash
 CXX=g++-8 PYTHON_VERSION=3.6 ../configure --prefix=$HOME/.local CXXFLAGS='-O3 -DNDEBUG'    
 ```
 
-
 For more information on the configure step, see the documentation by calling `../configure -h`.
 
-#### Make and install casm-utilities
+#### Make and install casm-utilities/plugins
 This one is easy:
 ```
 make && make install
