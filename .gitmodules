@@ -2,14 +2,17 @@
 	path = CASMcode
 	url = https://github.com/prisms-center/CASMcode
 [submodule "pybind11"]
-	path = pybind11
+	path = submodules/pybind11
 	url = https://github.com/pybind/pybind11
 [submodule "CASMcode-dev"]
-	path = CASMcode-dev
+	path = submodules/CASMcode-dev
 	url = git@github.com:goirijo/CASMcode-dev.git
 [submodule "googletest"]
-	path = googletest
+	path = submodules/googletest
 	url = git@github.com:google/googletest.git
 [submodule "CLI11"]
-	path = CLI11
+	path = submodules/CLI11
 	url = git@github.com:CLIUtils/CLI11.git
+[submodule "nlohmann-json"]
+	path = submodules/nholmann-json
+	url = git@github.com:nlohmann/json.git

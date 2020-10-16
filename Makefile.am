@@ -27,15 +27,15 @@ AM_CXXFLAGS=\
 
 AM_CPPFLAGS=\
 			 -I$(srcdir)/include\
-			 -I$(srcdir)/pybind11/include\
-			 -I$(srcdir)/CLI11/include\
-			 -I$(srcdir)/CASMcode/include\
-			 -I$(srcdir)/googletest/googletest\
-			 -I$(srcdir)/googletest/googletest/include\
-			 -I$(srcdir)/CASMcode/include/casm/external\
-			 -I$(srcdir)/CASMcode/include/casm/external/qhull/libqhullcpp\
-			 -I$(srcdir)/CASMcode/include/casm/external/qhull/libqhull_r\
-			 -I$(srcdir)/CASMcode/include/casm/external/gzstream\
+			 -I$(srcdir)/submodules/pybind11/include\
+			 -I$(srcdir)/submodules/CLI11/include\
+			 -I$(srcdir)/submodules/CASMcode/include\
+			 -I$(srcdir)/submodules/googletest/googletest\
+			 -I$(srcdir)/submodules/googletest/googletest/include\
+			 -I$(srcdir)/submodules/CASMcode/include/casm/external\
+			 -I$(srcdir)/submodules/CASMcode/include/casm/external/qhull/libqhullcpp\
+			 -I$(srcdir)/submodules/CASMcode/include/casm/external/qhull/libqhull_r\
+			 -I$(srcdir)/submodules/CASMcode/include/casm/external/gzstream\
 			 $(PYTHON_CPPFLAGS)\
 			 -DABS_SRCDIR=\"$(abs_srcdir)\"\
 			 -DABS_TOP_BUILDDIR=\"$(abs_top_builddir)\"
