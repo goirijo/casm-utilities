@@ -18,6 +18,21 @@ public:
     /// Construct lattice by specifying each individual vector
     Lattice(const Eigen::Vector3d& a, const Eigen::Vector3d& b, const Eigen::Vector3d& c);
 
+    /// Constructing lattice by specifying lattice parameters
+    /// Since there can be many lattices which can be constructed using the given lattice paramters,
+    /// the following asssumptions are made:
+    /// z-axis is aligned with "c" vector and "a" vector lies in the x-z plane
+    /// The values of angles should be provided in degrees
+    /// alpha - angle between b & c
+    /// beta - angle between c & a
+    /// gamma - angle between a & b
+    static Lattice from_lattice_parameters(const double& a,
+                                           const double& b,
+                                           const double& c,
+                                           const double& alpha,
+                                           const double& beta,
+                                           const double& gamma);
+
     // TODO: Read up on Eigen::Matrix3d::ColXpr and decide if you prefer this. CASM does it this way.
     /// Return the ith vector of the lattice
     Eigen::Vector3d operator[](int i) const { return this->__get()[i]; }

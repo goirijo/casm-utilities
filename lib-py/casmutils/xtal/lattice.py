@@ -182,3 +182,34 @@ class Lattice(_xtal.Lattice):
 
         """
         return self.__str__()
+
+    @classmethod
+    def from_lattice_parameters(cls, a, b, c, alpha, beta, gamma):
+        """Constructs lattice from lattice parameters. Since 
+        there can be many possible lattices for the given lattice 
+        parameters, it is issumed that "c" lattice vector will be 
+        aligned with z-axis and "a" vector will be in x-z plane.
+        All the angles should be provided in degrees.
+    
+        Mathematical expressions for lattice vectors used are:
+        "a" = [a*sin(beta), 0, a*cos(beta)],
+        "b" = [b*b_x, b*b_y, b*cos(alpha)]
+        where b_x = {cos(gamma) - cos(alpha)*cos(beta)} / sin(beta) and
+        b_y = sqrt{sin(alpha)^2 - b_x^2}
+        "c" = [0, 0, c]
+        
+        Parameters
+        ----------
+        a : double
+        b : double
+        c : double
+        alpha : double (angle between "b" & "c" in degrees) 
+        beta : double (angle between "c" & "a" in degrees)
+        gamma : double (angle between "a" & "b" in degrees)
+
+        Returns
+        -------
+        Lattice
+
+        """
+        return cls._from_lattice_parameters(a, b, c, alpha, beta, gamma)
