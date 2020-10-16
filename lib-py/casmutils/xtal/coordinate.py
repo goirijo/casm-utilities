@@ -105,7 +105,7 @@ class _Coordinate:
 
         Returns
         -------
-        cls
+        Coordinate
 
         """
         py_binded = _xtal.Coordinate.from_fractional(coords, lat)

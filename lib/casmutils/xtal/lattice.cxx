@@ -2,6 +2,7 @@
 #include <casm/misc/CASM_Eigen_math.hh>
 #include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/xtal/lattice.hpp>
+#include <cmath>
 
 #include <casm/crystallography/LatticeIsEquivalent.hh>
 
@@ -34,6 +35,32 @@ Lattice::Lattice(const Eigen::Matrix3d& column_lat_mat) : casm_lattice(column_la
 Lattice::Lattice(const Eigen::Vector3d& a, const Eigen::Vector3d& b, const Eigen::Vector3d& c)
     : Lattice(Lattice::stack_column_vectors(a, b, c))
 {
+}
+
+Lattice Lattice::from_lattice_parameters(
+    const double& a, const double& b, const double& c, const double& alpha, const double& beta, const double& gamma)
+{
+    // Convert angles to radians
+    double alpha_rad = (alpha * M_PI) / 180.;
+    double beta_rad = (beta * M_PI) / 180.;
+    double gamma_rad = (gamma * M_PI) / 180.;
+
+    // Compute sins and cosines
+    double cos_alpha = std::cos(alpha_rad);
+    double cos_beta = std::cos(beta_rad);
+    double cos_gamma = std::cos(gamma_rad);
+    double sin_alpha = std::sin(alpha_rad);
+    double sin_beta = std::sin(beta_rad);
+    double sin_gamma = std::sin(gamma_rad);
+
+    Eigen::Vector3d a_vec{a * sin_beta, 0, a * cos_beta};
+    Eigen::Vector3d c_vec{0, 0, c};
+
+    double b_x = (cos_gamma - cos_alpha * cos_beta) / sin_beta;
+    double b_y = std::sqrt((sin_alpha * sin_alpha) - (b_x * b_x));
+    Eigen::Vector3d b_vec{b * b_x, b * b_y, b * cos_alpha};
+
+    return Lattice(a_vec, b_vec, c_vec);
 }
 
 Eigen::Matrix3d

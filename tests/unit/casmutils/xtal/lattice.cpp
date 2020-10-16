@@ -59,6 +59,23 @@ TEST_F(LatticeTest, ContructByVector)
     EXPECT_TRUE(lat_by_vector->c() == c);
 }
 
+TEST_F(LatticeTest, ConstructByParams)
+{
+    double aa = 7.282;
+    double bb = 7.317;
+    double cc = 6.104;
+
+    double alpha = 90.;
+    double beta = 122.891;
+    double gamma = 90.;
+
+    Lattice lat = Lattice::from_lattice_parameters(aa, bb, cc, alpha, beta, gamma);
+    Eigen::Matrix3d expected_lat;
+    expected_lat << 6.114733, 0, -3.954436, 0, 7.317, 0, 0, 0, 6.104;
+
+    EXPECT_TRUE(expected_lat.isApprox(lat.row_vector_matrix(), tol));
+}
+
 TEST_F(LatticeTest, ColumnMatrixCheck)
 {
     Eigen::Matrix3d column_matrix = lat_by_vector->column_vector_matrix();
