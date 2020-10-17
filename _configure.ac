@@ -1,14 +1,18 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
+######################################################################
 AC_PREREQ([2.69])
-AC_INIT([CASM Utilities], [0.0.0], [jgg@ucsb.edu])
+AC_INIT([CASM Utilities], [0.1.0], [jgg@ucsb.edu])
 AC_CONFIG_SRCDIR([src/casmutils])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([build-aux/m4])
 AM_INIT_AUTOMAKE([subdir-objects])
 
+######################################################################
+
+######################################################################
 #We'll be making shared libraries that call shared libraries    #You sure about that chief? I think we're doing static. Try deleting this
 LT_INIT
 
@@ -16,16 +20,46 @@ LT_INIT
 AC_PROG_CXX
 AX_CXX_COMPILE_STDCXX_17
 
-# By default, aborts if no suitable Python is found:
-AM_PATH_PYTHON([3.4])
-# Will assume the Python interpreter previously identified by AM_PATH_PYTHON:
-AX_PYTHON_DEVEL
+######################################################################
+AC_ARG_ENABLE([casmutils-python],
+              AS_HELP_STRING([--disable-casmutils-python],[Do not install casmutils python module.]),
+              [case "${enableval}" in
+                   yes) casmutils_python=false ;;
+                   no) casmutils_python=true ;;
+                   *) AC_MSG_ERROR([Bad value ${enableval} for --disable-casmutils-python]) ;;
+               esac],
+               [casmutils_python=true])
 
+
+# By default, aborts if no suitable Python is found:
+# Will assume the Python interpreter previously identified by AM_PATH_PYTHON:
+AS_IF([test "x$enable_casmutils_python" != "xno"], [
+AM_PATH_PYTHON([3.4])
+AX_PYTHON_DEVEL
+])
+
+AM_CONDITIONAL([CASMUTILS_PYTHON],[test x$enable_casmutils_python != "xno"])
+
+######################################################################
+AC_ARG_ENABLE([plugins],
+              AS_HELP_STRING([--disable-plugins],[No plugins, only libraries and modules.]),
+              [case "${enableval}" in
+                   yes) plugins=false ;;
+                   no) plugins=true ;;
+                   *) AC_MSG_ERROR([Bad value ${enableval} for --disable-plugins]) ;;
+               esac],
+               [plugins=true])
+
+AM_CONDITIONAL([WITH_PLUGINS],[test x$enable_plugins != "xno"])
+
+######################################################################
 # Checks for libraries.
 AX_CHECK_ZLIB([],AC_MSG_ERROR(zlib library not found!))
 AX_PTHREAD([],AC_MSG_WARN(pthread is required to run tests!))
 
 AC_SEARCH_LIBS(dlopen, dl, [], AC_MSG_ERROR(dl library not found!))
+
+######################################################################
 # AC_SEARCH_LIBS(std::filesystem::status_known,stdc++fs,[], AC_MSG_ERROR(stdc++fs not found!),[])
 
 # Why is this such a pain in the butt? I just want to -lstdc++fs, I could be doing this in the
@@ -58,6 +92,8 @@ else
     AC_MSG_ERROR("libstdc++fs library not found!)
 fi
 
+######################################################################
+
 AC_CONFIG_FILES([Makefile])
 
 ##############Prepares all tests scripts related to python modules################# 
@@ -75,5 +111,6 @@ AC_CONFIG_FILES([tests/py/casmutils/xtal/frankenstein/frankenstein.py],[chmod +x
 
 AC_CONFIG_FILES([tests/integration/phony_module_installation.sh])
 AC_CONFIG_FILES([tests/integration/cu-import.py],[chmod +x tests/integration/cu-import.py])
-####################################################################################
+
+###############################PLUGIN SECTIONS BELOW################################
 

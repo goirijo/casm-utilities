@@ -47,10 +47,14 @@ AM_CPPFLAGS=\
 #You may comment out any of these lines to suppress parts of the installation process
 include $(srcdir)/lib/Makemodule.am			#utilities library
 include $(srcdir)/src/Makemodule.am			#utilities script for calling plugins
-include $(srcdir)/lib-py/Makemodule.am 		#python library wrappers to utilities library
+if CASMUTILS_PYTHON
+	include $(srcdir)/lib-py/Makemodule.am 		#python library wrappers to utilities library
+endif
 include $(srcdir)/tests/Makemodule.am 		#All types of tests
 
-include $(srcdir)/plugins/Makesocket.am		#command line utilities, or anything else to plug in via git submodule
+if WITH_PLUGINS
+	include $(srcdir)/plugins/Makesocket.am		#CLIe utilities, or anything else to plug in via submodule
+endif
 
 #===========================================================================#
 var-check:
@@ -70,7 +74,9 @@ var-check:
 	echo $(AM_V_CXX)
 	echo $(CXXCOMPILE)
 	echo $(DEPDIR)
+	echo $(CASMUTILS_PYTHON)
 	echo "lol"
+
 
 soft-clean:
 	make clean-libtool
