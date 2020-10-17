@@ -48,12 +48,12 @@ AM_CPPFLAGS=\
 include $(srcdir)/lib/Makemodule.am			#utilities library
 include $(srcdir)/src/Makemodule.am			#utilities script for calling plugins
 if CASMUTILS_PYTHON
-	include $(srcdir)/lib-py/Makemodule.am 		#python library wrappers to utilities library
+include $(srcdir)/lib-py/Makemodule.am 		#python library wrappers to utilities library
 endif
 include $(srcdir)/tests/Makemodule.am 		#All types of tests
 
 if WITH_PLUGINS
-	include $(srcdir)/plugins/Makesocket.am		#CLIe utilities, or anything else to plug in via submodule
+include $(srcdir)/plugins/Makesocket.am		#CLIe utilities, or anything else to plug in via submodule
 endif
 
 #===========================================================================#
@@ -74,7 +74,7 @@ var-check:
 	echo $(AM_V_CXX)
 	echo $(CXXCOMPILE)
 	echo $(DEPDIR)
-	echo $(CASMUTILS_PYTHON)
+	echo $(OUTSIDE)
 	echo "lol"
 
 
