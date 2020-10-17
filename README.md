@@ -52,7 +52,7 @@ cd plugins
 git clone https://github.com/goirijo/casm-utilities-primify
 ```
 
-If your plugin depends on unstable library features, or is reaching directly into `casm` for calls, it's highly recommended you install without shared linking (`--disable-shared` at the configure step).
+If your plugin depends on unstable library features, or is reaching directly into `casm` for calls, it's highly recommended you install without shared linking (`--disable-shared` at the configure step). If you have cloned plugins but want to supress their compilation, you can use the `--disable-plugins` flag during the configure step. 
 
 ### Generating the configure script
 Once you've cloned the repository, and also the repository of any plugins you want to install, you'll have to generate the `configure` script.
