@@ -26,7 +26,6 @@ libcasmblob_la_SOURCES=\
     submodules/CASMcode/include/casm/crystallography/Lattice.hh\
     submodules/CASMcode/include/casm/crystallography/LatticeIsEquivalent.hh\
     submodules/CASMcode/include/casm/crystallography/LatticeMap.hh\
-    submodules/CASMcode/include/casm/crystallography/Lattice_impl.hh\
     submodules/CASMcode/include/casm/crystallography/LinearIndexConverter.hh\
     submodules/CASMcode/include/casm/crystallography/Molecule.hh\
     submodules/CASMcode/include/casm/crystallography/Niggli.hh\
