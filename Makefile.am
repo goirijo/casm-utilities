@@ -16,10 +16,7 @@ TESTS=
 BUILT_SOURCES=
 
 #Completely overkill, but we want the copyright files too
-EXTRA_DIST=\
-		   cxxopts\
-		   CASMcode\
-		   googletest
+EXTRA_DIST=submodules
 
 AM_CXXFLAGS=\
 			  -DEIGEN_DEFAULT_DENSE_INDEX_TYPE=long\

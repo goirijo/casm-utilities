@@ -5,7 +5,7 @@
 	path = submodules/pybind11
 	url = https://github.com/pybind/pybind11
 [submodule "CASMcode-dev"]
-	path = submodules/CASMcode-dev
+	path = submodules/CASMcode
 	url = git@github.com:goirijo/CASMcode-dev.git
 [submodule "googletest"]
 	path = submodules/googletest
