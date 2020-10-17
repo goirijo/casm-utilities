@@ -1,6 +1,8 @@
 TESTS+=check_mapping_structure_mapping
 check_PROGRAMS += check_mapping_structure_mapping
-check_mapping_structure_mapping_SOURCES = tests/unit/casmutils/mapping/structure_mapping.cpp
+check_mapping_structure_mapping_SOURCES =\
+										 tests/unit/casmutils/mapping/structure_mapping.cpp\
+										 tests/autotools.hh
 check_mapping_structure_mapping_LDADD=\
 					libgtest.la\
 					libcasmutils.la
