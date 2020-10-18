@@ -1,0 +1,4 @@
+casmutils_mapping_includedir=$(includedir)/casmutils/mapping
+casmutils_mapping_include_HEADERS=\
+						  include/casmutils/mapping/structure_mapping.hpp
+

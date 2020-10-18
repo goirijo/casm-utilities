@@ -1,0 +1,10 @@
+casmutils_xtal_includedir=$(includedir)/casmutils/xtal
+casmutils_xtal_include_HEADERS=\
+						  include/casmutils/xtal/coordinate.hpp\
+						  include/casmutils/xtal/lattice.hpp\
+						  include/casmutils/xtal/structure.hpp\
+						  include/casmutils/xtal/symmetry.hpp\
+						  include/casmutils/xtal/frankenstein.hpp\
+						  include/casmutils/xtal/site.hpp\
+						  include/casmutils/xtal/structure_tools.hpp
+

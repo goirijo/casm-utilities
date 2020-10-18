@@ -1,0 +1,10 @@
+casmutils_includedir=$(includedir)/casmutils
+casmutils_include_HEADERS=\
+						  include/casmutils/definitions.hpp\
+						  include/casmutils/exceptions.hpp\
+						  include/casmutils/misc.hpp
+
+include include/casmutils/mapping/Makemodule.am
+include include/casmutils/mush/Makemodule.am
+include include/casmutils/sym/Makemodule.am
+include include/casmutils/xtal/Makemodule.am

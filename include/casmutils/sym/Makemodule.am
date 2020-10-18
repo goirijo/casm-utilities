@@ -1,0 +1,4 @@
+casmutils_sym_includedir=$(includedir)/casmutils/sym
+casmutils_sym_include_HEADERS=\
+						  include/casmutils/sym/cartesian.hpp
+
