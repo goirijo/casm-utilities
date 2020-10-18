@@ -8,3 +8,5 @@ AM_TESTS_ENVIRONMENT= \
 					  PYTHONPATH=${abs_top_builddir}/tests/integration/_python_modules:$PYTHONPATH
 endif
 
+EXTRA_DIST += tests/input_files
+EXTRA_DIST += tests/output_files/test.txt
