@@ -82,32 +82,33 @@ AC_SEARCH_LIBS(dlopen, dl, [], AC_MSG_ERROR(dl library not found!))
 # Why is this such a pain in the butt? I just want to -lstdc++fs, I could be doing this in the
 # Makefile, but instead I'm following this example:
 # https://github.com/LibreOffice/online/blob/master/configure.ac
-AC_MSG_CHECKING(for std::filesystem features in -lstdc++fs)
-STD_FILESYSTEM=
-    save_CXXFLAGS=$CXXFLAGS
-    CXXFLAGS="$CXXFLAGS -Werror"
-    save_LIBS=$LIBS
-    LIBS="$save_LIBS -lstdc++fs"
-    AC_LANG_PUSH([C++])
-    AC_LINK_IFELSE([AC_LANG_SOURCE([[
-            #include <filesystem>
-            int main()
-            {
-                if (!std::filesystem::temp_directory_path().empty())
-                    return 0;
-                return 1;
-            }
-            ]])],[STD_FILESYSTEM=TRUE], AC_MSG_ERROR(stdc++fs not found!))
-    AC_LANG_POP([C++])
-    CXXFLAGS=$save_CXXFLAGS
-    LIBS=$save_LIBS
+#Commented out because I think you don't need the -lstd++fs flag anymore
+#AC_MSG_CHECKING(for std::filesystem features in -lstdc++fs)
+#STD_FILESYSTEM=
+#    save_CXXFLAGS=$CXXFLAGS
+#    CXXFLAGS="$CXXFLAGS -Werror"
+#    save_LIBS=$LIBS
+#    LIBS="$save_LIBS -lstdc++fs"
+#    AC_LANG_PUSH([C++])
+#    AC_LINK_IFELSE([AC_LANG_SOURCE([[
+#            #include <filesystem>
+#            int main()
+#            {
+#                if (!std::filesystem::temp_directory_path().empty())
+#                    return 0;
+#                return 1;
+#            }
+#            ]])],[STD_FILESYSTEM=TRUE], AC_MSG_ERROR(stdc++fs not found!))
+#    AC_LANG_POP([C++])
+#    CXXFLAGS=$save_CXXFLAGS
+#    LIBS=$save_LIBS
 
-if test -n "$STD_FILESYSTEM" ; then
-    LIBS="$LIBS -lstdc++fs"
-    AC_MSG_RESULT(yes)
-else
-    AC_MSG_ERROR("libstdc++fs library not found!)
-fi
+#if test -n "$STD_FILESYSTEM" ; then
+#    LIBS="$LIBS -lstdc++fs"
+#    AC_MSG_RESULT(yes)
+#else
+#    AC_MSG_ERROR("libstdc++fs library not found!)
+#fi
 
 ######################################################################
 
