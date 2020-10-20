@@ -1,0 +1,6 @@
+casmutils_mush_includedir=$(includedir)/casmutils/mush
+casmutils_mush_include_HEADERS=\
+						  include/casmutils/mush/shift.hpp\
+						  include/casmutils/mush/slab.hpp\
+						  include/casmutils/mush/twist.hpp
+

@@ -16,10 +16,7 @@ TESTS=
 BUILT_SOURCES=
 
 #Completely overkill, but we want the copyright files too
-EXTRA_DIST=\
-		   cxxopts\
-		   CASMcode\
-		   googletest
+EXTRA_DIST=submodules
 
 AM_CXXFLAGS=\
 			  -DEIGEN_DEFAULT_DENSE_INDEX_TYPE=long\
@@ -27,15 +24,16 @@ AM_CXXFLAGS=\
 
 AM_CPPFLAGS=\
 			 -I$(srcdir)/include\
-			 -I$(srcdir)/pybind11/include\
-			 -I$(srcdir)/CLI11/include\
-			 -I$(srcdir)/CASMcode/include\
-			 -I$(srcdir)/googletest/googletest\
-			 -I$(srcdir)/googletest/googletest/include\
-			 -I$(srcdir)/CASMcode/include/casm/external\
-			 -I$(srcdir)/CASMcode/include/casm/external/qhull/libqhullcpp\
-			 -I$(srcdir)/CASMcode/include/casm/external/qhull/libqhull_r\
-			 -I$(srcdir)/CASMcode/include/casm/external/gzstream\
+			 -I$(srcdir)/submodules/pybind11/include\
+			 -I$(srcdir)/submodules/nlohmann-json/include\
+			 -I$(srcdir)/submodules/CLI11/include\
+			 -I$(srcdir)/submodules/CASMcode/include\
+			 -I$(srcdir)/submodules/googletest/googletest\
+			 -I$(srcdir)/submodules/googletest/googletest/include\
+			 -I$(srcdir)/submodules/CASMcode/include/casm/external\
+			 -I$(srcdir)/submodules/CASMcode/include/casm/external/qhull/libqhullcpp\
+			 -I$(srcdir)/submodules/CASMcode/include/casm/external/qhull/libqhull_r\
+			 -I$(srcdir)/submodules/CASMcode/include/casm/external/gzstream\
 			 $(PYTHON_CPPFLAGS)\
 			 -DABS_SRCDIR=\"$(abs_srcdir)\"\
 			 -DABS_TOP_BUILDDIR=\"$(abs_top_builddir)\"
@@ -45,11 +43,18 @@ AM_CPPFLAGS=\
 #Now do the programs
 #You may comment out any of these lines to suppress parts of the installation process
 include $(srcdir)/lib/Makemodule.am			#utilities library
-include $(srcdir)/src/Makemodule.am			#command line utilities
-include $(srcdir)/lib-py/Makemodule.am 		#python library wrappers to utilities library
-# include $(srcdir)/src-py/Makemodule.am	#command line utilities using python modules
-include $(srcdir)/tests/Makemodule.am 		#All types of tests
+include $(srcdir)/include/Makemodule.am		#utilities headers
 
+if CASMUTILS_PYTHON
+include $(srcdir)/lib-py/Makemodule.am 		#python library wrappers to utilities library
+endif
+
+if WITH_PLUGINS
+include $(srcdir)/src/Makemodule.am			#utilities script for calling plugins
+include $(srcdir)/plugins/Makesocket.am		#CLIe utilities, or anything else to plug in via submodule
+endif
+
+include $(srcdir)/tests/Makemodule.am 		#All types of tests
 
 #===========================================================================#
 var-check:
@@ -69,7 +74,9 @@ var-check:
 	echo $(AM_V_CXX)
 	echo $(CXXCOMPILE)
 	echo $(DEPDIR)
+	echo $(OUTSIDE)
 	echo "lol"
+
 
 soft-clean:
 	make clean-libtool

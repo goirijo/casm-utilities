@@ -10,9 +10,7 @@ libcasmutils_la_SOURCES+=\
 						 lib/casmutils/stage.cxx\
 						 include/casmutils/stage.hpp\
 						 lib/casmutils/misc.cxx\
-						 include/casmutils/misc.hpp\
-						 lib/casmutils/handlers.cxx\
-						 include/casmutils/handlers.hpp
+						 include/casmutils/misc.hpp
 
 libcasmutils_la_LIBADD=\
 					   libcasmblob.la\

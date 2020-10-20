@@ -1,6 +1,6 @@
 dist_bin_SCRIPTS+=src/casmutils
 
-include src/primify/Makemodule.am
+# include src/primify/Makemodule.am
 # include src/super_structure/Makemodule.am
 # include src/apply_strain/Makemodule.am
 # include src/frankenslice/Makemodule.am
@@ -10,4 +10,4 @@ include src/primify/Makemodule.am
 # include src/inflate/Makemodule.am
 # include src/struc_score/Makemodule.am
 # include src/super_boxy/Makemodule.am
-include src/stage/Makemodule.am
+# include src/stage/Makemodule.am

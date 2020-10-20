@@ -1,6 +1,8 @@
 TESTS+=check_xtal_coordinate
 check_PROGRAMS += check_xtal_coordinate
-check_xtal_coordinate_SOURCES = tests/unit/casmutils/xtal/coordinate.cpp
+check_xtal_coordinate_SOURCES =\
+							   tests/unit/casmutils/xtal/coordinate.cpp\
+							   tests/autotools.hh
 check_xtal_coordinate_LDADD=\
 					libgtest.la\
 					libcasmutils.la
@@ -24,21 +26,27 @@ check_xtal_lattice_LDADD=\
 
 TESTS+=check_xtal_structure
 check_PROGRAMS += check_xtal_structure
-check_xtal_structure_SOURCES = tests/unit/casmutils/xtal/structure.cpp
+check_xtal_structure_SOURCES =\
+							  tests/unit/casmutils/xtal/structure.cpp\
+							  tests/autotools.hh
 check_xtal_structure_LDADD=\
 					libgtest.la\
 					libcasmutils.la
 
 TESTS+=check_xtal_structure_tools
 check_PROGRAMS += check_xtal_structure_tools
-check_xtal_structure_tools_SOURCES = tests/unit/casmutils/xtal/structure_tools.cpp
+check_xtal_structure_tools_SOURCES =\
+									tests/unit/casmutils/xtal/structure_tools.cpp\
+									tests/autotools.hh
 check_xtal_structure_tools_LDADD=\
 					libgtest.la\
 					libcasmutils.la
 
 TESTS+=check_xtal_symmetry
 check_PROGRAMS += check_xtal_symmetry
-check_xtal_symmetry_SOURCES = tests/unit/casmutils/xtal/symmetry.cpp
+check_xtal_symmetry_SOURCES =\
+							 tests/unit/casmutils/xtal/symmetry.cpp\
+							 tests/autotools.hh
 check_xtal_symmetry_LDADD=\
 					libgtest.la\
 					libcasmutils.la
