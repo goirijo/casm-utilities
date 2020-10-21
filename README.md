@@ -3,7 +3,7 @@ A collection of utilities that make use of the [CASM](https://github.com/prisms-
 
 ## Prerequisites 
 This project relies heavily on sections of [CASM](https://github.com/prisms-center/CASMcode), which will be internally compiled.
-You will need a compiler with `c++17` support (at least `g++-8`, or `clang-6`).
+You will need a compiler with `c++17` support (at least `g++-9`, or `clang-10`).
 
 casm-utilities uses autotools to build and install everything, so if you're installing via git cloning, a few additional packages might need to be installed on your computer:
 
