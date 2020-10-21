@@ -3,7 +3,11 @@ include lib/casmutils/sym/Makemodule.am
 include lib/casmutils/mapping/Makemodule.am
 include lib/casmutils/mush/Makemodule.am
 
+if CASMUTILS_LIBRARY
 lib_LTLIBRARIES += libcasmutils.la
+else
+noinst_LTLIBRARIES += libcasmutils.la
+endif
 
 libcasmutils_la_SOURCES=
 libcasmutils_la_SOURCES+=\

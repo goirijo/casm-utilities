@@ -21,14 +21,14 @@ AC_PROG_CXX
 AX_CXX_COMPILE_STDCXX_17
 
 ######################################################################
-AC_ARG_ENABLE([casmutils-python],
-              AS_HELP_STRING([--disable-casmutils-python],[Do not install casmutils python module.]),
+AC_ARG_ENABLE([python],
+              AS_HELP_STRING([--disable-python],[Do not install casmutils python module.]),
               [case "${enableval}" in
-                   yes) casmutils_python=false ;;
-                   no) casmutils_python=true ;;
-                   *) AC_MSG_ERROR([Bad value ${enableval} for --disable-casmutils-python]) ;;
+                   yes) python=false ;;
+                   no) python=true ;;
+                   *) AC_MSG_ERROR([Bad value ${enableval} for --disable-python]) ;;
                esac],
-               [casmutils_python=true])
+               [python=true])
 
 
 # By default, aborts if no suitable Python is found:
@@ -39,6 +39,19 @@ AX_PYTHON_DEVEL
 ])
 
 AM_CONDITIONAL([CASMUTILS_PYTHON],[test x$enable_casmutils_python != "xno"])
+
+######################################################################
+AC_ARG_ENABLE([library],
+              AS_HELP_STRING([--disable-library],[Do not build casmutils as a shared library.]),
+              [case "${enableval}" in
+                   yes) library=false ;;
+                   no) library=true ;;
+                   *) AC_MSG_ERROR([Bad value ${enableval} for --disable-library]) ;;
+               esac],
+               [library=true])
+
+
+AM_CONDITIONAL([CASMUTILS_LIBRARY],[test x$enable_library != "xno"])
 
 ######################################################################
 # Add debug support
