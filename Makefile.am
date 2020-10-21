@@ -44,7 +44,10 @@ AM_CPPFLAGS=\
 #Now do the programs
 #You may comment out any of these lines to suppress parts of the installation process
 include $(srcdir)/lib/Makemodule.am			#utilities library
+
+if CASMUTILS_LIBRARY
 include $(srcdir)/include/Makemodule.am		#utilities headers
+endif
 
 if CASMUTILS_PYTHON
 include $(srcdir)/lib-py/Makemodule.am 		#python library wrappers to utilities library
