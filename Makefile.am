@@ -8,6 +8,7 @@ pyexec_LTLIBRARIES=
 noinst_LIBRARIES=
 noinst_LTLIBRARIES=
 bin_PROGRAMS=
+noinst_PROGRAMS=
 check_PROGRAMS=
 man1_MANS=
 dist_bin_SCRIPTS=
