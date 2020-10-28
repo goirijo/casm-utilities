@@ -6,10 +6,10 @@ show_help()
     echo "a list of available utilities can be seen with the '-l' flag."
     echo "To invoke a utility, use the command"
     echo -e
-    echo "'casmutils utility --options'."
+    echo "'casmutils <utility> --options'."
     echo -e
     echo "You may add additional utilities in a modular style by installing"
-    echo "executables that follow the naming convention 'casmutils-utility'"
+    echo "executables that follow the naming convention '_casmutils-utility'"
     echo "anywhere in your PATH variable."
 }
 
@@ -22,7 +22,7 @@ _utility_basename()
 show_utilities()
 {
     basename=$(_utility_basename)
-    for util in $(compgen -c | grep $basename); do
+    for util in $(compgen -c | grep $basename | sort -u); do
         echo ${util/$basename}
     done
 }
