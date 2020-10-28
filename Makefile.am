@@ -54,7 +54,7 @@ include $(srcdir)/lib-py/Makemodule.am 		#python library wrappers to utilities l
 endif
 
 if WITH_PLUGINS
-# include $(srcdir)/src/Makemodule.am			#utilities script for calling plugins
+include $(srcdir)/src/Makemodule.am			#utilities script for calling plugins
 include $(srcdir)/plugins/Makesocket.am		#CLIe utilities, or anything else to plug in via submodule
 endif
 
