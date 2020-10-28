@@ -4,7 +4,7 @@ A collection of utilities that make use of the [CASM](https://github.com/prisms-
 ## Prerequisites 
 This project relies heavily on sections of [CASM](https://github.com/prisms-center/CASMcode), which will be internally compiled.
 You will need a compiler with `c++17` support (at least `g++-9`, or `clang-10`).
-If you use older compilers it might still work, but you may have to specify `-lstdc++fs` as a flag in your `LDFLAGS` variable.
+If you use older compilers it might still work, but you may have to specify `-lstdc++fs` as a flag in your `LIBS` variable.
 
 casm-utilities uses autotools to build and install everything, so if you're installing via git cloning, a few additional packages might need to be installed on your computer:
 
@@ -21,7 +21,7 @@ The repository comes with two main components:
 * The utilities library (c++)
 * Python wrappers for the c++ utilities library
 
-If you want to disable the python module installation, you can use the `--disable-casmutils-python` flag during the configure step. By default, a shared library will be installed. You can force static linkage with the `--disable-shared` flag.
+If you want to disable the python module installation, you can use the `--disable-python` flag during the configure step. By default, a shared library will be installed. You can force static linkage with the `--disable-shared` flag.
 
 There is a collection of utilities available that use these libraries, which are no longer hosted on this repository.
 Each utility exists in an independent module, which can be plugged into the build, as described below.
@@ -78,12 +78,12 @@ You can bypass the need for admin privileges by using the `--prefix` option (rec
 
 Once you're set on what flags you need, put it all together to run the configure script:
 ```bash
-../configure --prefix=$HOME/.local CXXFLAGS='-Any-flags -You -Might-want'    
+CXXFLAGS='-Any-flags -You -Might-want' ../configure --prefix=$HOME/.local     
 ```
 
 Note that the python modules have been written for `python3`. If your default python version is still lagging, you'll have to specify `PYTHON_VERSION` during the configure step above. An example of what the configure step could look like:
 ```bash
-CXX=g++-8 PYTHON_VERSION=3.6 ../configure --prefix=$HOME/.local CXXFLAGS='-O3 -DNDEBUG'    
+CXX=g++-9 PYTHON_VERSION=3.6 CXXFLAGS='-O3 -DNDEBUG' ../configure --prefix=$HOME/.local    
 ```
 
 For more information on the configure step, see the documentation by calling `../configure -h`.
