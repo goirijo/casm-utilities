@@ -127,6 +127,14 @@ MoireLattice::MoireLattice(const xtal::Lattice& lat, double degrees)
         this->is_within_brillouin_zone_overlap[LATTICE::ROTATED][i] =
             this->is_within_voronoi(rotated_brillouin_zone_reciprocal_difference.col(i), reciprocal_aligned_lattice);
     }
+
+    // Check for infinite moire lattice
+    if(std::abs(aligned_brillouin_zone_reciprocal_difference.determinant())<1e-8 || std::abs(rotated_brillouin_zone_reciprocal_difference.determinant())<1e-8)
+    {
+        throw std::runtime_error("Reciprocal Moire lattice is null (infinite Moire lattice)");
+        //TODO: To avoid this issue, I think you can set the reciprocal differences to the
+        //reciprocal lattices themselves in this statement, and it should all work out (pray to Jesus)
+    }
 }
 
 bool MoireLattice::is_within_voronoi(const Eigen::Vector2d& v, const xtal::Lattice& lat) const
