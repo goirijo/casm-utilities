@@ -15,6 +15,8 @@ casm-utilities uses autotools to build and install everything, so if you're inst
 
 These should all be readily available via `brew` and `apt-get`.
 
+In order for python modules to compile, you'll need to install the development version of python (`libpython3-dev` or similar).
+
 ## Installation
 The repository comes with two main components:
 
