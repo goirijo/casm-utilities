@@ -18,11 +18,3 @@ libcasmutils_xtal_la_SOURCES+=\
 						 include/casmutils/xtal/coordinate.hpp\
 						 lib/casmutils/xtal/site.cxx\
 						 include/casmutils/xtal/site.hpp
-
-# libcasmutils_xtal_la_LIBADD=\
-# 					   libcasmblob.la\
-# 					   $(BOOST_SYSTEM_LIB)\
-# 					   $(BOOST_FILESYSTEM_LIB)\
-# 					   $(BOOST_CHRONO_LIB)\
-# 					   $(BOOST_REGEX_LIB)\
-# 					   $(BOOST_PROGRAM_OPTIONS_LIB)
