@@ -19,11 +19,11 @@ namespace coordinate
  */
 
 /// Returns cartesian coordinates when fractional coordinates are given
-Eigen::Vector3d get_cartesian_coordinates_from_fractional(const Eigen::Vector3d& fractional_coordinate,
+Eigen::Vector3d fractional_to_cartesian(const Eigen::Vector3d& fractional_coordinate,
                                                           const Lattice& lat);
 
 /// Returns fractional coordinates when cartesian coordinates are given
-Eigen::Vector3d get_fractional_coordinates(const Eigen::Vector3d& cartesian_coordinate, const Lattice& lat);
+Eigen::Vector3d cartesian_to_fractional(const Eigen::Vector3d& cartesian_coordinate, const Lattice& lat);
 
 /// Brings the given cartesian coordinate within the given lattice
 Eigen::Vector3d bring_within_lattice(const Eigen::Vector3d& cartesian_coordinate, const Lattice& lat);

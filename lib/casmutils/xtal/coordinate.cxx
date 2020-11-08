@@ -10,13 +10,12 @@ namespace xtal
 namespace coordinate
 {
 
-Eigen::Vector3d get_cartesian_coordinates_from_fractional(const Eigen::Vector3d& fractional_coordinates,
-                                                          const Lattice& lat)
+Eigen::Vector3d fractional_to_cartesian(const Eigen::Vector3d& fractional_coordinates, const Lattice& lat)
 {
     return CASM::xtal::Coordinate(fractional_coordinates, lat.__get(), CASM::FRAC).cart();
 }
 
-Eigen::Vector3d get_fractional_coordinates(const Eigen::Vector3d& cartesian_coord, const Lattice& lat)
+Eigen::Vector3d cartesian_to_fractional(const Eigen::Vector3d& cartesian_coord, const Lattice& lat)
 {
     return CASM::xtal::Coordinate(cartesian_coord, lat.__get(), CASM::CART).frac();
 }

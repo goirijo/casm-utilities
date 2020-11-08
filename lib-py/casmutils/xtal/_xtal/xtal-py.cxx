@@ -68,9 +68,8 @@ PYBIND11_MODULE(_xtal, m)
             .def("__call__", &xtal::LatticeEquals_f::operator());
     }
 
-    m.def("get_cartesian_coordinates_from_fractional",
-          casmutils::xtal::coordinate::get_cartesian_coordinates_from_fractional);
-    m.def("get_fractional_coordinates", casmutils::xtal::coordinate::get_fractional_coordinates);
+    m.def("fractional_to_cartesian", casmutils::xtal::coordinate::fractional_to_cartesian);
+    m.def("cartesian_to_fractional", casmutils::xtal::coordinate::cartesian_to_fractional);
     m.def("bring_within_lattice", casmutils::xtal::coordinate::bring_within_lattice);
     m.def("bring_within_wigner_seitz", casmutils::xtal::coordinate::bring_within_wigner_seitz);
 

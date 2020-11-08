@@ -70,7 +70,7 @@ class _Coordinate:
         np.array
 
         """
-        return _xtal.get_fractional_coordinates(self.coord, lat)
+        return _xtal.cartesian_to_fractional(self.coord, lat)
 
     @classmethod
     def from_fractional(cls, coords, lat):
@@ -87,8 +87,7 @@ class _Coordinate:
         Coordinate
 
         """
-        cartesian_coords = _xtal.get_cartesian_coordinates_from_fractional(
-            coords, lat)
+        cartesian_coords = _xtal.fractional_to_cartesian(coords, lat)
         return cls(cartesian_coords)
 
     def set_compare_method(self, method, *args):
@@ -253,3 +252,67 @@ class MutableCoordinate(_Coordinate):
         """
         self.coord = np.add(self.coord, other.cart())
         return self
+
+
+def cartesian_to_fractional(cart_coords, lat):
+    """Returs fractional coordinates of the given cartesian coordinates
+
+    Parameters
+    ----------
+    cart_coords : np.array
+    lat : cu.xtal.Lattice
+
+    Returns
+    -------
+    np.array
+
+    """
+    return _xtal.cartesian_to_fractional(cart_coords, lat)
+
+
+def fractional_to_cartesian(frac_coords, lat):
+    """Returs fractional coordinates of the given cartesian coordinates
+
+    Parameters
+    ----------
+    frac_coords: np.array
+    lat : cu.xtal.Lattice
+
+    Returns
+    -------
+    np.array
+
+    """
+    return _xtal.fractional_to_cartesian(frac_coords, lat)
+
+
+def bring_within_lattice(cart_coords, lat):
+    """Brings the given cartesian coordinates within the lattice
+
+    Parameters
+    ----------
+    cart_coords : np.array
+    lat : cu.xtal.Lattice
+
+    Returns
+    -------
+    np.array
+
+    """
+    return _xtal.bring_within_lattice(cart_coords, lat)
+
+
+def bring_within_wigner_seitz(cart_coords, lat):
+    """Brings the given cartesian coordinates within the wigner seitz cell of the lattice
+
+    Parameters
+    ----------
+    cart_coords : np.array
+    lat : cu.xtal.Lattice
+
+    Returns
+    -------
+    np.array
+
+    """
+    return _xtal.bring_within_wigner_seitz(cart_coords, lat)

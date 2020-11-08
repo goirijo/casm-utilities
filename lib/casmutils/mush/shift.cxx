@@ -57,7 +57,7 @@ make_uniform_in_plane_shift_vectors(const xtal::Lattice& slab_lattice, int a_max
         for (int b = 0; b < b_max; ++b)
         {
             Eigen::Vector3d frac_coord(static_cast<double>(a) / a_max, static_cast<double>(b) / b_max, 0);
-            shifts.emplace_back(xtal::coordinate::get_cartesian_coordinates_from_fractional(frac_coord, slab_lattice));
+            shifts.emplace_back(xtal::coordinate::fractional_to_cartesian(frac_coord, slab_lattice));
 
             records.emplace_back(a, b, ix);
             ++ix;

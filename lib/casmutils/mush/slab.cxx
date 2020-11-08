@@ -83,7 +83,7 @@ xtal::Lattice orthogonalize_c_vector(const xtal::Lattice& lat)
 
     // In plane component should have no c component
 
-    auto plane_component_frac = xtal::coordinate::get_fractional_coordinates(plane_component, lat);
+    auto plane_component_frac = xtal::coordinate::cartesian_to_fractional(plane_component, lat);
     assert(almost_equal(plane_component_frac(2), 0.0, 1e-8));
 
     plane_component = xtal::coordinate::bring_within_wigner_seitz(plane_component, lat);
