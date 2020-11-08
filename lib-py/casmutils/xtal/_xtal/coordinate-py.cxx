@@ -16,12 +16,12 @@ using namespace casmutils;
 
 namespace Coordinate
 {
-std::string __str__(const xtal::Coordinate& printable)
-{
-    std::ostringstream sstream;
-    sstream << printable.cart().transpose();
-    return sstream.str();
-}
+// std::string __str__(const xtal::Coordinate& printable)
+//{
+//    std::ostringstream sstream;
+//    sstream << printable.cart().transpose();
+//    return sstream.str();
+//}
 
 /* bool is_equal(const xtal::Coordinate& lhs, const xtal::Coordinate& rhs, double tol) */
 /* { */

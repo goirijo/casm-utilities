@@ -41,10 +41,5 @@ Eigen::Vector3d operator*(const sym::CartOp& sym_op, const Eigen::Vector3d& vect
 
 Site operator*(const sym::CartOp& sym_op, const Site& site) { return Site{sym_op * site.cart(), site.label()}; }
 
-Coordinate operator*(const sym::CartOp& sym_op, const Coordinate& coordinate)
-{
-    return Coordinate{sym_op * coordinate.cart()};
-}
-
 } // namespace xtal
 } // namespace casmutils

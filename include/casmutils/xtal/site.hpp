@@ -10,7 +10,6 @@ namespace xtal
 {
 
 class Lattice;
-class Coordinate;
 
 /**
  * A coordinate and type of species. Even though it's implemented
@@ -22,11 +21,7 @@ class Site
 public:
     Site() = delete;
     Site(const CASM::xtal::Site& init_site, int occupant);
-    Site(const Coordinate& init_coord, const std::string& occupant_name);
     Site(const Eigen::Vector3d& init_coord, const std::string& occupant_name);
-
-    /// Allow casting to Coordinate, by stripping everything away except the Cartesian position
-    operator Coordinate() const;
 
     /// Retreive the Cartesian values of the coordinate
     Eigen::Vector3d cart() const;

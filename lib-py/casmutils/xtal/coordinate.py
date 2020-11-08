@@ -1,5 +1,6 @@
 from . import _xtal
 from . import globaldef
+import numpy as np
 
 
 class Equals:
@@ -18,7 +19,7 @@ class Equals:
 
         """
         self._CoordinateEquals_f = _xtal.CoordinateEquals_f(
-            ref_coordinate._pybind_value, tol)
+            ref_coordinate.cart(), tol)
 
     def __call__(self, other):
         """
@@ -31,7 +32,7 @@ class Equals:
         bool
 
         """
-        return self._CoordinateEquals_f(other._pybind_value)
+        return self._CoordinateEquals_f(other.cart())
 
 
 class _Coordinate:
@@ -44,11 +45,7 @@ class _Coordinate:
         coord : np.array
 
         """
-        if coord is _xtal.Coordinate:
-            self._pybind_value = None
-
-        else:
-            self._pybind_value = _xtal.Coordinate(coord)
+        self.coord = coord
 
     def cart(self):
         """Returns the Cartesian values of the coordinate
@@ -58,7 +55,7 @@ class _Coordinate:
         np.array
 
         """
-        return self._pybind_value._cart_const()
+        return self.coord
 
     def frac(self, lat):
         """Returns the fractional values of the coordinate
@@ -73,25 +70,7 @@ class _Coordinate:
         np.array
 
         """
-        return self._pybind_value._frac_const(lat)
-
-    @classmethod
-    def _from_pybind(cls, py_bind_value):
-        """Returns a constructed _Coordinate from
-        a given _xtal.Coorindate value
-
-        Paremeters
-        ----------
-        py_bind_value : _xtal.Coordinate
-
-        Returns
-        -------
-        _Coordinate
-
-        """
-        value = cls(_xtal.Coordinate)
-        value._pybind_value = py_bind_value
-        return value
+        return _xtal.get_fractional_coordinates(self.coord, lat)
 
     @classmethod
     def from_fractional(cls, coords, lat):
@@ -108,8 +87,9 @@ class _Coordinate:
         Coordinate
 
         """
-        py_binded = _xtal.Coordinate.from_fractional(coords, lat)
-        return cls._from_pybind(py_binded)
+        cartesian_coords = _xtal.get_cartesian_coordinates_from_fractional(
+            coords, lat)
+        return cls(cartesian_coords)
 
     def set_compare_method(self, method, *args):
         """Determines what strategy should be used for comparison methods
@@ -170,8 +150,7 @@ class _Coordinate:
         Coordinate or MutableCoordinate
 
         """
-        py_binded = self._pybind_value + other._pybind_value
-        return self._from_pybind(py_binded)
+        return other.__class__(np.add(self.coord, other.cart()))
 
     def __str__(self):
         """Returns x,y,z values of the Coordinate as a printabe
@@ -182,11 +161,10 @@ class _Coordinate:
         string
 
         """
-        return self._pybind_value.__str__()
+        return self.coord.__str__()
 
     def __rmul__(self, CartOp):
-        """Applies the provided symmetry operation to the 
-        Coordinate and returns the transformed coordinate
+        """Applying a given symop to Coordinate
 
         Parameters
         ----------
@@ -194,10 +172,10 @@ class _Coordinate:
 
         Returns
         -------
-        Coordinate
+        Coordinate or MutableCoordinate
 
         """
-        return self._from_pybind(CartOp * self._pybind_value)
+        return self.__class__(CartOp * self.coord)
 
 
 class Coordinate(_Coordinate):
@@ -227,8 +205,7 @@ class Coordinate(_Coordinate):
         Coordinate
 
         """
-        py_binded = self._pybind_value._bring_within_const(lat)
-        return self._from_pybind(py_binded)
+        return Coordinate(_xtal.bring_within_lattice(self.coord, lat))
 
 
 class MutableCoordinate(_Coordinate):
@@ -258,7 +235,7 @@ class MutableCoordinate(_Coordinate):
         None
 
         """
-        self._pybind_value._bring_within(lat)
+        self.coord = _xtal.bring_within_lattice(self.coord, lat)
         return
 
     def __iadd__(self, other):
@@ -274,5 +251,5 @@ class MutableCoordinate(_Coordinate):
         MutableCoordinate
 
         """
-        self._pybind_value += other._pybind_value
+        self.coord = np.add(self.coord, other.cart())
         return self

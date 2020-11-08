@@ -13,7 +13,7 @@ namespace wrappy
 using namespace casmutils;
 namespace Coordinate
 {
-std::string __str__(const xtal::Coordinate& printable);
+// std::string __str__(const xtal::Coordinate& printable);
 /* bool is_equal(const xtal::Coordinate& lhs, const xtal::Coordinate& rhs, double tol); */
 } // namespace Coordinate
 } // namespace wrappy

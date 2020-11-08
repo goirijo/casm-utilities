@@ -68,29 +68,15 @@ PYBIND11_MODULE(_xtal, m)
             .def("__call__", &xtal::LatticeEquals_f::operator());
     }
 
-    {
-        using namespace wrappy::Coordinate;
-        class_<xtal::Coordinate>(m, "Coordinate")
-            .def(init<const Eigen::Vector3d&&>())
-            .def_static("from_fractional",
-                        pybind11::overload_cast<const Eigen::Vector3d&, const xtal::Lattice&>(
-                            &xtal::Coordinate::from_fractional))
-            .def("__str__", __str__)
-            .def("__add__", &xtal::Coordinate::operator+, pybind11::is_operator())
-            .def("__iadd__", &xtal::Coordinate::operator+=)
-            .def("_bring_within_const",
-                 pybind11::overload_cast<const xtal::Lattice&>(&xtal::Coordinate::bring_within, pybind11::const_))
-            .def("_bring_within", pybind11::overload_cast<const xtal::Lattice&>(&xtal::Coordinate::bring_within))
-            .def("_cart_const", &xtal::Coordinate::cart)
-            .def("_frac_const", &xtal::Coordinate::frac)
-            .def("__rmul__", [](const xtal::Coordinate& coord, const sym::CartOp& symop) {
-                return symop * coord;
-            });
-    }
+    m.def("get_cartesian_coordinates_from_fractional",
+          casmutils::xtal::coordinate::get_cartesian_coordinates_from_fractional);
+    m.def("get_fractional_coordinates", casmutils::xtal::coordinate::get_fractional_coordinates);
+    m.def("bring_within_lattice", casmutils::xtal::coordinate::bring_within_lattice);
+    m.def("bring_within_wigner_seitz", casmutils::xtal::coordinate::bring_within_wigner_seitz);
 
     {
         class_<xtal::CoordinateEquals_f>(m, "CoordinateEquals_f")
-            .def(init<xtal::Coordinate, double>())
+            .def(init<Eigen::Vector3d, double>())
             .def("__call__", &xtal::CoordinateEquals_f::operator());
     }
 
@@ -98,7 +84,6 @@ PYBIND11_MODULE(_xtal, m)
         using namespace wrappy::Site;
         class_<xtal::Site>(m, "Site")
             .def(init<const Eigen::Vector3d&, const std::string&>())
-            .def(init<const xtal::Coordinate&, const std::string&>())
             .def("__str__", __str__)
             .def("_cart_const", &xtal::Site::cart)
             .def("_frac_const", &xtal::Site::frac)
@@ -123,13 +108,13 @@ PYBIND11_MODULE(_xtal, m)
             .def("all_octahedron_center_coordinates", &RSOT::all_octahedron_center_coordinates)
             .def("to_poscar", to_poscar)
             .def("structure", &RSOT::structure)
-            .def("activate", (void (RSOT::*)(const xtal::Coordinate&)) & RSOT::activate)
+            .def("activate", (void (RSOT::*)(const Eigen::Vector3d&)) & RSOT::activate)
             .def("activate", (void (RSOT::*)(RSOT::index)) & RSOT::activate)
             .def("activate_all", &RSOT::activate_all)
-            .def("deactivate", (void (RSOT::*)(const xtal::Coordinate&)) & RSOT::deactivate)
+            .def("deactivate", (void (RSOT::*)(const Eigen::Vector3d&)) & RSOT::deactivate)
             .def("deactivate", (void (RSOT::*)(RSOT::index)) & RSOT::deactivate)
             .def("deactivate_all", &RSOT::deactivate_all)
-            .def("toggle", (void (RSOT::*)(const xtal::Coordinate&)) & RSOT::toggle)
+            .def("toggle", (void (RSOT::*)(const Eigen::Vector3d&)) & RSOT::toggle)
             .def("toggle", (void (RSOT::*)(RSOT::index)) & RSOT::toggle)
             .def("toggle_all", &RSOT::toggle_all)
             .def("nearest_neighbor_distance", &RSOT::nearest_neighbor_distance)

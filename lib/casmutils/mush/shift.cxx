@@ -29,7 +29,7 @@ std::vector<xtal::Structure> make_cleaved_structures(const xtal::Structure& slab
     std::vector<xtal::Structure> cleaved_structures;
     for (double cleave : cleavage_values)
     {
-        cleaved_structures.emplace_back(make_cleaved_structure(slab,cleave));
+        cleaved_structures.emplace_back(make_cleaved_structure(slab, cleave));
     }
     return cleaved_structures;
 }
@@ -37,7 +37,7 @@ std::vector<xtal::Structure> make_cleaved_structures(const xtal::Structure& slab
 xtal::Structure make_cleaved_structure(const xtal::Structure& slab, double cleavage)
 {
     // TODO: This might go astray if you get a left handed lattice, I think it'd cause negative cleavages
-    if(slab.lattice().column_vector_matrix().determinant()<0)
+    if (slab.lattice().column_vector_matrix().determinant() < 0)
     {
         throw std::runtime_error("Cannot currently cleave a left handed structure");
     }
@@ -57,7 +57,7 @@ make_uniform_in_plane_shift_vectors(const xtal::Lattice& slab_lattice, int a_max
         for (int b = 0; b < b_max; ++b)
         {
             Eigen::Vector3d frac_coord(static_cast<double>(a) / a_max, static_cast<double>(b) / b_max, 0);
-            shifts.emplace_back(xtal::make_fractional(frac_coord, slab_lattice));
+            shifts.emplace_back(xtal::coordinate::get_cartesian_coordinates_from_fractional(frac_coord, slab_lattice));
 
             records.emplace_back(a, b, ix);
             ++ix;
@@ -75,7 +75,7 @@ make_uniform_in_plane_wigner_seitz_shift_vectors(const xtal::Lattice& slab_latti
     std::vector<Eigen::Vector3d> wigner_seitz_shifts;
     for (const auto& standard_shift : standard_shifts)
     {
-        wigner_seitz_shifts.emplace_back(xtal::bring_within_wigner_seitz(standard_shift, slab_lattice));
+        wigner_seitz_shifts.emplace_back(xtal::coordinate::bring_within_wigner_seitz(standard_shift, slab_lattice));
     }
 
     return std::make_pair(wigner_seitz_shifts, std::move(standard_shifts_and_records.second));

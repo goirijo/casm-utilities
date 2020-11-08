@@ -53,9 +53,8 @@ double coarse_round(double x)
 
 bool is_within_voronoi(const Eigen::Vector3d& v, const xtal::Lattice& lat)
 {
-    xtal::Coordinate vw(v);
-    vw.bring_within_wigner_seitz(lat);
-    return almost_equal(v, vw.cart(), 1e-13);
+    auto vw = xtal::coordinate::bring_within_wigner_seitz(v, lat);
+    return almost_equal(v, vw, 1e-13);
 }
 
 } // namespace
@@ -129,11 +128,12 @@ MoireLattice::MoireLattice(const xtal::Lattice& lat, double degrees)
     }
 
     // Check for infinite moire lattice
-    if(std::abs(aligned_brillouin_zone_reciprocal_difference.determinant())<1e-8 || std::abs(rotated_brillouin_zone_reciprocal_difference.determinant())<1e-8)
+    if (std::abs(aligned_brillouin_zone_reciprocal_difference.determinant()) < 1e-8 ||
+        std::abs(rotated_brillouin_zone_reciprocal_difference.determinant()) < 1e-8)
     {
         throw std::runtime_error("Reciprocal Moire lattice is null (infinite Moire lattice)");
-        //TODO: To avoid this issue, I think you can set the reciprocal differences to the
-        //reciprocal lattices themselves in this statement, and it should all work out (pray to Jesus)
+        // TODO: To avoid this issue, I think you can set the reciprocal differences to the
+        // reciprocal lattices themselves in this statement, and it should all work out (pray to Jesus)
     }
 }
 
@@ -169,15 +169,15 @@ Eigen::Matrix2d MoireLattice::bring_vectors_into_voronoi(const Eigen::Matrix2d& 
     }
 
     // TODO: Bring within voronoi. Function is missing in cu
-    xtal::Coordinate ka(col_vectors(0, 0), col_vectors(1, 0), 0);
-    xtal::Coordinate kb(col_vectors(0, 1), col_vectors(1, 1), 0);
+    Eigen::Vector3d ka(col_vectors(0, 0), col_vectors(1, 0), 0);
+    Eigen::Vector3d kb(col_vectors(0, 1), col_vectors(1, 1), 0);
 
-    ka.bring_within_wigner_seitz(lat);
-    kb.bring_within_wigner_seitz(lat);
+    ka = xtal::coordinate::bring_within_wigner_seitz(ka, lat);
+    kb = xtal::coordinate::bring_within_wigner_seitz(kb, lat);
 
     Eigen::Matrix2d col_vectors_within;
-    col_vectors_within.col(0) = ka.cart().head(2);
-    col_vectors_within.col(1) = kb.cart().head(2);
+    col_vectors_within.col(0) = ka.head(2);
+    col_vectors_within.col(1) = kb.head(2);
 
     return col_vectors_within;
 }
@@ -262,9 +262,9 @@ DeformationReport::DeformationReport(const Eigen::Matrix3d& _deformation) : defo
 
     if (!almost_zero(E.col(2)) || !almost_zero(E.row(2)))
     {
-        std::cout<<E<<"\n\n";
+        std::cout << E << "\n\n";
 
-        std::cout<<deformation<<"\n\n";
+        std::cout << deformation << "\n\n";
         throw std::runtime_error("Deformation matrix extends beyond the xy subspace");
     }
 }
@@ -301,7 +301,6 @@ void MoireApproximator::insert_moire_supercells_of_size(int num_moire_units)
 
             enumerated_moire_supercells[bz][num_moire_units].emplace_back(
                 MoireApproximant(super_moire, aligned_unit, rotated_unit), moire_to_super_trans_mat);
-            
         }
     }
 
@@ -312,8 +311,8 @@ int MoireApproximator::maximum_lattice_sites_to_moire_supercell_size(ZONE bz, lo
 {
     long min_lattice_sites = this->minimum_lattice_sites(bz);
     int max_moire_scel_size = max_lattice_sites / min_lattice_sites;
-    //I don't want "size 0", I want "size 1" for zero lattice sites;
-    return std::max(max_moire_scel_size,1);
+    // I don't want "size 0", I want "size 1" for zero lattice sites;
+    return std::max(max_moire_scel_size, 1);
 }
 
 void MoireApproximator::expand(long max_lattice_sites)
@@ -418,12 +417,12 @@ std::vector<MoireLatticeReport> MoireApproximator::best_of_each_size(ZONE bz, LA
     {
         assert(size - 1 == prev);
         ++prev;
-        
-        auto best_ix=best_candidate(cells,0.0);
-        best_of_each.emplace_back(make_report(bz,layer,cells[best_ix]));
+
+        auto best_ix = best_candidate(cells, 0.0);
+        best_of_each.emplace_back(make_report(bz, layer, cells[best_ix]));
     }
 
-    assert(best_of_each.size()==enumerated_moire_supercells.at(bz).size());
+    assert(best_of_each.size() == enumerated_moire_supercells.at(bz).size());
     return best_of_each;
 }
 
@@ -506,8 +505,9 @@ MoireApproximator::MoireApproximator(const xtal::Lattice& input_lat, double degr
 
 long MoireApproximator::minimum_lattice_sites(ZONE bz) const
 {
-    const auto& smallest_approximant= enumerated_moire_supercells.at(bz).at(1).at(0).first;
-    return smallest_approximant.approximate_moire_integer_transformations.at(LATTICE::ALIGNED).determinant()+smallest_approximant.approximate_moire_integer_transformations.at(LATTICE::ROTATED).determinant();
+    const auto& smallest_approximant = enumerated_moire_supercells.at(bz).at(1).at(0).first;
+    return smallest_approximant.approximate_moire_integer_transformations.at(LATTICE::ALIGNED).determinant() +
+           smallest_approximant.approximate_moire_integer_transformations.at(LATTICE::ROTATED).determinant();
 
     double tile_vol = std::abs(moire.input_lattice.volume());
     double moire_vol = std::abs(moire.moire(bz).volume());
@@ -524,7 +524,7 @@ double MoireApproximator::error_metric(const xtal::Lattice& moire,
     for (auto LAT : {LATTICE::ALIGNED, LATTICE::ROTATED})
     {
         const Eigen::Matrix3d& F = approx.approximation_deformations[LAT];
-        
+
         DeformationReport report(F);
         for (double eta : report.strain_metrics)
         {
@@ -551,7 +551,8 @@ MoireStructureApproximator::MoireStructureApproximator(const Structure& slab_uni
 {
 }
 
-MoireStructureReport MoireStructureApproximator::lattice_report_to_structure_report(const MoireLatticeReport& lat_report) const
+MoireStructureReport
+MoireStructureApproximator::lattice_report_to_structure_report(const MoireLatticeReport& lat_report) const
 {
     const auto& approx_lat = lat_report.approximate_tiling_unit;
     Structure approx_unit = slab_unit;
@@ -569,9 +570,9 @@ MoireStructureReport MoireStructureApproximator::best_smallest(ZONE brillouin, L
 
 std::vector<MoireStructureReport> MoireStructureApproximator::best_of_each_size(ZONE bz, LATTICE layer) const
 {
-    const auto reports = MoireApproximator::best_of_each_size(bz,layer);
+    const auto reports = MoireApproximator::best_of_each_size(bz, layer);
     std::vector<MoireStructureReport> best_of_each;
-    for(const auto& report : reports)
+    for (const auto& report : reports)
     {
         best_of_each.emplace_back(lattice_report_to_structure_report(report));
     }

@@ -14,7 +14,7 @@ namespace enumeration
 class RockSaltOctahedraToggler
 {
 public:
-    typedef casmutils::xtal::Coordinate Coordinate;
+    typedef Eigen::Vector3d Coordinate;
     typedef casmutils::xtal::Structure Structure;
     typedef casmutils::xtal::Lattice Lattice;
     typedef int index;
