@@ -16,7 +16,8 @@ libcasmutils_la_SOURCES+=\
 						 lib/casmutils/misc.cxx\
 						 include/casmutils/misc.hpp
 
-libcasmutils_la_LIBADD=\
+libcasmutils_la_LIBADD=
+libcasmutils_la_LIBADD+=\
 					   libcasmblob.la\
 					   libcasmutils-sym.la\
 					   libcasmutils-mapping.la\

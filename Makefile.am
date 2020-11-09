@@ -12,6 +12,7 @@ noinst_PROGRAMS=
 check_PROGRAMS=
 man1_MANS=
 dist_bin_SCRIPTS=
+nobase_include_HEADERS=
 TESTS=
 
 BUILT_SOURCES=
