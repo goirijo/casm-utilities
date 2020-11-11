@@ -4,12 +4,12 @@
 [submodule "googletest"]
 	path = submodules/googletest
 	url = git@github.com:google/googletest.git
-[submodule "CLI11"]
-	path = submodules/CLI11
-	url = git@github.com:CLIUtils/CLI11.git
 [submodule "nlohmann-json"]
 	path = submodules/nlohmann-json
 	url = git@github.com:nlohmann/json.git
 [submodule "submodules/CASMcode"]
 	path = submodules/CASMcode
 	url = git@github.com:prisms-center/CASMcode.git
+[submodule "submodules/CLI11"]
+	path = submodules/CLI11
+	url = git@github.com:goirijo/CLI11.git
