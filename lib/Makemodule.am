@@ -1,10 +1,10 @@
 include lib/casmutils/Makemodule.am
 
-if FULL_CASM
-include $(srcdir)/lib/casmblob/Makefullcasm.am
-else
+# if FULL_CASM
+# include $(srcdir)/lib/casmblob/Makefullcasm.am
+# else
 include $(srcdir)/lib/casmblob/Makepartialcasm.am
-endif
+# endif
 
 # include lib/boostblob/Makemodule.am	#Too many files listed here
 EXTRA_DIST+=lib/boostblob
