@@ -25,6 +25,7 @@ AM_CXXFLAGS=\
 
 AM_CPPFLAGS=\
 			 -I$(srcdir)/include\
+			 -I$(srcdir)/lib/boostblob\
 			 -I$(srcdir)/submodules/pybind11/include\
 			 -I$(srcdir)/submodules/nlohmann-json/include\
 			 -I$(srcdir)/submodules/CLI11/include\
