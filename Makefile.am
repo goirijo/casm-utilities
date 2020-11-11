@@ -4,7 +4,6 @@ CLOCAL_AMFLAGS = -I build-aux/m4
 #===========================================================================#
 #Values are filled by Makemodue.am files
 lib_LTLIBRARIES=
-pyexec_LTLIBRARIES=
 noinst_LIBRARIES=
 noinst_LTLIBRARIES=
 bin_PROGRAMS=
@@ -26,6 +25,7 @@ AM_CXXFLAGS=\
 
 AM_CPPFLAGS=\
 			 -I$(srcdir)/include\
+			 -I$(srcdir)/lib/boostblob\
 			 -I$(srcdir)/submodules/pybind11/include\
 			 -I$(srcdir)/submodules/nlohmann-json/include\
 			 -I$(srcdir)/submodules/CLI11/include\
@@ -50,6 +50,7 @@ include $(srcdir)/include/Makemodule.am		#utilities headers
 endif
 
 if CASMUTILS_PYTHON
+pyexec_LTLIBRARIES=
 include $(srcdir)/lib-py/Makemodule.am 		#python library wrappers to utilities library
 endif
 

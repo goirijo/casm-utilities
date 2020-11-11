@@ -23,7 +23,9 @@ The repository comes with two main components:
 * The utilities library (c++)
 * Python wrappers for the c++ utilities library
 
-If you want to disable the python module installation, you can use the `--disable-python` flag during the configure step. By default, a shared library will be installed. You can force static linkage with the `--disable-shared` flag.
+If you want to disable the python module installation, you can use the `--disable-python` flag during the configure step.
+By default, a shared library will be installed.
+You can force static linkage and headers with the `--disable-library` flag.
 
 There is a collection of utilities available that use these libraries, which are no longer hosted on this repository.
 Each utility exists in an independent module, which can be plugged into the build, as described below.
