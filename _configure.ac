@@ -15,7 +15,7 @@ AM_INIT_AUTOMAKE([subdir-objects 1.9 tar-pax])
 ######################################################################
 
 ######################################################################
-#We'll be making shared libraries that call shared libraries    #You sure about that chief? I think we're doing static. Try deleting this
+#We'll be making shared libraries
 LT_INIT
 
 # Checks for programs.
