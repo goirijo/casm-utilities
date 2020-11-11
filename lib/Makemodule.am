@@ -1,2 +1,1 @@
 include lib/casmutils/Makemodule.am
-include lib/casmblob/Makemodule.am
