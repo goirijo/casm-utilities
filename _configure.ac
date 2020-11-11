@@ -23,23 +23,23 @@ AC_PROG_CXX
 AX_CXX_COMPILE_STDCXX_17
 
 ######################################################################
-AC_ARG_ENABLE([python],
-              AS_HELP_STRING([--disable-python],[Do not install casmutils python module.]))
+# AC_ARG_ENABLE([python],
+#               AS_HELP_STRING([--disable-python],[Do not install casmutils python module.]))
 
-# By default, aborts if no suitable Python is found:
-# Will assume the Python interpreter previously identified by AM_PATH_PYTHON:
-AS_IF([test "x$enable_python" != "xno"], [
-AM_PATH_PYTHON([3.4])
-AX_PYTHON_DEVEL
-])
+# # By default, aborts if no suitable Python is found:
+# # Will assume the Python interpreter previously identified by AM_PATH_PYTHON:
+# AS_IF([test "x$enable_python" != "xno"], [
+# AM_PATH_PYTHON([3.4])
+# AX_PYTHON_DEVEL
+# ])
 
-AM_CONDITIONAL([CASMUTILS_PYTHON],[test x$enable_python != "xno"])
+AM_CONDITIONAL([CASMUTILS_PYTHON],[false])
 
 ######################################################################
-AC_ARG_ENABLE([library],
-              AS_HELP_STRING([--disable-library],[Do not build casmutils as a shared library.]))
+# AC_ARG_ENABLE([library],
+#               AS_HELP_STRING([--disable-library],[Do not build casmutils as a shared library.]))
 
-AM_CONDITIONAL([CASMUTILS_LIBRARY],[test x$enable_library != "xno"])
+AM_CONDITIONAL([CASMUTILS_LIBRARY],[false])
 
 ######################################################################
 # Add debug support
@@ -59,36 +59,36 @@ AM_CONDITIONAL([CASMUTILS_LIBRARY],[test x$enable_library != "xno"])
 #     AC_DEFINE(DEBUG, 0, [Define to 1 or higher if this is a debug build]))
 
 ######################################################################
-AC_ARG_ENABLE([plugins],
-              AS_HELP_STRING([--disable-plugins],[No plugins, only libraries and modules.]))
+# AC_ARG_ENABLE([plugins],
+#               AS_HELP_STRING([--disable-plugins],[No plugins, only libraries and modules.]))
 
-AM_CONDITIONAL([WITH_PLUGINS],[test x$enable_plugins != "xno"])
+AM_CONDITIONAL([WITH_PLUGINS],[true])
 
 ######################################################################
 #------Enables full casm---------------------------------------
-AC_ARG_ENABLE(fullcasm,
-  AS_HELP_STRING(
-    [--enable-fullcasm],
-    [When enabled installs all the modules of casm, default: no]),
-    [case "${enableval}" in
-      yes) fullcasm=true ;;
-      no)  fullcasm=false ;;
-      *)   AC_MSG_ERROR([bad value ${enableval} for --enable-fullcasm]) ;;
-    esac],
-    [fullcasm=false])
+# AC_ARG_ENABLE(fullcasm,
+#   AS_HELP_STRING(
+#     [--enable-fullcasm],
+#     [When enabled installs all the modules of casm, default: no]),
+#     [case "${enableval}" in
+#       yes) fullcasm=true ;;
+#       no)  fullcasm=false ;;
+#       *)   AC_MSG_ERROR([bad value ${enableval} for --enable-fullcasm]) ;;
+#     esac],
+#     [fullcasm=false])
 
-AS_IF([test x"$fullcasm" = x"true"],[
-BOOSTV=1.52
-AX_BOOST_BASE([$BOOSTV],[],[AC_MSG_ERROR(You need Boost $BOOSTV libraries or higher.)])
-AX_BOOST_SYSTEM
-AX_BOOST_FILESYSTEM
-AX_BOOST_CHRONO
-AX_BOOST_REGEX
-AX_BOOST_PROGRAM_OPTIONS
-AX_CHECK_ZLIB([],AC_MSG_ERROR(zlib library not found!))
-])
+# AS_IF([test x"$fullcasm" = x"true"],[
+# BOOSTV=1.52
+# AX_BOOST_BASE([$BOOSTV],[],[AC_MSG_ERROR(You need Boost $BOOSTV libraries or higher.)])
+# AX_BOOST_SYSTEM
+# AX_BOOST_FILESYSTEM
+# AX_BOOST_CHRONO
+# AX_BOOST_REGEX
+# AX_BOOST_PROGRAM_OPTIONS
+# AX_CHECK_ZLIB([],AC_MSG_ERROR(zlib library not found!))
+# ])
 
-AM_CONDITIONAL(FULL_CASM, test x"$fullcasm" = x"true")
+AM_CONDITIONAL([FULL_CASM], [false])
 
 ###################################################################################
 # Checks for libraries.
