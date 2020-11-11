@@ -61,11 +61,6 @@ endif
 
 include $(srcdir)/tests/Makemodule.am 		#All types of tests
 
-if FULL_CASM
-include $(srcdir)/lib/casmblob/Makefullcasm.am
-else
-include $(srcdir)/lib/casmblob/Makepartialcasm.am
-endif
 
 #===========================================================================#
 var-check:
