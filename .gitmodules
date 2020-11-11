@@ -13,3 +13,9 @@
 [submodule "submodules/CASMcode"]
 	path = submodules/CASMcode
 	url = git@github.com:prisms-center/CASMcode.git
+[submodule "plugins/casm-utilities-primify"]
+	path = plugins/casm-utilities-primify
+	url = git@github.com:goirijo/casm-utilities-primify.git
+[submodule "plugins/casm-utilities-super"]
+	path = plugins/casm-utilities-super
+	url = git@github.com:jonaskaufman/casm-utilities-super.git
