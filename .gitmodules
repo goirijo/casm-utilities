@@ -1,9 +1,6 @@
 [submodule "pybind11"]
 	path = submodules/pybind11
 	url = https://github.com/pybind/pybind11
-[submodule "CASMcode-dev"]
-	path = submodules/CASMcode
-	url = git@github.com:goirijo/CASMcode-dev.git
 [submodule "googletest"]
 	path = submodules/googletest
 	url = git@github.com:google/googletest.git
@@ -13,3 +10,6 @@
 [submodule "nlohmann-json"]
 	path = submodules/nlohmann-json
 	url = git@github.com:nlohmann/json.git
+[submodule "submodules/CASMcode"]
+	path = submodules/CASMcode
+	url = git@github.com:prisms-center/CASMcode.git
