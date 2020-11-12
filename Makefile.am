@@ -47,6 +47,7 @@ include $(srcdir)/lib/Makemodule.am			#utilities library
 
 # if CASMUTILS_LIBRARY
 # include $(srcdir)/include/Makemodule.am		#utilities headers
+EXTRA_DIST+=include
 # endif
 
 # if CASMUTILS_PYTHON
