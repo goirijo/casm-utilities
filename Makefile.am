@@ -43,8 +43,6 @@ AM_CPPFLAGS=\
 #===========================================================================#
 #Now do the programs
 #You may comment out any of these lines to suppress parts of the installation process
-include $(srcdir)/lib/Makemodule.am			#utilities library
-
 # if CASMUTILS_LIBRARY
 # include $(srcdir)/include/Makemodule.am		#utilities headers
 EXTRA_DIST+=include
@@ -55,11 +53,12 @@ EXTRA_DIST+=include
 # include $(srcdir)/lib-py/Makemodule.am 		#python library wrappers to utilities library
 # endif
 
-if WITH_PLUGINS
+# if WITH_PLUGINS
 # include $(srcdir)/src/Makemodule.am			#utilities script for calling plugins
 include $(srcdir)/plugins/Makesocket.am		#CLIe utilities, or anything else to plug in via submodule
-endif
+# endif
 
+include $(srcdir)/lib/Makemodule.am			#utilities library
 include $(srcdir)/tests/Makemodule.am 		#All types of tests
 
 
@@ -83,6 +82,7 @@ var-check:
 	echo $(DEPDIR)
 	echo $(OUTSIDE)
 	echo "lol"
+	echo $(libcasmblob_la_SOURCES)
 
 
 soft-clean:

@@ -4,20 +4,20 @@ include lib/casmutils/mapping/Makemodule.am
 include lib/casmutils/mush/Makemodule.am
 
 if CASMUTILS_LIBRARY
-lib_LTLIBRARIES += libcasmutils.la
+lib_LTLIBRARIES += libmultishifter.la
 else
-noinst_LTLIBRARIES += libcasmutils.la
+noinst_LTLIBRARIES += libmultishifter.la
 endif
 
-libcasmutils_la_SOURCES=
-libcasmutils_la_SOURCES+=\
+libmultishifter_la_SOURCES=
+libmultishifter_la_SOURCES+=\
 						 lib/casmutils/stage.cxx\
 						 include/casmutils/stage.hpp\
 						 lib/casmutils/misc.cxx\
 						 include/casmutils/misc.hpp
 
-libcasmutils_la_LIBADD=
-libcasmutils_la_LIBADD+=\
+libmultishifter_la_LIBADD=
+libmultishifter_la_LIBADD+=\
 					   libcasmblob.la\
 					   libcasmutils-sym.la\
 					   libcasmutils-mapping.la\

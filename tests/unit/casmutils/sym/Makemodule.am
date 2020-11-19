@@ -3,5 +3,5 @@ check_PROGRAMS += check_sym_cartesian
 check_sym_cartesian_SOURCES = tests/unit/casmutils/sym/cartesian.cpp
 check_sym_cartesian_LDADD=\
 					libgtest.la\
-					libcasmutils.la
+					libmultishifter.la
 

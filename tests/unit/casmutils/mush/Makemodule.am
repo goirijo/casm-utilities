@@ -6,7 +6,7 @@ check_mush_slab_SOURCES =\
 
 check_mush_slab_LDADD=\
 					libgtest.la\
-					libcasmutils.la
+					libmultishifter.la
 
 
 TESTS+=check_mush_shift
@@ -17,7 +17,7 @@ check_mush_shift_SOURCES =\
 
 check_mush_shift_LDADD=\
 					libgtest.la\
-					libcasmutils.la
+					libmultishifter.la
 
 TESTS+=check_mush_twist
 check_PROGRAMS += check_mush_twist
@@ -27,4 +27,4 @@ check_mush_twist_SOURCES =\
 
 check_mush_twist_LDADD=\
 					libgtest.la\
-					libcasmutils.la
+					libmultishifter.la

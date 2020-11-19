@@ -5,7 +5,7 @@ check_stage_SOURCES =\
 					 tests/autotools.hh
 check_stage_LDADD=\
 					libgtest.la\
-					libcasmutils.la
+					libmultishifter.la
 
 TESTS+=check_meta
 check_PROGRAMS += check_meta
@@ -14,7 +14,7 @@ check_meta_SOURCES =\
 					tests/autotools.hh
 check_meta_LDADD=\
 					libgtest.la\
-					libcasmutils.la
+					libmultishifter.la
 
 include tests/unit/casmutils/xtal/Makemodule.am
 include tests/unit/casmutils/sym/Makemodule.am

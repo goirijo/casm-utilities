@@ -39,7 +39,7 @@ AM_CONDITIONAL([CASMUTILS_PYTHON],[false])
 # AC_ARG_ENABLE([library],
 #               AS_HELP_STRING([--disable-library],[Do not build casmutils as a shared library.]))
 
-AM_CONDITIONAL([CASMUTILS_LIBRARY],[false])
+AM_CONDITIONAL([CASMUTILS_LIBRARY],[true])
 
 ######################################################################
 # Add debug support
