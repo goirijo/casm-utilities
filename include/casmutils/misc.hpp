@@ -24,8 +24,8 @@ using CASM::almost_zero;
 template <typename ComparatorType_f, typename CompareType, typename... Args>
 bool is_equal(const CompareType& reference, const CompareType& other, const Args&... functor_params)
 {
-    ComparatorType_f reference_equals(reference, functor_params...);
-    return reference_equals(other);
+    ComparatorType_f reference_equals(functor_params...);
+    return reference_equals(reference, other);
 }
 
 } // namespace casmutils

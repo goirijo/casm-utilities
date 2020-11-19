@@ -17,7 +17,8 @@ class Equals:
         tol : double
 
         """
-        self._LatticeEquals_f = _xtal.LatticeEquals_f(ref_lattice, tol)
+        self.ref_lattice = ref_lattice
+        self._LatticeEquals_f = _xtal.LatticeEquals_f(tol)
 
     def __call__(self, other):
         """
@@ -30,7 +31,7 @@ class Equals:
         bool
 
         """
-        return self._LatticeEquals_f(other)
+        return self._LatticeEquals_f(self.ref_lattice, other)
 
 
 class Lattice(_xtal.Lattice):

@@ -17,8 +17,8 @@ class Equals:
         tol : double
 
         """
-        self._CoordinateEquals_f = _xtal.CoordinateEquals_f(
-            ref_coordinate._pybind_value, tol)
+        self.ref_coordinate = ref_coordinate
+        self._CoordinateEquals_f = _xtal.CoordinateEquals_f(tol)
 
     def __call__(self, other):
         """
@@ -31,7 +31,8 @@ class Equals:
         bool
 
         """
-        return self._CoordinateEquals_f(other._pybind_value)
+        return self._CoordinateEquals_f(self.ref_coordinate._pybind_value,
+                                        other._pybind_value)
 
 
 class _Coordinate:

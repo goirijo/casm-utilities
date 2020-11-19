@@ -18,7 +18,6 @@ public:
     /// Construct lattice by specifying each individual vector
     Lattice(const Eigen::Vector3d& a, const Eigen::Vector3d& b, const Eigen::Vector3d& c);
 
-
     static Lattice from_column_vector_matrix(const Eigen::Matrix3d& column_vector_matrix)
     {
         return Lattice(column_vector_matrix);
@@ -43,7 +42,6 @@ public:
                                            const double& alpha,
                                            const double& beta,
                                            const double& gamma);
-
 
     // TODO: Read up on Eigen::Matrix3d::ColXpr and decide if you prefer this. CASM does it this way.
     /// Return the ith vector of the lattice
@@ -84,12 +82,11 @@ class LatticeEquals_f
 {
 public:
     /// The comparator requires a tolerance
-    LatticeEquals_f(const Lattice& ref_lat, double tol);
+    LatticeEquals_f(double tol);
     /// returns true is ref_lat is equal to other by direct vector comparison
-    bool operator()(const Lattice& other);
+    bool operator()(const Lattice& ref_lat, const Lattice& other);
 
 private:
-    Lattice ref_lat;
     double tol;
 };
 

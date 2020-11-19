@@ -124,9 +124,9 @@ TEST_F(LatticeTest, LatticeEquals)
     casmutils::xtal::Lattice fcc_with_distortion_lat(fcc_with_distortion_matrix);
     //  checks the ability to determine if two lattices
     // are equivalent within numerical tolerance
-    casmutils::xtal::LatticeEquals_f is_equal_to_fcc_lattice(*fcc_ptr, tol);
-    EXPECT_TRUE(is_equal_to_fcc_lattice(*fcc_copy_ptr));
-    EXPECT_FALSE(is_equal_to_fcc_lattice(fcc_with_distortion_lat));
+    casmutils::xtal::LatticeEquals_f is_equal_to_fcc_lattice(tol);
+    EXPECT_TRUE(is_equal_to_fcc_lattice(*fcc_ptr, *fcc_copy_ptr));
+    EXPECT_FALSE(is_equal_to_fcc_lattice(*fcc_ptr, fcc_with_distortion_lat));
 }
 
 TEST_F(LatticeTest, MakeNiggli)

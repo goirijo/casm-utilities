@@ -123,8 +123,8 @@ TEST_F(CoordinateTest, PlusEqualOperator)
 
 TEST_F(CoordinateTest, CoordinateEquals)
 {
-    CoordinateEquals_f coord0_equals(*coord0_ptr, tol);
-    EXPECT_TRUE(coord0_equals(*coord1_ptr));
+    CoordinateEquals_f coord0_equals(tol);
+    EXPECT_TRUE(coord0_equals(*coord0_ptr, *coord1_ptr));
 }
 
 //

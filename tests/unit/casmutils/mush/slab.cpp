@@ -103,13 +103,16 @@ TEST_F(SlicingTest, StructureSlice_b2_101)
     cu::xtal::Site site0(cu::xtal::Coordinate::from_fractional(0, 0, 0, b2_slice.lattice()), "A");
     cu::xtal::Site site1(cu::xtal::Coordinate::from_fractional(0.5, 0.5, 0, b2_slice.lattice()), "B");
 
-    cu::xtal::SiteEquals_f is_equal_site0(site0, tol);
-    EXPECT_TRUE(std::find_if(b2_slice.basis_sites().begin(), b2_slice.basis_sites().end(), is_equal_site0) !=
-                b2_slice.basis_sites().end());
+    cu::xtal::SiteEquals_f is_equal_site(tol);
+    EXPECT_TRUE(
+        std::find_if(b2_slice.basis_sites().begin(), b2_slice.basis_sites().end(), [&](const cu::xtal::Site& site) {
+            return is_equal_site(site, site0);
+        }) != b2_slice.basis_sites().end());
 
-    cu::xtal::SiteEquals_f is_equal_site1(site1, tol);
-    EXPECT_TRUE(std::find_if(b2_slice.basis_sites().begin(), b2_slice.basis_sites().end(), is_equal_site1) !=
-                b2_slice.basis_sites().end());
+    EXPECT_TRUE(
+        std::find_if(b2_slice.basis_sites().begin(), b2_slice.basis_sites().end(), [&](const cu::xtal::Site& site) {
+            return is_equal_site(site, site1);
+        }) != b2_slice.basis_sites().end());
 }
 
 //******************************************************************************//
@@ -265,8 +268,8 @@ TEST_F(OrthogonalizeCVector, EquivalentToStack)
     EXPECT_TRUE(equivalent(stack, ortho));
 
     // TODO: make this a binary comparator ffs
-    cu::xtal::LatticeEquals_f equal(stack, 1e-8);
-    EXPECT_FALSE(equal(ortho));
+    cu::xtal::LatticeEquals_f equal(1e-8);
+    EXPECT_FALSE(equal(stack, ortho));
 }
 
 int main(int argc, char** argv)
