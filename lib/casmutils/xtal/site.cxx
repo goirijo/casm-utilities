@@ -44,7 +44,7 @@ Eigen::Vector3d Site::frac(const Lattice& ref_lattice) const
 }
 
 SiteEquals_f::SiteEquals_f(double tol) : tol(tol) {}
-bool SiteEquals_f::operator()(const Site& ref_site, const Site& other)
+bool SiteEquals_f::operator()(const Site& ref_site, const Site& other) const
 {
     return is_equal<CoordinateEquals_f>(static_cast<Coordinate>(ref_site), static_cast<Coordinate>(other), tol) &&
            ref_site.label() == other.label();

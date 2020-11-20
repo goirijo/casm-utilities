@@ -74,7 +74,7 @@ Lattice::stack_column_vectors(const Eigen::Vector3d& a, const Eigen::Vector3d& b
 }
 
 LatticeEquals_f::LatticeEquals_f(double tol) : tol(tol) {}
-bool LatticeEquals_f::operator()(const Lattice& ref_lat, const Lattice& other)
+bool LatticeEquals_f::operator()(const Lattice& ref_lat, const Lattice& other) const
 {
     return ref_lat.column_vector_matrix().isApprox(other.column_vector_matrix(), tol);
 }

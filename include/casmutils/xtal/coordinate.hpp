@@ -72,7 +72,7 @@ public:
     /// Determines whether test is equal to reference site with a tolerance
     CoordinateEquals_f(double tol);
     /// Returns true if other is equal to the Coordinate the comparator was constructed with
-    bool operator()(const Coordinate& ref_coordinate, const Coordinate& other);
+    bool operator()(const Coordinate& ref_coordinate, const Coordinate& other) const;
 
 private:
     double tol;
