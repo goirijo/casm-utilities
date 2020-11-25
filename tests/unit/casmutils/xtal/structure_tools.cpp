@@ -96,9 +96,11 @@ protected:
         for (int i = 0; i < ref_basis.size(); i++)
         {
             // construct an equals predicate
-            casmutils::xtal::SiteEquals_f is_equal_to_site_i(ref_basis[i], tol);
+            casmutils::xtal::SiteEquals_f is_equal_to_site_i(tol);
             // search in constructed basis for site equivalent to conventional fcc site i
-            if (std::find_if(test_basis.begin(), test_basis.end(), is_equal_to_site_i) == test_basis.end())
+            if (std::find_if(test_basis.begin(), test_basis.end(), [&](const casmutils::xtal::Site& test_basis) {
+                    return is_equal_to_site_i(test_basis, ref_basis[i]);
+                }) == test_basis.end())
             {
                 // if hit end iterator return false
                 return false;

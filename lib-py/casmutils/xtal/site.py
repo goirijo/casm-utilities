@@ -16,7 +16,8 @@ class Equals:
         tol : double
 
         """
-        self._SiteEquals_f = _xtal.SiteEquals_f(ref_site._pybind_value, tol)
+        self.ref_site = ref_site
+        self._SiteEquals_f = _xtal.SiteEquals_f(tol)
 
     def __call__(self, other):
         """
@@ -29,7 +30,8 @@ class Equals:
         bool
 
         """
-        return self._SiteEquals_f(other._pybind_value)
+        return self._SiteEquals_f(self.ref_site._pybind_value,
+                                  other._pybind_value)
 
 
 class _Site:

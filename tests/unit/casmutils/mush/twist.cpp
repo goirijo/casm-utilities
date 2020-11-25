@@ -492,8 +492,8 @@ TEST_F(GrapheneTwistTest, ReportsSelfConsistency)
 
                     auto approx_moire_reconstruct = cu::xtal::make_superlattice(
                         r.approximate_tiling_unit, r.tiling_unit_supercell_matrix.cast<int>());
-                    cu::xtal::LatticeEquals_f equals(approx_moire_reconstruct, 1e-8);
-                    EXPECT_TRUE(equals(r.approximate_moire));
+                    cu::xtal::LatticeEquals_f equals(1e-8);
+                    EXPECT_TRUE(equals(approx_moire_reconstruct, r.approximate_moire));
                 }
             }
         }
@@ -514,7 +514,7 @@ TEST_F(GrapheneTwistTest, ReportsLayerConsistency)
 
             for (int i = 0; i < top_all_reports.size(); ++i)
             {
-                //should be ok to compare exact values
+                // should be ok to compare exact values
                 EXPECT_EQ(top_all_reports[i].approximate_moire.column_vector_matrix(),
                           bottom_all_reports[i].approximate_moire.column_vector_matrix());
                 EXPECT_EQ(top_all_reports[i].true_moire.column_vector_matrix(),
@@ -572,20 +572,20 @@ TEST_F(GrapheneTwistTest, MoireScelMagicDegreeTwist)
 
 TEST_F(GrapheneTwistTest, RepeatedExpansion)
 {
-    double angle=15.0;
+    double angle = 15.0;
     cu::mush::MoireApproximator mini_graph_moire(graphene_ptr->lattice(), angle);
 
-    auto all_cells=mini_graph_moire.all(ZONE::ALIGNED,ZONE::ALIGNED);
-    EXPECT_EQ(all_cells.size(),1);
+    auto all_cells = mini_graph_moire.all(ZONE::ALIGNED, ZONE::ALIGNED);
+    EXPECT_EQ(all_cells.size(), 1);
 
     mini_graph_moire.expand(1000);
-    all_cells=mini_graph_moire.all(ZONE::ALIGNED,ZONE::ALIGNED);
-    int cells_with_1000=all_cells.size();
+    all_cells = mini_graph_moire.all(ZONE::ALIGNED, ZONE::ALIGNED);
+    int cells_with_1000 = all_cells.size();
 
     mini_graph_moire.expand(1000);
-    all_cells=mini_graph_moire.all(ZONE::ALIGNED,ZONE::ALIGNED);
+    all_cells = mini_graph_moire.all(ZONE::ALIGNED, ZONE::ALIGNED);
 
-    EXPECT_EQ(cells_with_1000,all_cells.size());
+    EXPECT_EQ(cells_with_1000, all_cells.size());
 }
 
 int main(int argc, char** argv)

@@ -64,7 +64,7 @@ PYBIND11_MODULE(_xtal, m)
 
     {
         class_<xtal::LatticeEquals_f>(m, "LatticeEquals_f")
-            .def(init<xtal::Lattice, double>())
+            .def(init<double>())
             .def("__call__", &xtal::LatticeEquals_f::operator());
     }
 
@@ -75,7 +75,7 @@ PYBIND11_MODULE(_xtal, m)
 
     {
         class_<xtal::CoordinateEquals_f>(m, "CoordinateEquals_f")
-            .def(init<Eigen::Vector3d, double>())
+            .def(init<double>())
             .def("__call__", &xtal::CoordinateEquals_f::operator());
     }
 
@@ -94,7 +94,7 @@ PYBIND11_MODULE(_xtal, m)
 
     {
         class_<xtal::SiteEquals_f>(m, "SiteEquals_f")
-            .def(init<xtal::Site, double>())
+            .def(init<double>())
             .def("__call__", &xtal::SiteEquals_f::operator());
     }
 

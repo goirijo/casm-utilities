@@ -49,6 +49,11 @@ config.h*
 *.cache
 configure.ac
 
+#Doxygen generated
+docs/dox/html
+docs/dox/latex
+docs/dox/xml
+
 #linked external libraries
 include/Eigen
 

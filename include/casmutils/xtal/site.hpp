@@ -44,12 +44,11 @@ class SiteEquals_f
 {
 public:
     /// Determines whether test is equal to reference site with a tolerance
-    SiteEquals_f(const Site& ref_site, double tol);
+    SiteEquals_f(double tol);
     /// Returns true if other is equal to ref_site
-    bool operator()(const Site& other);
+    bool operator()(const Site& ref_site, const Site& other) const;
 
 private:
-    Site ref_site;
     double tol;
 };
 } // namespace xtal

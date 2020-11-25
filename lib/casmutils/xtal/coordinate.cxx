@@ -36,11 +36,11 @@ Eigen::Vector3d bring_within_wigner_seitz(const Eigen::Vector3d& cartesian_coord
 
 } // namespace coordinate
 
-CoordinateEquals_f::CoordinateEquals_f(const Eigen::Vector3d& ref_coordinate, double tol)
-    : ref_coordinate(ref_coordinate), tol(tol)
+CoordinateEquals_f::CoordinateEquals_f(double tol) : tol(tol) {}
+bool CoordinateEquals_f::operator()(const Eigen::Vector3d& ref, const Eigen::Vector3d& other) const
 {
+    return ref.isApprox(other, tol);
 }
-bool CoordinateEquals_f::operator()(const Eigen::Vector3d& other) { return ref_coordinate.isApprox(other, tol); }
 
 } // namespace xtal
 } // namespace casmutils

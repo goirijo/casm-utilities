@@ -18,8 +18,8 @@ class Equals:
         tol : double
 
         """
-        self._CoordinateEquals_f = _xtal.CoordinateEquals_f(
-            ref_coordinate.cart(), tol)
+        self.ref_coordinate = ref_coordinate
+        self._CoordinateEquals_f = _xtal.CoordinateEquals_f(tol)
 
     def __call__(self, other):
         """
@@ -32,7 +32,8 @@ class Equals:
         bool
 
         """
-        return self._CoordinateEquals_f(other.cart())
+        return self._CoordinateEquals_f(self.ref_coordinate.cart(),
+                                        other.cart())
 
 
 class _Coordinate:

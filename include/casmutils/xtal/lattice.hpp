@@ -82,12 +82,11 @@ class LatticeEquals_f
 {
 public:
     /// The comparator requires a tolerance
-    LatticeEquals_f(const Lattice& ref_lat, double tol);
+    LatticeEquals_f(double tol);
     /// returns true is ref_lat is equal to other by direct vector comparison
-    bool operator()(const Lattice& other);
+    bool operator()(const Lattice& ref_lat, const Lattice& other) const;
 
 private:
-    Lattice ref_lat;
     double tol;
 };
 
