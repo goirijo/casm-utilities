@@ -124,9 +124,13 @@ TEST_F(LatticeTest, LatticeEquals)
     casmutils::xtal::Lattice fcc_with_distortion_lat(fcc_with_distortion_matrix);
     //  checks the ability to determine if two lattices
     // are equivalent within numerical tolerance
-    casmutils::xtal::LatticeEquals_f is_equal_to_fcc_lattice(*fcc_ptr, tol);
-    EXPECT_TRUE(is_equal_to_fcc_lattice(*fcc_copy_ptr));
-    EXPECT_FALSE(is_equal_to_fcc_lattice(fcc_with_distortion_lat));
+    casmutils::xtal::LatticeEquals_f is_equal_to_fcc_lattice(tol);
+    EXPECT_TRUE(is_equal_to_fcc_lattice(*fcc_ptr, *fcc_copy_ptr));
+    EXPECT_FALSE(is_equal_to_fcc_lattice(*fcc_ptr, fcc_with_distortion_lat));
+
+    casmutils::UnaryComparator_f<casmutils::xtal::LatticeEquals_f> unary_lattice_comparator(*fcc_ptr, tol);
+    EXPECT_TRUE(unary_lattice_comparator(*fcc_copy_ptr));
+    EXPECT_FALSE(unary_lattice_comparator(fcc_with_distortion_lat));
 }
 
 TEST_F(LatticeTest, MakeNiggli)
@@ -163,6 +167,9 @@ TEST_F(LatticeIsEquivalentTest, Identical)
 {
     casmutils::xtal::LatticeIsEquivalent_f exactly_equivalent(1e-8);
     EXPECT_TRUE(exactly_equivalent(*fcc_ptr, *fcc_ptr));
+
+    casmutils::UnaryComparator_f<casmutils::xtal::LatticeIsEquivalent_f> unary_lattice_comparator(*fcc_ptr, 1e-8);
+    EXPECT_TRUE(unary_lattice_comparator(*fcc_ptr));
 }
 
 TEST_F(LatticeIsEquivalentTest, PermutedVectors)

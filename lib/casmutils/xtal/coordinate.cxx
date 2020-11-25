@@ -67,11 +67,8 @@ Coordinate Coordinate::operator+(const Coordinate& coord_to_add) const
     return summed_coord;
 }
 
-CoordinateEquals_f::CoordinateEquals_f(const Coordinate& ref_coordinate, double tol)
-    : ref_coordinate(ref_coordinate), tol(tol)
-{
-}
-bool CoordinateEquals_f::operator()(const Coordinate& other)
+CoordinateEquals_f::CoordinateEquals_f(double tol) : tol(tol) {}
+bool CoordinateEquals_f::operator()(const Coordinate& ref_coordinate, const Coordinate& other) const
 {
     return ref_coordinate.cart().isApprox(other.cart(), tol);
 }

@@ -1,4 +1,5 @@
 // these are required for test construction
+#include <casmutils/misc.hpp>
 #include <casmutils/xtal/coordinate.hpp>
 #include <casmutils/xtal/lattice.hpp>
 #include <gtest/gtest.h>
@@ -61,9 +62,13 @@ TEST_F(SiteTest, SiteEquals)
 {
     // checks the ability to determine the equality of sites using Functor
     double tol = 1e-5;
-    casmutils::xtal::SiteEquals_f is_equal_to_lithium_site(*lithium_site_ptr, tol);
-    EXPECT_TRUE(is_equal_to_lithium_site(*lithium_site_ptr));
-    EXPECT_FALSE(is_equal_to_lithium_site(*nickel_site_ptr));
+    casmutils::xtal::SiteEquals_f is_equal_to_lithium_site(tol);
+    EXPECT_TRUE(is_equal_to_lithium_site(*lithium_site_ptr, *lithium_site_ptr));
+    EXPECT_FALSE(is_equal_to_lithium_site(*lithium_site_ptr, *nickel_site_ptr));
+
+    casmutils::UnaryComparator_f<casmutils::xtal::SiteEquals_f> unary_site_comparator(*lithium_site_ptr, tol);
+    EXPECT_TRUE(unary_site_comparator(*lithium_site_ptr));
+    EXPECT_FALSE(unary_site_comparator(*nickel_site_ptr));
 };
 
 int main(int argc, char** argv)
