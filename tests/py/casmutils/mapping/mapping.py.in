@@ -31,7 +31,6 @@ class StructureMapTest(unittest.TestCase):
         partial_bain_report = cu.mapping.map_structure(self.primitive_fcc_Ni,
                                                        self.partial_bain_Ni)[0]
 
-        print(partial_bain_report)
         full_bain_lattice_score, full_bain_basis_score = cu.mapping.structure_score(
             full_bain_report)
         partial_bain_lattice_score, partial_bain_basis_score = cu.mapping.structure_score(
