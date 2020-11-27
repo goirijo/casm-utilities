@@ -18,7 +18,7 @@ concat_configures()
     echo "AC_OUTPUT" >> ${target}
 }
 
-git submodule update --init --recursive
+#git submodule update --init --recursive
 
 echo "Appending plugins to Makefiles"
 include_sockets

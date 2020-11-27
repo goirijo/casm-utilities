@@ -1,0 +1,6 @@
+noinst_LTLIBRARIES += libcasmutils-clusterography.la
+
+libcasmutils_clusterography_la_SOURCES=
+libcasmutils_clusterography_la_SOURCES+=\
+						 lib/casmutils/clusterography/cluster_finder.cxx\
+						 include/casmutils/clusterography/cluster_finder.hpp
