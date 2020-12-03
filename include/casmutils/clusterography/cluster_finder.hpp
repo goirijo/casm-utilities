@@ -20,6 +20,7 @@ namespace clusterography
 {
 
 /// A cluster is defined as a group of sites
+/// TODO: Make it available without --enable-fullcasm
 struct Cluster
 {
 public:
@@ -52,6 +53,7 @@ private:
 };
 
 /// An orbit is defined as a group of symmetrically equivalent clusters
+/// TODO: Make it available without --enable-fullcasm
 /// TODO: It still has only basic functionality but should be improved
 /// TODO: Get the symmetry information - Generating Group from prototype
 struct Orbit
