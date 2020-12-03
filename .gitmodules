@@ -10,6 +10,3 @@
 [submodule "nlohmann-json"]
 	path = submodules/nlohmann-json
 	url = git@github.com:nlohmann/json.git
-[submodule "submodules/CASMcode"]
-	path = submodules/CASMcode
-	url = git@github.com:prisms-center/CASMcode.git
