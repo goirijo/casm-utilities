@@ -143,7 +143,7 @@ TEST_F(ShiftingTest, WignerSeitzShiftMatches)
             ++didnt_match;
         }
 
-        ws_shift = cu::xtal::coordinate::bring_within_lattice(ws_shift, b2_ptr->lattice());
+        ws_shift = cu::xtal::bring_within_lattice(ws_shift, b2_ptr->lattice());
         EXPECT_TRUE(shift_values[i].isApprox(ws_shift));
     }
 

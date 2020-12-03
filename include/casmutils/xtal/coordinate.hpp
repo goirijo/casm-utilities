@@ -10,14 +10,6 @@ namespace xtal
 {
 
 class Lattice;
-namespace coordinate
-{
-/**
- * The rewrap version of Coordinate does *not* have a home Lattice,
- * and instead is always set to CART mode. Any routines that involve
- * a lattice require passing it as an argument.
- */
-
 /// Returns cartesian coordinates when fractional coordinates are given
 Eigen::Vector3d fractional_to_cartesian(const Eigen::Vector3d& fractional_coordinate, const Lattice& lat);
 
@@ -30,9 +22,6 @@ Eigen::Vector3d bring_within_lattice(const Eigen::Vector3d& cartesian_coordinate
 /// Brings the given cartesian coordinates within the wigner seitz cell of the given lattice
 Eigen::Vector3d bring_within_wigner_seitz(const Eigen::Vector3d& cartesian_coordinate, const Lattice& lat);
 
-} // namespace coordinate
-
-// TODO: make this binary, not unary (same with all other comparators)
 struct CoordinateEquals_f
 {
     /// for casmutils::xtal::Coordinate

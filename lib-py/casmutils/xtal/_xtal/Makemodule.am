@@ -1,6 +1,4 @@
 _xtal_la_SOURCES=\
-				lib-py/casmutils/xtal/_xtal/coordinate-py.cxx\
-				lib-py/casmutils/xtal/_xtal/coordinate-py.hpp\
 				lib-py/casmutils/xtal/_xtal/lattice-py.cxx\
 				lib-py/casmutils/xtal/_xtal/lattice-py.hpp\
 				lib-py/casmutils/xtal/_xtal/rocksalttoggler-py.cxx\

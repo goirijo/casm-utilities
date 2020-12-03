@@ -53,7 +53,7 @@ double coarse_round(double x)
 
 bool is_within_voronoi(const Eigen::Vector3d& v, const xtal::Lattice& lat)
 {
-    auto vw = xtal::coordinate::bring_within_wigner_seitz(v, lat);
+    auto vw = xtal::bring_within_wigner_seitz(v, lat);
     return almost_equal(v, vw, 1e-13);
 }
 
@@ -172,8 +172,8 @@ Eigen::Matrix2d MoireLattice::bring_vectors_into_voronoi(const Eigen::Matrix2d& 
     Eigen::Vector3d ka(col_vectors(0, 0), col_vectors(1, 0), 0);
     Eigen::Vector3d kb(col_vectors(0, 1), col_vectors(1, 1), 0);
 
-    ka = xtal::coordinate::bring_within_wigner_seitz(ka, lat);
-    kb = xtal::coordinate::bring_within_wigner_seitz(kb, lat);
+    ka = xtal::bring_within_wigner_seitz(ka, lat);
+    kb = xtal::bring_within_wigner_seitz(kb, lat);
 
     Eigen::Matrix2d col_vectors_within;
     col_vectors_within.col(0) = ka.head(2);

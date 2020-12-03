@@ -7,9 +7,6 @@ namespace casmutils
 {
 namespace xtal
 {
-namespace coordinate
-{
-
 Eigen::Vector3d fractional_to_cartesian(const Eigen::Vector3d& fractional_coordinates, const Lattice& lat)
 {
     return CASM::xtal::Coordinate(fractional_coordinates, lat.__get(), CASM::FRAC).cart();
@@ -33,8 +30,6 @@ Eigen::Vector3d bring_within_wigner_seitz(const Eigen::Vector3d& cartesian_coord
     casm_coord.voronoi_within();
     return casm_coord.cart();
 }
-
-} // namespace coordinate
 
 CoordinateEquals_f::CoordinateEquals_f(double tol) : tol(tol) {}
 bool CoordinateEquals_f::operator()(const Eigen::Vector3d& ref, const Eigen::Vector3d& other) const

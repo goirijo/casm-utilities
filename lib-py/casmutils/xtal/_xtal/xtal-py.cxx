@@ -1,4 +1,3 @@
-#include "./coordinate-py.hpp"
 #include "./lattice-py.hpp"
 #include "./rocksalttoggler-py.hpp"
 #include "./site-py.hpp"
@@ -68,10 +67,10 @@ PYBIND11_MODULE(_xtal, m)
             .def("__call__", &xtal::LatticeEquals_f::operator());
     }
 
-    m.def("fractional_to_cartesian", casmutils::xtal::coordinate::fractional_to_cartesian);
-    m.def("cartesian_to_fractional", casmutils::xtal::coordinate::cartesian_to_fractional);
-    m.def("bring_within_lattice", casmutils::xtal::coordinate::bring_within_lattice);
-    m.def("bring_within_wigner_seitz", casmutils::xtal::coordinate::bring_within_wigner_seitz);
+    m.def("fractional_to_cartesian", casmutils::xtal::fractional_to_cartesian);
+    m.def("cartesian_to_fractional", casmutils::xtal::cartesian_to_fractional);
+    m.def("bring_within_lattice", casmutils::xtal::bring_within_lattice);
+    m.def("bring_within_wigner_seitz", casmutils::xtal::bring_within_wigner_seitz);
 
     {
         class_<xtal::CoordinateEquals_f>(m, "CoordinateEquals_f")
