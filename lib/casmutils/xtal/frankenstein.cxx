@@ -74,7 +74,7 @@ xtal::Structure stack(std::vector<xtal::Structure> sub_strucs)
         for (const xtal::Site& s : sub_strucs[i].basis_sites())
         {
             auto new_coord = s.cart() + c_shift;
-            stacked_basis.emplace_back(new_coord, s.label());
+            stacked_basis.push_back(xtal::Site(new_coord, s.label()));
         }
     }
     return xtal::Structure(stacked_lat, stacked_basis);
