@@ -5,7 +5,6 @@
 #include <casmutils/sym/cartesian.hpp>
 #include <casmutils/xtal/site.hpp>
 #include <casmutils/xtal/structure.hpp>
-#include <functional>
 
 /// File contents:
 /// This file provides structs & functions related to finding clusters and orbits for a structure:
