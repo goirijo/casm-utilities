@@ -10,9 +10,6 @@
 
 namespace cu = casmutils;
 
-// useful function for site filter
-bool site_filter(const cu::xtal::Site& site) { return true; }
-
 class ClusterographyTest : public testing::Test
 {
 protected:
@@ -22,11 +19,9 @@ protected:
         struc_ptr.reset(new cu::xtal::Structure(cu::xtal::Structure::from_poscar(pos_path)));
         max_length0 = {3, 2, 4};
         max_length1 = {3, 2, 4.01};
-        cu_site_filter = site_filter;
         tol = 1e-5;
     }
 
-    std::function<bool(cu::xtal::Site)> cu_site_filter;
     std::unique_ptr<casmutils::xtal::Structure> struc_ptr;
     std::vector<double> max_length0;
     std::vector<double> max_length1;
