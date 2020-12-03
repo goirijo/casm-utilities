@@ -27,14 +27,14 @@ protected:
     std::vector<double> max_length1;
     double tol;
     typedef casmutils::xtal::Site Site;
-    typedef casmutils::clusterography::Cluster Cluster;
-    typedef casmutils::clusterography::Orbit Orbit;
+    typedef casmutils::cluster::Cluster Cluster;
+    typedef casmutils::cluster::Orbit Orbit;
 };
 
 TEST_F(ClusterographyTest, MakePeriodicOrbits)
 {
-    std::vector<Orbit> orbits0 = cu::clusterography::make_periodic_orbits(max_length0, *struc_ptr);
-    std::vector<Orbit> orbits1 = cu::clusterography::make_periodic_orbits(max_length1, *struc_ptr);
+    std::vector<Orbit> orbits0 = cu::cluster::make_periodic_orbits(max_length0, *struc_ptr);
+    std::vector<Orbit> orbits1 = cu::cluster::make_periodic_orbits(max_length1, *struc_ptr);
 
     // In the first case, you will have 3 orbits (1 null point, 1 single point, 1 two point clusters)
     // There will be 4 clusters in single point cluster orbit (4 atoms in the conventional fcc)
@@ -63,7 +63,7 @@ TEST_F(ClusterographyTest, MakeLocalOrbits)
     phenomenal_cluster.add_site(struc_ptr->basis_sites()[0]);
 
     std::vector<Orbit> orbits0 =
-        cu::clusterography::make_local_orbits(phenomenal_cluster, false, max_length0, cut_off_radius, *struc_ptr);
+        cu::cluster::make_local_orbits(phenomenal_cluster, false, max_length0, cut_off_radius, *struc_ptr);
 
     // When you don't include the phenomenal cluster, there will be 12 sites around the origin
     EXPECT_EQ(orbits0.size(), 3);
@@ -71,7 +71,7 @@ TEST_F(ClusterographyTest, MakeLocalOrbits)
     EXPECT_EQ(orbits0[2].size(), 24);
 
     std::vector<Orbit> orbits1 =
-        cu::clusterography::make_local_orbits(phenomenal_cluster, true, max_length0, cut_off_radius, *struc_ptr);
+        cu::cluster::make_local_orbits(phenomenal_cluster, true, max_length0, cut_off_radius, *struc_ptr);
 
     // When you include the phenomenal cluster 2 new orbits will be generated
     // orbit of branch 1 with origin as a cluster

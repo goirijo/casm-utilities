@@ -16,7 +16,7 @@
 
 namespace casmutils
 {
-namespace clusterography
+namespace cluster
 {
 
 /// A cluster is defined as a group of sites
@@ -146,13 +146,13 @@ std::vector<Orbit> make_local_orbits(const Cluster& phenomenal_cluster,
                                      const casmutils::xtal::Structure& structure,
                                      const std::function<bool(const xtal::Site)>& site_filter = default_site_filter);
 
-} // namespace clusterography
+} // namespace cluster
 } // namespace casmutils
 
 namespace extend
 {
-typedef casmutils::clusterography::Cluster Cluster;
-typedef casmutils::clusterography::Orbit Orbit;
+typedef casmutils::cluster::Cluster Cluster;
+typedef casmutils::cluster::Orbit Orbit;
 
 template <typename CasmOrbitType>
 Orbit casm_orbit_to_casmutils_orbit(const CasmOrbitType& casm_orbit, const CASM::Structure& casm_struc)

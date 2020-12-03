@@ -15,7 +15,7 @@
 
 namespace casmutils
 {
-namespace clusterography
+namespace cluster
 {
 
 xtal::Site Cluster::operator[](const std::size_t& i) const
@@ -152,5 +152,5 @@ std::vector<Orbit> make_local_orbits(const Cluster& phenomenal_cluster,
     return orbits;
 }
 
-} // namespace clusterography
+} // namespace cluster
 } // namespace casmutils
