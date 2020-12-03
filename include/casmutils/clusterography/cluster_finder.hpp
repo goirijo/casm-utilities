@@ -10,7 +10,7 @@
 /// This file provides structs & functions related to finding clusters and orbits for a structure:
 /// To be able to compile this you need to compile casmutils with --enable-fullcasm option since this module
 /// utilizes symmetry & clustergraphy modules of casm
-/// In namespace - casutils::clusterography,
+/// In namespace - casutils::cluster,
 /// structs available: Cluster, Orbit - Look for the definitions below to use them
 /// functions available: make_periodic_clusters, make_local_clusters - Look for the definitions below to use them
 
