@@ -8,4 +8,7 @@ include include/casmutils/mapping/Makemodule.am
 include include/casmutils/mush/Makemodule.am
 include include/casmutils/sym/Makemodule.am
 include include/casmutils/xtal/Makemodule.am
+
+if FULL_CASM
 include include/casmutils/clusterography/Makemodule.am
+endif

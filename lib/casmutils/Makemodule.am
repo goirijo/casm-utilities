@@ -2,7 +2,6 @@ include lib/casmutils/xtal/Makemodule.am
 include lib/casmutils/sym/Makemodule.am
 include lib/casmutils/mapping/Makemodule.am
 include lib/casmutils/mush/Makemodule.am
-include lib/casmutils/clusterography/Makemodule.am
 
 if CASMUTILS_LIBRARY
 lib_LTLIBRARIES += libcasmutils.la
@@ -23,5 +22,10 @@ libcasmutils_la_LIBADD+=\
 					   libcasmutils-sym.la\
 					   libcasmutils-mapping.la\
 					   libcasmutils-mush.la\
-					   libcasmutils-xtal.la\
-					   libcasmutils-clusterography.la
+					   libcasmutils-xtal.la
+
+if FULL_CASM
+include lib/casmutils/clusterography/Makemodule.am
+libcasmutils_la_LIBADD+=\
+						libcasmutils-clusterography.la
+endif

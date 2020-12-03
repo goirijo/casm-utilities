@@ -52,3 +52,19 @@ bool SiteEquals_f::operator()(const Site& ref_site, const Site& other) const
 
 } // namespace xtal
 } // namespace casmutils
+
+namespace extend
+{
+
+casmutils::xtal::Site casm_site_to_casmutils_site(const CASM::xtal::Site& casm_site)
+{
+    std::string label;
+    for (const auto& m : casm_site.occupant_dof())
+    {
+        label += m.name();
+    }
+
+    return casmutils::xtal::Site(casm_site.cart(), label);
+}
+
+} // namespace extend

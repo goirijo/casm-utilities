@@ -16,8 +16,10 @@ check_meta_LDADD=\
 					libgtest.la\
 					libcasmutils.la
 
-#include tests/unit/casmutils/xtal/Makemodule.am
-#include tests/unit/casmutils/sym/Makemodule.am
-#include tests/unit/casmutils/mapping/Makemodule.am
-#include tests/unit/casmutils/mush/Makemodule.am
+include tests/unit/casmutils/xtal/Makemodule.am
+include tests/unit/casmutils/sym/Makemodule.am
+include tests/unit/casmutils/mapping/Makemodule.am
+include tests/unit/casmutils/mush/Makemodule.am
+if FULL_CASM
 include tests/unit/casmutils/clusterography/Makemodule.am
+endif

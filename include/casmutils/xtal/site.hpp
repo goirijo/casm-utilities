@@ -59,4 +59,11 @@ private:
 } // namespace xtal
 } // namespace casmutils
 
+namespace extend
+{
+/// Assumes that at each "CASM" site there is only one occupant. Otherwise the label of the casmutils site
+/// is gonna be messed up.
+casmutils::xtal::Site casm_site_to_casmutils_site(const CASM::xtal::Site& casm_site);
+} // namespace extend
+
 #endif
