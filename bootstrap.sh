@@ -20,6 +20,18 @@ concat_configures()
 
 git submodule update --init --recursive
 
+#Automatically generate Makefullcasm.am to track changes from submodules/CASMcode
+cd submodules/CASMcode
+bash bootstrap.sh > /dev/null
+cd ../../
+echo "Updating Makefile in casmblob..."
+cp submodules/CASMcode/src/casm/Makemodule.am lib/casmblob/Makefullcasm.am
+sed -i 's/lib_LTLIBRARIES/noinst_LTLIBRARIES/g' lib/casmblob/Makefullcasm.am
+sed -i 's/src\/casm/submodules\/CASMcode\/src\/casm/g' lib/casmblob/Makefullcasm.am
+sed -i 's/include\/casm/submodules\/CASMcode\/include\/casm/g' lib/casmblob/Makefullcasm.am
+sed -i 's/libcasm/libcasmblob/g' lib/casmblob/Makefullcasm.am
+
+
 echo "Appending plugins to Makefiles"
 include_sockets
 concat_configures
