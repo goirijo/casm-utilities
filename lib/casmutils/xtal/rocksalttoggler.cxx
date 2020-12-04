@@ -273,22 +273,23 @@ void RockSaltOctahedraToggler::commit_vertex_ions() const
 
 RockSaltOctahedraToggler::index RockSaltOctahedraToggler::coordinate_to_index(Coordinate coordinate) const
 {
+    throw except::NotImplemented();
     // TODO: Bring the coordinate within relative to the rocksalt structure lattice before making any comparisons
-    coordinate.bring_within(this->rocksalt_struc.lattice());
-    // Go through the basis of the structure
-    // and find out which basis index the
-    // given coordinate corresponds to
-    auto basis = this->rocksalt_struc.basis_sites();
-    for (int ix = 0; ix < basis.size(); ++ix)
-    {
-        if (casmutils::is_equal<casmutils::xtal::CoordinateEquals_f>(
-                static_cast<Coordinate>(basis[ix]), coordinate, 1e-5))
-        {
-            return ix;
-        }
-    }
-
-    throw except::IncompatibleCoordinate();
+    //    coordinate.bring_within(this->rocksalt_struc.lattice());
+    //    // Go through the basis of the structure
+    //    // and find out which basis index the
+    //    // given coordinate corresponds to
+    //    auto basis = this->rocksalt_struc.basis_sites();
+    //    for (int ix = 0; ix < basis.size(); ++ix)
+    //    {
+    //        if (casmutils::is_equal<casmutils::xtal::CoordinateEquals_f>(
+    //                static_cast<Coordinate>(basis[ix]), coordinate, 1e-5))
+    //        {
+    //            return ix;
+    //        }
+    //    }
+    //
+    //    throw except::IncompatibleCoordinate();
 }
 
 RockSaltOctahedraToggler::Coordinate RockSaltOctahedraToggler::index_to_coordinate(index coordinate_index) const

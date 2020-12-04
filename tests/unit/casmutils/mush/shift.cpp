@@ -137,14 +137,14 @@ TEST_F(ShiftingTest, WignerSeitzShiftMatches)
     int didnt_match = 0;
     for (int i = 0; i < shift_values.size(); ++i)
     {
-        cu::xtal::Coordinate ws_shift(wigner_seitz_shift_values[i]);
-        if (!shift_values[i].isApprox(ws_shift.cart()))
+        auto ws_shift = wigner_seitz_shift_values[i];
+        if (!shift_values[i].isApprox(ws_shift))
         {
             ++didnt_match;
         }
 
-        ws_shift.bring_within(b2_ptr->lattice());
-        EXPECT_TRUE(shift_values[i].isApprox(ws_shift.cart()));
+        ws_shift = cu::xtal::bring_within_lattice(ws_shift, b2_ptr->lattice());
+        EXPECT_TRUE(shift_values[i].isApprox(ws_shift));
     }
 
     EXPECT_TRUE(didnt_match >= as * bs / 4);

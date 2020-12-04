@@ -79,6 +79,24 @@ class CoordinateTest(unittest.TestCase):
         self.coord0m += self.coord1m
         self.assertTrue(sum_coord == self.coord0m)
 
+    def test_cart_to_frac(self):
+        new_frac = cu.xtal.coordinate.cartesian_to_fractional(
+            self.raw_coord0, self.lat)
+        self.assertTrue(np.allclose(self.frac_coords0, new_frac))
+
+    def test_frac_to_cart(self):
+        new_cart = cu.xtal.coordinate.fractional_to_cartesian(
+            self.frac_coords0, self.lat)
+        self.assertTrue(np.allclose(self.raw_coord0, new_cart))
+
+    def test_within_lat(self):
+        lat_trans = cu.xtal.coordinate.fractional_to_cartesian(
+            np.array([2, 3, 4]), self.lat)
+        new_coord = np.add(self.raw_coord0, lat_trans)
+        new_within = cu.xtal.coordinate.bring_within_lattice(
+            new_coord, self.lat)
+        self.assertTrue(np.allclose(self.raw_coord0, new_within))
+
 
 if __name__ == '__main__':
     unittest.main()

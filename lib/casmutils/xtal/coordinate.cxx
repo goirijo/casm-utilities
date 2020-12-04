@@ -7,70 +7,34 @@ namespace casmutils
 {
 namespace xtal
 {
-Coordinate Coordinate::from_fractional(const Eigen::Vector3d& frac_coord, const Lattice& lat)
+Eigen::Vector3d fractional_to_cartesian(const Eigen::Vector3d& fractional_coordinates, const Lattice& lat)
 {
-    CASM::xtal::Coordinate coord(frac_coord, lat.__get(), CASM::FRAC);
-    return Coordinate(coord);
+    return CASM::xtal::Coordinate(fractional_coordinates, lat.__get(), CASM::FRAC).cart();
 }
 
-Coordinate Coordinate::from_fractional(double x, double y, double z, const Lattice& lat)
+Eigen::Vector3d cartesian_to_fractional(const Eigen::Vector3d& cartesian_coord, const Lattice& lat)
 {
-    return Coordinate::from_fractional(Eigen::Vector3d(x, y, z), lat);
+    return CASM::xtal::Coordinate(cartesian_coord, lat.__get(), CASM::CART).frac();
 }
 
-void Coordinate::bring_within(const Lattice& lat)
+Eigen::Vector3d bring_within_lattice(const Eigen::Vector3d& cartesian_coord, const Lattice& lat)
 {
-    this->casm_coord.set_lattice(lat.__get(), CASM::CART);
-    this->casm_coord.within();
-    return;
+    CASM::xtal::Coordinate casm_coord(cartesian_coord, lat.__get(), CASM::CART);
+    casm_coord.within();
+    return casm_coord.cart();
 }
 
-Coordinate Coordinate::bring_within(const Lattice& lat) const
+Eigen::Vector3d bring_within_wigner_seitz(const Eigen::Vector3d& cartesian_coord, const Lattice& lat)
 {
-    Coordinate copy_coord(*this);
-    copy_coord.bring_within(lat);
-    return copy_coord;
-}
-
-void Coordinate::bring_within_wigner_seitz(const Lattice& lat)
-{
-    this->casm_coord.set_lattice(lat.__get(), CASM::CART);
-    this->casm_coord.voronoi_within();
-    return;
-}
-
-Coordinate Coordinate::bring_within_wigner_seitz(const Lattice& lat) const
-{
-    Coordinate copy_coord(*this);
-    copy_coord.bring_within_wigner_seitz(lat);
-    return copy_coord;
-}
-
-Eigen::Vector3d Coordinate::cart() const { return this->casm_coord.cart(); }
-
-Eigen::Vector3d Coordinate::frac(const Lattice& ref_lattice) const
-{
-    const_cast<CASM::xtal::Coordinate*>(&this->casm_coord)->set_lattice(ref_lattice.__get(), CASM::CART);
-    return this->casm_coord.frac();
-}
-
-Coordinate& Coordinate::operator+=(const Coordinate& coord_to_add)
-{
-    this->casm_coord += coord_to_add.casm_coord;
-    return *this;
-}
-
-Coordinate Coordinate::operator+(const Coordinate& coord_to_add) const
-{
-    Coordinate summed_coord = *this;
-    summed_coord += coord_to_add;
-    return summed_coord;
+    CASM::xtal::Coordinate casm_coord(cartesian_coord, lat.__get(), CASM::CART);
+    casm_coord.voronoi_within();
+    return casm_coord.cart();
 }
 
 CoordinateEquals_f::CoordinateEquals_f(double tol) : tol(tol) {}
-bool CoordinateEquals_f::operator()(const Coordinate& ref_coordinate, const Coordinate& other) const
+bool CoordinateEquals_f::operator()(const Eigen::Vector3d& ref, const Eigen::Vector3d& other) const
 {
-    return ref_coordinate.cart().isApprox(other.cart(), tol);
+    return ref.isApprox(other, tol);
 }
 
 } // namespace xtal

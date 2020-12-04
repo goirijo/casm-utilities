@@ -31,7 +31,6 @@ protected:
     using Lattice = cu::xtal::Lattice;
     using Structure = cu::xtal::Structure;
     using CartOp = cu::sym::CartOp;
-    using Coordinate = cu::xtal::Coordinate;
     void SetUp() override
     {
         Eigen::Matrix3d cubic_lat_matrix = 3 * Eigen::Matrix3d::Identity();
@@ -50,7 +49,6 @@ protected:
         translation << 0.5, 0.5, 0.5;
         eigen_vector_coordinate << 1.2, 1.3, 1.4;
         cart_op_ptr.reset(new CartOp{rotation_90, translation, false});
-        coord_ptr.reset(new Coordinate{eigen_vector_coordinate});
     }
 
     std::unique_ptr<Lattice> cubic_lat_ptr;
@@ -58,7 +56,6 @@ protected:
     std::unique_ptr<Structure> hcp_Mg_ptr;
     std::unique_ptr<Structure> almost_hcp_Mg_ptr;
     std::unique_ptr<CartOp> cart_op_ptr;
-    std::unique_ptr<Coordinate> coord_ptr;
     Eigen::Matrix3d rotation_90;
     Eigen::Vector3d translation;
     Eigen::Vector3d eigen_vector_coordinate;
@@ -104,17 +101,10 @@ TEST_F(SymmetrizeTest, ApplySymOpEigenVector)
 
 TEST_F(SymmetrizeTest, ApplySymOpSite)
 {
-    cu::xtal::Site lithium_site(*coord_ptr, "Li");
+    cu::xtal::Site lithium_site(eigen_vector_coordinate, "Li");
     auto transformed_site = *cart_op_ptr * lithium_site;
     EXPECT_TRUE(transformed_site.cart().isApprox(rotation_90 * lithium_site.cart() + translation));
     EXPECT_EQ(transformed_site.label(), lithium_site.label());
-}
-
-TEST_F(SymmetrizeTest, ApplySymOpCoordinate)
-{
-    auto coord = *coord_ptr;
-    auto transformed_coord = *cart_op_ptr * coord;
-    EXPECT_TRUE(transformed_coord.cart().isApprox(rotation_90 * coord_ptr->cart() + translation));
 }
 
 int main(int argc, char** argv)

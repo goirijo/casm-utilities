@@ -1,4 +1,5 @@
 #include <casmutils/sym/cartesian.hpp>
+#include <casmutils/xtal/symmetry.hpp>
 #include <fstream>
 #include <string>
 
@@ -17,6 +18,8 @@ namespace casmutils
 namespace wrappy
 {
 using namespace casmutils;
+using casmutils::xtal::operator*;
+
 PYBIND11_MODULE(_sym, m)
 {
     using namespace pybind11;
@@ -35,7 +38,10 @@ PYBIND11_MODULE(_sym, m)
             .def_readwrite("matrix", &sym::CartOp::matrix)
             .def_readwrite("translation", &sym::CartOp::translation)
             .def_readwrite("is_time_reversal_active", &sym::CartOp::is_time_reversal_active)
-            .def(pybind11::self * pybind11::self);
+            .def(pybind11::self * pybind11::self)
+            .def("__mul__", [](const sym::CartOp& op, const Eigen::Vector3d& coord) {
+                return op * coord;
+            });
     }
 }
 } // namespace wrappy

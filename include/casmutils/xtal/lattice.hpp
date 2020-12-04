@@ -124,17 +124,6 @@ xtal::Lattice make_superlattice(const xtal::Lattice& tiling_unit, const Eigen::M
 /// Given a lattice and a vector of integer Miller indices, return the smallest superlattice
 /// that has the a and b vectors spanning the specified plane
 xtal::Lattice slice_along_plane(const xtal::Lattice& unit_lattice, const Eigen::Vector3i& miller_indexes);
-
-/// Converts Cartesian coordinates to fractional
-Eigen::Vector3d make_fractional(const Eigen::Vector3d& cart_coord, const xtal::Lattice& lat);
-
-// TODO: Tolerance issues?
-/// Brings the given Cartesian coordinate inside the unit cell
-Eigen::Vector3d bring_within(const Eigen::Vector3d cart_coord, const xtal::Lattice& unit_cell);
-
-/// Brings the given Cartesian coordinate inside the Wigner-Seitz cell of the given unit cell
-Eigen::Vector3d bring_within_wigner_seitz(const Eigen::Vector3d cart_coord, const xtal::Lattice& unit_cell);
-
 } // namespace xtal
 } // namespace casmutils
 

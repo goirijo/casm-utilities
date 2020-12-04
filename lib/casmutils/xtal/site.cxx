@@ -13,20 +13,13 @@ namespace casmutils
 namespace xtal
 {
 
-Site::operator Coordinate() const { return Coordinate(this->casm_site); }
-
-Site::Site(const Coordinate& init_coord, const std::string& occupant_name)
-    : casm_site(CASM::xtal::Site(init_coord.__get(), occupant_name))
+Site::Site(const Eigen::Vector3d& init_coord, const std::string& occupant_name)
+    : casm_site(CASM::xtal::Site(CASM::xtal::Coordinate(init_coord, CASM::xtal::Lattice(), CASM::CART), occupant_name))
 {
     // Avoid a multioccupant site
     assert(casm_site.allowed_occupants().size() == 1);
     // Avoid an unitialized state.
     this->casm_site.set_label(0);
-}
-
-Site::Site(const Eigen::Vector3d& init_coord, const std::string& occupant_name)
-    : Site(Coordinate(init_coord), occupant_name)
-{
 }
 
 Site::Site(const CASM::xtal::Site& init_site, int occupant) : casm_site(init_site)
@@ -46,8 +39,7 @@ Eigen::Vector3d Site::frac(const Lattice& ref_lattice) const
 SiteEquals_f::SiteEquals_f(double tol) : tol(tol) {}
 bool SiteEquals_f::operator()(const Site& ref_site, const Site& other) const
 {
-    return is_equal<CoordinateEquals_f>(static_cast<Coordinate>(ref_site), static_cast<Coordinate>(other), tol) &&
-           ref_site.label() == other.label();
+    return is_equal<CoordinateEquals_f>(ref_site.cart(), other.cart(), tol) && ref_site.label() == other.label();
 }
 
 } // namespace xtal

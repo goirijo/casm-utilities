@@ -38,12 +38,12 @@ xtal::Structure stack(std::vector<xtal::Structure> sub_strucs)
     // Even if you don't want to strain it you HAVE to ensure that the ab vectors
     // are at least aligned properly, or you're going to sum up weird stuff if you
     // feed structures that have the same ab vectors within a rigid rotation
-    for(auto& s : sub_strucs)
+    for (auto& s : sub_strucs)
     {
-        const auto& ref_lat=sub_strucs[0].lattice();
-        const auto& curr_lat=s.lattice();
-        xtal::Lattice compatible_lat(ref_lat.a(),ref_lat.b(),curr_lat.c());
-        s.set_lattice(compatible_lat,xtal::FRAC);
+        const auto& ref_lat = sub_strucs[0].lattice();
+        const auto& curr_lat = s.lattice();
+        xtal::Lattice compatible_lat(ref_lat.a(), ref_lat.b(), curr_lat.c());
+        s.set_lattice(compatible_lat, xtal::FRAC);
     }
 
     // Create a new lattice that has the same ab vectors. but summed up
@@ -67,14 +67,14 @@ xtal::Structure stack(std::vector<xtal::Structure> sub_strucs)
     for (int i = 1; i < sub_strucs.size(); i++)
     {
         // determine appropriate c-axis shift for position in stacking
-        c_shift += sub_strucs[i-1].lattice().column_vector_matrix().col(2);
+        c_shift += sub_strucs[i - 1].lattice().column_vector_matrix().col(2);
 
         // Shift each site of the basis by the appropriate c shift,
         // and adds them to the stacked structure
         for (const xtal::Site& s : sub_strucs[i].basis_sites())
         {
-            xtal::Coordinate new_coord = xtal::Coordinate(s.cart() + c_shift);
-            stacked_basis.emplace_back(new_coord, s.label());
+            auto new_coord = s.cart() + c_shift;
+            stacked_basis.push_back(xtal::Site(new_coord, s.label()));
         }
     }
     return xtal::Structure(stacked_lat, stacked_basis);
@@ -85,7 +85,7 @@ std::vector<xtal::Site> translate_basis(const std::vector<xtal::Site>& basis, co
     std::vector<xtal::Site> translated_basis;
     for (const auto& site : basis)
     {
-        translated_basis.emplace_back(xtal::Coordinate(site.cart() + shift), site.label());
+        translated_basis.emplace_back((site.cart() + shift), site.label());
     }
 
     return translated_basis;
@@ -96,7 +96,7 @@ xtal::Structure translate_basis(const xtal::Structure& struc, const Eigen::Vecto
     std::vector<xtal::Site> translated_basis;
     for (const auto& s : struc.basis_sites())
     {
-        translated_basis.emplace_back(xtal::Coordinate(s.cart() + shift), s.label());
+        translated_basis.emplace_back((s.cart() + shift), s.label());
     }
 
     return xtal::Structure(struc.lattice(), translated_basis);

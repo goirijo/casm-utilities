@@ -100,8 +100,8 @@ TEST_F(SlicingTest, StructureSlice_b2_101)
 
     EXPECT_EQ(b2_slice.basis_sites().size(), 4);
 
-    cu::xtal::Site site0(cu::xtal::Coordinate::from_fractional(0, 0, 0, b2_slice.lattice()), "A");
-    cu::xtal::Site site1(cu::xtal::Coordinate::from_fractional(0.5, 0.5, 0, b2_slice.lattice()), "B");
+    cu::xtal::Site site0(cu::xtal::fractional_to_cartesian(Eigen::Vector3d(0, 0, 0), b2_slice.lattice()), "A");
+    cu::xtal::Site site1(cu::xtal::fractional_to_cartesian(Eigen::Vector3d(0.5, 0.5, 0), b2_slice.lattice()), "B");
 
     cu::xtal::SiteEquals_f is_equal_site(tol);
     EXPECT_TRUE(

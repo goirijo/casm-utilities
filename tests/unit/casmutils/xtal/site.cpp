@@ -13,24 +13,19 @@ protected:
     void SetUp() override
     {
         Eigen::Vector3d raw_coord(0.1, 0.2, 0.3);
-        Coordinate init_position(raw_coord);
         // store coordinate object for comparisons later
-        init_pos_ptr.reset(new Coordinate(raw_coord));
         // Makes lithium and nickel sites with the same position
-        lithium_site_ptr.reset(new Site(init_position, "Li"));
-        nickel_site_ptr.reset(new Site(init_position, "Ni"));
+        lithium_site_ptr.reset(new Site(raw_coord, "Li"));
+        nickel_site_ptr.reset(new Site(raw_coord, "Ni"));
         // store lattice for coordinate transforms
         cubic_lattice_ptr.reset(new Lattice(4.0 * Eigen::Matrix3d::Identity()));
     }
-    using Coordinate = casmutils::xtal::Coordinate;
     using Lattice = casmutils::xtal::Lattice;
     using Site = casmutils::xtal::Site;
 
     // Use unique pointers because Site has no default constructor
     std::unique_ptr<Site> lithium_site_ptr;
     std::unique_ptr<Site> nickel_site_ptr;
-
-    std::unique_ptr<Coordinate> init_pos_ptr;
 
     std::unique_ptr<Lattice> cubic_lattice_ptr;
 };
@@ -44,12 +39,6 @@ TEST_F(SiteTest, Construct)
     EXPECT_EQ(lithium_site_ptr->label(), "Li");
     EXPECT_EQ(nickel_site_ptr->label(), "Ni");
 }
-
-TEST_F(SiteTest, CoordCast)
-{
-    // checks the ability to cast a Site to a Coordinate
-    EXPECT_EQ(Coordinate(*lithium_site_ptr).cart(), init_pos_ptr->cart());
-};
 
 TEST_F(SiteTest, FracConversion)
 {

@@ -69,7 +69,7 @@ xtal::Structure make_aligned(xtal::Structure struc)
 
 void make_aligned(xtal::Structure* struc)
 {
-    struc->set_lattice(make_aligned(struc->lattice()),xtal::FRAC);
+    struc->set_lattice(make_aligned(struc->lattice()), xtal::FRAC);
     return;
 }
 
@@ -78,14 +78,16 @@ xtal::Lattice orthogonalize_c_vector(const xtal::Lattice& lat)
     assert(lat.column_vector_matrix().determinant() > 0);
     Eigen::Vector3d normal = lat.a().cross(lat.b()).normalized();
 
-    xtal::Coordinate ortho_component = xtal::Coordinate(lat.c().dot(normal) * normal);
-    xtal::Coordinate plane_component = xtal::Coordinate(lat.c() - ortho_component.cart());
+    Eigen::Vector3d ortho_component = lat.c().dot(normal) * normal;
+    Eigen::Vector3d plane_component = lat.c() - ortho_component;
 
     // In plane component should have no c component
-    assert(almost_equal(plane_component.frac(lat)(2), 0.0, 1e-8));
 
-    plane_component.bring_within_wigner_seitz(lat);
-    Eigen::Vector3d final_c = plane_component.cart() + ortho_component.cart();
+    auto plane_component_frac = xtal::cartesian_to_fractional(plane_component, lat);
+    assert(almost_equal(plane_component_frac(2), 0.0, 1e-8));
+
+    plane_component = xtal::bring_within_wigner_seitz(plane_component, lat);
+    Eigen::Vector3d final_c = plane_component + ortho_component;
     return xtal::Lattice(lat.a(), lat.b(), final_c);
 }
 

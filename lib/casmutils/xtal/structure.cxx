@@ -152,7 +152,7 @@ void Structure::_update_internals_from_simple()
         const auto& info =
             this->__get<CASM::xtal::SimpleStructure>().info(CASM::xtal::SimpleStructure::SpeciesMode::ATOM);
         Eigen::Vector3d raw_coord = info.cart_coord(index);
-        new_basis.emplace_back(casmutils::xtal::Coordinate(raw_coord), info.names[index]);
+        new_basis.emplace_back(raw_coord, info.names[index]);
     }
     this->basis = new_basis;
 }

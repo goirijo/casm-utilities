@@ -20,8 +20,8 @@ protected:
         cubic_lat_ptr.reset(new casmutils::xtal::Lattice(cubic_lat_mat));
         big_cubic_lat_ptr.reset(new casmutils::xtal::Lattice(2 * cubic_lat_mat));
         // Make two Ni sites at different locations along z axis
-        casmutils::xtal::Site site0(casmutils::xtal::Coordinate(Eigen::Vector3d(0, 0, 1)), "Ni");
-        casmutils::xtal::Site site1(casmutils::xtal::Coordinate(Eigen::Vector3d(0, 0, 2)), "Ni");
+        casmutils::xtal::Site site0(Eigen::Vector3d(0, 0, 1), "Ni");
+        casmutils::xtal::Site site1(Eigen::Vector3d(0, 0, 2), "Ni");
         // Make bases out of each site
         basis0_ptr.reset(new std::vector<casmutils::xtal::Site>({site0}));
         basis1_ptr.reset(new std::vector<casmutils::xtal::Site>({site1}));
@@ -98,7 +98,7 @@ TEST_F(StructureTest, ConstSetLatticeCart)
 TEST_F(StructureTest, Within)
 {
     // checks to see if all basis sites can be moved within the bounding box of the lattice
-    casmutils::xtal::Site outside_site(casmutils::xtal::Coordinate(0, 0, -1), "Ni");
+    casmutils::xtal::Site outside_site(Eigen::Vector3d(0, 0, -1), "Ni");
     casmutils::xtal::Structure outside_structure(*cubic_lat_ptr, {outside_site});
     outside_structure.within();
     EXPECT_TRUE(

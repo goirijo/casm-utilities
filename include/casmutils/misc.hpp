@@ -22,6 +22,7 @@ namespace casmutils
 {
 using CASM::almost_equal;
 using CASM::almost_zero;
+
 template <typename ComparatorType_f, typename CompareType, typename... Args>
 bool is_equal(const CompareType& reference, const CompareType& other, const Args&... functor_params)
 {
@@ -62,11 +63,6 @@ private:
  */
 namespace extend
 {
-/// Make a PrimClex but shut up about it
-CASM::PrimClex quiet_primclex(CASM::xtal::Structure& prim);
-
-/// Alternate construction of a site with only occupant degrees of freedom, and atom as occuapnt (no molecule)
-CASM::xtal::Site atomic_site(const CASM::xtal::Coordinate& coord, const std::vector<std::string>& allowed_species);
 } // namespace extend
 
 namespace io

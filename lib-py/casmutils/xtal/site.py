@@ -50,7 +50,7 @@ class _Site:
 
         elif type(coord).__name__ is "Coordinate" or type(
                 coord).__name__ is "MutableCoordinate":
-            self._pybind_value = _xtal.Site(coord._pybind_value, label)
+            self._pybind_value = _xtal.Site(coord.cart(), label)
 
         else:
             self._pybind_value = _xtal.Site(coord, label)
