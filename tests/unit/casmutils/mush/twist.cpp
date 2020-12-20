@@ -477,7 +477,7 @@ TEST_F(GrapheneTwistTest, ReportsSelfConsistency)
     {
         for (LAT layer : {LAT::ALIGNED, LAT::ROTATED})
         {
-            for (double angle = 1.0; angle < 55.0; angle += 1.5)
+            for (double angle = 1.0; angle < 55.0; angle += 2.1)
             {
                 cu::mush::MoireApproximator graphene_approximator(graphene_ptr->lattice(), angle, 500);
                 auto all_reports = graphene_approximator.all(bz, layer);
@@ -568,6 +568,20 @@ TEST_F(GrapheneTwistTest, MoireScelMagicDegreeTwist)
             }
         }
     }
+}
+
+TEST_F(GrapheneTwistTest, DeformationReportTrivial)
+{
+    const auto I = Eigen::Matrix3d::Identity();
+    cu::mush::DeformationReport report(I);
+    
+    const auto&F = report.deformation;
+    const auto&R = report.rotation;
+    const auto&V = report.strain;
+
+    EXPECT_TRUE(almost_zero(F - I));
+    EXPECT_TRUE(almost_zero(R - I));
+    EXPECT_TRUE(almost_zero(V - I));
 }
 
 TEST_F(GrapheneTwistTest, RepeatedExpansion)

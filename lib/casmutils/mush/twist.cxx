@@ -249,11 +249,6 @@ xtal::Lattice make_prismatic_lattice(const xtal::Lattice& lat)
 DeformationReport::DeformationReport(const Eigen::Matrix3d& _deformation) : deformation(_deformation)
 {
     std::tie(rotation, strain) = xtal::polar_decomposition(deformation);
-    //We will not decompose as F=RU, but F=VR
-    //The relationship exists V=R*U*R.T
-    //https://en.wikipedia.org/wiki/Finite_strain_theory#Polar_decomposition_of_the_deformation_gradient_tensor
-    strain=rotation*strain*rotation.transpose();
-
     this->rotation_angle = std::atan2(rotation(1, 0), rotation(0, 0)) * 180.0 / M_PI;
 
     Eigen::Matrix3d E = strain - Eigen::Matrix3d::Identity();
@@ -496,7 +491,7 @@ MoireApproximator::MoireApproximator(const xtal::Lattice& input_lat, double degr
     this->moire_unit_approximants.try_emplace(
         LATTICE::ALIGNED, moire.aligned_moire_lattice, moire.aligned_lattice, moire.rotated_lattice);
     this->moire_unit_approximants.try_emplace(
-        LATTICE::ROTATED, moire.aligned_moire_lattice, moire.rotated_lattice, moire.rotated_lattice);
+        LATTICE::ROTATED, moire.rotated_moire_lattice, moire.aligned_lattice, moire.rotated_lattice);
 
     // Go ahead and enumerate the smallest Moire possible.
     // Subsequent enumeration of supercells counts on this.
