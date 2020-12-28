@@ -491,7 +491,7 @@ MoireApproximator::MoireApproximator(const xtal::Lattice& input_lat, double degr
     this->moire_unit_approximants.try_emplace(
         LATTICE::ALIGNED, moire.aligned_moire_lattice, moire.aligned_lattice, moire.rotated_lattice);
     this->moire_unit_approximants.try_emplace(
-        LATTICE::ROTATED, moire.aligned_moire_lattice, moire.rotated_lattice, moire.rotated_lattice);
+        LATTICE::ROTATED, moire.rotated_moire_lattice, moire.aligned_lattice, moire.rotated_lattice);
 
     // Go ahead and enumerate the smallest Moire possible.
     // Subsequent enumeration of supercells counts on this.
