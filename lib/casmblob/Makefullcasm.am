@@ -33,13 +33,16 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/src/casm/crystallography/UnitCellCoordTraits.cc\
     submodules/CASMcode/src/casm/crystallography/DoFSet.cc\
     submodules/CASMcode/src/casm/crystallography/io/LatticeIO.cc\
+    submodules/CASMcode/src/casm/crystallography/io/BasicStructureIO.cc\
     submodules/CASMcode/src/casm/crystallography/io/SuperlatticeEnumeratorIO.cc\
     submodules/CASMcode/src/casm/crystallography/io/UnitCellCoordIO.cc\
     submodules/CASMcode/src/casm/crystallography/io/DoFSetIO.cc\
     submodules/CASMcode/src/casm/crystallography/io/SimpleStructureIO.cc\
     submodules/CASMcode/src/casm/crystallography/io/VaspIO.cc\
+    submodules/CASMcode/src/casm/crystallography/io/data/SharedPrim_data_io.cc\
     submodules/CASMcode/src/casm/clex/MappedPropertiesTools.cc\
     submodules/CASMcode/src/casm/clex/MappedProperties.cc\
+    submodules/CASMcode/src/casm/clex/CompositionAxes.cc\
     submodules/CASMcode/src/casm/clex/ClexBasis.cc\
     submodules/CASMcode/src/casm/clex/ConfigEnumRandomOccupations.cc\
     submodules/CASMcode/src/casm/clex/CompositionConverter.cc\
@@ -60,6 +63,7 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/src/casm/clex/NeighborList.cc\
     submodules/CASMcode/src/casm/clex/ConfigEnumByPermutation.cc\
     submodules/CASMcode/src/casm/clex/ScelEnumEquivalents.cc\
+    submodules/CASMcode/src/casm/clex/ConfigDoFTools.cc\
     submodules/CASMcode/src/casm/clex/ConfigEnumRandomLocal.cc\
     submodules/CASMcode/src/casm/clex/ConfigDoF.cc\
     submodules/CASMcode/src/casm/clex/ConfigIOStrucScore.cc\
@@ -78,9 +82,19 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/src/casm/clex/Reference.cc\
     submodules/CASMcode/src/casm/clex/ParamComposition.cc\
     submodules/CASMcode/src/casm/clex/ConfigIOStrain.cc\
+    submodules/CASMcode/src/casm/clex/io/ProtoFuncsPrinter.cc\
     submodules/CASMcode/src/casm/clex/io/json/ConfigDoF_json_io.cc\
+    submodules/CASMcode/src/casm/clex/io/json/Configuration_json_io.cc\
+    submodules/CASMcode/src/casm/clex/io/json/ChemicalReference_json_io.cc\
     submodules/CASMcode/src/casm/clex/io/json/ECIContainer_json_io.cc\
+    submodules/CASMcode/src/casm/clex/io/json/CompositionConverter_json_io.cc\
     submodules/CASMcode/src/casm/clex/io/json/ClexBasisSpecs_json_io.cc\
+    submodules/CASMcode/src/casm/clex/io/json/ConfigMapping_json_io.cc\
+    submodules/CASMcode/src/casm/clex/io/json/CompositionAxes_json_io.cc\
+    submodules/CASMcode/src/casm/clex/io/stream/Configuration_stream_io.cc\
+    submodules/CASMcode/src/casm/clex/io/stream/ClexBasis_stream_io.cc\
+    submodules/CASMcode/src/casm/clex/io/file/CompositionAxes_file_io.cc\
+    submodules/CASMcode/src/casm/clex/io/file/ChemicalReference_file_io.cc\
     submodules/CASMcode/src/casm/external/qhull/libqhull_r/poly2_r.c\
     submodules/CASMcode/src/casm/external/qhull/libqhull_r/global_r.c\
     submodules/CASMcode/src/casm/external/qhull/libqhull_r/io_r.c\
@@ -116,6 +130,7 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/src/casm/external/qhull/libqhullcpp/QhullFacetList.cpp\
     submodules/CASMcode/src/casm/external/qhull/libqhullcpp/QhullStat.cpp\
     submodules/CASMcode/src/casm/external/gzstream/gzstream.C\
+    submodules/CASMcode/src/casm/app/info.cc\
     submodules/CASMcode/src/casm/app/init.cc\
     submodules/CASMcode/src/casm/app/enum.cc\
     submodules/CASMcode/src/casm/app/status.cc\
@@ -129,7 +144,6 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/src/casm/app/ref.cc\
     submodules/CASMcode/src/casm/app/run.cc\
     submodules/CASMcode/src/casm/app/APICommand.cc\
-    submodules/CASMcode/src/casm/app/AppIO.cc\
     submodules/CASMcode/src/casm/app/select.cc\
     submodules/CASMcode/src/casm/app/CLIParse.cc\
     submodules/CASMcode/src/casm/app/query.cc\
@@ -167,12 +181,21 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/src/casm/app/enum/io/enumerate_supercells_json_io.cc\
     submodules/CASMcode/src/casm/app/enum/io/enumerate_configurations_json_io.cc\
     submodules/CASMcode/src/casm/app/enum/io/stream_io.cc\
+    submodules/CASMcode/src/casm/app/info/standard_info_method_interfaces.cc\
+    submodules/CASMcode/src/casm/app/info/methods/SupercellInfoInterface.cc\
+    submodules/CASMcode/src/casm/app/info/methods/PrimInfoInterface.cc\
+    submodules/CASMcode/src/casm/app/info/methods/NeighborListInfoInterface.cc\
     submodules/CASMcode/src/casm/app/io/json_io.cc\
+    submodules/CASMcode/src/casm/app/io/file/clex_io.cc\
     submodules/CASMcode/src/casm/enumerator/ConfigEnumInput.cc\
     submodules/CASMcode/src/casm/enumerator/DoFSpace.cc\
+    submodules/CASMcode/src/casm/enumerator/io/dof_space_analysis.cc\
     submodules/CASMcode/src/casm/enumerator/io/json/ConfigEnumInput_json_io.cc\
     submodules/CASMcode/src/casm/enumerator/io/json/DoFSpace.cc\
-    submodules/CASMcode/src/casm/symmetry/ConfigSubOrbits.cc\
+    submodules/CASMcode/src/casm/symmetry/Symmetrizer.cc\
+    submodules/CASMcode/src/casm/symmetry/IrrepDecompositionImpl.cc\
+    submodules/CASMcode/src/casm/symmetry/IrrepDecomposition.cc\
+    submodules/CASMcode/src/casm/symmetry/VectorSymCompare_v2.cc\
     submodules/CASMcode/src/casm/symmetry/SymGroupRepID.cc\
     submodules/CASMcode/src/casm/symmetry/SupercellSymInfo.cc\
     submodules/CASMcode/src/casm/symmetry/Orbit.cc\
@@ -182,13 +205,18 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/src/casm/symmetry/VectorSymCompare.cc\
     submodules/CASMcode/src/casm/symmetry/SymOpRepresentation.cc\
     submodules/CASMcode/src/casm/symmetry/SymOp.cc\
-    submodules/CASMcode/src/casm/symmetry/InvariantSubgroup.cc\
+    submodules/CASMcode/src/casm/symmetry/VectorSpaceSymReport.cc\
     submodules/CASMcode/src/casm/symmetry/SymGroup.cc\
     submodules/CASMcode/src/casm/symmetry/SymRepTools.cc\
+    submodules/CASMcode/src/casm/symmetry/IrrepWedge.cc\
     submodules/CASMcode/src/casm/symmetry/SymBasisPermute.cc\
     submodules/CASMcode/src/casm/symmetry/SymPermutation.cc\
     submodules/CASMcode/src/casm/symmetry/SymGroupRep.cc\
+    submodules/CASMcode/src/casm/symmetry/io/json/SymGroup_json_io.cc\
+    submodules/CASMcode/src/casm/symmetry/io/json/SymInfo_json_io.cc\
     submodules/CASMcode/src/casm/symmetry/io/json/SymRepTools.cc\
+    submodules/CASMcode/src/casm/symmetry/io/data/SupercellSymInfo_data_io.cc\
+    submodules/CASMcode/src/casm/symmetry/io/stream/SymInfo_stream_io.cc\
     submodules/CASMcode/src/casm/container/Permutation.cc\
     submodules/CASMcode/src/casm/container/io/PermutationIO.cc\
     submodules/CASMcode/src/casm/misc/CASM_Array_math.cc\
@@ -198,14 +226,13 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/src/casm/completer/Complete.cc\
     submodules/CASMcode/src/casm/completer/Handlers.cc\
     submodules/CASMcode/src/casm/casm_io/Log.cc\
-    submodules/CASMcode/src/casm/casm_io/jsonParser.cc\
     submodules/CASMcode/src/casm/casm_io/FileData.cc\
-    submodules/CASMcode/src/casm/casm_io/DataFormatter.cc\
     submodules/CASMcode/src/casm/casm_io/FormatFlag.cc\
-    submodules/CASMcode/src/casm/casm_io/DataStream.cc\
     submodules/CASMcode/src/casm/casm_io/dataformatter/FormattedDataFile.cc\
+    submodules/CASMcode/src/casm/casm_io/dataformatter/DataFormatter.cc\
+    submodules/CASMcode/src/casm/casm_io/dataformatter/DataStream.cc\
+    submodules/CASMcode/src/casm/casm_io/json/jsonParser.cc\
     submodules/CASMcode/src/casm/casm_io/json/InputParser.cc\
-    submodules/CASMcode/src/casm/casm_io/json_io/clex.cc\
     submodules/CASMcode/src/casm/database/Remove.cc\
     submodules/CASMcode/src/casm/database/Selection.cc\
     submodules/CASMcode/src/casm/database/DatabaseTypes.cc\
@@ -271,6 +298,7 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/src/casm/clusterography/SupercellClusterOrbits.cc\
     submodules/CASMcode/src/casm/clusterography/ClusterSpecs.cc\
     submodules/CASMcode/src/casm/clusterography/ClusterOrbits.cc\
+    submodules/CASMcode/src/casm/clusterography/io/OrbitPrinter.cc\
     submodules/CASMcode/src/casm/clusterography/io/json/ClusterSpecs_json_io.cc\
     submodules/CASMcode/src/casm/clusterography/io/json/IntegralCluster_json_io.cc\
     submodules/CASMcode/src/casm/clusterography/io/json/ClusterOrbits_json_io.cc\
@@ -283,8 +311,6 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/src/casm/global/enum/io_traits.cc\
     submodules/CASMcode/include/casm/app/APICommand.hh\
     submodules/CASMcode/include/casm/app/APICommand_impl.hh\
-    submodules/CASMcode/include/casm/app/AppIO.hh\
-    submodules/CASMcode/include/casm/app/AppIO_impl.hh\
     submodules/CASMcode/include/casm/app/CLIParse.hh\
     submodules/CASMcode/include/casm/app/ClexDescription.hh\
     submodules/CASMcode/include/casm/app/DBInterface.hh\
@@ -308,6 +334,7 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/include/casm/app/files.hh\
     submodules/CASMcode/include/casm/app/format.hh\
     submodules/CASMcode/include/casm/app/import.hh\
+    submodules/CASMcode/include/casm/app/info.hh\
     submodules/CASMcode/include/casm/app/init.hh\
     submodules/CASMcode/include/casm/app/monte.hh\
     submodules/CASMcode/include/casm/app/query.hh\
@@ -343,8 +370,16 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/include/casm/app/enum/methods/ConfigEnumStrainInterface.hh\
     submodules/CASMcode/include/casm/app/enum/methods/ScelEnumInterface.hh\
     submodules/CASMcode/include/casm/app/enum/methods/SuperConfigEnumInterface.hh\
+    submodules/CASMcode/include/casm/app/info/InfoInterface.hh\
+    submodules/CASMcode/include/casm/app/info/standard_info_method_interfaces.hh\
+    submodules/CASMcode/include/casm/app/info/methods/NeighborListInfoInterface.hh\
+    submodules/CASMcode/include/casm/app/info/methods/PrimInfoInterface.hh\
+    submodules/CASMcode/include/casm/app/info/methods/SupercellInfoInterface.hh\
     submodules/CASMcode/include/casm/app/io/json_io.hh\
     submodules/CASMcode/include/casm/app/io/json_io_impl.hh\
+    submodules/CASMcode/include/casm/app/io/file/clex_io.hh\
+    submodules/CASMcode/include/casm/app/query/QueryIO.hh\
+    submodules/CASMcode/include/casm/app/query/QueryIO_impl.hh\
     submodules/CASMcode/include/casm/app/sym/dof_space_analysis.hh\
     submodules/CASMcode/include/casm/app/sym/json_io.hh\
     submodules/CASMcode/include/casm/app/sym/symmetrize.hh\
@@ -397,6 +432,7 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/include/casm/casm_io/json/InputParser_impl.hh\
     submodules/CASMcode/include/casm/casm_io/json/jsonFile.hh\
     submodules/CASMcode/include/casm/casm_io/json/jsonParser.hh\
+    submodules/CASMcode/include/casm/casm_io/json/optional.hh\
     submodules/CASMcode/include/casm/clex/BasicClexParamPack.hh\
     submodules/CASMcode/include/casm/clex/Calculable.hh\
     submodules/CASMcode/include/casm/clex/ChemicalReference.hh\
@@ -410,12 +446,16 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/include/casm/clex/ClexParamPack.hh\
     submodules/CASMcode/include/casm/clex/Clexulator.hh\
     submodules/CASMcode/include/casm/clex/Clexulator_Draft.hh\
+    submodules/CASMcode/include/casm/clex/CompositionAxes.hh\
+    submodules/CASMcode/include/casm/clex/CompositionAxes_impl.hh\
     submodules/CASMcode/include/casm/clex/CompositionConverter.hh\
     submodules/CASMcode/include/casm/clex/ConfigCompare.hh\
     submodules/CASMcode/include/casm/clex/ConfigDoF.hh\
     submodules/CASMcode/include/casm/clex/ConfigDoFCompare.hh\
     submodules/CASMcode/include/casm/clex/ConfigDoFIsEquivalent.hh\
+    submodules/CASMcode/include/casm/clex/ConfigDoFTools.hh\
     submodules/CASMcode/include/casm/clex/ConfigDoFValues.hh\
+    submodules/CASMcode/include/casm/clex/ConfigDoF_impl.hh\
     submodules/CASMcode/include/casm/clex/ConfigEnumAllOccupations.hh\
     submodules/CASMcode/include/casm/clex/ConfigEnumByPermutation.hh\
     submodules/CASMcode/include/casm/clex/ConfigEnumRandomLocal.hh\
@@ -456,20 +496,32 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/include/casm/clex/RemoveSupercell.hh\
     submodules/CASMcode/include/casm/clex/ScelEnum.hh\
     submodules/CASMcode/include/casm/clex/ScelEnumEquivalents.hh\
+    submodules/CASMcode/include/casm/clex/ScelOrbitGeneration.hh\
+    submodules/CASMcode/include/casm/clex/ScelOrbitGeneration_impl.hh\
     submodules/CASMcode/include/casm/clex/SimpleStructureTools.hh\
     submodules/CASMcode/include/casm/clex/SuperConfigEnum.hh\
     submodules/CASMcode/include/casm/clex/Supercell.hh\
     submodules/CASMcode/include/casm/clex/SupercellIO.hh\
+    submodules/CASMcode/include/casm/clex/SupercellIO_impl.hh\
     submodules/CASMcode/include/casm/clex/SupercellTraits.hh\
     submodules/CASMcode/include/casm/clex/Supercell_functions.hh\
     submodules/CASMcode/include/casm/clex/Supercell_impl.hh\
     submodules/CASMcode/include/casm/clex/json_io.hh\
-    submodules/CASMcode/include/casm/clex/io/json_io.hh\
-    submodules/CASMcode/include/casm/clex/io/json/ChemicalReference.hh\
+    submodules/CASMcode/include/casm/clex/io/ProtoFuncsPrinter.hh\
+    submodules/CASMcode/include/casm/clex/io/ProtoFuncsPrinter_impl.hh\
+    submodules/CASMcode/include/casm/clex/io/file/ChemicalReference_file_io.hh\
+    submodules/CASMcode/include/casm/clex/io/file/CompositionAxes_file_io.hh\
+    submodules/CASMcode/include/casm/clex/io/json/ChemicalReference_json_io.hh\
     submodules/CASMcode/include/casm/clex/io/json/ClexBasisSpecs_json_io.hh\
+    submodules/CASMcode/include/casm/clex/io/json/CompositionAxes_json_io.hh\
+    submodules/CASMcode/include/casm/clex/io/json/CompositionConverter_json_io.hh\
     submodules/CASMcode/include/casm/clex/io/json/ConfigDoF_json_io.hh\
-    submodules/CASMcode/include/casm/clex/io/json/ConfigMapping.hh\
+    submodules/CASMcode/include/casm/clex/io/json/ConfigMapping_json_io.hh\
+    submodules/CASMcode/include/casm/clex/io/json/Configuration_json_io.hh\
     submodules/CASMcode/include/casm/clex/io/json/ECIContainer_json_io.hh\
+    submodules/CASMcode/include/casm/clex/io/stream/ClexBasis_stream_io.hh\
+    submodules/CASMcode/include/casm/clex/io/stream/ClexBasis_stream_io_impl.hh\
+    submodules/CASMcode/include/casm/clex/io/stream/Configuration_stream_io.hh\
     submodules/CASMcode/include/casm/clusterography/ClusterDecl.hh\
     submodules/CASMcode/include/casm/clusterography/ClusterInvariants.hh\
     submodules/CASMcode/include/casm/clusterography/ClusterOrbits.hh\
@@ -487,7 +539,9 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/include/casm/clusterography/SubClusterGenerator.hh\
     submodules/CASMcode/include/casm/clusterography/SupercellClusterOrbits.hh\
     submodules/CASMcode/include/casm/clusterography/SupercellClusterOrbits_impl.hh\
-    submodules/CASMcode/include/casm/clusterography/io/json_io.hh\
+    submodules/CASMcode/include/casm/clusterography/json_io.hh\
+    submodules/CASMcode/include/casm/clusterography/io/OrbitPrinter.hh\
+    submodules/CASMcode/include/casm/clusterography/io/OrbitPrinter_impl.hh\
     submodules/CASMcode/include/casm/clusterography/io/stream_io.hh\
     submodules/CASMcode/include/casm/clusterography/io/json/ClusterOrbits_json_io.hh\
     submodules/CASMcode/include/casm/clusterography/io/json/ClusterSpecs_json_io.hh\
@@ -545,6 +599,7 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/include/casm/crystallography/SymTypeComparator.hh\
     submodules/CASMcode/include/casm/crystallography/UnitCellCoord.hh\
     submodules/CASMcode/include/casm/crystallography/UnitCellCoordTraits.hh\
+    submodules/CASMcode/include/casm/crystallography/io/BasicStructureIO.hh\
     submodules/CASMcode/include/casm/crystallography/io/DoFSetIO.hh\
     submodules/CASMcode/include/casm/crystallography/io/LatticeIO.hh\
     submodules/CASMcode/include/casm/crystallography/io/SimpleStructureIO.hh\
@@ -552,6 +607,7 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/include/casm/crystallography/io/UnitCellCoordIO.hh\
     submodules/CASMcode/include/casm/crystallography/io/VaspIO.hh\
     submodules/CASMcode/include/casm/crystallography/io/jsonStruc.hh\
+    submodules/CASMcode/include/casm/crystallography/io/data/SharedPrim_data_io.hh\
     submodules/CASMcode/include/casm/database/Cache.hh\
     submodules/CASMcode/include/casm/database/ConfigData.hh\
     submodules/CASMcode/include/casm/database/ConfigData_impl.hh\
@@ -594,10 +650,10 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/include/casm/enumerator/ConfigEnumInput.hh\
     submodules/CASMcode/include/casm/enumerator/ConfigEnumInput_impl.hh\
     submodules/CASMcode/include/casm/enumerator/DoFSpace.hh\
-    submodules/CASMcode/include/casm/enumerator/DoFSpace_impl.hh\
     submodules/CASMcode/include/casm/enumerator/Enumerator.hh\
     submodules/CASMcode/include/casm/enumerator/InputEnumerator.hh\
     submodules/CASMcode/include/casm/enumerator/RandomAccessEnumerator.hh\
+    submodules/CASMcode/include/casm/enumerator/io/dof_space_analysis.hh\
     submodules/CASMcode/include/casm/enumerator/io/json/ConfigEnumInput_json_io.hh\
     submodules/CASMcode/include/casm/enumerator/io/json/DoFSpace.hh\
     submodules/CASMcode/include/casm/external/Eigen/Cholesky\
@@ -1036,28 +1092,23 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/include/casm/monte_carlo/grand_canonical/GrandCanonicalSettings.hh\
     submodules/CASMcode/include/casm/monte_carlo/grand_canonical/GrandCanonicalSettings_impl.hh\
     submodules/CASMcode/include/casm/strain/StrainConverter.hh\
-    submodules/CASMcode/include/casm/symmetry/ConfigSubOrbits.hh\
-    submodules/CASMcode/include/casm/symmetry/ConfigSubOrbits_impl.hh\
-    submodules/CASMcode/include/casm/symmetry/ElementSymApply.hh\
     submodules/CASMcode/include/casm/symmetry/EnumEquivalents.hh\
     submodules/CASMcode/include/casm/symmetry/InvariantSubgroup.hh\
     submodules/CASMcode/include/casm/symmetry/InvariantSubgroup_impl.hh\
+    submodules/CASMcode/include/casm/symmetry/IrrepDecomposition.hh\
+    submodules/CASMcode/include/casm/symmetry/IrrepDecompositionImpl.hh\
+    submodules/CASMcode/include/casm/symmetry/IrrepWedge.hh\
     submodules/CASMcode/include/casm/symmetry/Orbit.hh\
     submodules/CASMcode/include/casm/symmetry/OrbitDecl.hh\
     submodules/CASMcode/include/casm/symmetry/OrbitGeneration.hh\
     submodules/CASMcode/include/casm/symmetry/OrbitGeneration_impl.hh\
     submodules/CASMcode/include/casm/symmetry/Orbit_impl.hh\
     submodules/CASMcode/include/casm/symmetry/PermuteIterator.hh\
-    submodules/CASMcode/include/casm/symmetry/ScelOrbitGeneration.hh\
-    submodules/CASMcode/include/casm/symmetry/ScelOrbitGeneration_impl.hh\
-    submodules/CASMcode/include/casm/symmetry/ScelSubOrbits.hh\
-    submodules/CASMcode/include/casm/symmetry/ScelSubOrbits_impl.hh\
     submodules/CASMcode/include/casm/symmetry/SimpleOrbit.hh\
     submodules/CASMcode/include/casm/symmetry/SimpleOrbit_impl.hh\
     submodules/CASMcode/include/casm/symmetry/SubOrbits.hh\
     submodules/CASMcode/include/casm/symmetry/SubOrbits_impl.hh\
     submodules/CASMcode/include/casm/symmetry/SupercellSymInfo.hh\
-    submodules/CASMcode/include/casm/symmetry/SupercellSymInfo_impl.hh\
     submodules/CASMcode/include/casm/symmetry/SymBasisPermute.hh\
     submodules/CASMcode/include/casm/symmetry/SymCompare.hh\
     submodules/CASMcode/include/casm/symmetry/SymGroup.hh\
@@ -1071,11 +1122,19 @@ libcasmblob_la_SOURCES = \
     submodules/CASMcode/include/casm/symmetry/SymRepTools.hh\
     submodules/CASMcode/include/casm/symmetry/SymTools.hh\
     submodules/CASMcode/include/casm/symmetry/SymTools_impl.hh\
+    submodules/CASMcode/include/casm/symmetry/Symmetrizer.hh\
     submodules/CASMcode/include/casm/symmetry/VectorOrbits.hh\
+    submodules/CASMcode/include/casm/symmetry/VectorSpaceSymReport.hh\
     submodules/CASMcode/include/casm/symmetry/VectorSymCompare.hh\
     submodules/CASMcode/include/casm/symmetry/VectorSymCompare_impl.hh\
+    submodules/CASMcode/include/casm/symmetry/VectorSymCompare_v2.hh\
     submodules/CASMcode/include/casm/symmetry/json_io.hh\
+    submodules/CASMcode/include/casm/symmetry/to_real.hh\
+    submodules/CASMcode/include/casm/symmetry/io/data/SupercellSymInfo_data_io.hh\
+    submodules/CASMcode/include/casm/symmetry/io/json/SymGroup_json_io.hh\
+    submodules/CASMcode/include/casm/symmetry/io/json/SymInfo_json_io.hh\
     submodules/CASMcode/include/casm/symmetry/io/json/SymRepTools.hh\
+    submodules/CASMcode/include/casm/symmetry/io/stream/SymInfo_stream_io.hh\
     submodules/CASMcode/include/casm/system/Popen.hh\
     submodules/CASMcode/include/casm/system/RuntimeLibrary.hh\
     submodules/CASMcode/include/casm/version/version.hh
