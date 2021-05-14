@@ -56,6 +56,10 @@ TEST_F(SiteTest, SiteEquals)
     EXPECT_FALSE(is_equal_to_lithium_site(*lithium_site_ptr, *nickel_site_ptr));
 
     casmutils::UnaryComparator_f<casmutils::xtal::SiteEquals_f> unary_site_comparator(*lithium_site_ptr, tol);
+    casmutils::UnaryComparator_f<casmutils::xtal::SiteEquals_f> unary_site_comparator_test(*lithium_site_ptr,
+                                                                                           is_equal_to_lithium_site);
+
+    EXPECT_TRUE(unary_site_comparator_test(*lithium_site_ptr));
     EXPECT_TRUE(unary_site_comparator(*lithium_site_ptr));
     EXPECT_FALSE(unary_site_comparator(*nickel_site_ptr));
 };

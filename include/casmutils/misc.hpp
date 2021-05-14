@@ -38,6 +38,11 @@ template <typename BinaryComparator_f> class UnaryComparator_f
 public:
     using CompareType = notstd::first_argument_type<BinaryComparator_f>;
 
+    UnaryComparator_f(const CompareType& ref_value, BinaryComparator_f binary_comparator_method)
+        : m_ref_value(ref_value), m_compare_method(binary_comparator_method)
+    {
+    }
+
     template <typename... Args>
     UnaryComparator_f(const CompareType& ref_value, const Args&... functor_params)
         : m_ref_value(ref_value), m_compare_method(functor_params...)
